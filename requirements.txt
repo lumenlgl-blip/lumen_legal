@@ -1,6 +1,6 @@
 fastapi==0.110.0
 uvicorn[standard]==0.27.1
-sqlalchemy==2.0.27
+sqlalchemy>=2.0.40,<2.1
 psycopg2-binary>=2.9.11  # Para conectar a Postgres en Supabase
 python-dotenv==1.0.1
 python-jose[cryptography]==3.3.0
