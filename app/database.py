@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()  # Carga el .env
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./lumen_legal.db")
 
 # Configuración extra para que SQLite funcione con las mismas queries que Postgres
 connect_args = {}
