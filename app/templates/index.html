@@ -1,5 +1,313 @@
 ﻿<!DOCTYPE html>
 <html>
-<head><title>Lumen Legal</title></head>
-<body><h1>⚖️ Lumen Legal</h1><p>Funcionando</p></body>
+<head>
+    <title>Lumen Legal - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .hero {
+            padding: 40px 0;
+            background: rgba(255,255,255,0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .feature-card {
+            transition: transform 0.2s;
+            cursor: default;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        a .feature-card {
+            cursor: pointer;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .feature-card .card-body { padding: 1.5rem; }
+        .feature-card .card-title { color: #1a3c6e; font-weight: 600; }
+        .footer {
+            margin-top: 60px;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .admin-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border: 2px solid #0d6efd;
+        }
+        .admin-section h3 {
+            color: #0d6efd;
+            border-bottom: 2px solid #0d6efd;
+            padding-bottom: 10px;
+        }
+        .navbar {
+            border-radius: 0 0 15px 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar con usuario -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <span class="navbar-brand">⚖️ Lumen Legal</span>
+            <div class="ms-auto d-flex align-items-center">
+                {% if user %}
+                    <span class="text-white me-3">
+                        <i class="bi bi-person-circle"></i> {{ user.full_name }}
+                        <span class="badge bg-light text-primary ms-1">{{ user.role }}</span>
+                    </span>
+                    <a href="/auth/logout" class="btn btn-outline-light btn-sm">Cerrar Sesión</a>
+                {% else %}
+                    <a href="/auth/login" class="btn btn-outline-light btn-sm">Iniciar Sesión</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="hero text-center">
+            <div class="logo-container">
+                <img src="/static/img/logo.jpeg" alt="Lumen Legal" 
+                     style="max-width: 350px; width: 100%; height: auto; margin-bottom: 10px;">
+            </div>
+            <h1 class="h2 fw-bold text-primary">Lumen Legal</h1>
+            <p class="text-secondary" style="font-size: 1.1rem;">Sistema de Gestión Jurídica</p>
+            <p class="text-muted" style="font-size: 0.9rem;">Despacho de Abogados</p>
+            <hr class="w-50 mx-auto">
+        </div>
+
+        <!-- SECCIÓN ADMINISTRACIÓN -->
+        {% if user and user.role == "admin" %}
+        <div class="admin-section">
+            <h3><i class="bi bi-shield-lock"></i> Administración del Sistema</h3>
+            <div class="row g-3 mt-2">
+                <div class="col-md-4 col-lg-3">
+                    <a href="/auth/users" class="text-decoration-none">
+                        <div class="card feature-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-people fs-1 text-primary"></i>
+                                <h5 class="card-title mt-2">Usuarios</h5>
+                                <p class="card-text small text-muted">Gestionar usuarios del sistema</p>
+                                <span class="badge rounded-pill bg-danger">Admin</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <a href="/auth/register" class="text-decoration-none">
+                        <div class="card feature-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-person-plus fs-1 text-success"></i>
+                                <h5 class="card-title mt-2">Registrar Usuario</h5>
+                                <p class="card-text small text-muted">Crear nuevo usuario</p>
+                                <span class="badge rounded-pill bg-danger">Admin</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <a href="/profile" class="text-decoration-none">
+                        <div class="card feature-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-person-gear fs-1 text-info"></i>
+                                <h5 class="card-title mt-2">Mi Perfil</h5>
+                                <p class="card-text small text-muted">Ver mi información</p>
+                                <span class="badge rounded-pill bg-secondary">Info</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Grid de funcionalidades -->
+        <div class="row g-4 mt-4">
+            
+            <!-- Feature 1: Dashboard (visible para todos) -->
+            <div class="col-md-4 col-lg-3">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-speedometer2 fs-1 text-primary"></i>
+                        <h5 class="card-title mt-2">Dashboard</h5>
+                        <p class="card-text small text-muted">Resumen general del despacho</p>
+                        <span class="badge rounded-pill bg-warning text-dark">Próximamente</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature 2: Registrar Cliente -->
+            {% if "clients" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/clients/register" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-plus fs-1 text-primary"></i>
+                            <h5 class="card-title mt-2">Registrar Cliente</h5>
+                            <p class="card-text small text-muted">Nuevo cliente y constancia</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 3: Contratación -->
+            {% if "contracts" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/contracts/register" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-file-earmark-text fs-1 text-danger"></i>
+                            <h5 class="card-title mt-2">Contratación</h5>
+                            <p class="card-text small text-muted">Registrar servicios, costos y honorarios</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 4: Relacionar Expediente -->
+            {% if "cases" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/cases/relate" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-folder-plus fs-1 text-info"></i>
+                            <h5 class="card-title mt-2">Relacionar Expediente</h5>
+                            <p class="card-text small text-muted">Asignar expediente del tribunal</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 5: Abonos -->
+            {% if "payments" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/payments/register" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-cash-stack fs-1 text-success"></i>
+                            <h5 class="card-title mt-2">Abonos y Liquidación</h5>
+                            <p class="card-text small text-muted">Registrar pagos y liquidar</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 6: Consulta de Pagos -->
+            {% if "consult" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/payments/consult" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-receipt fs-1 text-info"></i>
+                            <h5 class="card-title mt-2">Consultar Pagos</h5>
+                            <p class="card-text small text-muted">Ver historial de pagos</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 7: Expediente Electrónico -->
+            {% if "actuaciones" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/actuaciones/register" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-file-pdf fs-1 text-danger"></i>
+                            <h5 class="card-title mt-2">Expediente Electrónico</h5>
+                            <p class="card-text small text-muted">Subir y organizar actuaciones</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 8: Actualizar Estatus -->
+            {% if "cases" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/cases/status" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-arrow-repeat fs-1 text-warning"></i>
+                            <h5 class="card-title mt-2">Actualizar Estatus</h5>
+                            <p class="card-text small text-muted">Cambiar estado del expediente</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 9: Consultar Expediente -->
+            {% if "consult" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/cases/consult" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-search fs-1 text-primary"></i>
+                            <h5 class="card-title mt-2">Consultar Expediente</h5>
+                            <p class="card-text small text-muted">Ver expediente completo</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Feature 10: Consultar Cliente -->
+            {% if "consult" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/clients/consult" class="text-decoration-none">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-badge fs-1 text-secondary"></i>
+                            <h5 class="card-title mt-2">Consultar Cliente</h5>
+                            <p class="card-text small text-muted">Ver información completa del cliente</p>
+                            <span class="badge rounded-pill bg-success">Activo</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer text-center">
+            <p>Lumen Legal &copy; 2026 - Despacho Jurídico</p>
+            <p class="small">
+                <i class="bi bi-shield-check text-success"></i> Sistema v1.0
+                {% if user %}
+                | <i class="bi bi-person"></i> {{ user.email }}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

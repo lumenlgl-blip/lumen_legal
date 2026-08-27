@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Actualizar Estatus - Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .client-card { border-left: 4px solid #0d6efd; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
+        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
+        .case-card { border-left: 4px solid #ffc107; background: #fff; transition: all 0.3s ease; cursor: pointer; }
+        .case-card:hover { background: #f8f9fa; }
+        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        .modal-content { border-radius: 15px; }
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .status-iniciado { background: #0d6efd; color: white; }
+        .status-terminado { background: #198754; color: white; }
+        .status-inactivo { background: #6c757d; color: white; }
+        .status-desistido { background: #dc3545; color: white; }
+        .status-caducado { background: #fd7e14; color: white; }
+        .status-revocado { background: #6f42c1; color: white; }
+        .status-cliente_no_contesta { background: #ffc107; color: black; }
+        .status-otro { background: #20c997; color: white; }
+    </style>
+</head>
+<body class="bg-light">
+
+<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">🔄 Actualizar Estatus del Expediente</h1>
+    
+    <!-- Buscador -->
+    <div class="card p-4 shadow mb-4">
+        <h5 class="mb-3"><strong>Buscar Cliente o Expediente</strong></h5>
+        <div class="row">
+            <div class="col-md-8 mb-2">
+                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..." autocomplete="off">
+            </div>
+            <div class="col-md-4">
+                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div id="resultsContainer"></div>
+    
+    <!-- Formulario de actualización -->
+    <div id="updateFormContainer" style="display:none;" class="card p-4 shadow mt-4">
+        <h5 id="caseTitle" class="text-primary"><strong></strong></h5>
+        <p id="caseInfo" class="text-muted"></p>
+        <hr>
+        <form id="updateForm" novalidate>
+            <input type="hidden" id="courtCaseId" name="court_case_id">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Nuevo Estatus *</strong></label>
+                    <select id="newStatus" name="new_status" class="form-select form-select-lg" required>
+                        <option value="">Selecciona...</option>
+                        <option value="iniciado">Iniciado</option>
+                        <option value="terminado">Terminado</option>
+                        <option value="inactivo">Inactivo</option>
+                        <option value="desistido">Desistido</option>
+                        <option value="caducado">Caducado</option>
+                        <option value="revocado">Revocado</option>
+                        <option value="cliente_no_contesta">Cliente no contesta</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                    <div class="invalid-feedback">Selecciona un estatus</div>
+                </div>
+                <div class="col-md-6 d-flex align-items-end mb-3">
+                    <button type="submit" class="btn btn-warning btn-lg w-100">
+                        <i class="bi bi-arrow-repeat"></i> Actualizar Estatus
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de notificaciones -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">⚠️ Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-warning btn-lg" id="confirmBtn">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+    <div class="spinner-box">
+        <div class="spinner-border text-warning mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Procesando...</span>
+        </div>
+        <h5 class="mb-0">Actualizando estatus...</h5>
+        <p class="text-muted small">Por favor espera.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    modal.show();
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// Enter para buscar
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); }
+});
+
+document.getElementById('searchBtn').addEventListener('click', async () => {
+    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
+    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+    
+    showLoading();
+    
+    try {
+        const formData = new FormData();
+        formData.append('search_term', searchTerm);
+        const response = await fetch('/api/cases/search-client-status', {
+            method: 'POST',
+            body: formData
+        });
+        
+        hideLoading();
+        
+        if (!response.ok) {
+            const error = await response.json();
+            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
+            document.getElementById('resultsContainer').innerHTML = '';
+            return;
+        }
+        
+        const clients = await response.json();
+        const container = document.getElementById('resultsContainer');
+        
+        if (clients.length === 0) {
+            container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron clientes con expedientes.</strong></div>';
+            return;
+        }
+        
+        container.innerHTML = '<h5 class="mb-3"><strong>Clientes con expedientes:</strong></h5>';
+        
+        clients.forEach(client => {
+            const card = document.createElement('div');
+            card.className = 'client-card p-3 mb-2 rounded';
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${client.nombre_completo}</strong></div>
+                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
+                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
+                    <div class="col-md-3"><small>${client.curp}</small></div>
+                    <div class="col-md-2"><button class="btn btn-sm btn-success view-cases" data-id="${client.id}">Ver expedientes</button></div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+        document.querySelectorAll('.view-cases').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const clientId = parseInt(this.dataset.id);
+                const clientData = clients.find(c => c.id === clientId);
+                if (clientData) showCaseSelection(clientData);
+            });
+        });
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+    }
+});
+
+function showCaseSelection(client) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mb-3"><strong>Expedientes de ${client.nombre_completo}:</strong></h5>`;
+    
+    client.casos.forEach(caso => {
+        const statusClass = `status-${caso.status}`;
+        const statusLabel = caso.status.replace(/_/g, ' ').toUpperCase();
+        html += `
+            <div class="case-card p-3 mb-2 rounded">
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${caso.expediente_tribunal}</strong></div>
+                    <div class="col-md-3">${caso.tribunal || 'N/A'}</div>
+                    <div class="col-md-2"><span class="status-badge ${statusClass}">${statusLabel}</span></div>
+                    <div class="col-md-2"><small>${caso.fecha_presentacion}</small></div>
+                    <div class="col-md-2"><button class="btn btn-sm btn-warning update-status" data-id="${caso.id}" data-tribunal="${caso.tribunal}" data-exp="${caso.expediente_tribunal}" data-status="${caso.status}"><i class="bi bi-pencil"></i> Actualizar</button></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `<button class="btn btn-outline-secondary btn-sm mt-2" onclick="newSearch()">← Nueva búsqueda</button>`;
+    container.innerHTML = html;
+    
+    document.querySelectorAll('.update-status').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const caseId = this.dataset.id;
+            const tribunal = this.dataset.tribunal;
+            const expTribunal = this.dataset.exp;
+            const currentStatus = this.dataset.status;
+            loadUpdateForm(caseId, tribunal, expTribunal, currentStatus);
+        });
+    });
+}
+
+function newSearch() {
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchInput').focus();
+}
+
+function loadUpdateForm(caseId, tribunal, expTribunal, currentStatus) {
+    document.getElementById('updateFormContainer').style.display = 'block';
+    document.getElementById('courtCaseId').value = caseId;
+    document.getElementById('caseTitle').textContent = `Expediente: ${expTribunal}`;
+    document.getElementById('caseInfo').textContent = `Tribunal: ${tribunal || 'N/A'} | Estatus actual: ${currentStatus.toUpperCase().replace(/_/g, ' ')}`;
+    document.getElementById('newStatus').value = currentStatus;
+    document.getElementById('updateFormContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+document.getElementById('updateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const caseId = document.getElementById('courtCaseId').value;
+    const newStatus = document.getElementById('newStatus').value;
+    
+    if (!newStatus) {
+        showNotification('Estatus no seleccionado', '<p>Por favor selecciona un estatus.</p>', 'warning');
+        return;
+    }
+    
+    showConfirm(
+        'Actualizar estatus',
+        `<p>¿Estás seguro de cambiar el estatus a <strong>${newStatus.toUpperCase().replace(/_/g, ' ')}</strong>?</p>`,
+        async function() {
+            showLoading();
+            
+            const formData = new FormData();
+            formData.append('new_status', newStatus);
+            
+            try {
+                const response = await fetch(`/api/cases/status/${caseId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                hideLoading();
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    showNotification('Error', `<p>${error.detail || 'Error al actualizar'}</p>`, 'error');
+                    return;
+                }
+                
+                const result = await response.json();
+                
+                showNotification(
+                    'Estatus Actualizado',
+                    `
+                    <div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div>
+                    <p><strong>Expediente:</strong> ${result.expediente}</p>
+                    <p><strong>Nuevo estatus:</strong> ${result.nuevo_estatus.toUpperCase().replace(/_/g, ' ')}</p>
+                    `,
+                    'success'
+                );
+                
+                document.getElementById('updateFormContainer').style.display = 'none';
+                document.getElementById('resultsContainer').innerHTML = '';
+                document.getElementById('searchInput').value = '';
+                
+            } catch (error) {
+                hideLoading();
+                showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+            }
+        }
+    );
+});
+</script>
+</body>
+</html>

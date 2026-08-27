@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Consultar Expediente - Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background-color: #f8f9fa; }
+        .detail-card { border-left: 4px solid #0d6efd; background: #f8f9fa; border-radius: 5px; }
+        .actuacion-item { border-left: 4px solid #198754; background: #fff; border-radius: 5px; }
+        .modal-pdf { width: 100%; height: 75vh; border: none; }
+        .client-card { border-left: 4px solid #0d6efd; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
+        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
+        .case-card { border-left: 4px solid #ffc107; background: #fff; transition: all 0.3s ease; cursor: pointer; }
+        .case-card:hover { background: #f8f9fa; }
+        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .status-iniciado { background: #0d6efd; color: white; }
+        .status-terminado { background: #198754; color: white; }
+        .status-inactivo { background: #6c757d; color: white; }
+        .status-desistido { background: #dc3545; color: white; }
+        .status-caducado { background: #fd7e14; color: white; }
+        .status-revocado { background: #6f42c1; color: white; }
+        
+        .fade-out {
+            animation: fadeOutSlide 0.4s ease forwards;
+        }
+        @keyframes fadeOutSlide {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-50px); }
+        }
+        .fade-in {
+            animation: fadeInSlide 0.5s ease forwards;
+        }
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📋 Consultar Expediente</h1>
+    
+    <!-- Buscador -->
+    <div class="card p-4 shadow mb-4">
+        <h5 class="mb-3"><strong>Buscar Cliente o Expediente del Tribunal</strong></h5>
+        <div class="row">
+            <div class="col-md-8 mb-2">
+                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..." autocomplete="off">
+            </div>
+            <div class="col-md-4">
+                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div id="resultsContainer"></div>
+    
+    <!-- Detalle del expediente -->
+    <div id="caseDetailContainer" style="display:none;" class="mt-4 fade-in">
+        <div class="card p-4 shadow">
+            <div id="caseContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de notificaciones -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">⚠️ Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para vista previa de PDF individual -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title"><i class="bi bi-file-pdf text-danger"></i> Vista Previa de Documento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-0">
+                <iframe id="pdfPreview" src="" class="modal-pdf"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="downloadPdfLink" href="#" download class="btn btn-primary">⬇️ Descargar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para vista previa del expediente completo -->
+<div class="modal fade" id="fullCasePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-folder2-open"></i> Expediente Electrónico Completo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-0">
+                <iframe id="fullCasePreviewFrame" src="" style="width: 100%; height: 75vh; border: none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cerrar</button>
+                <a id="fullCaseDownloadLink" href="#" download class="btn btn-success btn-lg">⬇️ Descargar PDF</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para solicitar contraseña -->
+<div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="max-width: 400px; margin: 0 auto;">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">🔒 Verificar Identidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Ingresa tu contraseña para continuar:</p>
+                <input type="password" id="passwordInput" class="form-control form-control-lg" placeholder="Contraseña..." autocomplete="off">
+                <div id="passwordError" class="text-danger mt-2" style="display:none;">Contraseña incorrecta</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirmPasswordBtn" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+    <div class="spinner-box">
+        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <h5 class="mb-0">Generando expediente...</h5>
+        <p class="text-muted small">Combinando documentos PDF, por favor espera.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let currentAction = null;
+let currentData = null;
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    modal.show();
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); }
+});
+
+document.getElementById('searchBtn').addEventListener('click', async () => {
+    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
+    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+    
+    showLoading();
+    
+    try {
+        const formData = new FormData();
+        formData.append('search_term', searchTerm);
+        const response = await fetch('/api/cases/search-client-consult', {
+            method: 'POST',
+            body: formData
+        });
+        
+        hideLoading();
+        
+        if (!response.ok) {
+            const error = await response.json();
+            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
+            document.getElementById('resultsContainer').innerHTML = '';
+            return;
+        }
+        
+        const clients = await response.json();
+        const container = document.getElementById('resultsContainer');
+        
+        if (clients.length === 0) {
+            container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron expedientes.</strong></div>';
+            return;
+        }
+        
+        container.innerHTML = '<h5 class="mb-3"><strong>Clientes con expedientes:</strong></h5>';
+        container.classList.add('fade-in');
+        
+        clients.forEach(client => {
+            const card = document.createElement('div');
+            card.className = 'client-card p-3 mb-2 rounded';
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${client.nombre_completo}</strong><br><small class="text-muted">${client.curp}</small></div>
+                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
+                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
+                    <div class="col-md-2"><span class="badge bg-info">${client.casos.length} expediente(s)</span></div>
+                    <div class="col-md-3"><button class="btn btn-sm btn-success view-cases" data-id="${client.id}">Ver expedientes</button></div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+        document.querySelectorAll('.view-cases').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const clientId = parseInt(this.dataset.id);
+                const clientData = clients.find(c => c.id === clientId);
+                if (clientData) showCaseSelection(clientData);
+            });
+        });
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+    }
+});
+
+function showCaseSelection(client) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mb-3"><strong>Expedientes de ${client.nombre_completo}:</strong></h5>`;
+    
+    client.casos.forEach(caso => {
+        const statusClass = `status-${caso.status}`;
+        html += `
+            <div class="case-card p-3 mb-2 rounded">
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${caso.expediente_tribunal}</strong></div>
+                    <div class="col-md-3">${caso.tribunal}</div>
+                    <div class="col-md-2"><span class="status-badge ${statusClass}">${caso.status.replace(/_/g, ' ').toUpperCase()}</span></div>
+                    <div class="col-md-2"><small>${caso.fecha_presentacion}</small></div>
+                    <div class="col-md-2"><button class="btn btn-sm btn-primary view-case" data-id="${caso.id}">Consultar</button></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `<button class="btn btn-outline-secondary btn-sm mt-2" onclick="newSearch()">← Nueva búsqueda</button>`;
+    container.innerHTML = html;
+    container.classList.remove('fade-in');
+    container.classList.add('fade-in');
+    
+    document.querySelectorAll('.view-case').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            await loadCaseDetail(btn.dataset.id);
+        });
+    });
+}
+
+function newSearch() {
+    const container = document.getElementById('resultsContainer');
+    const detailContainer = document.getElementById('caseDetailContainer');
+    
+    container.classList.add('fade-out');
+    detailContainer.classList.add('fade-out');
+    
+    setTimeout(() => {
+        container.innerHTML = '';
+        container.classList.remove('fade-out');
+        detailContainer.style.display = 'none';
+        detailContainer.classList.remove('fade-out');
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInput').focus();
+    }, 400);
+}
+
+async function loadCaseDetail(caseId) {
+    showLoading();
+    
+    try {
+        const response = await fetch(`/api/cases/consult-detail/${caseId}`);
+        const data = await response.json();
+        
+        hideLoading();
+        
+        const resultsContainer = document.getElementById('resultsContainer');
+        resultsContainer.classList.add('fade-out');
+        
+        setTimeout(() => {
+            resultsContainer.innerHTML = '';
+            resultsContainer.classList.remove('fade-out');
+            
+            document.getElementById('caseDetailContainer').style.display = 'block';
+            document.getElementById('caseDetailContainer').classList.add('fade-in');
+            currentData = data;
+            
+            document.getElementById('caseContent').innerHTML = renderCaseDetail(data);
+            
+            document.querySelectorAll('.preview-pdf').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    let url = this.dataset.url;
+                    if (url && !url.startsWith('/')) url = '/' + url;
+                    const filename = this.dataset.filename || 'documento.pdf';
+                    document.getElementById('pdfPreview').src = url;
+                    document.getElementById('downloadPdfLink').href = url;
+                    document.getElementById('downloadPdfLink').download = filename;
+                    new bootstrap.Modal(document.getElementById('pdfModal')).show();
+                });
+            });
+            
+            document.querySelectorAll('.require-password').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentAction = this.dataset.action;
+                    document.getElementById('passwordInput').value = '';
+                    document.getElementById('passwordError').style.display = 'none';
+                    new bootstrap.Modal(document.getElementById('passwordModal')).show();
+                });
+            });
+            
+            document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth' });
+        }, 400);
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Error', `<p>Error al cargar el expediente: ${error.message}</p>`, 'error');
+    }
+}
+
+// Abrir PDF unificado en modal con vista previa (NO descarga automática)
+function openFullCasePDF() {
+    if (!currentData || !currentData.expediente || !currentData.expediente.id) {
+        showNotification('Error', '<p>No se pudo cargar el expediente.</p>', 'error');
+        return;
+    }
+    
+    const caseId = currentData.expediente.id;
+    const pdfUrl = `/api/cases/full-case-pdf/${caseId}`;
+    
+    showLoading();
+    
+    // Configurar iframe y enlace de descarga
+    document.getElementById('fullCasePreviewFrame').src = pdfUrl;
+    document.getElementById('fullCaseDownloadLink').href = pdfUrl;
+    document.getElementById('fullCaseDownloadLink').setAttribute('download', `expediente_completo_${currentData.expediente.num_exp_tribunal}.pdf`);
+    
+    // Esperar a que cargue el iframe
+    document.getElementById('fullCasePreviewFrame').onload = function() {
+        hideLoading();
+    };
+    
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById('fullCasePreviewModal'));
+    modal.show();
+    
+    // Timeout de seguridad por si onload no dispara
+    setTimeout(() => hideLoading(), 2000);
+}
+
+function renderCaseDetail(data) {
+    return `
+        <h4 class="text-primary"><i class="bi bi-person"></i> Datos del Cliente</h4>
+        <div class="row detail-card p-3">
+            <div class="col-md-6"><strong>Nombre:</strong> ${data.cliente.nombre_completo}</div>
+            <div class="col-md-6"><strong>CURP:</strong> ${data.cliente.curp}</div>
+            <div class="col-md-6"><strong>Teléfono:</strong> ${data.cliente.telefono}</div>
+            <div class="col-md-6"><strong>Email:</strong> ${data.cliente.email}</div>
+            <div class="col-md-12"><strong>Domicilio:</strong> ${data.cliente.domicilio}</div>
+            <div class="col-md-6"><strong>Ocupación:</strong> ${data.cliente.ocupacion}</div>
+            <div class="col-md-6"><strong>Expediente Interno:</strong> ${data.cliente.expediente_interno}</div>
+            <div class="col-md-6"><strong>Folio Registro:</strong> ${data.cliente.folio_registro}</div>
+        </div>
+        
+        <hr>
+        
+        <h4 class="text-primary"><i class="bi bi-folder"></i> Datos del Expediente</h4>
+        <div class="row detail-card p-3">
+            <div class="col-md-6"><strong>N° Expediente:</strong> ${data.expediente.num_exp_tribunal}</div>
+            <div class="col-md-6"><strong>Folio:</strong> ${data.expediente.folio_tribunal}</div>
+            <div class="col-md-6"><strong>Tribunal:</strong> ${data.expediente.tribunal}</div>
+            <div class="col-md-6"><strong>Secretaría:</strong> ${data.expediente.secretaria}</div>
+            <div class="col-md-6"><strong>Fecha Presentación:</strong> ${data.expediente.fecha_presentacion}</div>
+            <div class="col-md-6"><strong>Estatus:</strong> <span class="status-badge status-${data.expediente.status}">${data.expediente.status.toUpperCase()}</span></div>
+            <div class="col-md-6"><strong>Demandado:</strong> ${data.expediente.demandado_nombre}</div>
+            <div class="col-md-6"><strong>Actor:</strong> ${data.expediente.actor_nombre}</div>
+        </div>
+        
+        <hr>
+        
+        <h4 class="text-primary"><i class="bi bi-list-ul"></i> Actuaciones (${data.actuaciones.length})</h4>
+        ${data.actuaciones.length === 0 ? '<div class="alert alert-info">No hay actuaciones registradas.</div>' : ''}
+        ${data.actuaciones.map(act => `
+            <div class="actuacion-item p-2 mb-2">
+                <div class="row align-items-center">
+                    <div class="col-md-2"><span class="badge bg-primary">${act.tipo}</span></div>
+                    <div class="col-md-2"><strong>${act.fecha}</strong></div>
+                    <div class="col-md-4">${act.descripcion || 'Sin descripción'}</div>
+                    <div class="col-md-2"><small class="text-muted">${act.subido_en}</small></div>
+                    <div class="col-md-2">
+                        <button class="btn btn-sm btn-outline-info preview-pdf" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('')}
+        
+        <hr>
+        
+        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+            <button class="btn btn-outline-secondary" onclick="newSearch()">← Nueva búsqueda</button>
+            <div>
+                <button class="btn btn-primary me-1" onclick="openFullCasePDF()">
+                    <i class="bi bi-folder2-open"></i> Ver Expediente PDF Completo
+                </button>
+                <button class="btn btn-success me-1" onclick="window.print()">
+                    <i class="bi bi-printer"></i> Imprimir
+                </button>
+                <button class="btn btn-info me-1 require-password" data-action="email">
+                    <i class="bi bi-envelope"></i> Enviar por Email
+                </button>
+                <button class="btn btn-success require-password" data-action="whatsapp">
+                    <i class="bi bi-whatsapp"></i> Enviar por WhatsApp
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+document.getElementById('confirmPasswordBtn').addEventListener('click', async () => {
+    const password = document.getElementById('passwordInput').value;
+    if (!password) {
+        document.getElementById('passwordError').textContent = 'Ingresa tu contraseña';
+        document.getElementById('passwordError').style.display = 'block';
+        return;
+    }
+    
+    try {
+        const formData = new FormData();
+        formData.append('password', password);
+        
+        const response = await fetch('/api/cases/verify-password', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            document.getElementById('passwordError').textContent = 'Contraseña incorrecta';
+            document.getElementById('passwordError').style.display = 'block';
+            return;
+        }
+        
+        bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+        
+        switch(currentAction) {
+            case 'email':
+                showNotification('📧 Email', '<p>Función de envío por email - En desarrollo</p>', 'info');
+                break;
+            case 'whatsapp':
+                showNotification('📱 WhatsApp', '<p>Función de envío por WhatsApp - En desarrollo</p>', 'info');
+                break;
+            default:
+                showNotification('Completado', '<p>Acción completada.</p>', 'success');
+        }
+        
+    } catch (error) {
+        showNotification('Error', `<p>${error.message}</p>`, 'error');
+    }
+});
+
+document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('confirmPasswordBtn').click();
+    }
+});
+
+// Limpiar iframe al cerrar el modal
+document.getElementById('fullCasePreviewModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('fullCasePreviewFrame').src = '';
+});
+</script>
+</body>
+</html>

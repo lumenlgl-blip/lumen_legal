@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Abonos y Liquidación - Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .client-card { border-left: 4px solid #ffc107; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
+        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
+        .contract-card { border-left: 4px solid #dc3545; background: #f8d7da; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer; }
+        .contract-card:hover { background: #f5c6cb; }
+        .contract-card.selected { border-left: 4px solid #0d6efd; background: #cce5ff; }
+        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        .modal-content { border-radius: 15px; }
+        .file-preview { max-width: 100%; height: 500px; border: 2px solid #dee2e6; border-radius: 10px; }
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">💰 Abonos y Liquidación</h1>
+    
+    <!-- Buscador -->
+    <div class="card p-4 shadow mb-4">
+        <h5 class="mb-3"><strong>Buscar Cliente con Deuda</strong></h5>
+        <div class="row">
+            <div class="col-md-8 mb-2">
+                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..." autocomplete="off">
+            </div>
+            <div class="col-md-4">
+                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div id="resultsContainer"></div>
+    
+    <!-- Formulario de abono -->
+    <div id="paymentFormContainer" style="display:none;" class="card p-4 shadow mt-4">
+        <h5 id="clientNameDisplay" class="text-primary"><strong></strong></h5>
+        <p id="clientInfoDisplay" class="text-muted"></p>
+        <hr>
+        <h5 class="mb-3"><strong>Contratos con Deuda</strong></h5>
+        <div id="contractsContainer"></div>
+        <hr>
+        <form id="paymentForm" enctype="multipart/form-data" novalidate>
+            <input type="hidden" id="contractId" name="contract_id">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Monto del Abono *</strong></label>
+                    <input type="text" name="amount" id="paymentAmount" class="form-control form-control-lg" required autocomplete="off" placeholder="$0.00" maxlength="12">
+                    <div class="invalid-feedback">El monto es obligatorio</div>
+                    <small id="saldoInfo" class="text-muted"></small>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Forma de Pago *</strong></label>
+                    <select name="payment_method" id="payment_method" class="form-select form-select-lg" required>
+                        <option value="">Selecciona...</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="deposito">Depósito</option>
+                        <option value="transferencia">Transferencia</option>
+                    </select>
+                    <div class="invalid-feedback">Selecciona la forma de pago</div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3" id="receiverContainer" style="display:none;">
+                    <label class="form-label"><strong>Recibió (efectivo) *</strong></label>
+                    <input type="text" name="receiver_name" id="receiver_name" class="form-control form-control-lg" autocomplete="off">
+                    <div class="invalid-feedback">Indica quién recibió</div>
+                </div>
+                <div class="col-md-6 mb-3" id="receiptContainer" style="display:none;">
+                    <label class="form-label"><strong>Comprobante (PDF) *</strong></label>
+                    <input type="file" name="receipt_file" id="receipt_file" accept=".pdf" class="form-control form-control-lg">
+                    <div class="invalid-feedback">Adjunta el comprobante</div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button type="button" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()">🧹 Limpiar</button>
+                <button type="submit" class="btn btn-success btn-lg">✅ Registrar Abono</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de notificaciones -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">⚠️ Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de vista previa PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Vista Previa del PDF</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="pdfPreviewFrame" class="file-preview" style="width: 100%;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="acceptFileBtn">✅ Confirmar Archivo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+    <div class="spinner-box">
+        <div class="spinner-border text-success mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Procesando...</span>
+        </div>
+        <h5 class="mb-0">Procesando pago...</h5>
+        <p class="text-muted small">Generando recibo, por favor espera.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let selectedContractId = null;
+let currentSaldo = 0;
+let fileAccepted = false;
+let clientsData = [];
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    modal.show();
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+function formatMoney(value) {
+    if (!value) return '$0.00';
+    const num = parseFloat(value);
+    if (isNaN(num)) return '$0.00';
+    return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function soloNumerosDecimales(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9.]/.test(char)) event.preventDefault();
+}
+
+document.getElementById('paymentAmount').addEventListener('keypress', soloNumerosDecimales);
+document.getElementById('paymentAmount').addEventListener('blur', function() {
+    this.value = formatMoney(this.value);
+});
+
+document.getElementById('paymentAmount').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9.]/g, '');
+    if (this.value.length > 12) this.value = this.value.slice(0, 12);
+    const amount = parseFloat(this.value) || 0;
+    if (currentSaldo > 0 && amount > currentSaldo) {
+        this.classList.add('is-invalid');
+    } else {
+        this.classList.remove('is-invalid');
+    }
+});
+
+// Mostrar/ocultar campos según forma de pago
+document.getElementById('payment_method').addEventListener('change', function() {
+    const method = this.value;
+    const receiverContainer = document.getElementById('receiverContainer');
+    const receiptContainer = document.getElementById('receiptContainer');
+    const receiverName = document.getElementById('receiver_name');
+    const receiptFile = document.getElementById('receipt_file');
+    
+    receiverContainer.style.display = 'none';
+    receiptContainer.style.display = 'none';
+    receiverName.required = false;
+    receiptFile.required = false;
+    
+    if (method === 'efectivo') {
+        receiverContainer.style.display = 'block';
+        receiverName.required = true;
+    } else if (method === 'deposito' || method === 'transferencia') {
+        receiptContainer.style.display = 'block';
+        receiptFile.required = true;
+    }
+});
+
+// Vista previa PDF
+document.getElementById('receipt_file').addEventListener('change', function(e) {
+    const file = this.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') { showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); this.value = ''; return; }
+    fileAccepted = false;
+    const fileURL = URL.createObjectURL(file);
+    document.getElementById('pdfPreviewFrame').src = fileURL;
+    const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    previewModal.show();
+    document.getElementById('acceptFileBtn').onclick = function() {
+        fileAccepted = true;
+        previewModal.hide();
+        showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
+    };
+});
+
+// Búsqueda
+document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } });
+
+document.getElementById('searchBtn').addEventListener('click', async () => {
+    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
+    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+    
+    try {
+        const formData = new FormData();
+        formData.append('search_term', searchTerm);
+        const response = await fetch('/api/payments/search-client', { method: 'POST', body: formData });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
+            document.getElementById('resultsContainer').innerHTML = '';
+            return;
+        }
+        
+        clientsData = await response.json();
+        const container = document.getElementById('resultsContainer');
+        
+        if (clientsData.length === 0) {
+            container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron clientes con deudas.</strong></div>';
+            return;
+        }
+        
+        container.innerHTML = '<h5 class="mb-3"><strong>Clientes con deuda:</strong></h5>';
+        
+        clientsData.forEach(client => {
+            const card = document.createElement('div');
+            card.className = 'client-card p-3 mb-2 rounded';
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${client.nombre_completo}</strong></div>
+                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
+                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
+                    <div class="col-md-3"><small>${client.curp}</small></div>
+                    <div class="col-md-2"><button class="btn btn-sm btn-warning select-client" data-id="${client.id}">Seleccionar</button></div>
+                </div>
+                <div class="mt-2">
+                    <small class="text-muted">Deudas: ${client.contratos.length} contrato(s) pendiente(s)</small>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+        document.querySelectorAll('.select-client').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const clientId = parseInt(this.dataset.id);
+                loadClientFromData(clientId);
+            });
+        });
+        
+    } catch (error) {
+        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+    }
+});
+
+// Cargar cliente desde datos guardados
+function loadClientFromData(clientId) {
+    const client = clientsData.find(c => c.id === clientId);
+    
+    if (!client) {
+        showNotification('Error', '<p>Cliente no encontrado en los resultados.</p>', 'error');
+        return;
+    }
+    
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('paymentFormContainer').style.display = 'block';
+    document.getElementById('clientNameDisplay').textContent = client.nombre_completo;
+    document.getElementById('clientInfoDisplay').textContent = 
+        `CURP: ${client.curp} | Teléfono: ${client.telefono} | Exp. Interno: ${client.expediente_interno} | Folio: ${client.folio_registro}`;
+    
+    const contractsContainer = document.getElementById('contractsContainer');
+    contractsContainer.innerHTML = '';
+    
+    if (client.contratos.length === 0) {
+        contractsContainer.innerHTML = '<div class="alert alert-success"><strong>¡Este cliente no tiene deudas pendientes!</strong></div>';
+        document.getElementById('paymentForm').style.display = 'none';
+        return;
+    }
+    
+    document.getElementById('paymentForm').style.display = 'block';
+    
+    client.contratos.forEach(contract => {
+        const card = document.createElement('div');
+        card.className = 'contract-card';
+        card.innerHTML = `
+            <strong>${contract.servicio}</strong><br>
+            <small>${contract.detalle ? 'Detalle: ' + contract.detalle : ''}</small><br>
+            <small>${contract.tipo_juicio ? 'Tipo: ' + contract.tipo_juicio : ''}</small><br>
+            <small>Total: $${contract.total.toLocaleString()} | Pagado: $${contract.pagado.toLocaleString()}</small><br>
+            <strong class="text-danger">Saldo: $${contract.saldo.toLocaleString()}</strong>
+        `;
+        card.onclick = function() {
+            document.querySelectorAll('.contract-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedContractId = contract.id;
+            currentSaldo = contract.saldo;
+            document.getElementById('contractId').value = contract.id;
+            document.getElementById('paymentAmount').max = currentSaldo;
+            document.getElementById('paymentAmount').placeholder = `Máximo $${currentSaldo.toFixed(2)}`;
+            document.getElementById('saldoInfo').textContent = `Saldo pendiente: $${currentSaldo.toFixed(2)}`;
+        };
+        contractsContainer.appendChild(card);
+    });
+    
+    document.getElementById('paymentFormContainer').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Limpiar
+function limpiarFormulario() {
+    showConfirm('Limpiar formulario', '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>', function() {
+        document.getElementById('paymentForm').reset();
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        fileAccepted = false;
+        selectedContractId = null;
+        currentSaldo = 0;
+        document.getElementById('paymentFormContainer').style.display = 'none';
+        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('receiverContainer').style.display = 'none';
+        document.getElementById('receiptContainer').style.display = 'none';
+        clientsData = [];
+        showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
+    });
+}
+
+// Enviar
+document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    if (!selectedContractId) { showNotification('Contrato no seleccionado', '<p>Por favor selecciona un contrato.</p>', 'warning'); return; }
+    
+    let valid = true;
+    const fields = document.querySelectorAll('#paymentForm [required]');
+    fields.forEach(field => {
+        if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
+        else { field.classList.remove('is-invalid'); }
+    });
+    
+    const paymentMethod = document.getElementById('payment_method').value;
+    if (paymentMethod === 'deposito' || paymentMethod === 'transferencia') {
+        if (!fileAccepted) { showNotification('Comprobante no validado', '<p>Por favor adjunta y valida el comprobante en PDF.</p>', 'warning'); return; }
+    }
+    
+    if (!valid) { showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning'); return; }
+    
+    const amountStr = document.getElementById('paymentAmount').value.replace(/[^0-9.]/g, '');
+    const amount = parseFloat(amountStr);
+    
+    if (!amount || amount <= 0) { 
+        showNotification('Monto inválido', '<p>El monto debe ser mayor a cero.</p>', 'warning'); 
+        return; 
+    }
+    
+    if (amount > currentSaldo) { 
+        showNotification('Monto excedido', `<p>El abono no puede exceder el saldo de <strong>$${currentSaldo.toFixed(2)}</strong></p>`, 'warning'); 
+        return; 
+    }
+    
+    const esLiquidacion = amount >= currentSaldo;
+    const confirmMessage = esLiquidacion 
+        ? `<p>¿Registrar abono de <strong>$${amount.toFixed(2)}</strong>?</p><p class="text-success"><strong>Con este pago el contrato quedará LIQUIDADO.</strong></p>`
+        : `<p>¿Registrar abono de <strong>$${amount.toFixed(2)}</strong>?</p><p class="text-warning"><strong>Quedará pendiente de liquidar: $${(currentSaldo - amount).toFixed(2)}</strong></p>`;
+    
+    showConfirm('Confirmar abono', confirmMessage, async function() {
+        showLoading();
+        
+        const formData = new FormData(e.target);
+        formData.set('amount', amount);
+        
+        try {
+            const response = await fetch(`/api/payments/register/${selectedContractId}`, { method: 'POST', body: formData });
+            
+            if (!response.ok) {
+                hideLoading();
+                const error = await response.json();
+                showNotification('Error', `<p>${error.detail || 'Error al registrar el pago'}</p>`, 'error');
+                return;
+            }
+            
+            hideLoading();
+            
+            // Descargar PDF del recibo
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `recibo_pago_${Date.now()}.pdf`;
+            a.click();
+            
+            // Determinar mensaje según liquidación
+            const saldoRestante = currentSaldo - amount;
+            let bodyHTML = `
+                <div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div>
+                <p><strong>Monto Abonado:</strong> $${amount.toFixed(2)}</p>
+            `;
+            
+            if (saldoRestante <= 0) {
+                bodyHTML += `<p class="text-success"><strong>🎉 ¡El contrato ha sido LIQUIDADO completamente!</strong></p>`;
+            } else {
+                bodyHTML += `<p class="text-warning"><strong>Pendiente de liquidar: $${saldoRestante.toFixed(2)}</strong></p>`;
+            }
+            
+            bodyHTML += `<p class="text-muted">El recibo de pago se ha descargado automáticamente.</p>`;
+            
+            showNotification('Pago Registrado', bodyHTML, 'success');
+            
+            setTimeout(() => location.reload(), 3000);
+            
+        } catch (error) {
+            hideLoading();
+            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+        }
+    });
+});
+</script>
+</body>
+</html>

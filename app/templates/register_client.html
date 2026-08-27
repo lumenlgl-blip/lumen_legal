@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrar Cliente - Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 17px;
+            left: 15%;
+            right: 15%;
+            height: 4px;
+            background: #dee2e6;
+            z-index: 0;
+            transition: background 0.5s ease;
+        }
+        .step-indicator.progress-step1::before {
+            background: linear-gradient(to right, #198754 0%, #dee2e6 0%);
+        }
+        .step-indicator.progress-step2::before {
+            background: linear-gradient(to right, #198754 0%, #198754 100%);
+        }
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+            border: 3px solid transparent;
+        }
+        .step-circle.active {
+            background: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+            transform: scale(1.15);
+            box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+        }
+        .step-circle.completed {
+            background: #198754;
+            color: white;
+            border-color: #198754;
+            animation: pulseGreen 0.6s ease;
+        }
+        @keyframes pulseGreen {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); box-shadow: 0 0 20px rgba(25, 135, 84, 0.7); }
+            100% { transform: scale(1); }
+        }
+        .step-label {
+            position: absolute;
+            top: 45px;
+            width: 90px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: -25px;
+            color: #495057;
+        }
+        .step-circle.completed + .step-label {
+            color: #198754;
+        }
+        .step-circle.active + .step-label {
+            color: #0d6efd;
+        }
+        .step-content {
+            display: none;
+        }
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .progress-bar {
+            transition: width 0.6s ease;
+            font-weight: 700;
+        }
+        .form-section {
+            margin-top: 50px;
+        }
+        .btn-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        .modal-content {
+            border-radius: 15px;
+        }
+        .modal-header {
+            border-radius: 15px 15px 0 0;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        .file-preview {
+            max-width: 100%;
+            height: 500px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+        }
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">📝 Registrar Cliente</h1>
+    
+    <div class="progress mb-5" style="height: 30px;">
+        <div class="progress-bar bg-success" id="progressBar" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+            <strong>50%</strong>
+        </div>
+    </div>
+    
+    <div class="step-indicator" id="stepIndicator">
+        <div class="step-circle active" id="circle1">1
+            <div class="step-label">Datos Personales</div>
+        </div>
+        <div class="step-circle" id="circle2">2
+            <div class="step-label">Documentos</div>
+        </div>
+    </div>
+    
+    <form id="registerForm" enctype="multipart/form-data" class="card p-4 shadow form-section" novalidate>
+        <!-- PASO 1 -->
+        <div class="step-content active" id="step1">
+            <h4 class="mb-4"><strong>Datos Personales</strong></h4>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>Nombre(s) *</strong></label>
+                    <input type="text" name="name" id="name" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">Solo letras, sin números</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>Apellido Paterno *</strong></label>
+                    <input type="text" name="paterno" id="paterno" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">Solo letras, sin números</div>
+                </div>
+<div class="col-md-4 mb-3">
+    <label class="form-label"><strong>Apellido Materno (opcional)</strong></label>
+    <input type="text" name="materno" id="materno" class="form-control form-control-lg" autocomplete="off">
+    <div class="invalid-feedback">Solo letras, sin números</div>
+</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>CURP *</strong></label>
+                    <input type="text" name="curp" id="curp" class="form-control form-control-lg" required maxlength="18" minlength="18" style="text-transform: uppercase;" autocomplete="off" placeholder="XXXX000000XXXXXX00">
+                    <div class="invalid-feedback">El CURP debe tener exactamente 18 caracteres</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>Teléfono *</strong></label>
+                    <input type="tel" name="phone" id="phone" class="form-control form-control-lg" required maxlength="10" minlength="10" autocomplete="off" placeholder="0000000000">
+                    <div class="invalid-feedback">El teléfono debe tener exactamente 10 dígitos</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>Email (opcional)</strong></label>
+                    <input type="email" name="email" id="email" class="form-control form-control-lg" autocomplete="off">
+                    <div class="invalid-feedback">Ingresa un email válido</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Domicilio *</strong></label>
+                    <input type="text" name="address" id="address" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">El domicilio es obligatorio</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Ocupación *</strong></label>
+                    <input type="text" name="occupation" id="occupation" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">La ocupación es obligatoria</div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button type="button" class="btn btn-outline-danger btn-lg" onclick="clearForm()">🧹 Limpiar</button>
+                <button type="button" class="btn btn-primary btn-lg" onclick="nextStep(1)">Siguiente →</button>
+            </div>
+        </div>
+        
+        <!-- PASO 2 -->
+        <div class="step-content" id="step2">
+            <h4 class="mb-4"><strong>Documentos (PDF)</strong></h4>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>CURP *</strong></label>
+                    <input type="file" name="curp_file" id="curp_file" accept=".pdf" class="form-control form-control-lg" required>
+                    <div class="invalid-feedback">Sube el CURP en PDF</div>
+                    <small class="text-muted">Archivo validado: <span id="curpStatus">❌ No validado</span></small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>INE/Identificación *</strong></label>
+                    <input type="file" name="ine_file" id="ine_file" accept=".pdf" class="form-control form-control-lg" required>
+                    <div class="invalid-feedback">Sube el INE en PDF</div>
+                    <small class="text-muted">Archivo validado: <span id="ineStatus">❌ No validado</span></small>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label"><strong>Comprobante de Domicilio *</strong></label>
+                    <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf" class="form-control form-control-lg" required>
+                    <div class="invalid-feedback">Sube el comprobante en PDF</div>
+                    <small class="text-muted">Archivo validado: <span id="domicilioStatus">❌ No validado</span></small>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button type="button" class="btn btn-outline-secondary btn-lg" onclick="prevStep(2)">← Volver</button>
+                <button type="button" class="btn btn-outline-danger btn-lg" onclick="clearForm()">🧹 Limpiar</button>
+                <button type="submit" class="btn btn-success btn-lg" id="submitBtn">✅ Registrar Cliente</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal de notificaciones -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer" id="notificationFooter">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a href="#" id="downloadLink" class="btn btn-primary" style="display:none;">📄 Descargar Constancia</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">⚠️ Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de vista previa PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Vista Previa del PDF</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="pdfPreviewFrame" class="file-preview" style="width: 100%;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="acceptFileBtn">✅ Confirmar Archivo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+    <div class="spinner-box">
+        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <h5 class="mb-0">Registrando cliente...</h5>
+        <p class="text-muted small">Por favor espera, esto puede tomar unos segundos.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let currentStep = 1;
+let filesValidated = { curp: false, ine: false, domicilio: false };
+let pendingFileInput = null;
+
+function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    const downloadLink = document.getElementById('downloadLink');
+    
+    header.className = 'modal-header';
+    
+    if (type === 'success') {
+        header.classList.add('bg-success', 'text-white');
+        titleEl.textContent = '✅ ' + title;
+    } else if (type === 'error') {
+        header.classList.add('bg-danger', 'text-white');
+        titleEl.textContent = '❌ ' + title;
+    } else if (type === 'warning') {
+        header.classList.add('bg-warning', 'text-dark');
+        titleEl.textContent = '⚠️ ' + title;
+    } else {
+        header.classList.add('bg-primary', 'text-white');
+        titleEl.textContent = 'ℹ️ ' + title;
+    }
+    
+    bodyEl.innerHTML = bodyHTML;
+    
+    if (downloadUrl) {
+        downloadLink.href = downloadUrl;
+        downloadLink.style.display = 'inline-block';
+    } else {
+        downloadLink.style.display = 'none';
+    }
+    
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() {
+        modal.hide();
+        onConfirm();
+    };
+    modal.show();
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+function updateProgress() {
+    const percent = (currentStep / 2) * 100;
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.width = percent + '%';
+    progressBar.innerHTML = '<strong>' + Math.round(percent) + '%</strong>';
+    progressBar.setAttribute('aria-valuenow', Math.round(percent));
+    
+    const indicator = document.getElementById('stepIndicator');
+    indicator.className = 'step-indicator progress-step' + currentStep;
+    
+    for (let i = 1; i <= 2; i++) {
+        const circle = document.getElementById('circle' + i);
+        circle.classList.remove('active', 'completed');
+        if (i < currentStep) circle.classList.add('completed');
+        if (i === currentStep) circle.classList.add('active');
+    }
+}
+
+function showStep(step) {
+    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+    document.getElementById('step' + step).classList.add('active');
+    currentStep = step;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep(step) {
+    let valid = true;
+    const fields = document.querySelectorAll('#step' + step + ' [required]');
+    fields.forEach(field => {
+        if (!field.value || (field.type === 'file' && !field.files.length)) {
+            field.classList.add('is-invalid');
+            valid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    const curp = document.getElementById('curp');
+    if (curp && curp.value.length !== 18) {
+        curp.classList.add('is-invalid');
+        valid = false;
+    }
+    
+    const phone = document.getElementById('phone');
+    if (phone && phone.value.length !== 10) {
+        phone.classList.add('is-invalid');
+        valid = false;
+    }
+    
+    const email = document.getElementById('email');
+    if (email.value && !email.checkValidity()) {
+        email.classList.add('is-invalid');
+        valid = false;
+    } else if (email.value) {
+        email.classList.remove('is-invalid');
+    }
+    
+    return valid;
+}
+
+function nextStep(step) {
+    if (validateStep(step)) {
+        showStep(step + 1);
+    } else {
+        showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios antes de continuar.</p>', 'warning');
+    }
+}
+
+function prevStep(step) {
+    showStep(step - 1);
+}
+
+function clearForm() {
+    showConfirm(
+        'Limpiar formulario',
+        '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>',
+        function() {
+            document.getElementById('registerForm').reset();
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            filesValidated = { curp: false, ine: false, domicilio: false };
+            document.getElementById('curpStatus').textContent = '❌ No validado';
+            document.getElementById('ineStatus').textContent = '❌ No validado';
+            document.getElementById('domicilioStatus').textContent = '❌ No validado';
+            showStep(1);
+            showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados correctamente.</p>', 'info');
+        }
+    );
+}
+
+// --- VALIDACIONES ---
+
+function soloLetras(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(char)) {
+        event.preventDefault();
+    }
+}
+
+function soloNumeros(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9]/.test(char)) {
+        event.preventDefault();
+    }
+}
+
+function enterParaSiguiente(event, nextFieldId) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        if (nextFieldId) {
+            document.getElementById(nextFieldId).focus();
+        }
+    }
+}
+
+// Nombres y apellidos
+['name', 'paterno', 'materno'].forEach(id => {
+    document.getElementById(id).addEventListener('keypress', soloLetras);
+    document.getElementById(id).addEventListener('input', function() {
+        this.value = this.value.toUpperCase();
+    });
+});
+
+// Materno es opcional - Enter de paterno va directo a CURP
+document.getElementById('paterno').addEventListener('keydown', function(e) {
+    enterParaSiguiente(e, 'curp');
+});
+
+document.getElementById('name').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'paterno'); });
+document.getElementById('paterno').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'materno'); });
+
+
+// CURP
+document.getElementById('curp').addEventListener('input', function() {
+    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (this.value.length > 18) this.value = this.value.slice(0, 18);
+});
+document.getElementById('curp').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'phone'); });
+
+// Teléfono
+document.getElementById('phone').addEventListener('keypress', soloNumeros);
+document.getElementById('phone').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    if (this.value.length > 10) this.value = this.value.slice(0, 10);
+});
+document.getElementById('phone').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'email'); });
+
+// Email
+document.getElementById('email').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'address'); });
+
+// Domicilio
+document.getElementById('address').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+document.getElementById('address').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'occupation'); });
+
+// Ocupación
+document.getElementById('occupation').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+
+// --- VISTA PREVIA DE PDFs ---
+
+function handleFilePreview(inputId, statusId, fileKey) {
+    document.getElementById(inputId).addEventListener('change', function(e) {
+        const file = this.files[0];
+        if (!file) return;
+        
+        if (file.type !== 'application/pdf') {
+            showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error');
+            this.value = '';
+            filesValidated[fileKey] = false;
+            document.getElementById(statusId).textContent = '❌ No validado';
+            return;
+        }
+        
+        filesValidated[fileKey] = false;
+        pendingFileInput = this;
+        
+        const fileURL = URL.createObjectURL(file);
+        document.getElementById('pdfPreviewFrame').src = fileURL;
+        
+        const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+        previewModal.show();
+        
+        document.getElementById('acceptFileBtn').onclick = function() {
+            filesValidated[fileKey] = true;
+            previewModal.hide();
+            document.getElementById(statusId).textContent = '✅ Validado: ' + file.name;
+            showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
+        };
+    });
+}
+
+handleFilePreview('curp_file', 'curpStatus', 'curp');
+handleFilePreview('ine_file', 'ineStatus', 'ine');
+handleFilePreview('domicilio_file', 'domicilioStatus', 'domicilio');
+
+// --- SUBMIT ---
+
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Validar que todos los archivos estén validados
+    if (!filesValidated.curp || !filesValidated.ine || !filesValidated.domicilio) {
+        showNotification(
+            'Archivos no validados',
+            '<p>Por favor adjunta y valida los 3 documentos PDF antes de registrar.</p>',
+            'warning'
+        );
+        return;
+    }
+    
+    if (!validateStep(2)) {
+        showStep(2);
+        return;
+    }
+    
+    showConfirm(
+        'Confirmar registro',
+        '<p>¿Estás seguro de que deseas registrar este cliente?</p>',
+        async function() {
+            showLoading();
+            
+            const formData = new FormData(document.getElementById('registerForm'));
+            
+            try {
+                const response = await fetch('/api/clients/register', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                let result;
+                try {
+                    result = await response.json();
+                } catch {
+                    result = { detail: 'Error del servidor' };
+                }
+                
+                hideLoading();
+                
+                if (response.ok && result.success) {
+                    showNotification(
+                        'Cliente Registrado Exitosamente',
+                        `
+                        <div class="text-center mb-3">
+                            <span style="font-size: 48px;">✅</span>
+                        </div>
+                        <p><strong>Folio de Registro:</strong> ${result.folio_registro}</p>
+                        <p><strong>Expediente Interno:</strong> ${result.expediente_interno}</p>
+                        <p><strong>Nombre:</strong> ${result.nombre_completo}</p>
+                        <hr>
+                        <p class="text-muted small">Guarda estos datos para futuras consultas.</p>
+                        `,
+                        'success',
+                        result.constancia_url
+                    );
+                    
+                    // Limpiar sin mostrar modal de "limpiado"
+                    document.getElementById('registerForm').reset();
+                    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                    filesValidated = { curp: false, ine: false, domicilio: false };
+                    document.getElementById('curpStatus').textContent = '❌ No validado';
+                    document.getElementById('ineStatus').textContent = '❌ No validado';
+                    document.getElementById('domicilioStatus').textContent = '❌ No validado';
+                    showStep(1);
+                    
+                } else {
+                    if (result.existing_client) {
+                        showNotification(
+                            'Cliente ya registrado',
+                            `
+                            <p><strong>Cliente ya registrado con ese CURP:</strong></p>
+                            <hr>
+                            <p><strong>Folio:</strong> ${result.existing_client.folio_registro}</p>
+                            <p><strong>Expediente:</strong> ${result.existing_client.expediente_interno}</p>
+                            <p><strong>Nombre:</strong> ${result.existing_client.nombre_completo}</p>
+                            `,
+                            'warning'
+                        );
+                    } else if (result.message) {
+                        showNotification('Aviso', `<p><strong>Mensaje:</strong> ${result.message}</p>`, 'warning');
+                    } else if (result.detail) {
+                        showNotification('Error', `<p><strong>Mensaje:</strong> ${result.detail}</p>`, 'error');
+                    } else {
+                        showNotification('Error', '<p>No se pudo completar la operación.</p>', 'error');
+                    }
+                }
+                
+            } catch (error) {
+                hideLoading();
+                showNotification('Error de conexión', '<p>No se pudo conectar con el servidor.</p>', 'error');
+            }
+        }
+    );
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registrar Contratación - Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .client-card { border-left: 4px solid #007bff; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
+        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
+        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        .modal-content { border-radius: 15px; }
+        .file-preview { max-width: 100%; height: 500px; border: 2px solid #dee2e6; border-radius: 10px; }
+        .money-display { font-size: 1.2em; font-weight: bold; color: #198754; }
+    </style>
+</head>
+<body class="bg-light">
+
+<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📜 Registrar Contratación</h1>
+    
+    <!-- Buscador -->
+    <div class="card p-4 shadow mb-4">
+        <h5 class="mb-3"><strong>Buscar Cliente</strong></h5>
+        <div class="row">
+            <div class="col-md-8 mb-2">
+                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..." autocomplete="off">
+            </div>
+            <div class="col-md-4">
+                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div id="resultsContainer"></div>
+    
+    <!-- Formulario de contratación -->
+    <div id="contractFormContainer" style="display:none;" class="card p-4 shadow mt-4">
+        <h5 id="clientNameDisplay" class="text-primary"><strong></strong></h5>
+        <p id="clientInfoDisplay" class="text-muted"></p>
+        <hr>
+        <form id="contractForm" enctype="multipart/form-data" novalidate>
+            <input type="hidden" id="clientId" name="client_id">
+            
+            <!-- TIPO DE SERVICIO -->
+            <div class="row mt-3">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Tipo de Servicio *</strong></label>
+                    <select name="service_type" id="service_type" class="form-select form-select-lg" required>
+                        <option value="">Selecciona...</option>
+                        <option value="asesoria">Asesoría Jurídica</option>
+                        <option value="juicio">Inicio de Juicio</option>
+                        <option value="escrito">Elaboración de Escrito</option>
+                        <option value="contestacion">Contestación de Demanda</option>
+                        <option value="diligencia">Diligenciar Oficio/Exhorto</option>
+                    </select>
+                    <div class="invalid-feedback">Selecciona el tipo de servicio</div>
+                </div>
+                <div class="col-md-6 mb-3" id="juicioContainer" style="display:none;">
+                    <label class="form-label"><strong>Tipo de Juicio *</strong></label>
+                    <select name="tipo_juicio" id="tipo_juicio" class="form-select form-select-lg">
+                        <option value="">Selecciona...</option>
+                        <option value="Divorcio Bilateral">Divorcio Bilateral</option>
+                        <option value="Divorcio Unilateral">Divorcio Unilateral</option>
+                        <option value="Sucesorio Testamentario">Sucesorio Testamentario</option>
+                        <option value="Sucesorio Intestamentario">Sucesorio Intestamentario</option>
+                        <option value="Convenio">Convenio</option>
+                        <option value="Alimentos">Alimentos</option>
+                        <option value="Custodia">Custodia</option>
+                        <option value="Perdida de la Patria Potestad">Pérdida de la Patria Potestad</option>
+                        <option value="Convivencia">Convivencia</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <div class="invalid-feedback">Selecciona el tipo de juicio</div>
+                </div>
+            </div>
+            
+            <!-- CAMPO PARA CONVENIO U OTRO -->
+            <div class="mb-3" id="juicioOtroContainer" style="display:none;">
+                <label class="form-label"><strong>Especificar Tipo de Juicio *</strong></label>
+                <input type="text" name="tipo_juicio_otro" id="tipo_juicio_otro" class="form-control form-control-lg" autocomplete="off">
+                <div class="invalid-feedback">Especifica el tipo de juicio</div>
+            </div>
+            
+            <!-- DETALLE DEL SERVICIO -->
+            <div class="mb-3">
+                <label class="form-label"><strong>Detalle del Servicio</strong></label>
+                <input type="text" name="specific_detail" id="specific_detail" class="form-control form-control-lg" autocomplete="off" placeholder="Ej: Divorcio Unilateral, Convenio de custodia compartida, etc.">
+            </div>
+            
+            <!-- COSTO Y PAGO -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Costo Total *</strong></label>
+                    <input type="text" name="total_cost" id="total_cost" class="form-control form-control-lg" required autocomplete="off" placeholder="$0.00">
+                    <div class="invalid-feedback">El costo total es obligatorio</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Monto a Pagar</strong></label>
+                    <input type="text" name="payment_amount" id="payment_amount" class="form-control form-control-lg" autocomplete="off" placeholder="$0.00" value="0">
+                </div>
+            </div>
+            
+            <div class="alert alert-warning" id="remainingDisplay" style="display:none;">
+                <strong>Restante por pagar:</strong> <span id="remainingAmount">$0.00</span>
+            </div>
+            
+            <!-- FORMA DE PAGO -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Forma de Pago *</strong></label>
+                    <select name="payment_method" id="payment_method" class="form-select form-select-lg" required>
+                        <option value="">Selecciona...</option>
+                        <option value="efectivo">Efectivo</option>
+                        <option value="deposito">Depósito</option>
+                        <option value="transferencia">Transferencia</option>
+                        <option value="ninguno">Sin pago por ahora</option>
+                    </select>
+                    <div class="invalid-feedback">Selecciona la forma de pago</div>
+                </div>
+                <div class="col-md-6 mb-3" id="receiverContainer" style="display:none;">
+                    <label class="form-label"><strong>Recibió (efectivo) *</strong></label>
+                    <input type="text" name="receiver_name" id="receiver_name" class="form-control form-control-lg" autocomplete="off">
+                    <div class="invalid-feedback">Indica quién recibió</div>
+                </div>
+            </div>
+            
+            <!-- COMPROBANTE -->
+            <div class="mb-3" id="receiptContainer" style="display:none;">
+                <label class="form-label"><strong>Comprobante de Pago (PDF) *</strong></label>
+                <input type="file" name="receipt_file" id="receipt_file" accept=".pdf" class="form-control form-control-lg">
+                <div class="invalid-feedback">Adjunta el comprobante</div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button type="button" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()">🧹 Limpiar</button>
+                <button type="submit" class="btn btn-success btn-lg">✅ Registrar Contratación</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de notificaciones -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="confirmTitle">⚠️ Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de vista previa PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Vista Previa del PDF</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="pdfPreviewFrame" class="file-preview" style="width: 100%;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="acceptFileBtn">✅ Confirmar Archivo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let fileAccepted = false;
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    modal.show();
+}
+
+function formatMoney(value) {
+    if (!value) return '$0.00';
+    const num = parseFloat(value);
+    if (isNaN(num)) return '$0.00';
+    return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function soloNumerosDecimales(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9.]/.test(char)) event.preventDefault();
+}
+
+// Formateo de dinero
+document.getElementById('total_cost').addEventListener('keypress', soloNumerosDecimales);
+document.getElementById('total_cost').addEventListener('blur', function() { this.value = formatMoney(this.value); updateRemaining(); });
+document.getElementById('payment_amount').addEventListener('keypress', soloNumerosDecimales);
+document.getElementById('payment_amount').addEventListener('blur', function() { this.value = formatMoney(this.value); updateRemaining(); });
+
+// Enter cambia de campo
+document.getElementById('total_cost').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.blur(); document.getElementById('payment_amount').focus(); } });
+document.getElementById('payment_amount').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.blur(); document.getElementById('payment_method').focus(); } });
+
+// MOSTRAR/OCULTAR TIPO DE JUICIO
+document.getElementById('service_type').addEventListener('change', function() {
+    const serviceType = this.value;
+    const juicioContainer = document.getElementById('juicioContainer');
+    const juicioOtroContainer = document.getElementById('juicioOtroContainer');
+    const tipoJuicio = document.getElementById('tipo_juicio');
+    
+    juicioContainer.style.display = 'none';
+    juicioOtroContainer.style.display = 'none';
+    tipoJuicio.required = false;
+    document.getElementById('tipo_juicio_otro').required = false;
+    
+    if (serviceType === 'juicio' || serviceType === 'contestacion') {
+        juicioContainer.style.display = 'block';
+        tipoJuicio.required = true;
+    }
+});
+
+// MOSTRAR CAMPO "OTRO" O "CONVENIO"
+document.getElementById('tipo_juicio').addEventListener('change', function() {
+    const juicioOtroContainer = document.getElementById('juicioOtroContainer');
+    const tipoJuicioOtro = document.getElementById('tipo_juicio_otro');
+    
+    juicioOtroContainer.style.display = 'none';
+    tipoJuicioOtro.required = false;
+    
+    if (this.value === 'Convenio' || this.value === 'Otro') {
+        juicioOtroContainer.style.display = 'block';
+        tipoJuicioOtro.required = true;
+    }
+});
+
+// MOSTRAR/OCULTAR CAMPOS DE PAGO
+document.getElementById('payment_method').addEventListener('change', function() {
+    const method = this.value;
+    const receiverContainer = document.getElementById('receiverContainer');
+    const receiptContainer = document.getElementById('receiptContainer');
+    const receiverName = document.getElementById('receiver_name');
+    const receiptFile = document.getElementById('receipt_file');
+    
+    receiverContainer.style.display = 'none';
+    receiptContainer.style.display = 'none';
+    receiverName.required = false;
+    receiptFile.required = false;
+    
+    if (method === 'efectivo') { receiverContainer.style.display = 'block'; receiverName.required = true; }
+    else if (method === 'deposito' || method === 'transferencia') { receiptContainer.style.display = 'block'; receiptFile.required = true; }
+});
+
+// VISTA PREVIA PDF
+document.getElementById('receipt_file').addEventListener('change', function(e) {
+    const file = this.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') { showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); this.value = ''; return; }
+    fileAccepted = false;
+    const fileURL = URL.createObjectURL(file);
+    document.getElementById('pdfPreviewFrame').src = fileURL;
+    const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    previewModal.show();
+    document.getElementById('acceptFileBtn').onclick = function() { fileAccepted = true; previewModal.hide(); showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success'); };
+});
+
+// CALCULAR RESTANTE
+function updateRemaining() {
+    const totalStr = document.getElementById('total_cost').value.replace(/[^0-9.]/g, '');
+    const paymentStr = document.getElementById('payment_amount').value.replace(/[^0-9.]/g, '');
+    const total = parseFloat(totalStr) || 0;
+    const payment = parseFloat(paymentStr) || 0;
+    const remaining = total - payment;
+    if (total > 0) { document.getElementById('remainingDisplay').style.display = 'block'; document.getElementById('remainingAmount').textContent = formatMoney(remaining); }
+}
+
+// BUSQUEDA
+document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } });
+
+document.getElementById('searchBtn').addEventListener('click', async () => {
+    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
+    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+    try {
+        const formData = new FormData();
+        formData.append('search_term', searchTerm);
+        const response = await fetch('/api/contracts/search-client', { method: 'POST', body: formData });
+        if (!response.ok) { const error = await response.json(); showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning'); return; }
+        const clients = await response.json();
+        const container = document.getElementById('resultsContainer');
+        if (clients.length === 0) { container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron clientes.</strong></div>'; return; }
+        container.innerHTML = '<h5 class="mb-3"><strong>Clientes encontrados:</strong></h5>';
+        clients.forEach(client => {
+            const card = document.createElement('div');
+            card.className = 'client-card p-3 mb-2 rounded';
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${client.nombre_completo}</strong></div>
+                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
+                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
+                    <div class="col-md-3"><small>${client.curp}</small></div>
+                    <div class="col-md-2"><button class="btn btn-sm btn-primary select-client" data-id="${client.id}">Seleccionar</button></div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        document.querySelectorAll('.select-client').forEach(btn => {
+            btn.addEventListener('click', async () => { await loadClientDetails(btn.dataset.id); });
+        });
+    } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+});
+
+// CARGAR CLIENTE
+async function loadClientDetails(clientId) {
+    try {
+        const response = await fetch(`/api/contracts/client/${clientId}`);
+        const client = await response.json();
+        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('contractFormContainer').style.display = 'block';
+        document.getElementById('clientNameDisplay').textContent = client.nombre_completo;
+        document.getElementById('clientInfoDisplay').textContent = `CURP: ${client.curp} | Teléfono: ${client.telefono} | Exp. Interno: ${client.expediente_interno} | Folio: ${client.folio_registro}`;
+        document.getElementById('clientId').value = client.id;
+        document.getElementById('contractFormContainer').scrollIntoView({ behavior: 'smooth' });
+    } catch (error) { showNotification('Error', `<p>Error al cargar el cliente: ${error.message}</p>`, 'error'); }
+}
+
+// LIMPIAR
+function limpiarFormulario() {
+    showConfirm('Limpiar formulario', '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>', function() {
+        document.getElementById('contractForm').reset();
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        document.getElementById('contractFormContainer').style.display = 'none';
+        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('remainingDisplay').style.display = 'none';
+        document.getElementById('receiverContainer').style.display = 'none';
+        document.getElementById('receiptContainer').style.display = 'none';
+        document.getElementById('juicioContainer').style.display = 'none';
+        document.getElementById('juicioOtroContainer').style.display = 'none';
+        fileAccepted = false;
+        showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
+    });
+}
+
+// ENVIAR
+document.getElementById('contractForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    let valid = true;
+    const fields = document.querySelectorAll('#contractForm [required]');
+    fields.forEach(field => {
+        if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
+        else { field.classList.remove('is-invalid'); }
+    });
+    const paymentMethod = document.getElementById('payment_method').value;
+    if (paymentMethod === 'deposito' || paymentMethod === 'transferencia') {
+        if (!fileAccepted) { showNotification('Comprobante no validado', '<p>Por favor adjunta y valida el comprobante de pago en PDF.</p>', 'warning'); return; }
+    }
+    if (!valid) { showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning'); return; }
+    showConfirm('Confirmar guardado', '<p>¿Estás seguro de que deseas registrar esta contratación?</p>', async function() {
+        const clientId = document.getElementById('clientId').value;
+        const formData = new FormData(e.target);
+        const totalCost = document.getElementById('total_cost').value.replace(/[^0-9.]/g, '');
+        const paymentAmount = document.getElementById('payment_amount').value.replace(/[^0-9.]/g, '');
+        formData.set('total_cost', totalCost);
+        formData.set('payment_amount', paymentAmount);
+        try {
+            const response = await fetch(`/api/contracts/register/${clientId}`, { method: 'POST', body: formData });
+            if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al registrar la contratación'}</p>`, 'error'); return; }
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `contrato_${Date.now()}.pdf`; a.click();
+            showNotification('Contratación Registrada', '<p>La contratación se registró exitosamente. El PDF se ha descargado.</p>', 'success');
+            setTimeout(() => location.reload(), 2000);
+        } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+    });
+});
+</script>
+</body>
+</html>

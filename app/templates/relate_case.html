@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Relacionar Expediente - Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .client-card { border-left: 4px solid #007bff; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
+        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
+        .contract-card { border-left: 4px solid #198754; background: #d4edda; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer; }
+        .contract-card:hover { background: #c3e6cb; }
+        .contract-card.selected { border-left: 4px solid #0d6efd; background: #cce5ff; }
+        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        .modal-content { border-radius: 15px; }
+        .file-preview { max-width: 100%; height: 500px; border: 2px solid #dee2e6; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">📁 Relacionar Expediente</h1>
+    
+    <!-- Buscador -->
+    <div class="card p-4 shadow mb-4">
+        <h5 class="mb-3"><strong>Buscar Cliente</strong></h5>
+        <div class="row">
+            <div class="col-md-8 mb-2">
+                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..." autocomplete="off">
+            </div>
+            <div class="col-md-4">
+                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resultados -->
+    <div id="resultsContainer"></div>
+    
+    <!-- Contratos disponibles -->
+    <div id="contractsContainer" style="display:none;" class="card p-4 shadow mt-4">
+        <h5 id="clientNameDisplay" class="text-primary"><strong></strong></h5>
+        <p id="clientInfoDisplay" class="text-muted"></p>
+        <hr>
+        <h5 class="mb-3"><strong>Seleccionar Contrato a Relacionar *</strong></h5>
+        <div id="contractsList"></div>
+    </div>
+    
+    <!-- Formulario de relación -->
+    <div id="relateFormContainer" style="display:none;" class="card p-4 shadow mt-4">
+        <h5 class="mb-3"><strong>Datos del Expediente del Tribunal</strong></h5>
+        <form id="relateForm" enctype="multipart/form-data" novalidate>
+            <input type="hidden" id="contractId" name="contract_id">
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Tribunal *</strong></label>
+                    <input type="text" name="tribunal" id="tribunal" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">El tribunal es obligatorio</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Secretaría *</strong></label>
+                    <input type="text" name="secretaria" id="secretaria" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">La secretaría es obligatoria</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Número de Expediente *</strong></label>
+                    <input type="text" name="num_exp_tribunal" id="num_exp_tribunal" class="form-control form-control-lg" required autocomplete="off" placeholder="Ej: 123/2026">
+                    <div class="invalid-feedback">Solo números y diagonal (/)</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Folio *</strong></label>
+                    <input type="text" name="folio_tribunal" id="folio_tribunal" class="form-control form-control-lg" required autocomplete="off">
+                    <div class="invalid-feedback">El folio es obligatorio</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Fecha de Presentación *</strong></label>
+                    <input type="date" name="fecha_presentacion" id="fecha_presentacion" class="form-control form-control-lg" required>
+                    <div class="invalid-feedback">La fecha es obligatoria</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Nombre del Demandado(a)</strong></label>
+                    <input type="text" name="demandado_nombre" id="demandado_nombre" class="form-control form-control-lg" autocomplete="off">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label"><strong>Nombre del Actor(a)</strong></label>
+                    <input type="text" name="actor_nombre" id="actor_nombre" class="form-control form-control-lg" autocomplete="off">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label"><strong>Acuse de Recibido (PDF) *</strong></label>
+                <input type="file" name="acuse_file" id="acuse_file" accept=".pdf" class="form-control form-control-lg" required>
+                <div class="invalid-feedback">Sube el acuse en PDF</div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <button type="button" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()">🧹 Limpiar</button>
+                <button type="submit" class="btn btn-success btn-lg">✅ Relacionar Expediente</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de notificaciones -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="confirmTitle">⚠️ Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de vista previa PDF -->
+<div class="modal fade" id="pdfPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Vista Previa del PDF</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <iframe id="pdfPreviewFrame" class="file-preview" style="width: 100%;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="acceptFileBtn">✅ Confirmar Archivo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let fileAccepted = false;
+let selectedContractId = null;
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    modal.show();
+}
+
+// Validaciones
+function soloMayusculas(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s]/.test(char)) event.preventDefault();
+}
+function soloNumerosYDiagonal(event) {
+    const char = String.fromCharCode(event.which);
+    if (!/[0-9/]/.test(char)) event.preventDefault();
+}
+
+['tribunal', 'secretaria', 'folio_tribunal', 'demandado_nombre', 'actor_nombre'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+    el.addEventListener('keypress', soloMayusculas);
+});
+
+document.getElementById('num_exp_tribunal').addEventListener('keypress', soloNumerosYDiagonal);
+document.getElementById('num_exp_tribunal').addEventListener('input', function() { this.value = this.value.replace(/[^0-9/]/g, ''); });
+
+// Enter
+document.getElementById('tribunal').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('secretaria').focus(); } });
+document.getElementById('secretaria').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('num_exp_tribunal').focus(); } });
+document.getElementById('num_exp_tribunal').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('folio_tribunal').focus(); } });
+document.getElementById('folio_tribunal').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('fecha_presentacion').focus(); } });
+
+// Búsqueda
+document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } });
+
+document.getElementById('searchBtn').addEventListener('click', async () => {
+    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
+    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+    try {
+        const formData = new FormData();
+        formData.append('search_term', searchTerm);
+        const response = await fetch('/api/cases/search-client', { method: 'POST', body: formData });
+        if (!response.ok) { const error = await response.json(); showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning'); return; }
+        const clients = await response.json();
+        const container = document.getElementById('resultsContainer');
+        container.innerHTML = '<h5 class="mb-3"><strong>Clientes encontrados:</strong></h5>';
+        clients.forEach(client => {
+            const card = document.createElement('div');
+            card.className = 'client-card p-3 mb-2 rounded';
+            // Mostrar contratos disponibles
+            let contratosHTML = '';
+            if (client.contratos && client.contratos.length > 0) {
+                contratosHTML = '<div class="mt-2">';
+                client.contratos.forEach(ct => {
+                    contratosHTML += `<span class="badge bg-success me-1">${ct.servicio}${ct.tipo_juicio ? ' - ' + ct.tipo_juicio : ''}</span>`;
+                });
+                contratosHTML += '</div>';
+            }
+            card.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-3"><strong>${client.nombre_completo}</strong></div>
+                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
+                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
+                    <div class="col-md-3"><small>${client.curp}</small></div>
+                    <div class="col-md-2"><button class="btn btn-sm btn-primary select-client" data-id="${client.id}">Seleccionar</button></div>
+                </div>
+                ${contratosHTML}
+            `;
+            container.appendChild(card);
+        });
+        document.querySelectorAll('.select-client').forEach(btn => {
+            btn.addEventListener('click', async () => { await loadClientContracts(btn.dataset.id); });
+        });
+    } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+});
+
+// Cargar contratos del cliente
+async function loadClientContracts(clientId) {
+    try {
+        const response = await fetch(`/api/cases/client/${clientId}`);
+        const client = await response.json();
+        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('contractsContainer').style.display = 'block';
+        document.getElementById('clientNameDisplay').textContent = client.nombre_completo;
+        document.getElementById('clientInfoDisplay').textContent = `CURP: ${client.curp} | Teléfono: ${client.telefono} | Exp. Interno: ${client.expediente_interno} | Folio: ${client.folio_registro}`;
+        
+        const contractsList = document.getElementById('contractsList');
+        contractsList.innerHTML = '';
+        
+       const contratos = client.contratos || [];
+contratos.forEach(contract => {
+            const card = document.createElement('div');
+            card.className = 'contract-card';
+            card.innerHTML = `
+                <strong>${contract.servicio}</strong><br>
+                <small>${contract.tipo_juicio ? 'Tipo: ' + contract.tipo_juicio : ''}</small><br>
+                <small>${contract.detalle ? 'Detalle: ' + contract.detalle : ''}</small><br>
+                <small>Costo: $${contract.costo_total.toLocaleString()} | Estatus: ${contract.estatus}</small>
+            `;
+            card.onclick = function() {
+                document.querySelectorAll('.contract-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedContractId = contract.id;
+                document.getElementById('contractId').value = contract.id;
+                document.getElementById('relateFormContainer').style.display = 'block';
+                document.getElementById('relateFormContainer').scrollIntoView({ behavior: 'smooth' });
+            };
+            contractsList.appendChild(card);
+        });
+        
+        document.getElementById('contractsContainer').scrollIntoView({ behavior: 'smooth' });
+    } catch (error) { showNotification('Error', `<p>Error al cargar contratos: ${error.message}</p>`, 'error'); }
+}
+
+// Vista previa PDF
+document.getElementById('acuse_file').addEventListener('change', function(e) {
+    const file = this.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') { showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); this.value = ''; return; }
+    fileAccepted = false;
+    const fileURL = URL.createObjectURL(file);
+    document.getElementById('pdfPreviewFrame').src = fileURL;
+    const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+    previewModal.show();
+    document.getElementById('acceptFileBtn').onclick = function() { fileAccepted = true; previewModal.hide(); showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success'); };
+});
+
+// Limpiar
+function limpiarFormulario() {
+    showConfirm('Limpiar formulario', '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>', function() {
+        document.getElementById('relateForm').reset();
+        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        fileAccepted = false;
+        selectedContractId = null;
+        document.getElementById('relateFormContainer').style.display = 'none';
+        document.getElementById('contractsContainer').style.display = 'none';
+        document.getElementById('resultsContainer').innerHTML = '';
+        showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
+    });
+}
+
+// Enviar
+document.getElementById('relateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    let valid = true;
+    const fields = document.querySelectorAll('#relateForm [required]');
+    fields.forEach(field => {
+        if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
+        else { field.classList.remove('is-invalid'); }
+    });
+    if (!selectedContractId) { showNotification('Contrato no seleccionado', '<p>Por favor selecciona un contrato.</p>', 'warning'); return; }
+    if (!valid) { showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning'); return; }
+    if (!fileAccepted) { showNotification('Archivo no validado', '<p>Por favor adjunta y valida el acuse de recibo en PDF.</p>', 'warning'); return; }
+    
+    showConfirm('Confirmar guardado', '<p>¿Estás seguro de que deseas relacionar este expediente?</p>', async function() {
+        const formData = new FormData(e.target);
+        try {
+            const response = await fetch(`/api/cases/relate/${selectedContractId}`, { method: 'POST', body: formData });
+            if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al relacionar el expediente'}</p>`, 'error'); return; }
+            const result = await response.json();
+            showNotification('Expediente Relacionado', `
+                <div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div>
+                <p><strong>Expediente:</strong> ${result.expediente_tribunal}</p>
+                <p><strong>Cliente:</strong> ${result.cliente}</p>
+            `, 'success');
+            setTimeout(() => location.reload(), 2000);
+        } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+    });
+});
+</script>
+</body>
+</html>
