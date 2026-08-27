@@ -44,6 +44,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/logout",
             "/auth/check-session",
             "/auth/change-password-page",
+            "/setup-admin",
             "/static",
             "/uploads",
             "/docs",
