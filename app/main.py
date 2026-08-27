@@ -134,3 +134,49 @@ async def list_users_redirect(request: Request):
 @app.get("/change-password", response_class=HTMLResponse)
 async def change_password_redirect(request: Request):
     return RedirectResponse("/auth/change-password-page", status_code=302)
+
+
+# --- ENDPOINT TEMPORAL PARA CREAR ADMIN (BORRAR DESPUÉS) ---
+@app.get("/setup-admin")
+async def setup_admin():
+    from app.database import SessionLocal
+    from app.models.core import Firm, User
+    from passlib.context import CryptContext
+    
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    db = SessionLocal()
+    
+    # Verificar si ya existe
+    existing = db.query(User).filter(User.email == "admin@lumenlegal.com").first()
+    if existing:
+        db.close()
+        return HTMLResponse("<h1>Admin ya existe</h1>")
+    
+    firm = db.query(Firm).first()
+    if not firm:
+        firm = Firm(name="Lumen Legal")
+        db.add(firm)
+        db.commit()
+        db.refresh(firm)
+    
+    admin = User(
+        firm_id=firm.id,
+        full_name="Administrador",
+        email="admin@lumenlegal.com",
+        hashed_password=pwd_context.hash("admin123"),
+        role="admin",
+        is_active=True,
+        must_change_password=False,
+        permissions="all"
+    )
+    db.add(admin)
+    db.commit()
+    db.close()
+    
+    return HTMLResponse("""
+    <h1>✅ Admin creado exitosamente</h1>
+    <p>Email: admin@lumenlegal.com</p>
+    <p>Contraseña: admin123</p>
+    <p><strong>IMPORTANTE: Borra este endpoint después de usarlo.</strong></p>
+    <a href="/auth/login">Ir al login</a>
+    """)
