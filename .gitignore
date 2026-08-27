@@ -3,5 +3,4 @@ __pycache__/
 *.pyc
 *.db
 .env
-uploads/
 .DS_Store

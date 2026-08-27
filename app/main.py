@@ -14,6 +14,20 @@ load_dotenv()
 # Inicializar la app
 app = FastAPI(title="Lumen Legal", version="1.0.0")
 
+# Crear carpetas necesarias para producción
+REQUIRED_DIRS = [
+    "uploads",
+    "uploads/client_docs",
+    "uploads/constancias",
+    "uploads/receipts",
+    "uploads/case_docs",
+    "uploads/actuaciones",
+    "uploads/payment_docs"
+]
+
+for directory in REQUIRED_DIRS:
+    os.makedirs(directory, exist_ok=True)
+
 # Configurar rutas de templates y archivos estáticos
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -29,6 +43,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/login",
             "/auth/logout",
             "/auth/check-session",
+            "/auth/change-password-page",
             "/static",
             "/uploads",
             "/docs",
@@ -60,7 +75,7 @@ app.include_router(cases.router, prefix="/api")
 app.include_router(contracts.router, prefix="/api")
 app.include_router(payments.router, prefix="/api")
 app.include_router(actuaciones.router, prefix="/api")
-app.include_router(auth.router)  # Rutas de autenticación (sin /api)
+app.include_router(auth.router)
 
 # --- FUNCIÓN PARA OBTENER USUARIO ACTUAL ---
 from app.routers.auth import get_current_user
@@ -70,11 +85,10 @@ from app.routers.auth import get_current_user
 async def root(request: Request):
     user = get_current_user(request)
     
-    # Si no está autenticado, redirigir a login
     if not user:
         return RedirectResponse("/auth/login", status_code=302)
     
-    # Obtener usuario actualizado de la BD (por si los permisos cambiaron)
+    # Obtener usuario actualizado de la BD
     from app.database import SessionLocal
     from app.models.core import User as UserModel
     db = SessionLocal()
@@ -86,7 +100,6 @@ async def root(request: Request):
     if not user:
         return RedirectResponse("/auth/login", status_code=302)
     
-    # Si debe cambiar contraseña, redirigir a cambio
     if user.must_change_password:
         return RedirectResponse("/auth/change-password-page", status_code=302)
     
@@ -102,7 +115,7 @@ async def root(request: Request):
         "user": user,
         "permissions": user_permissions
     })
-    
+
 # --- RUTA DE PERFIL ---
 @app.get("/profile", response_class=HTMLResponse)
 async def profile(request: Request):
@@ -114,16 +127,10 @@ async def profile(request: Request):
 
 # --- RUTA DE USUARIOS (solo admin) ---
 @app.get("/users", response_class=HTMLResponse)
-async def list_users(request: Request):
-    user = get_current_user(request)
-    if not user:
-        return RedirectResponse("/auth/login", status_code=302)
-    if user.role != "admin":
-        return HTMLResponse("<h1>Acceso denegado</h1><p>Solo administradores pueden ver esta sección.</p>", status_code=403)
-    
-    # Redirigir a la ruta de auth
+async def list_users_redirect(request: Request):
     return RedirectResponse("/auth/users", status_code=302)
 
+# --- RUTA DE CAMBIO DE CONTRASEÑA ---
 @app.get("/change-password", response_class=HTMLResponse)
 async def change_password_redirect(request: Request):
     return RedirectResponse("/auth/change-password-page", status_code=302)
