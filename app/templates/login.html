@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <title>Lumen Legal · Acceso</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,7 +21,6 @@
             overflow: hidden;
         }
 
-        /* Fondo decorativo */
         body::before {
             content: '';
             position: fixed;
@@ -69,7 +68,6 @@
             box-shadow: 0 32px 72px -20px rgba(0,20,40,0.2);
         }
 
-        /* Logo */
         .logo-area {
             text-align: center;
             margin-bottom: 8px;
@@ -108,7 +106,6 @@
             color: #2a4a7a;
         }
 
-        /* Formulario */
         .form-floating-custom {
             position: relative;
             margin-bottom: 16px;
@@ -167,11 +164,7 @@
             padding: 0 6px;
             border-radius: 6px;
         }
-        .form-floating-custom .form-control:focus ~ .form-label {
-            color: #2a6df4;
-        }
 
-        /* Botón */
         .btn-login {
             background: #0b1e33;
             border: none;
@@ -197,7 +190,6 @@
             transform: scale(0.97);
         }
 
-        /* Enlaces */
         .login-links {
             display: flex;
             justify-content: center;
@@ -230,7 +222,6 @@
             color: #2a6df4;
         }
 
-        /* Alertas de error */
         .alert-custom {
             border-radius: 16px;
             padding: 12px 18px;
@@ -247,11 +238,7 @@
         .alert-custom i {
             font-size: 1.2rem;
         }
-        .alert-custom.d-none {
-            display: none !important;
-        }
 
-        /* Modal moderno */
         .modal-modern .modal-content {
             border-radius: 28px;
             border: none;
@@ -306,7 +293,67 @@
             box-shadow: 0 8px 20px -8px rgba(245,179,66,0.3);
         }
 
-        /* Responsive */
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11,30,51,0.95);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeOut 0.5s ease forwards;
+            animation-delay: 1.5s;
+            pointer-events: none;
+        }
+        .loading-content {
+            text-align: center;
+        }
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulseLogo 1.5s infinite ease-in-out;
+        }
+        .loading-logo img {
+            width: 55px;
+            height: auto;
+        }
+        .loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: #f5b342;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: spin 0.8s linear infinite;
+        }
+        .loading-text {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
+
         @media (max-width: 480px) {
             .login-card { padding: 24px 20px; }
             .login-title { font-size: 1.4rem; }
@@ -317,28 +364,35 @@
 </head>
 <body>
 
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="loading-logo">
+            <img src="/static/img/logo.jpeg" alt="Lumen Legal" onerror="this.style.display='none'; this.parentElement.innerHTML='⚖️'; this.parentElement.style.fontSize='35px';">
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Accediendo al sistema...</div>
+    </div>
+</div>
+
 <div class="login-container">
     <div class="login-card">
 
-        <!-- Logo -->
         <div class="logo-area">
             <img src="/static/img/logo.jpeg" alt="Lumen Legal">
         </div>
 
-        <!-- Título -->
         <h1 class="login-title"><i class="bi bi-scale"></i> Lumen Legal</h1>
         <div class="login-subtitle">
             Sistema de Gestión Jurídica
             <span><i class="bi bi-shield-check me-1"></i> Seguro</span>
         </div>
 
-        <!-- Mensaje de error (se reemplaza dinámicamente) -->
         <div id="errorMessageContainer">
             <!-- ERROR_MESSAGE se inyecta aquí desde el backend -->
         </div>
 
-        <!-- Formulario -->
-        <form action="/auth/login" method="post" id="loginForm">
+        <form action="/auth/login" method="post" id="loginForm" onsubmit="showLoading()">
             <div class="form-floating-custom">
                 <input type="text" name="email" id="loginIdentifier" class="form-control" 
                        placeholder=" " required autocomplete="off">
@@ -358,23 +412,19 @@
             </button>
         </form>
 
-        <!-- Enlaces -->
         <div class="login-links">
             <a href="/auth/change-password-login">
                 <i class="bi bi-key"></i> Cambiar Contraseña
             </a>
         </div>
 
-        <!-- Footer -->
         <div class="login-footer">
             <i class="bi bi-shield-check"></i> Lumen Legal v1.0
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
-<!-- MODAL CAMBIO DE CONTRASEÑA (moderno) -->
-<!-- ================================================== -->
+<!-- MODAL CAMBIO DE CONTRASEÑA -->
 <div class="modal fade modal-modern" id="changePasswordModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -409,6 +459,19 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// Mostrar loading al enviar formulario
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.getElementById('loadingOverlay').style.animation = 'none';
+    document.getElementById('loadingOverlay').style.opacity = '1';
+    document.getElementById('loadingOverlay').style.visibility = 'visible';
+}
+
+// Ocultar loading si hay error
+window.addEventListener('pageshow', function() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar si debe cambiar contraseña
     fetch('/auth/check-password-change')
@@ -423,7 +486,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mostrar error del backend si existe
     const errorMsg = document.querySelector('#errorMessageContainer .alert');
     if (errorMsg) {
-        // Si ya hay un error del backend, lo mostramos con estilo
         const container = document.getElementById('errorMessageContainer');
         const existing = container.querySelector('.alert-custom');
         if (!existing) {
@@ -478,13 +540,6 @@ document.getElementById('saveNewPasswordBtn').addEventListener('click', async ()
     } catch (error) {
         errorEl.textContent = 'Error de conexión';
         errorEl.style.display = 'block';
-    }
-});
-
-// Enter key para enviar formulario
-document.getElementById('loginForm').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        this.submit();
     }
 });
 </script>
