@@ -37,6 +37,7 @@ Base.metadata.create_all(bind=engine)
 # --- MIDDLEWARE DE AUTENTICACIÓN ---
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
+        # Rutas públicas (no requieren autenticación)
         public_paths = [
             "/auth/login",
             "/auth/logout",
@@ -48,22 +49,24 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/uploads",
             "/docs",
             "/openapi.json",
-            "/redoc"
+            "/redoc",
+            "/loading",  # 🆕 AGREGAR PARA QUE LA PÁGINA DE LOADING SEA PÚBLICA
         ]
         
-        # Verificar rutas públicas
+        # Verificar si la ruta es pública
         for path in public_paths:
             if request.url.path.startswith(path):
                 return await call_next(request)
         
-        # Verificar token de sesión
+        # Verificar autenticación
         token = request.cookies.get("access_token")
         if not token:
-            return RedirectResponse("/auth/login", status_code=302)
+            return RedirectResponse("/loading", status_code=302)  # 🆕 REDIRIGIR A LOADING
         
         return await call_next(request)
 
 app.add_middleware(AuthMiddleware)
+
 
 # --- IMPORTAR ROUTERS ---
 # Import
@@ -143,4 +146,12 @@ async def list_users_redirect(request: Request):
 @app.get("/change-password", response_class=HTMLResponse)
 async def change_password_redirect(request: Request):
     return RedirectResponse("/auth/change-password-page", status_code=302)
+
+
+# --- RUTA DE LOADING ---
+@app.get("/loading", response_class=HTMLResponse)
+async def loading_page(request: Request):
+    """Página de inicio con loading para Render"""
+    with open("app/templates/loading.html", "r", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read())
 
