@@ -7,9 +7,6 @@ from app.models.core import AgendaEvent, CourtCase, Contract, Client, User, Acti
 from datetime import datetime, date, timedelta
 import pytz
 import os
-import base64
-from jinja2 import Environment, FileSystemLoader
-from weasyprint import HTML
 
 # Zona horaria de México (CDMX)
 MEXICO_TZ = pytz.timezone('America/Mexico_City')
@@ -265,6 +262,10 @@ async def generate_agenda_report(
     filtro: str = "pendientes",
     db: Session = Depends(get_db)
 ):
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    
     today = get_today_date()
     
     if periodo == "mes":
