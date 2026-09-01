@@ -50,7 +50,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/docs",
             "/openapi.json",
             "/redoc",
-            "/loading",  # 🆕 AGREGAR PARA QUE LA PÁGINA DE LOADING SEA PÚBLICA
+            "/loading",
         ]
         
         # Verificar si la ruta es pública
@@ -61,7 +61,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # Verificar autenticación
         token = request.cookies.get("access_token")
         if not token:
-            return RedirectResponse("/loading", status_code=302)  # 🆕 REDIRIGIR A LOADING
+            return RedirectResponse("/auth/login", status_code=302)
         
         return await call_next(request)
 
@@ -98,7 +98,7 @@ async def root(request: Request):
     user = get_current_user(request)
     
     if not user:
-        return RedirectResponse("/auth/login", status_code=302)
+        return RedirectResponse("/loading", status_code=302)
     
     # Obtener usuario actualizado de la BD
     from app.database import SessionLocal
