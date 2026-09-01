@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agenda Judicial · Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body {
+            background: #f4f7fc;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Botón menú flotante */
+        .btn-menu {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 20px;
+            font-weight: 500;
+            color: #1e293b;
+            transition: all 0.2s;
+        }
+        .btn-menu:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        /* Título principal */
+        .page-title {
+            font-weight: 700;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            color: #0b1e33;
+        }
+        .page-title i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+
+        /* Tarjetas */
+        .card-modern {
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 28px;
+            box-shadow: 0 20px 40px -12px rgba(0,20,40,0.12);
+            transition: box-shadow 0.2s ease;
+        }
+        .card-modern:hover {
+            box-shadow: 0 28px 56px -16px rgba(0,20,40,0.18);
+        }
+
+        /* Cabecera del calendario */
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        .calendar-header h3 {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #0b1e33;
+            letter-spacing: -0.01em;
+        }
+        .btn-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 1px solid #e9edf4;
+            color: #1e293b;
+            transition: all 0.2s;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
+        }
+        .btn-circle:hover {
+            background: #f0f5ff;
+            border-color: #b6cae5;
+            transform: scale(1.02);
+        }
+
+        /* Días de la semana */
+        .weekday-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            padding: 4px 0;
+        }
+        .weekday-label.text-danger {
+            color: #e74c5e;
+        }
+
+        /* Celdas del calendario */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        .calendar-day {
+            background: white;
+            border-radius: 18px;
+            padding: 10px 6px 6px 12px;
+            min-height: 100px;
+            border: 1px solid #edf2f9;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            display: flex;
+            flex-direction: column;
+        }
+        .calendar-day:hover {
+            background: #f8faff;
+            border-color: #cbd9ed;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -12px rgba(30,60,120,0.12);
+        }
+        .calendar-day.today {
+            border: 2px solid #2a6df4;
+            background: #f0f7ff;
+        }
+        .calendar-day.has-events {
+            background: #faf7f0;
+        }
+        .calendar-day.other-month {
+            background: #fafcff;
+            color: #afc0d6;
+            opacity: 0.6;
+        }
+        .day-number {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .today .day-number {
+            color: #2a6df4;
+        }
+
+        /* badges de eventos dentro del día */
+        .event-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 40px;
+            margin: 2px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: all 0.1s;
+            border: none;
+            letter-spacing: 0.01em;
+            background: #eef3fa;
+            color: #1e293b;
+        }
+        .event-badge:hover {
+            filter: brightness(0.94);
+            transform: scale(0.98);
+        }
+        .event-audiencia { background: #fee9e7; color: #b12a2a; }
+        .event-plazos { background: #ffedd5; color: #9b5e00; }
+        .event-junta { background: #e2edff; color: #1f4f9e; }
+          .event-otro { background: #eef2f6; color: #3d4a5c; }
+        .event-completed {
+            background: #d4edda !important;
+            color: #155724 !important;
+            border-left: 3px solid #28a745 !important;
+            text-decoration: line-through;
+        }
+
+        /* panel lateral */
+        .side-panel-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0b1e33;
+            letter-spacing: -0.01em;
+            border-bottom: 2px solid #eef3fa;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .side-panel-title i {
+            margin-right: 8px;
+            color: #2a6df4;
+        }
+
+        .day-event-item {
+            background: white;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-left: 5px solid #2a6df4;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            transition: 0.1s ease;
+        }
+        .day-event-item:hover {
+            background: #fbfdff;
+        }
+        .day-event-item .ev-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #0b1e33;
+        }
+        .day-event-item .ev-meta {
+            font-size: 0.78rem;
+            color: #64748b;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+        .badge-type {
+            font-weight: 600;
+            font-size: 0.6rem;
+            padding: 3px 10px;
+            border-radius: 40px;
+            letter-spacing: 0.02em;
+            background: #eef3fa;
+            color: #1e293b;
+        }
+        .badge-type.audiencia { background: #fee9e7; color: #b12a2a; }
+        .badge-type.plazos { background: #ffedd5; color: #9b5e00; }
+        .badge-type.junta { background: #e2edff; color: #1f4f9e; }
+        .badge-type.otro { background: #eef2f6; color: #3d4a5c; }
+
+        .upcoming-event-card {
+            background: white;
+            border-radius: 16px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border: 1px solid #edf2f9;
+            transition: 0.1s;
+        }
+        .upcoming-event-card:hover {
+            background: #fafcff;
+        }
+
+        /* modales más refinados */
+        .modal-content {
+            border-radius: 32px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .modal-header {
+            border-bottom: none;
+            padding: 24px 28px 8px 28px;
+        }
+        .modal-header.bg-primary {
+            background: #1a3b6b !important;
+        }
+        .modal-body {
+            padding: 16px 28px 28px 28px;
+        }
+        .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px 28px;
+        }
+        .form-control, .form-select {
+            border-radius: 16px;
+            border: 1px solid #e2e9f3;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            background: #fafdff;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: white;
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        .btn-lg-modern {
+            border-radius: 40px;
+            padding: 10px 28px;
+            font-weight: 600;
+        }
+
+        /* overlay loading */
+        .spinner-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15,23,42,0.3);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 36px 48px;
+            border-radius: 48px;
+            text-align: center;
+            box-shadow: 0 40px 60px -20px rgba(0,0,0,0.2);
+        }
+
+                .calendar-day.weekend .day-number {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left me-2"></i> Menú Principal</a>
+
+<div class="container mt-4">
+    <h1 class="page-title mb-4"><i class="bi bi-calendar3"></i> Agenda Judicial</h1>
+
+    <div class="row g-4">
+        <!-- COLUMNA CALENDARIO -->
+        <div class="col-lg-8">
+            <div class="card card-modern p-4">
+                <div class="calendar-header">
+                    <button class="btn-circle" onclick="changeMonth(-1)"><i class="bi bi-chevron-left"></i></button>
+                    <h3 id="monthTitle" class="mb-0"></h3>
+                    <div class="d-flex gap-2">
+                        <button class="btn-circle" onclick="openReportModal()" title="Imprimir reporte" style="width:auto;padding:0 16px;font-size:0.85rem;">
+                            <i class="bi bi-printer me-1"></i> Reporte
+                        </button>
+                        <button class="btn-circle" onclick="changeMonth(1)"><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Días de semana -->
+                <div class="calendar-grid mb-2" style="grid-template-columns: repeat(7,1fr); gap:6px;">
+                    <div class="weekday-label text-danger">Dom</div>
+                    <div class="weekday-label">Lun</div>
+                    <div class="weekday-label">Mar</div>
+                    <div class="weekday-label">Mié</div>
+                    <div class="weekday-label">Jue</div>
+                    <div class="weekday-label">Vie</div>
+                    <div class="weekday-label">Sáb</div>
+                </div>
+
+                <!-- Grid de días -->
+                <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+        </div>
+
+        <!-- COLUMNA LATERAL -->
+        <div class="col-lg-4">
+            <!-- Eventos del día -->
+            <div class="card card-modern p-4 mb-4">
+                <div class="side-panel-title"><i class="bi bi-calendar-day"></i> Eventos del día</div>
+                <div id="dayEvents">
+                    <p class="text-muted" style="font-size:0.9rem;">Selecciona un día para ver sus eventos.</p>
+                </div>
+            </div>
+
+            <!-- Próximos eventos -->
+            <div class="card card-modern p-4">
+                <div class="side-panel-title"><i class="bi bi-clock-history"></i> Próximos eventos</div>
+                <div id="upcomingEvents"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREAR EVENTO (rediseñado) -->
+<div class="modal fade" id="createEventModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Nuevo evento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm" novalidate>
+                    <input type="hidden" id="eventDate" name="event_date">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Título del evento *</label>
+                            <input type="text" name="title" id="eventTitle" class="form-control" required autocomplete="off" placeholder="Ej: Audiencia de conciliación">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Tipo *</label>
+                            <select name="event_type" id="eventType" class="form-select" required>
+                                <option value="">Selecciona</option>
+                                <option value="audiencia">🎯 Audiencia</option>
+                                <option value="plazos">⏰ Plazo legal</option>
+                                <option value="junta">🤝 Junta</option>
+                                <option value="otro">📋 Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-4">
+                            <label class="form-label">Hora</label>
+                            <input type="time" name="event_time" id="eventTime" class="form-control">
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Lugar / Ubicación</label>
+                            <input type="text" name="location" id="eventLocation" class="form-control" autocomplete="off" placeholder="Ej: Juzgado Primero Familiar">
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="description" id="eventDescription" class="form-control" rows="2" placeholder="Detalles del evento..."></textarea>
+                    </div>
+<div class="mt-3">
+    <label class="form-label">Número de expediente (opcional)</label>
+    <input type="text" name="expediente_manual" id="expedienteManual" class="form-control" placeholder="Ej: 123/2026" autocomplete="off">
+</div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-lg-modern" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="saveEventBtn" class="btn btn-success btn-lg-modern" style="background:#1f8b4c;border:none;"><i class="bi bi-check2 me-2"></i>Guardar evento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DETALLE EVENTO -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white" style="background:#1f4f9e !important;">
+                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Detalle del evento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="eventDetailBody"></div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-outline-success btn-lg-modern" id="completeEventBtn"><i class="bi bi-check-circle me-2"></i>Completar</button>
+                    <button type="button" class="btn btn-outline-danger btn-lg-modern" id="deleteEventBtn"><i class="bi bi-trash3 me-2"></i>Eliminar</button>
+                </div>
+                <button type="button" class="btn btn-secondary btn-lg-modern" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL NOTIFICACIÓN -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-lg-modern" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REPORTE -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#1a3b6b;">
+                <h5 class="modal-title text-white"><i class="bi bi-printer me-2"></i>Reporte de Agenda</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Periodo</label>
+                    <select id="reportPeriod" class="form-select">
+                        <option value="mes">Mes actual</option>
+                        <option value="semana">Semana actual</option>
+                        <option value="hoy">Solo hoy</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Solo pendientes</label>
+                    <select id="reportFilter" class="form-select">
+                        <option value="pendientes">Solo pendientes</option>
+                        <option value="todos">Todos (incluye completados)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="generarReporte()">
+                    <i class="bi bi-printer me-1"></i> Generar PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark" style="background:#f7e7b4 !important;">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary btn-lg-modern" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success btn-lg-modern" id="confirmBtn"><i class="bi bi-check2 me-2"></i>Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+    <div class="spinner-box">
+        <div class="spinner-border text-primary mb-3" style="width:3rem;height:3rem;" role="status"></div>
+        <h5 class="mb-0">Cargando agenda...</h5>
+        <p class="text-muted small">Un momento, por favor.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ============================================================
+//  LÓGICA COMPLETA DE LA AGENDA (CORREGIDA)
+// ============================================================
+
+let currentYear = new Date().getFullYear();
+let currentMonth = new Date().getMonth();
+let currentEvents = [];
+let selectedEventId = null;
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    document.getElementById('confirmBody').innerHTML = bodyHTML;
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); setTimeout(onConfirm, 200); };
+    modal.show();
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+function changeMonth(delta) {
+    currentMonth += delta;
+    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+    loadCalendar();
+}
+
+async function loadCalendar() {
+    showLoading();
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    document.getElementById('monthTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    try {
+        const response = await fetch(`/api/agenda/events/${currentYear}/${currentMonth + 1}`);
+        currentEvents = await response.json();
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const today = new Date();
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-day other-month';
+            grid.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayEvents = currentEvents.filter(e => e.event_date === dateStr);
+            const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === day;
+            const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            const dayDiv = document.createElement('div');
+            dayDiv.className = `calendar-day ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-events' : ''} ${isWeekend ? 'weekend' : ''}`;
+            
+            if (isWeekend) {
+                dayDiv.style.backgroundColor = '#fef2f2';
+            }
+            dayDiv.setAttribute('onclick', `openCreateModal('${dateStr}')`);
+
+            const numberSpan = document.createElement('div');
+            numberSpan.className = 'day-number';
+            numberSpan.textContent = day;
+            dayDiv.appendChild(numberSpan);
+
+            dayEvents.forEach(ev => {
+                const badge = document.createElement('div');
+                let badgeClass = `event-badge event-${ev.event_type}`;
+                if (ev.is_completed) {
+                    badgeClass += ' event-completed';
+                }
+                badge.className = badgeClass;
+                badge.textContent = ev.title;
+                badge.setAttribute('onclick', `event.stopPropagation(); openEventDetail(${ev.id})`);
+                dayDiv.appendChild(badge);
+            });
+
+            grid.appendChild(dayDiv);
+        }
+
+        hideLoading();
+        loadUpcomingEvents();
+        updateDayEvents();
+    } catch (error) {
+        hideLoading();
+        showNotification('Error', `<p>${error.message}</p>`, 'error');
+    }
+}
+
+function openCreateModal(dateStr) {
+    // Resetear formulario
+    document.getElementById('eventForm').reset();
+    document.getElementById('eventDate').value = dateStr;
+    document.getElementById('expedienteManual').value = '';  // ✅ CORRECTO
+    
+    // ✅ FORZAR RESET DEL BOTÓN A MODO "CREAR"
+    const saveBtn = document.getElementById('saveEventBtn');
+    
+    // Eliminar cualquier listener viejo clonando y reemplazando
+    const newSaveBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+    
+    // Configurar el botón nuevo para modo "CREAR"
+    const freshBtn = document.getElementById('saveEventBtn');
+    freshBtn.textContent = '💾 Guardar Evento';
+    freshBtn.className = 'btn btn-success btn-lg-modern';
+    freshBtn.style.background = '#1f8b4c';
+    freshBtn.style.border = 'none';
+    delete freshBtn.dataset.editId;
+    
+    // Asignar el listener para CREAR (no actualizar)
+    freshBtn.addEventListener('click', async function() {
+        const title = document.getElementById('eventTitle').value;
+        const eventType = document.getElementById('eventType').value;
+        if (!title || !eventType) {
+            showNotification('Campos incompletos', '<p>Completa título y tipo de evento.</p>', 'warning');
+            return;
+        }
+        
+        showConfirm('Guardar Evento', `<p>¿Guardar el evento <strong>${title}</strong>?</p>`, async function() {
+            showLoading();
+            
+            const form = document.getElementById('eventForm');
+            const formData = new FormData();
+            formData.append('title', form.querySelector('#eventTitle').value);
+            formData.append('event_type', form.querySelector('#eventType').value);
+            formData.append('description', form.querySelector('#eventDescription').value);
+            formData.append('event_date', form.querySelector('#eventDate').value);
+            formData.append('event_time', form.querySelector('#eventTime').value);
+            formData.append('location', form.querySelector('#eventLocation').value);
+            formData.append('expediente_manual', document.getElementById('expedienteManual').value);  // ✅ NUEVO
+            
+            console.log('🔍 Creando con expediente_manual:', document.getElementById('expedienteManual').value);
+            
+            try {
+                const response = await fetch('/api/agenda/create', { method: 'POST', body: formData });
+                hideLoading();
+                if (!response.ok) {
+                    const error = await response.json();
+                    showNotification('Error', `<p>${error.detail || 'Error al guardar'}</p>`, 'error');
+                    return;
+                }
+                showNotification('Evento Creado', '<p>El evento se creó correctamente.</p>', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('createEventModal')).hide();
+                loadCalendar();
+            } catch (error) {
+                hideLoading();
+                showNotification('Error', `<p>${error.message}</p>`, 'error');
+            }
+        });
+    });
+    
+    new bootstrap.Modal(document.getElementById('createEventModal')).show();
+}
+function updateDayEvents() {
+    const today = new Date().toISOString().split('T')[0];
+    const dayEvents = currentEvents.filter(e => e.event_date === today && !e.is_completed);
+    const container = document.getElementById('dayEvents');
+    if (dayEvents.length === 0) {
+        container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">No hay eventos para hoy.</p>';
+        return;
+    }
+    container.innerHTML = '';
+    dayEvents.forEach(ev => {
+        const div = document.createElement('div');
+        div.className = 'day-event-item';
+        div.innerHTML = `
+            <div class="ev-title">${ev.title}</div>
+            <div class="ev-meta">
+                <span>${ev.event_time || 'Todo el día'}</span>
+                <span class="badge-type ${ev.event_type}">${ev.event_type.toUpperCase()}</span>
+                ${ev.location ? `<span><i class="bi bi-geo-alt"></i> ${ev.location}</span>` : ''}
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+async function loadUpcomingEvents() {
+    const today = new Date().toISOString().split('T')[0];
+    
+    try {
+        const year = new Date().getFullYear();
+        const month = new Date().getMonth();
+        let allUpcomingEvents = [];
+        
+        for (let i = 0; i < 3; i++) {
+            const targetMonth = month + i;
+            const targetYear = year + Math.floor(targetMonth / 12);
+            const adjustedMonth = ((targetMonth % 12) + 12) % 12;
+            
+            const response = await fetch(`/api/agenda/events/${targetYear}/${adjustedMonth + 1}`);
+            if (response.ok) {
+                const events = await response.json();
+                allUpcomingEvents = allUpcomingEvents.concat(events);
+            }
+        }
+        
+        const upcoming = allUpcomingEvents
+            .filter(e => e.event_date >= today)
+            .sort((a, b) => {
+                if (a.is_completed !== b.is_completed) return a.is_completed ? 1 : -1;
+                return a.event_date.localeCompare(b.event_date);
+            })
+            .slice(0, 8);
+        
+        const container = document.getElementById('upcomingEvents');
+        if (upcoming.length === 0) {
+            container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">No hay eventos próximos.</p>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        upcoming.forEach(ev => {
+            const card = document.createElement('div');
+            card.className = 'upcoming-event-card';
+            card.style.position = 'relative';
+            card.style.paddingRight = '80px';
+            
+            const dateObj = new Date(ev.event_date + 'T00:00:00');
+            const dateStr = dateObj.toLocaleDateString('es-ES', { 
+                day: '2-digit', 
+                month: 'short',
+                year: 'numeric'
+            });
+            
+            card.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                    <div style="flex:1;">
+                        <strong style="font-size:0.9rem;display:block;margin-bottom:2px;">${ev.title}</strong>
+                        <div style="font-size:0.75rem;color:#64748b;">
+                            <i class="bi bi-calendar3"></i> ${dateStr} ${ev.event_time ? '· '+ev.event_time : ''}
+                            <span class="badge-type ${ev.event_type}" style="font-size:0.6rem;margin-left:6px;">${ev.event_type}</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:4px;flex-shrink:0;margin-left:8px;">
+                        <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); openEditEventModal(${ev.id})" 
+                                style="padding:2px 6px;font-size:0.7rem;border-radius:8px;" title="Editar evento" data-event-id="${ev.id}">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteEventDirect(${ev.id})" 
+                                style="padding:2px 6px;font-size:0.7rem;border-radius:8px;" title="Eliminar evento">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+    } catch (error) {
+        const container = document.getElementById('upcomingEvents');
+        container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">Error al cargar eventos futuros.</p>';
+    }
+}
+
+// ============================================================
+// NUEVA FUNCIÓN 1: deleteEventDirect()
+// ============================================================
+function deleteEventDirect(eventId) {
+    showConfirm('Eliminar Evento', '<p>¿Estás seguro de eliminar este evento?</p>', async function() {
+        showLoading();
+        try {
+            const response = await fetch(`/api/agenda/delete/${eventId}`, { method: 'DELETE' });
+            hideLoading();
+            if (response.ok) {
+                showNotification('Evento Eliminado', '<p>El evento se eliminó correctamente.</p>', 'success');
+                loadCalendar();
+            } else {
+                showNotification('Error', '<p>No se pudo eliminar el evento.</p>', 'error');
+            }
+        } catch (error) {
+            hideLoading();
+            showNotification('Error', `<p>${error.message}</p>`, 'error');
+        }
+    });
+}
+
+// ============================================================
+// NUEVA FUNCIÓN 2: openEditEventModal() - CORREGIDA
+// ============================================================
+async function openEditEventModal(eventId) {
+    console.log('🔍 Editando evento ID:', eventId);
+    
+    if (!eventId || eventId === 'undefined') {
+        showNotification('Error', '<p>ID de evento no válido.</p>', 'error');
+        return;
+    }
+    
+    showLoading();
+    
+    // Buscar evento en currentEvents o obtenerlo directamente
+    let event = currentEvents.find(e => e.id === parseInt(eventId));
+    
+    if (!event) {
+        try {
+            const response = await fetch(`/api/agenda/event/${eventId}`);
+            if (response.ok) {
+                event = await response.json();
+            } else {
+                hideLoading();
+                showNotification('Error', '<p>No se encontró el evento. Por favor recarga la página.</p>', 'error');
+                return;
+            }
+        } catch (error) {
+            hideLoading();
+            showNotification('Error', `<p>${error.message}</p>`, 'error');
+            return;
+        }
+    }
+    
+    hideLoading();
+    
+    // Llenar el formulario con los datos del evento
+    document.getElementById('eventDate').value = event.event_date;
+    document.getElementById('eventTitle').value = event.title;
+    document.getElementById('eventType').value = event.event_type;
+    document.getElementById('eventTime').value = event.event_time || '';
+    document.getElementById('eventLocation').value = event.location || '';
+    document.getElementById('eventDescription').value = event.description || '';
+    
+   
+ // Cargar expediente manual
+document.getElementById('expedienteManual').value = event.expediente_manual || '';
+console.log('📁 Expediente manual cargado:', event.expediente_manual);
+    
+    // Cambiar el botón de guardar para que actualice en lugar de crear
+    const saveBtn = document.getElementById('saveEventBtn');
+    saveBtn.textContent = '✏️ Actualizar Evento';
+    saveBtn.className = 'btn btn-primary btn-lg-modern';
+    saveBtn.style.background = '#2a6df4';
+    saveBtn.style.border = 'none';
+    saveBtn.dataset.editId = eventId;
+    
+    // Remover listeners anteriores y asignar nuevo
+    const newSaveBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+    
+    newSaveBtn.addEventListener('click', async function() {
+        const title = document.getElementById('eventTitle').value;
+        const eventType = document.getElementById('eventType').value;
+        if (!title || !eventType) {
+            showNotification('Campos incompletos', '<p>Completa título y tipo de evento.</p>', 'warning');
+            return;
+        }
+        
+        const eventIdToUpdate = newSaveBtn.dataset.editId;
+        if (!eventIdToUpdate || eventIdToUpdate === 'undefined') {
+            showNotification('Error', '<p>No se pudo identificar el evento a actualizar.</p>', 'error');
+            return;
+        }
+        
+        showConfirm('Actualizar Evento', `<p>¿Actualizar el evento <strong>${title}</strong>?</p>`, async function() {
+            showLoading();
+            
+            const form = document.getElementById('eventForm');
+const formData = new FormData();
+formData.append('title', form.querySelector('#eventTitle').value);
+formData.append('event_type', form.querySelector('#eventType').value);
+formData.append('description', form.querySelector('#eventDescription').value);
+formData.append('event_date', form.querySelector('#eventDate').value);
+formData.append('event_time', form.querySelector('#eventTime').value);
+formData.append('location', form.querySelector('#eventLocation').value);
+formData.append('expediente_manual', document.getElementById('expedienteManual').value);  // ✅ NUEVO
+
+console.log('🔍 Actualizando con expediente_manual:', document.getElementById('expedienteManual').value);
+            
+            try {
+                const response = await fetch(`/api/agenda/update/${eventIdToUpdate}`, { 
+                    method: 'PUT', 
+                    body: formData 
+                });
+                hideLoading();
+                if (!response.ok) {
+                    const error = await response.json();
+                    showNotification('Error', `<p>${error.detail || 'Error al actualizar'}</p>`, 'error');
+                    return;
+                }
+                showNotification('Evento Actualizado', '<p>El evento se actualizó correctamente.</p>', 'success');
+                bootstrap.Modal.getInstance(document.getElementById('createEventModal')).hide();
+                
+                // Restaurar el botón a su estado original
+                const saveBtnRestore = document.getElementById('saveEventBtn');
+                saveBtnRestore.textContent = '💾 Guardar Evento';
+                saveBtnRestore.className = 'btn btn-success btn-lg-modern';
+                saveBtnRestore.style.background = '#1f8b4c';
+                saveBtnRestore.style.border = 'none';
+                delete saveBtnRestore.dataset.editId;
+                
+                loadCalendar();
+            } catch (error) {
+                hideLoading();
+                showNotification('Error', `<p>${error.message}</p>`, 'error');
+            }
+        });
+    });
+    
+    new bootstrap.Modal(document.getElementById('createEventModal')).show();
+}
+
+
+
+
+// ============================================================
+// DETALLE DEL EVENTO
+// ============================================================
+function openEventDetail(eventId) {
+    selectedEventId = eventId;
+    const event = currentEvents.find(e => e.id === eventId);
+    if (!event) return;
+    const typeLabels = { audiencia: '🎯 Audiencia', plazos: '⏰ Plazo Legal', junta: '🤝 Junta', otro: '📋 Otro' };
+    document.getElementById('eventDetailBody').innerHTML = `
+        <h4 style="font-weight:700;">${event.title}</h4>
+        <p><strong>Tipo:</strong> ${typeLabels[event.event_type] || event.event_type}</p>
+        <p><strong>Fecha:</strong> ${event.event_date}</p>
+        ${event.event_time ? `<p><strong>Hora:</strong> ${event.event_time}</p>` : ''}
+        ${event.location ? `<p><strong>Lugar:</strong> ${event.location}</p>` : ''}
+        ${event.description ? `<p><strong>Descripción:</strong> ${event.description}</p>` : ''}
+        ${event.case_info ? `<p><strong>Expediente:</strong> ${event.case_info}</p>` : ''}
+        <p><strong>Estado:</strong> ${event.is_completed ? '✅ Completado' : '⏳ Pendiente'}</p>
+    `;
+    document.getElementById('completeEventBtn').textContent = event.is_completed ? '↩️ Reabrir' : '✅ Completar';
+    new bootstrap.Modal(document.getElementById('eventDetailModal')).show();
+}
+
+// ============================================================
+// COMPLETAR EVENTO
+// ============================================================
+document.getElementById('completeEventBtn').addEventListener('click', async () => {
+    const response = await fetch(`/api/agenda/complete/${selectedEventId}`, { method: 'PUT' });
+    if (response.ok) {
+        bootstrap.Modal.getInstance(document.getElementById('eventDetailModal')).hide();
+        showNotification('Estado Actualizado', '<p>El estado del evento se actualizó.</p>', 'success');
+        loadCalendar();
+    }
+});
+
+// ============================================================
+// ELIMINAR EVENTO (desde el detalle)
+// ============================================================
+document.getElementById('deleteEventBtn').addEventListener('click', () => {
+    showConfirm('Eliminar Evento', '<p>¿Estás seguro de eliminar este evento?</p>', async function() {
+        const response = await fetch(`/api/agenda/delete/${selectedEventId}`, { method: 'DELETE' });
+        if (response.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('eventDetailModal')).hide();
+            showNotification('Evento Eliminado', '<p>El evento se eliminó correctamente.</p>', 'success');
+            loadCalendar();
+        }
+    });
+});
+
+// ============================================================
+// REPORTE PDF
+// ============================================================
+
+function openReportModal() {
+    new bootstrap.Modal(document.getElementById('reportModal')).show();
+}
+
+function generarReporte() {
+    const periodo = document.getElementById('reportPeriod').value;
+    const filtro = document.getElementById('reportFilter').value;
+    
+    showLoading();
+    
+    window.open(`/api/agenda/report-pdf?periodo=${periodo}&filtro=${filtro}`, '_blank');
+    
+    setTimeout(() => hideLoading(), 1500);
+}
+
+loadCalendar();
+</script>
+</body>
+</html>

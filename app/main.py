@@ -18,8 +18,6 @@ app = FastAPI(title="Lumen Legal", version="1.0.0")
 REQUIRED_DIRS = [
     "uploads",
     "uploads/client_docs",
-    "uploads/constancias",
-    "uploads/receipts",
     "uploads/case_docs",
     "uploads/actuaciones",
     "uploads/payment_docs"
@@ -44,6 +42,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/logout",
             "/auth/check-session",
             "/auth/change-password-page",
+            "/auth/change-password-login",
             "/setup-admin",
             "/static",
             "/uploads",
@@ -67,7 +66,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
 app.add_middleware(AuthMiddleware)
 
 # --- IMPORTAR ROUTERS ---
-from app.routers import health, clients, cases, contracts, payments, actuaciones, auth
+# Import
+from app.routers import health, clients, cases, contracts, payments, actuaciones, auth, agenda, dashboard, audit, activity, backup
+
+
+
 
 # Registrar routers
 app.include_router(health.router, prefix="/api")
@@ -76,6 +79,11 @@ app.include_router(cases.router, prefix="/api")
 app.include_router(contracts.router, prefix="/api")
 app.include_router(payments.router, prefix="/api")
 app.include_router(actuaciones.router, prefix="/api")
+app.include_router(agenda.router, prefix="/api")
+app.include_router(dashboard.router, prefix="/api")
+app.include_router(audit.router, prefix="/api")
+app.include_router(activity.router, prefix="/api")
+app.include_router(backup.router, prefix="/api")
 app.include_router(auth.router)
 
 # --- FUNCIÓN PARA OBTENER USUARIO ACTUAL ---
@@ -107,7 +115,7 @@ async def root(request: Request):
     # Determinar permisos
     user_permissions = []
     if user.role == "admin" or user.permissions == "all":
-        user_permissions = ["clients", "contracts", "cases", "payments", "actuaciones", "consult", "admin"]
+        user_permissions = ["clients", "contracts", "cases", "payments", "actuaciones", "consult", "agenda", "dashboard", "audit", "admin"]
     else:
         user_permissions = user.permissions.split(",") if user.permissions else []
     

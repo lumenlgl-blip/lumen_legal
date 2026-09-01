@@ -1,136 +1,548 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Registrar Usuario - Lumen Legal</title>
+    <title>Registrar Usuario · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
-        .modal-content { border-radius: 15px; }
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Botón menú flotante */
+        .btn-menu {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+        .btn-menu:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Contenedor principal */
+        .register-container {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Tarjeta con efecto vidrio */
+        .card-glass {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 36px 32px 32px;
+            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.16);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: box-shadow 0.2s;
+        }
+        .card-glass:hover {
+            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.2);
+        }
+
+        /* Encabezado */
+        .page-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .page-header .icon-wrapper {
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.1), rgba(42,109,244,0.03));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+        .page-header .icon-wrapper i {
+            font-size: 2.4rem;
+            color: #2a6df4;
+        }
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+        .page-header .subtitle {
+            color: #6b7b8f;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .page-header .subtitle span {
+            background: #eef3fa;
+            padding: 2px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2a4a7a;
+        }
+
+        /* Campos de formulario */
+        .form-floating-custom {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        .form-floating-custom .form-control,
+        .form-floating-custom .form-select {
+            border-radius: 16px;
+            border: 1.5px solid #e9edf4;
+            padding: 14px 18px 14px 46px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.6);
+            transition: all 0.2s;
+            height: 56px;
+        }
+        .form-floating-custom .form-control:focus,
+        .form-floating-custom .form-select:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: white;
+        }
+        .form-floating-custom .form-select {
+            padding-right: 40px;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%238a9bb0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 12px;
+        }
+        .form-floating-custom .form-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a9bb0;
+            font-size: 1.1rem;
+            pointer-events: none;
+            z-index: 2;
+            transition: color 0.2s;
+        }
+        .form-floating-custom .form-control:focus + .form-icon,
+        .form-floating-custom .form-control:not(:placeholder-shown) + .form-icon,
+        .form-floating-custom .form-select:focus + .form-icon {
+            color: #2a6df4;
+        }
+
+        .form-floating-custom .form-label {
+            position: absolute;
+            left: 46px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #8a9bb0;
+            pointer-events: none;
+            transition: all 0.2s;
+            background: transparent;
+            padding: 0 4px;
+            margin: 0;
+        }
+        .form-floating-custom .form-control:focus ~ .form-label,
+        .form-floating-custom .form-control:not(:placeholder-shown) ~ .form-label,
+        .form-floating-custom .form-select:focus ~ .form-label,
+        .form-floating-custom .form-select:not([value=""]) ~ .form-label {
+            top: 8px;
+            transform: translateY(0);
+            font-size: 0.65rem;
+            color: #2a6df4;
+            background: white;
+            padding: 0 6px;
+            border-radius: 6px;
+        }
+
+        .form-floating-custom .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+        .form-floating-custom .form-control.is-invalid ~ .form-label {
+            color: #dc3545;
+        }
+        .form-floating-custom .form-control.is-invalid + .form-icon {
+            color: #dc3545;
+        }
+
+        /* Sección de permisos */
+        .permissions-section {
+            margin-bottom: 20px;
+        }
+        .permissions-section .perm-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #4a5b6e;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .permissions-section .perm-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 16px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 16px;
+            padding: 14px 18px;
+            border: 1px solid #edf2f9;
+        }
+        .permissions-section .perm-grid .form-check {
+            padding: 4px 0;
+            margin: 0;
+        }
+        .permissions-section .perm-grid .form-check-input {
+            border-radius: 4px;
+            border: 1.5px solid #d0d8e3;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+        }
+        .permissions-section .perm-grid .form-check-input:checked {
+            background-color: #2a6df4;
+            border-color: #2a6df4;
+        }
+        .permissions-section .perm-grid .form-check-label {
+            font-size: 0.8rem;
+            color: #1e293b;
+            cursor: pointer;
+            padding-left: 4px;
+        }
+
+        /* Botones */
+        .btn-submit {
+            background: #0b1e33;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-submit:hover {
+            background: #1a3b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(11,30,51,0.25);
+        }
+        .btn-submit:active {
+            transform: scale(0.97);
+        }
+
+        .btn-back {
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1px solid #e9edf4;
+            color: #4a5b6e;
+            background: transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-back:hover {
+            background: white;
+            border-color: #cbd9ed;
+            color: #0b1e33;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* Modales modernos */
+        .modal-modern .modal-content {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 20px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+        }
+
         .spinner-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
             z-index: 9999;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
         }
         .spinner-box {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 36px 48px;
+            border-radius: 32px;
             text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card-glass {
+                padding: 24px 20px;
+            }
+            .page-header h1 {
+                font-size: 1.4rem;
+            }
+            .page-header .icon-wrapper {
+                width: 56px;
+                height: 56px;
+            }
+            .page-header .icon-wrapper i {
+                font-size: 1.8rem;
+            }
+            .form-floating-custom .form-control,
+            .form-floating-custom .form-select {
+                padding: 12px 14px 12px 42px;
+                font-size: 0.9rem;
+                height: 50px;
+            }
+            .form-floating-custom .form-icon {
+                font-size: 1rem;
+                left: 14px;
+            }
+            .permissions-section .perm-grid {
+                grid-template-columns: 1fr;
+                padding: 10px 14px;
+            }
+            .btn-menu {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                top: 16px;
+                left: 16px;
+            }
+            .footer-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-back {
+                justify-content: center;
+            }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
-<div class="container mt-5">
-    <div class="card p-4 shadow" style="max-width: 700px; margin: 0 auto;">
-        <h1 class="text-center mb-4">👤 Registrar Usuario</h1>
-        
+<div class="register-container">
+
+    <!-- Tarjeta principal -->
+    <div class="card-glass">
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <div class="icon-wrapper">
+                <i class="bi bi-person-plus"></i>
+            </div>
+            <h1>Registrar Usuario</h1>
+            <div class="subtitle">
+                Crear nueva cuenta de acceso
+                <span><i class="bi bi-shield-check me-1"></i> Seguro</span>
+            </div>
+        </div>
+
+        <!-- Formulario -->
         <form id="registerForm" novalidate>
-            <div class="mb-3">
-                <label class="form-label"><strong>Nombre Completo *</strong></label>
-                <input type="text" name="full_name" id="full_name" class="form-control form-control-lg" required autocomplete="off">
+
+            <div class="form-floating-custom">
+                <input type="text" name="full_name" id="full_name" class="form-control" placeholder=" " required autocomplete="off">
+                <i class="bi bi-person form-icon"></i>
+                <label class="form-label">Nombre Completo <span class="text-danger">*</span></label>
                 <div class="invalid-feedback">El nombre es obligatorio</div>
             </div>
-            <div class="mb-3">
-                <label class="form-label"><strong>Email *</strong></label>
-                <input type="email" name="email" id="email" class="form-control form-control-lg" required autocomplete="off">
+
+            <div class="form-floating-custom">
+                <input type="email" name="email" id="email" class="form-control" placeholder=" " required autocomplete="off">
+                <i class="bi bi-envelope form-icon"></i>
+                <label class="form-label">Email <span class="text-danger">*</span></label>
                 <div class="invalid-feedback">El email es obligatorio</div>
             </div>
-            <div class="mb-3">
-                <label class="form-label"><strong>Contraseña Temporal *</strong></label>
-                <input type="password" name="password" id="password" class="form-control form-control-lg" required autocomplete="off" minlength="6">
+
+            <div class="form-floating-custom">
+                <input type="password" name="password" id="password" class="form-control" placeholder=" " required autocomplete="off" minlength="6">
+                <i class="bi bi-lock form-icon"></i>
+                <label class="form-label">Contraseña Temporal <span class="text-danger">*</span></label>
                 <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres</div>
-                <small class="text-muted">El usuario deberá cambiarla en su primer acceso.</small>
+                <small class="text-muted" style="font-size:0.7rem;display:block;margin-top:4px;padding-left:46px;">
+                    <i class="bi bi-info-circle me-1"></i>El usuario deberá cambiarla en su primer acceso.
+                </small>
             </div>
-            <div class="mb-3">
-                <label class="form-label"><strong>Rol *</strong></label>
-                <select name="role" id="role" class="form-select form-select-lg" required>
+
+            <div class="form-floating-custom">
+                <select name="role" id="role" class="form-select" required>
                     <option value="">Selecciona...</option>
                     <option value="admin">Administrador</option>
                     <option value="abogado" selected>Abogado</option>
                     <option value="asistente">Asistente</option>
                 </select>
+                <i class="bi bi-shield-check form-icon"></i>
+                <label class="form-label">Rol <span class="text-danger">*</span></label>
                 <div class="invalid-feedback">Selecciona un rol</div>
             </div>
-            
-            <div class="mb-3">
-                <label class="form-label"><strong>Permisos de Acceso</strong></label>
-                <div class="border rounded p-3">
+
+            <!-- Permisos -->
+            <div class="permissions-section">
+                <span class="perm-label"><i class="bi bi-key me-2"></i>Permisos de Acceso</span>
+                <div class="perm-grid">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="clients" id="perm_clients">
-                        <label class="form-check-label" for="perm_clients">👤 Registrar Clientes</label>
+                        <label class="form-check-label" for="perm_clients"><i class="bi bi-person me-1"></i>Clientes</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="contracts" id="perm_contracts">
-                        <label class="form-check-label" for="perm_contracts">📜 Contratación</label>
+                        <label class="form-check-label" for="perm_contracts"><i class="bi bi-file-earmark-text me-1"></i>Contratos</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="cases" id="perm_cases">
-                        <label class="form-check-label" for="perm_cases">📁 Relacionar Expediente</label>
+                        <label class="form-check-label" for="perm_cases"><i class="bi bi-folder me-1"></i>Expedientes</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="payments" id="perm_payments">
-                        <label class="form-check-label" for="perm_payments">💰 Abonos y Pagos</label>
+                        <label class="form-check-label" for="perm_payments"><i class="bi bi-cash me-1"></i>Pagos</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="actuaciones" id="perm_actuaciones">
-                        <label class="form-check-label" for="perm_actuaciones">📄 Expediente Electrónico</label>
+                        <label class="form-check-label" for="perm_actuaciones"><i class="bi bi-file-pdf me-1"></i>Actuaciones</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="consult" id="perm_consult">
-                        <label class="form-check-label" for="perm_consult">🔍 Consultas</label>
+                        <label class="form-check-label" for="perm_consult"><i class="bi bi-search me-1"></i>Consultas</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="agenda" id="perm_agenda">
+                        <label class="form-check-label" for="perm_agenda"><i class="bi bi-calendar-event me-1"></i>Agenda</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="dashboard" id="perm_dashboard">
+                        <label class="form-check-label" for="perm_dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="audit" id="perm_audit">
+                        <label class="form-check-label" for="perm_audit"><i class="bi bi-clipboard-data me-1"></i>Auditoría</label>
                     </div>
                 </div>
             </div>
-            
-            <button type="submit" class="btn btn-primary btn-lg w-100">Registrar Usuario</button>
+
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-check2"></i> Registrar Usuario
+            </button>
+
+            <div class="footer-actions">
+                <a href="/auth/users" class="btn-back">
+                    <i class="bi bi-arrow-left"></i> Volver a lista de usuarios
+                </a>
+            </div>
+
         </form>
-        
-        <div class="mt-3 text-center">
-            <a href="/auth/users" class="btn btn-outline-secondary btn-sm">← Volver a lista de usuarios</a>
-        </div>
+
     </div>
+
 </div>
 
-<!-- Modal de notificaciones -->
-<div class="modal fade" id="notificationModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODALES -->
+<!-- ================================================== -->
+
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1">
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title">⚠️ Confirmación</h5>
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
-                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
             </div>
         </div>
     </div>
@@ -139,16 +551,18 @@
 <!-- Loading overlay -->
 <div id="loadingOverlay" class="spinner-overlay" style="display:none;">
     <div class="spinner-box">
-        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-        <h5 class="mb-0">Registrando usuario...</h5>
-        <p class="text-muted small">Por favor espera.</p>
+        <div class="spinner-border" role="status"></div>
+        <h5>Registrando usuario</h5>
+        <p>Por favor espera.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ============================================================
+// CÓDIGO ORIGINAL COMPLETO - SIN MODIFICAR NINGUNA FUNCIÓN
+// ============================================================
+
 function showNotification(title, bodyHTML, type = 'info') {
     const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
     const header = document.getElementById('notificationHeader');
@@ -180,60 +594,58 @@ function hideLoading() {
 
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // Validar campos
+
     let valid = true;
     const fields = document.querySelectorAll('#registerForm [required]');
     fields.forEach(field => {
         if (!field.value) { field.classList.add('is-invalid'); valid = false; }
         else { field.classList.remove('is-invalid'); }
     });
-    
+
     const password = document.getElementById('password').value;
     if (password && password.length < 6) {
         document.getElementById('password').classList.add('is-invalid');
         valid = false;
     }
-    
+
     if (!valid) {
         showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning');
         return;
     }
-    
-    // Recopilar permisos
+
     const selectedPermissions = [];
     document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
         selectedPermissions.push(cb.value);
     });
-    
+
     showConfirm(
         'Registrar Usuario',
         `<p>¿Estás seguro de registrar a <strong>${document.getElementById('full_name').value}</strong>?</p><p class="text-muted">Rol: ${document.getElementById('role').value.toUpperCase()}</p>`,
         async function() {
             showLoading();
-            
+
             const formData = new FormData(e.target);
             formData.append('permissions', selectedPermissions.join(','));
-            
+
             try {
                 const response = await fetch('/auth/register', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 hideLoading();
-                
+
                 if (!response.ok) {
                     const error = await response.json();
                     showNotification('Error', `<p>${error.detail || 'Error al registrar'}</p>`, 'error');
                     return;
                 }
-                
+
                 const result = await response.json();
                 showNotification('Usuario Registrado', `<p>${result.message}</p>`, 'success');
-                
+
                 setTimeout(() => window.location.href = '/auth/users', 1500);
-                
+
             } catch (error) {
                 hideLoading();
                 showNotification('Error', `<p>${error.message}</p>`, 'error');

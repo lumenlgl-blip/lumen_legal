@@ -1,30 +1,330 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Usuarios - Lumen Legal</title>
+    <title>Usuarios · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
-        .modal-content { border-radius: 15px; }
-        .permission-badge { font-size: 11px; }
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Botón menú */
+        .btn-menu-modern {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Header */
+        .page-header {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            color: #2a6df4;
+            font-size: 2rem;
+        }
+        .page-header .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .page-header .header-actions .btn {
+            border-radius: 60px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Tarjeta principal */
+        .card-modern {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .card-modern .card-header-custom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #eef3fa;
+            margin-bottom: 16px;
+        }
+        .card-modern .card-header-custom h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin: 0;
+            font-size: 1rem;
+        }
+        .card-modern .card-header-custom h5 i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+        .card-modern .card-header-custom .badge-count {
+            background: #0b1e33;
+            color: white;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+        }
+
+        /* Tabla */
+        .table-modern {
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .table-modern thead {
+            background: #f8faff;
+            border-bottom: 2px solid #eef3fa;
+        }
+        .table-modern thead th {
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #4a5b6e;
+            padding: 10px 12px;
+            border: none;
+        }
+        .table-modern tbody td {
+            padding: 10px 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf2f9;
+            color: #1e293b;
+        }
+        .table-modern tbody tr:hover {
+            background: rgba(42,109,244,0.02);
+        }
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badges */
+        .badge-role {
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+        .badge-role.admin { background: #0b1e33; color: white; }
+        .badge-role.operador { background: #e2edff; color: #1f4f9e; }
+        .badge-role.consultor { background: #e3f5ee; color: #1a8b5c; }
+
+        .badge-status {
+            padding: 3px 12px;
+            border-radius: 40px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge-status.active { background: #e3f5ee; color: #1a8b5c; }
+        .badge-status.inactive { background: #eef2f6; color: #4a5b6e; }
+        .badge-status.pending { background: #ffedd5; color: #9b5e00; }
+
+        .permission-badge {
+            font-size: 0.55rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 40px;
+            background: #eef3fa;
+            color: #4a5b6e;
+            display: inline-block;
+            margin: 1px 2px;
+        }
+
+        /* Botones de acción */
+        .btn-action {
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-action i { margin-right: 3px; }
+        .btn-action.reset { background: rgba(245,179,66,0.12); color: #b7791f; }
+        .btn-action.reset:hover { background: #f5b342; color: white; }
+        .btn-action.permissions { background: rgba(42,109,244,0.08); color: #2a6df4; }
+        .btn-action.permissions:hover { background: #2a6df4; color: white; }
+        .btn-action.delete { background: rgba(220,53,69,0.08); color: #b12a2a; }
+        .btn-action.delete:hover { background: #dc3545; color: white; }
+
+        /* Modales modernos */
+        .modal-modern .modal-content {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 20px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+        }
+        .modal-modern .form-control {
+            border-radius: 16px;
+            border: 1.5px solid #e9edf4;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.6);
+            transition: all 0.2s;
+        }
+        .modal-modern .form-control:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: white;
+        }
+
+        .modal-modern .permission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 16px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 16px;
+            padding: 14px 18px;
+            border: 1px solid #edf2f9;
+        }
+        .modal-modern .permission-grid .form-check {
+            padding: 4px 0;
+        }
+        .modal-modern .permission-grid .form-check-input {
+            border-radius: 4px;
+            border: 1.5px solid #d0d8e3;
+            cursor: pointer;
+        }
+        .modal-modern .permission-grid .form-check-input:checked {
+            background-color: #2a6df4;
+            border-color: #2a6df4;
+        }
+        .modal-modern .permission-grid .form-check-label {
+            font-size: 0.8rem;
+            color: #1e293b;
+            cursor: pointer;
+            padding-left: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 1.3rem; }
+            .page-header h1 i { font-size: 1.4rem; }
+            .page-header { flex-direction: column; align-items: stretch; text-align: center; }
+            .page-header .header-actions { justify-content: center; }
+            .card-modern { padding: 16px; }
+            .modal-modern .permission-grid { grid-template-columns: 1fr; }
+            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+            .table-modern { font-size: 0.75rem; }
+            .table-modern thead th { font-size: 0.6rem; padding: 6px 8px; }
+            .table-modern tbody td { padding: 6px 8px; }
+        }
+        @media (max-width: 480px) {
+            .page-header .header-actions .btn { font-size: 0.75rem; padding: 6px 14px; }
+            .table-modern { font-size: 0.65rem; }
+            .btn-action { font-size: 0.6rem; padding: 3px 8px; }
+        }
     </style>
 </head>
-<body class="bg-light">
-<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
-<div class="container mt-5">
-    <h1 class="text-center mb-4">👥 Gestión de Usuarios</h1>
-    <div class="card p-4 shadow">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="mb-0"><strong>Usuarios Registrados</strong></h5>
-            <div>
-                <a href="/auth/register" class="btn btn-primary btn-sm">+ Nuevo Usuario</a>
-                <a href="/auth/logout" class="btn btn-danger btn-sm">🚪 Cerrar Sesión</a>
-            </div>
+<body>
+
+<!-- Botón menú -->
+<a href="/" class="btn-menu-modern">
+    <i class="bi bi-arrow-left"></i> Menú Principal
+</a>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-people"></i> Gestión de Usuarios
+        </h1>
+        <div class="header-actions">
+            <a href="/auth/register" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Nuevo Usuario
+            </a>
+            <a href="/auth/logout" class="btn btn-outline-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de usuarios -->
+    <div class="card-modern">
+        <div class="card-header-custom">
+            <h5><i class="bi bi-list-ul"></i> Usuarios Registrados</h5>
+            <span class="badge-count"><i class="bi bi-person"></i> Total: <span id="userCount">0</span></span>
         </div>
         <div class="table-responsive">
-            <table class="table table-striped table-hover align-middle">
+            <table class="table table-modern" id="usersTable">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -33,93 +333,110 @@
                         <th>Rol</th>
                         <th>Estado</th>
                         <th>Permisos</th>
-                        <th>Acciones</th>
+                        <th style="min-width:160px;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="usersTableBody">
                     {{ rows }}
                 </tbody>
             </table>
         </div>
     </div>
+
 </div>
 
-<!-- Modal para restablecer contraseña -->
-<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL RESTABLECER CONTRASEÑA -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="resetPasswordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title">🔑 Restablecer Contraseña</h5>
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-key me-2"></i>Restablecer Contraseña</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Nueva contraseña para: <strong id="resetUserName"></strong></p>
-                <input type="password" id="newPasswordInput" class="form-control form-control-lg" placeholder="Nueva contraseña..." autocomplete="off">
+                <input type="password" id="newPasswordInput" class="form-control form-control-lg"
+                       placeholder="Nueva contraseña..." autocomplete="off">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" id="confirmResetBtn" class="btn btn-warning">Restablecer</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirmResetBtn" class="btn btn-warning">
+                    <i class="bi bi-check2"></i> Restablecer
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para editar permisos -->
-<div class="modal fade" id="editPermissionsModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL EDITAR PERMISOS -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="editPermissionsModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">⚙️ Editar Permisos</h5>
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-gear me-2"></i>Editar Permisos</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Permisos para: <strong id="editPermUserName"></strong></p>
                 <input type="hidden" id="editPermUserId">
-                <div class="border rounded p-3">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="clients" id="edit_perm_clients"><label class="form-check-label" for="edit_perm_clients">👤 Registrar Clientes</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="contracts" id="edit_perm_contracts"><label class="form-check-label" for="edit_perm_contracts">📜 Contratación</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="cases" id="edit_perm_cases"><label class="form-check-label" for="edit_perm_cases">📁 Relacionar Expediente</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="payments" id="edit_perm_payments"><label class="form-check-label" for="edit_perm_payments">💰 Abonos y Pagos</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="actuaciones" id="edit_perm_actuaciones"><label class="form-check-label" for="edit_perm_actuaciones">📄 Expediente Electrónico</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="consult" id="edit_perm_consult"><label class="form-check-label" for="edit_perm_consult">🔍 Consultas</label></div>
+                <div class="permission-grid">
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="clients" id="edit_perm_clients"><label class="form-check-label" for="edit_perm_clients"><i class="bi bi-person me-1"></i>Clientes</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="contracts" id="edit_perm_contracts"><label class="form-check-label" for="edit_perm_contracts"><i class="bi bi-file-earmark-text me-1"></i>Contratos</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="cases" id="edit_perm_cases"><label class="form-check-label" for="edit_perm_cases"><i class="bi bi-folder me-1"></i>Expedientes</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="payments" id="edit_perm_payments"><label class="form-check-label" for="edit_perm_payments"><i class="bi bi-cash me-1"></i>Pagos</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="actuaciones" id="edit_perm_actuaciones"><label class="form-check-label" for="edit_perm_actuaciones"><i class="bi bi-file-pdf me-1"></i>Actuaciones</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="consult" id="edit_perm_consult"><label class="form-check-label" for="edit_perm_consult"><i class="bi bi-search me-1"></i>Consultas</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="agenda" id="edit_perm_agenda"><label class="form-check-label" for="edit_perm_agenda"><i class="bi bi-calendar-event me-1"></i>Agenda</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="dashboard" id="edit_perm_dashboard"><label class="form-check-label" for="edit_perm_dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="audit" id="edit_perm_audit"><label class="form-check-label" for="edit_perm_audit"><i class="bi bi-clipboard-data me-1"></i>Auditoría</label></div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" id="savePermissionsBtn" class="btn btn-info">💾 Guardar Permisos</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="savePermissionsBtn" class="btn btn-primary">
+                    <i class="bi bi-check2"></i> Guardar Permisos
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de notificaciones -->
-<div class="modal fade" id="notificationModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIONES -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL CONFIRMACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title">⚠️ Confirmación</h5>
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
-                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
             </div>
         </div>
     </div>
@@ -127,6 +444,10 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ============================================================
+// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
+// ============================================================
+
 function showNotification(title, bodyHTML, type = 'info') {
     const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
     const header = document.getElementById('notificationHeader');
@@ -150,6 +471,12 @@ function showConfirm(title, bodyHTML, onConfirm) {
 
 let currentResetUserId = null;
 
+// Contar usuarios
+document.addEventListener('DOMContentLoaded', function() {
+    const rows = document.querySelectorAll('#usersTableBody tr');
+    document.getElementById('userCount').textContent = rows.length;
+});
+
 // Restablecer contraseña
 document.querySelectorAll('.reset-password').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -166,14 +493,14 @@ document.getElementById('confirmResetBtn').addEventListener('click', async () =>
         showNotification('Contraseña vacía', '<p>Por favor ingresa una nueva contraseña.</p>', 'warning');
         return;
     }
-    
+
     bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal')).hide();
-    
+
     setTimeout(() => {
         showConfirm('Restablecer Contraseña', '<p>¿Estás seguro de restablecer la contraseña de este usuario?</p>', async function() {
             const formData = new FormData();
             formData.append('new_password', newPassword);
-            
+
             try {
                 const response = await fetch(`/auth/reset-password/${currentResetUserId}`, { method: 'POST', body: formData });
                 if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error'}</p>`, 'error'); return; }
@@ -192,12 +519,12 @@ document.querySelectorAll('.edit-permissions').forEach(btn => {
         const userId = this.dataset.id;
         const name = this.dataset.name;
         const permissions = this.dataset.permissions || '';
-        
+
         document.getElementById('editPermUserId').value = userId;
         document.getElementById('editPermUserName').textContent = name;
-        
+
         document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => { cb.checked = false; });
-        
+
         if (permissions === 'all') {
             document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => { cb.checked = true; });
         } else {
@@ -206,7 +533,7 @@ document.querySelectorAll('.edit-permissions').forEach(btn => {
                 if (cb) cb.checked = true;
             });
         }
-        
+
         new bootstrap.Modal(document.getElementById('editPermissionsModal')).show();
     });
 });
@@ -215,29 +542,26 @@ document.getElementById('savePermissionsBtn').addEventListener('click', async ()
     const userId = document.getElementById('editPermUserId').value;
     const selectedPermissions = [];
     document.querySelectorAll('#editPermissionsModal input[type="checkbox"]:checked').forEach(cb => { selectedPermissions.push(cb.value); });
-    
+
     const formData = new FormData();
     formData.append('permissions', selectedPermissions.join(','));
-    
+
     try {
         const response = await fetch(`/auth/update-permissions/${userId}`, { method: 'POST', body: formData });
         if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error'}</p>`, 'error'); return; }
-        
+
         bootstrap.Modal.getInstance(document.getElementById('editPermissionsModal')).hide();
         showNotification('Permisos Actualizados', '<p>Los permisos se actualizaron correctamente.</p>', 'success');
-        
-        // Si se editó a sí mismo, refrescar la cookie
-        // Obtener el ID del usuario actual desde el token
+
         const sessionResponse = await fetch('/auth/check-session');
         const sessionData = await sessionResponse.json();
-        
+
         if (sessionData.authenticated && sessionData.user_id == userId) {
-            // Refrescar permisos del usuario actual
             await fetch('/auth/refresh-permissions', { method: 'POST' });
         }
-        
+
         setTimeout(() => location.reload(), 1500);
-        
+
     } catch (error) {
         showNotification('Error', `<p>${error.message}</p>`, 'error');
     }

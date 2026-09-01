@@ -15,7 +15,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = os.getenv("JWT_SECRET", "MI_CLAVE_SUPER_SECRETA_CAMBIAR_EN_PRODUCCION_123456789")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10  # 10 minutos
+ACCESS_TOKEN_EXPIRE_MINUTES = 10
 
 def get_password_hash(password):
     if len(password.encode('utf-8')) > 72:
@@ -86,10 +86,31 @@ async def login(
         html = html.replace("<!-- ERROR_MESSAGE -->", '<div class="alert alert-danger">⚠️ Credenciales incorrectas</div>')
         return HTMLResponse(content=html, status_code=401)
     
+    # Registrar en bitácora
+    from app.models.core import ActivityLog
+    log = ActivityLog(
+        firm_id=user.firm_id,
+        user_id=user.id,
+        action="login",
+        entity="Usuario",
+        entity_id=user.id,
+        description=f"{user.full_name} inició sesión"
+    )
+    db.add(log)
+    db.commit()
+    
     access_token = create_access_token(data={"sub": str(user.id), "role": user.role, "firm_id": user.firm_id})
     
     response = RedirectResponse("/", status_code=302)
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60, path="/")
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/"
+    )
     return response
 
 @router.get("/logout")
@@ -159,13 +180,11 @@ async def list_users(request: Request, db: Session = Depends(get_db)):
     
     users = db.query(User).filter(User.firm_id == user.firm_id).all()
     
-    # Generar filas de la tabla
     rows_html = ""
     for u in users:
         status = "✅ Activo" if u.is_active else "❌ Inactivo"
         role_badge = "bg-danger" if u.role == "admin" else "bg-success" if u.role == "abogado" else "bg-info"
         
-        # Formatear permisos
         permissions_html = ""
         if u.role == "admin" or u.permissions == "all":
             permissions_html = '<span class="badge bg-dark permission-badge">Todos</span>'
@@ -176,7 +195,10 @@ async def list_users(request: Request, db: Session = Depends(get_db)):
                 "cases": "📁 Expedientes",
                 "payments": "💰 Pagos",
                 "actuaciones": "📄 Actuaciones",
-                "consult": "🔍 Consultas"
+                "consult": "🔍 Consultas",
+                "agenda": "📅 Agenda",
+                "dashboard": "📊 Dashboard",
+                "audit": "🔎 Auditoría"
             }
             for perm in u.permissions.split(","):
                 perm = perm.strip()
@@ -204,7 +226,6 @@ async def list_users(request: Request, db: Session = Depends(get_db)):
             </tr>
         """
     
-    # Leer plantilla y reemplazar
     with open("app/templates/list_users.html", "r", encoding="utf-8") as f:
         html = f.read()
     html = html.replace("{{ rows }}", rows_html)
@@ -262,7 +283,7 @@ async def check_password_change(request: Request, db: Session = Depends(get_db))
         return {"must_change": False}
     return {"must_change": user.must_change_password}
 
-# --- CAMBIAR CONTRASEÑA ---
+# --- CAMBIAR CONTRASEÑA (primer acceso) ---
 @router.post("/change-password")
 async def change_password(
     request: Request,
@@ -273,8 +294,35 @@ async def change_password(
     if not user:
         raise HTTPException(401, "No autenticado")
     
-    if len(new_password) < 6:
-        raise HTTPException(400, "La contraseña debe tener al menos 6 caracteres")
+    if len(new_password) < 8:
+        raise HTTPException(400, "La contraseña debe tener al menos 8 caracteres")
+    
+    user.hashed_password = get_password_hash(new_password)
+    user.must_change_password = False
+    db.commit()
+    
+    return {"message": "Contraseña actualizada correctamente"}
+
+# --- CAMBIAR CONTRASEÑA (desde perfil) ---
+@router.post("/change-password-auth")
+async def change_password_auth(
+    request: Request,
+    current_password: str = Form(...),
+    new_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = get_current_user(request, db)
+    if not user:
+        raise HTTPException(401, "No autenticado")
+    
+    if not verify_password(current_password, user.hashed_password):
+        raise HTTPException(400, "La contraseña actual es incorrecta")
+    
+    if len(new_password) < 8:
+        raise HTTPException(400, "La nueva contraseña debe tener al menos 8 caracteres")
+    
+    if verify_password(new_password, user.hashed_password):
+        raise HTTPException(400, "La nueva contraseña no puede ser igual a la anterior")
     
     user.hashed_password = get_password_hash(new_password)
     user.must_change_password = False
@@ -302,18 +350,16 @@ async def check_session(request: Request, db: Session = Depends(get_db)):
         return {"authenticated": False}
     return {"authenticated": True, "user_id": user.id, "full_name": user.full_name, "role": user.role}
 
-# --- Actualizar permisos del usuario actual (sin recargar) ---
+# --- REFRESCAR PERMISOS ---
 @router.post("/refresh-permissions")
 async def refresh_permissions(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    """Actualiza los permisos del usuario en su cookie sin cerrar sesión"""
     user = get_current_user(request, db)
     if not user:
         raise HTTPException(401, "No autenticado")
     
-    # Crear nuevo token con permisos actualizados
     access_token = create_access_token(
         data={"sub": str(user.id), "role": user.role, "firm_id": user.firm_id}
     )
@@ -328,3 +374,39 @@ async def refresh_permissions(
         path="/"
     )
     return response
+
+# --- Página de cambio de contraseña desde login ---
+@router.get("/change-password-login", response_class=HTMLResponse)
+async def change_password_login_form(request: Request):
+    with open("app/templates/change_password_login.html", "r", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read())
+
+# --- Procesar cambio de contraseña desde login ---
+@router.post("/change-password-login")
+async def change_password_login(
+    email: str = Form(...),
+    current_password: str = Form(...),
+    new_password: str = Form(...),
+    confirm_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    # Buscar usuario
+    user = db.query(User).filter(User.email == email, User.is_active == True).first()
+    
+    if not user or not verify_password(current_password, user.hashed_password):
+        raise HTTPException(400, "Email o contraseña actual incorrecta")
+    
+    if len(new_password) < 8:
+        raise HTTPException(400, "La nueva contraseña debe tener al menos 8 caracteres")
+    
+    if new_password != confirm_password:
+        raise HTTPException(400, "Las contraseñas no coinciden")
+    
+    if verify_password(new_password, user.hashed_password):
+        raise HTTPException(400, "La nueva contraseña no puede ser igual a la anterior")
+    
+    user.hashed_password = get_password_hash(new_password)
+    user.must_change_password = False
+    db.commit()
+    
+    return RedirectResponse("/auth/login", status_code=302)

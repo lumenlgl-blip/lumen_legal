@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: letter;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #1a2b4a;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #1a3b6b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .pdf-logo {
+            width: 100px;
+            height: auto;
+        }
+        .pdf-header-info {
+            text-align: right;
+        }
+        .pdf-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a3b6b;
+        }
+        .pdf-subtitle {
+            font-size: 12px;
+            color: #6b7b8f;
+        }
+        .pdf-section {
+            margin-top: 20px;
+            border: 1px solid #e0e5ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .pdf-section-title {
+            background: #1a3b6b;
+            color: white;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pdf-table td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #eef2f7;
+        }
+        .pdf-table td:first-child {
+            font-weight: bold;
+            width: 35%;
+            background: #f8fafc;
+            color: #4a5b6e;
+        }
+        .pdf-table tr:last-child td {
+            border-bottom: none;
+        }
+        .pdf-footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 9px;
+            color: #8a9bb0;
+            border-top: 1px solid #e0e5ec;
+            padding-top: 10px;
+        }
+        .pdf-firmas {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+        .pdf-firma {
+            text-align: center;
+            width: 200px;
+        }
+        .pdf-firma-line {
+            border-top: 1px solid #1a2b4a;
+            margin-top: 40px;
+            padding-top: 5px;
+            font-size: 10px;
+            color: #6b7b8f;
+        }
+        .highlight {
+            color: #2a6df4;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="pdf-header">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+        <div class="pdf-header-info">
+            <div class="pdf-title">LUMEN LEGAL</div>
+            <div class="pdf-subtitle">Despacho Jurídico</div>
+        </div>
+    </div>
+    
+    <div style="text-align:center; margin: 30px 0;">
+        <h1 style="color:#1a3b6b; font-size:22px; margin:0;">CONSTANCIA DE REGISTRO DE CLIENTE</h1>
+        <p style="color:#6b7b8f; font-size:12px; margin:5px 0;">Folio: <span class="highlight">{{ folio }}</span></p>
+    </div>
+    
+    <div class="pdf-section">
+        <div class="pdf-section-title">DATOS PERSONALES</div>
+        <table class="pdf-table">
+            <tr><td>Nombre Completo:</td><td>{{ nombre_completo }}</td></tr>
+            <tr><td>CURP:</td><td>{{ curp }}</td></tr>
+            <tr><td>Teléfono:</td><td>{{ telefono }}</td></tr>
+            <tr><td>Email:</td><td>{{ email or 'N/A' }}</td></tr>
+            <tr><td>Domicilio:</td><td>{{ domicilio }}</td></tr>
+            <tr><td>Ocupación:</td><td>{{ ocupacion }}</td></tr>
+        </table>
+    </div>
+    
+    <div class="pdf-section">
+        <div class="pdf-section-title">DATOS DE REGISTRO</div>
+        <table class="pdf-table">
+            <tr><td>Folio de Registro:</td><td><span class="highlight">{{ folio }}</span></td></tr>
+            <tr><td>Expediente Interno:</td><td>{{ expediente_interno }}/{{ anio }}</td></tr>
+            <tr><td>Fecha de Registro:</td><td>{{ fecha_registro }}</td></tr>
+        </table>
+    </div>
+    
+    <div class="pdf-firmas">
+        <div class="pdf-firma">
+            <div class="pdf-firma-line">Firma del Cliente</div>
+        </div>
+        <div class="pdf-firma">
+            <div class="pdf-firma-line">Firma del Abogado</div>
+        </div>
+    </div>
+    
+    <div class="pdf-footer">
+        Lumen Legal &copy; {{ anio }} - Documento generado electrónicamente.<br>
+        Este documento no requiere firma física para su validez.
+    </div>
+</body>
+</html>

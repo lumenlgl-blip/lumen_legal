@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bitácora · Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            padding-top: 20px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+        }
+
+        /* Botón menú flotante */
+        .btn-menu-modern {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Título principal */
+        .page-header {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            color: #2a6df4;
+            font-size: 2rem;
+        }
+        .page-header .badge-count {
+            background: #0b1e33;
+            color: white;
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+        }
+        .page-header .badge-count i {
+            margin-right: 6px;
+            color: #7aa9ff;
+        }
+
+        /* Tarjeta principal */
+        .card-modern {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 28px;
+            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.08);
+            padding: 28px;
+            transition: box-shadow 0.2s;
+        }
+        .card-modern:hover {
+            box-shadow: 0 28px 56px -16px rgba(0,20,40,0.12);
+        }
+
+        .card-header-custom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #eef3fa;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .card-header-custom h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        .card-header-custom h5 i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+        .card-header-custom .badge-live {
+            background: #e3f5ee;
+            color: #1a8b5c;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 4px 14px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .card-header-custom .badge-live .dot {
+            width: 8px;
+            height: 8px;
+            background: #1a8b5c;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 1.6s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* Cards de logs */
+        .log-item {
+            background: white;
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            border-left: 5px solid #d0d8e3;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .log-item:hover {
+            background: #fafcff;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .log-item .log-content {
+            flex: 1;
+            min-width: 180px;
+        }
+        .log-item .log-content .log-user {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.95rem;
+        }
+        .log-item .log-content .log-action {
+            font-weight: 600;
+            color: #2a4a7a;
+        }
+        .log-item .log-content .log-entity {
+            font-weight: 600;
+            color: #0b1e33;
+        }
+        .log-item .log-content .log-desc {
+            font-size: 0.8rem;
+            color: #6b7b8f;
+            display: block;
+            margin-top: 2px;
+        }
+        .log-item .log-date {
+            font-size: 0.75rem;
+            color: #8a9bb0;
+            font-weight: 500;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .log-item .log-date i {
+            font-size: 0.8rem;
+        }
+
+        /* Colores por acción */
+        .log-create { border-left-color: #1a8b5c; }
+        .log-update { border-left-color: #2a6df4; }
+        .log-delete { border-left-color: #dc3545; }
+        .log-login { border-left-color: #f5b342; }
+        .log-logout { border-left-color: #6f42c1; }
+        .log-error { border-left-color: #dc3545; }
+
+        .log-create .log-action { color: #1a8b5c; }
+        .log-update .log-action { color: #2a6df4; }
+        .log-delete .log-action { color: #dc3545; }
+        .log-login .log-action { color: #b7791f; }
+        .log-logout .log-action { color: #6f42c1; }
+        .log-error .log-action { color: #dc3545; }
+
+        /* Badge de acción */
+        .action-badge {
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            background: #eef3fa;
+            color: #4a5b6e;
+            margin-left: 6px;
+        }
+        .action-badge.create { background: #e3f5ee; color: #1a8b5c; }
+        .action-badge.update { background: #e3effa; color: #2a6df4; }
+        .action-badge.delete { background: #fde8e6; color: #dc3545; }
+        .action-badge.login { background: #fdf3e0; color: #b7791f; }
+        .action-badge.logout { background: #ede7f5; color: #6f42c1; }
+        .action-badge.error { background: #fde8e6; color: #dc3545; }
+
+        /* Loading overlay */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 36px 48px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+            margin-bottom: 0;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* Estado vacío */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .empty-state i {
+            font-size: 3.5rem;
+            color: #d0d8e3;
+            margin-bottom: 12px;
+        }
+        .empty-state h5 {
+            color: #0b1e33;
+            font-weight: 600;
+        }
+        .empty-state p {
+            color: #8a9bb0;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 1.3rem; }
+            .page-header h1 i { font-size: 1.4rem; }
+            .card-modern { padding: 18px; }
+            .log-item { padding: 12px 14px; flex-direction: column; align-items: stretch; }
+            .log-item .log-date { margin-top: 4px; }
+            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Botón menú -->
+<a href="/" class="btn-menu-modern">
+    <i class="bi bi-arrow-left"></i> Menú Principal
+</a>
+
+<div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-list-check"></i> Bitácora de Actividades
+        </h1>
+        <span class="badge-count" id="logCounter">
+            <i class="bi bi-database"></i> <span id="logCountNumber">0</span> registros
+        </span>
+    </div>
+
+    <!-- Tarjeta principal -->
+    <div class="card-modern">
+        <div class="card-header-custom">
+            <h5><i class="bi bi-clock-history"></i> Últimas 100 actividades</h5>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-outline-danger btn-sm" onclick="openClearModal()" style="border-radius:20px;padding:4px 14px;">
+                    <i class="bi bi-trash3 me-2"></i>Limpiar Bitácora
+                </button>
+                <span class="badge-live">
+                    <span class="dot"></span> En vivo
+                </span>
+            </div>
+        </div>
+        <div id="logsContainer">
+            <!-- Los logs se renderizan aquí -->
+        </div>
+    </div>
+
+</div>
+
+
+<!-- ================================================== -->
+<!-- MODAL DE CONTRASEÑA PARA LIMPIAR -->
+<!-- ================================================== -->
+<div class="modal fade" id="clearPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:20px;border:none;">
+            <div class="modal-header bg-danger text-white" style="border-radius:20px 20px 0 0;">
+                <h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Verificar Identidad</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">Ingresa tu contraseña de administrador para continuar:</p>
+                <input type="password" id="clearPasswordInput" class="form-control form-control-lg" placeholder="Contraseña..." autocomplete="off">
+                <div id="clearPasswordError" class="text-danger mt-2" style="display:none;"></div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmClearBtn">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL DE CONFIRMACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade" id="confirmClearModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:20px;border:none;">
+            <div class="modal-header bg-warning text-dark" style="border-radius:20px 20px 0 0;">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Limpieza</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <strong>⚠️ ADVERTENCIA:</strong> Se eliminarán <strong>TODOS</strong> los registros de la bitácora.
+                    Esta acción <strong>no se puede deshacer</strong>.
+                </div>
+                <p>¿Estás completamente seguro de que deseas continuar?</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
+                <button type="button" class="btn btn-danger btn-lg" id="confirmDeleteBtn">🗑️ Eliminar Todo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL DE NOTIFICACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:20px;border:none;">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- LOADING OVERLAY MODERNO -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5>Cargando registros</h5>
+        <p>Un momento, por favor.</p>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- SCRIPTS -->
+<!-- ================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+async function loadLogs() {
+    showLoading();
+
+    try {
+        const response = await fetch('/api/activity/logs');
+
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+        }
+
+        const logs = await response.json();
+
+        const container = document.getElementById('logsContainer');
+        container.innerHTML = '';
+
+        // Actualizar contador
+        const count = Array.isArray(logs) ? logs.length : 0;
+        document.getElementById('logCountNumber').textContent = count;
+
+        if (!Array.isArray(logs) || logs.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No hay registros</h5>
+                    <p>Todavía no se han registrado actividades en el sistema.</p>
+                </div>
+            `;
+            hideLoading();
+            return;
+        }
+
+        const actionLabels = {
+            create: '✅ Creó',
+            update: '✏️ Actualizó',
+            delete: '🗑️ Eliminó',
+            login: '🔑 Inició sesión',
+            logout: '🚪 Cerró sesión',
+            error: '❌ Error'
+        };
+
+        const actionBadgeLabels = {
+            create: 'create',
+            update: 'update',
+            delete: 'delete',
+            login: 'login',
+            logout: 'logout',
+            error: 'error'
+        };
+
+        logs.forEach(log => {
+            const actionLabel = actionLabels[log.action] || log.action;
+            const badgeClass = actionBadgeLabels[log.action] || '';
+
+            const card = document.createElement('div');
+            card.className = `log-item log-${log.action}`;
+            card.innerHTML = `
+                <div class="log-content">
+                    <div>
+                        <span class="log-user">${log.user}</span>
+                        <span class="log-action">${actionLabel}</span>
+                        <span class="log-entity">${log.entity}</span>
+                        <span class="action-badge ${badgeClass}">${log.action}</span>
+                    </div>
+                    ${log.description ? `<span class="log-desc">${log.description}</span>` : ''}
+                </div>
+                <div class="log-date">
+                    <i class="bi bi-clock"></i> ${log.date}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+    } catch (e) {
+        const container = document.getElementById('logsContainer');
+        container.innerHTML = `
+            <div class="alert alert-danger d-flex align-items-center gap-3" style="border-radius:16px;border:none;">
+                <i class="bi bi-exclamation-triangle fs-4"></i>
+                <div>
+                    <strong>Error al cargar</strong><br>
+                    <span class="text-muted small">${e.message}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    hideLoading();
+}
+
+// ==================================================
+// FUNCIONES PARA LIMPIAR BITÁCORA
+// ==================================================
+
+let clearPasswordVerified = false;
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function openClearModal() {
+    document.getElementById('clearPasswordInput').value = '';
+    document.getElementById('clearPasswordError').style.display = 'none';
+    clearPasswordVerified = false;
+    new bootstrap.Modal(document.getElementById('clearPasswordModal')).show();
+}
+
+let clearPasswordSaved = '';
+
+document.getElementById('confirmClearBtn').addEventListener('click', async () => {
+    const password = document.getElementById('clearPasswordInput').value;
+    const errorEl = document.getElementById('clearPasswordError');
+    
+    if (!password) {
+        errorEl.textContent = 'Ingresa tu contraseña';
+        errorEl.style.display = 'block';
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('password', password);
+    
+    try {
+        const response = await fetch('/api/activity/clear', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+            errorEl.textContent = result.message || 'Error al verificar';
+            errorEl.style.display = 'block';
+            return;
+        }
+        
+        // Guardar la contraseña para usarla después
+        clearPasswordSaved = password;
+        
+        // Cerrar modal de contraseña
+        bootstrap.Modal.getInstance(document.getElementById('clearPasswordModal')).hide();
+        
+        // Limpiar input visual
+        document.getElementById('clearPasswordInput').value = '';
+        
+        // Mostrar modal de confirmación
+        new bootstrap.Modal(document.getElementById('confirmClearModal')).show();
+        
+    } catch (error) {
+        errorEl.textContent = 'Error de conexión';
+        errorEl.style.display = 'block';
+    }
+});
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    // Usar la contraseña guardada
+    const password = clearPasswordSaved;
+    
+    if (!password) {
+        showNotification('Error', '<p>Contraseña no disponible. Intenta de nuevo.</p>', 'error');
+        return;
+    }
+    
+    // Cerrar modal de confirmación
+    bootstrap.Modal.getInstance(document.getElementById('confirmClearModal')).hide();
+    
+    showLoading();
+    
+    const formData = new FormData();
+    formData.append('password', password);
+    
+    try {
+        const response = await fetch('/api/activity/clear', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        hideLoading();
+        
+        if (result.success) {
+            showNotification(
+                'Bitácora Limpiada',
+                `<p>${result.message}</p><p class="text-muted">Se conserva el registro de esta limpieza.</p>`,
+                'success'
+            );
+            loadLogs();
+        } else {
+            showNotification('Error', `<p>${result.message}</p>`, 'error');
+        }
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('Error', `<p>${error.message}</p>`, 'error');
+    }
+});
+
+// Iniciar carga
+loadLogs();
+</script>
+</body>
+</html>

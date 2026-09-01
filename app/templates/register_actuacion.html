@@ -1,77 +1,366 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Expediente Electrónico - Lumen Legal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expediente Electrónico · Lumen Legal</title>
+    <!-- Bootstrap 5 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Google Font (Inter) para un look más moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
-        body { background-color: #f8f9fa; }
-        .client-card { border-left: 4px solid #0d6efd; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
-        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
-        .case-card { border-left: 4px solid #ffc107; background: #fff; transition: all 0.3s ease; cursor: pointer; }
-        .case-card:hover { background: #f8f9fa; transform: translateX(5px); }
-        .actuacion-card { border-left: 4px solid #0d6efd; background: #f8f9fa; }
-        .modal-pdf { width: 100%; height: 80vh; border: none; }
-        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
-        .file-preview { max-width: 100%; height: 500px; border: 2px solid #dee2e6; border-radius: 10px; }
-        .spinner-overlay {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f1f5f9;
+            padding-bottom: 4rem;
+        }
+        .bg-soft-primary {
+            background: #eef2ff;
+        }
+        .shadow-soft {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .shadow-hover {
+            transition: all 0.2s ease;
+        }
+        .shadow-hover:hover {
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+            transform: translateY(-2px);
+        }
+
+        /* Menú principal flotante */
+        .btn-menu-float {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 20px;
+            left: 20px;
+            z-index: 1050;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            border-radius: 60px;
+            padding: 10px 20px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #1e293b;
+            transition: all 0.2s;
+        }
+        .btn-menu-float:hover {
+            background: #ffffff;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+            transform: scale(1.02);
+        }
+
+        /* Header principal */
+        .page-header {
+            background: linear-gradient(145deg, #ffffff 0%, #fafcff 100%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 2.5rem 0 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .search-card {
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
+            padding: 1.75rem 2rem;
+            transition: all 0.2s;
+        }
+        .search-card .form-control-lg {
+            border-radius: 60px;
+            padding: 0.9rem 1.75rem;
+            font-size: 0.95rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+        .search-card .form-control-lg:focus {
+            background: #ffffff;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.12);
+        }
+        .btn-primary-soft {
+            background: #4361ee;
+            border: none;
+            border-radius: 60px;
+            padding: 0.9rem 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: white;
+            transition: all 0.2s;
+        }
+        .btn-primary-soft:hover {
+            background: #3651d4;
+            transform: scale(1.01);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.25);
+        }
+
+        /* Tarjetas de clientes */
+        .client-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border-left: 5px solid #4361ee;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            cursor: default;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .client-card:hover {
+            background: #fafcff;
+            transform: translateX(6px);
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        }
+        .case-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border-left: 5px solid #f59e0b;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .case-card:hover {
+            background: #fffbeb;
+            transform: translateX(6px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        }
+        .badge-soft {
+            font-weight: 500;
+            padding: 0.45rem 1rem;
+            border-radius: 60px;
+            letter-spacing: 0.2px;
+        }
+        .badge-soft-primary {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        .badge-soft-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-soft-secondary {
+            background: #f1f5f9;
+            color: #334155;
+        }
+
+        /* Detalle del expediente */
+        .case-detail-card {
+            background: #ffffff;
+            border-radius: 32px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
+            padding: 2rem 2rem 1.5rem;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        /* Formulario de actuación */
+        .actuacion-form-wrapper {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 1.75rem 1.75rem 1.25rem;
+            border: 1px solid #e9edf2;
+        }
+        .actuacion-form-wrapper .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1e293b;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+        .actuacion-form-wrapper .form-control,
+        .actuacion-form-wrapper .form-select {
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 0.7rem 1.2rem;
+            background: #ffffff;
+            transition: all 0.15s;
+        }
+        .actuacion-form-wrapper .form-control:focus,
+        .actuacion-form-wrapper .form-select:focus {
+            border-color: #4361ee;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.10);
+        }
+
+        .btn-outline-danger-soft {
+            border-radius: 60px;
+            padding: 0.6rem 1.8rem;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            background: transparent;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .btn-outline-danger-soft:hover {
+            background: #fee2e2;
+            border-color: #f87171;
+        }
+        .btn-success-soft {
+            background: #059669;
+            border: none;
+            border-radius: 60px;
+            padding: 0.6rem 2.2rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.15s;
+        }
+        .btn-success-soft:hover {
+            background: #047857;
+            transform: scale(1.02);
+            box-shadow: 0 6px 18px rgba(5, 150, 105, 0.25);
+        }
+
+        /* Actuaciones */
+        .actuacion-item {
+            background: #fafcff;
+            border-radius: 18px;
+            padding: 0.9rem 1.5rem;
+            margin-bottom: 0.7rem;
+            border: 1px solid #eef2f6;
+            transition: all 0.15s;
+        }
+        .actuacion-item:hover {
+            background: #ffffff;
+            border-color: #d1d9e6;
+        }
+
+        .actuacion-badge {
+            background: #dbeafe;
+            color: #1e40af;
+            font-weight: 600;
+            padding: 0.3rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+
+        /* modal preview */
+        .modal-pdf-frame {
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
+            height: 80vh;
+            border: none;
+            border-radius: 16px;
+        }
+
+        .spinner-overlay-custom {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .spinner-box {
+        .spinner-box-custom {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 2.5rem 3.5rem;
+            border-radius: 40px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.12);
             text-align: center;
+        }
+
+        .file-preview-frame {
+            width: 100%;
+            height: 480px;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            background: #f8fafc;
+        }
+
+        /* responsive */
+        @media (max-width: 768px) {
+            .search-card { padding: 1.25rem; }
+            .case-detail-card { padding: 1.25rem; }
+            .actuacion-form-wrapper { padding: 1.25rem; }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+<!-- Botón menú principal flotante -->
+<a href="/" class="btn-menu-float text-decoration-none">
+    <i class="bi bi-arrow-left-short me-1"></i> Menú Principal
+</a>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">📁 Expediente Electrónico</h1>
-    
-    <!-- Buscador -->
-    <div class="card p-4 shadow mb-4">
-        <h5 class="mb-3"><strong>Buscar Cliente o Expediente</strong></h5>
-        <div class="row">
-            <div class="col-md-8 mb-2">
-                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..." autocomplete="off">
+<!-- Encabezado -->
+<div class="page-header">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <h1 class="display-6 fw-bold" style="color: #0f172a; letter-spacing: -0.02em;">
+                    <i class="bi bi-folder2-open text-primary me-2" style="color: #4361ee;"></i>Expediente Electrónico
+                </h1>
+                <p class="text-muted mt-1" style="font-size: 0.95rem;">Gestión de actuaciones y documentos legales</p>
             </div>
-            <div class="col-md-4">
-                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+            <div class="d-flex gap-2">
+                <span class="badge bg-white text-dark border px-4 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-shield-check text-success me-1"></i> Seguro
+                </span>
             </div>
         </div>
     </div>
-    
+</div>
+
+<div class="container">
+
+    <!-- Buscador -->
+    <div class="search-card mb-4">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-9">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-4 text-muted" style="font-size: 1.1rem;"></i>
+                    <input type="text" id="searchInput" class="form-control form-control-lg ps-5" placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..." autocomplete="off">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button id="searchBtn" class="btn btn-primary-soft w-100">
+                    <i class="bi bi-search me-1"></i> Buscar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Resultados -->
     <div id="resultsContainer"></div>
-    
+
     <!-- Detalle del expediente -->
-    <div id="caseDetailContainer" style="display:none;" class="mt-4">
-        <div class="card p-4 shadow">
-            <h4 id="caseTitle" class="text-primary"><strong></strong></h4>
-            <p id="caseInfo" class="text-muted"></p>
-            <hr>
-            
-            <!-- Formulario para nueva actuación -->
-            <div class="bg-light p-3 rounded mb-4">
-                <h5 class="mb-3"><strong>📄 Nueva Actuación</strong></h5>
+    <div id="caseDetailContainer" style="display:none;" class="mt-5">
+        <div class="case-detail-card">
+            <div class="d-flex flex-wrap justify-content-between align-items-start mb-3">
+                <div>
+                    <h4 id="caseTitle" class="fw-bold text-primary mb-1" style="letter-spacing: -0.01em;"></h4>
+                    <p id="caseInfo" class="text-muted mb-0" style="font-size: 0.95rem;"></p>
+                </div>
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill mt-1 mt-sm-0">
+                    <i class="bi bi-clock-history me-1"></i> Actualizado
+                </span>
+            </div>
+            <hr class="opacity-25">
+
+            <!-- Formulario nueva actuación -->
+            <div class="actuacion-form-wrapper mb-4">
+                <h5 class="fw-semibold mb-3" style="color: #0f172a;">
+                    <i class="bi bi-plus-circle me-2" style="color: #4361ee;"></i>Nueva Actuación
+                </h5>
                 <form id="actuacionForm" enctype="multipart/form-data" novalidate>
                     <input type="hidden" id="courtCaseId" name="court_case_id">
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label"><strong>Tipo de Actuación *</strong></label>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="bi bi-tag me-1"></i> Tipo *</label>
                             <select name="tipo" id="tipo" class="form-select form-select-lg" required>
                                 <option value="">Selecciona...</option>
                                 <option value="demanda">Demanda Inicial</option>
@@ -87,457 +376,456 @@
                                 <option value="escrito">Escrito</option>
                                 <option value="otro">Otro</option>
                             </select>
-                            <div class="invalid-feedback">Selecciona el tipo de actuación</div>
+                            <div class="invalid-feedback">Selecciona el tipo</div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label"><strong>Fecha de Actuación *</strong></label>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="bi bi-calendar3 me-1"></i> Fecha *</label>
                             <input type="date" name="fecha_actuacion" id="fecha_actuacion" class="form-control form-control-lg" required>
-                            <div class="invalid-feedback">La fecha es obligatoria</div>
+                            <div class="invalid-feedback">Fecha obligatoria</div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label"><strong>Documento (PDF) *</strong></label>
+                        <div class="col-md-4">
+                            <label class="form-label"><i class="bi bi-file-pdf me-1"></i> Documento (PDF) *</label>
                             <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" class="form-control form-control-lg" required>
                             <div class="invalid-feedback">Adjunta el PDF</div>
-                            <small class="text-muted">Validado: <span id="pdfStatus">❌ No validado</span></small>
+                            <small class="text-muted d-flex align-items-center gap-1 mt-1">
+                                <span id="pdfStatus" class="badge bg-light text-dark border px-3 py-1 rounded-pill">❌ No validado</span>
+                            </small>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 mb-3">
-                            <label class="form-label"><strong>Descripción (opcional)</strong></label>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <label class="form-label"><i class="bi bi-pencil-square me-1"></i> Descripción (opcional)</label>
                             <input type="text" name="descripcion" id="descripcion" class="form-control form-control-lg" placeholder="Breve descripción de la actuación" autocomplete="off">
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-outline-danger btn-lg" onclick="limpiarFormulario()">🧹 Limpiar</button>
-                        <button type="submit" class="btn btn-success btn-lg">✅ Subir Actuación</button>
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-2">
+                        <button type="button" class="btn btn-outline-danger-soft" onclick="limpiarFormulario()">
+                            <i class="bi bi-eraser me-1"></i> Limpiar
+                        </button>
+                        <button type="submit" class="btn btn-success-soft">
+                            <i class="bi bi-cloud-arrow-up me-1"></i> Subir Actuación
+                        </button>
                     </div>
                 </form>
             </div>
-            
-            <!-- Listado de actuaciones -->
-            <h5 class="mb-3"><strong>📋 Actuaciones Registradas</strong></h5>
-            <div id="actuacionesContainer" class="mt-2"></div>
+
+            <!-- Listado actuaciones -->
+            <div class="mt-4">
+                <h5 class="fw-semibold mb-3" style="color: #0f172a;">
+                    <i class="bi bi-list-ul me-2" style="color: #f59e0b;"></i>Actuaciones Registradas
+                </h5>
+                <div id="actuacionesContainer"></div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de notificaciones -->
-<div class="modal fade" id="notificationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" id="notificationHeader">
-                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+<!-- ===== MODALES ===== -->
+<!-- Notificación -->
+<div class="modal fade" id="notificationModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0" id="notificationHeader">
+                <h5 class="modal-title fw-bold" id="notificationTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="notificationBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-body pt-2" id="notificationBody"></div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title">⚠️ Confirmación</h5>
+<!-- Confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-warning bg-opacity-10 border-0 pb-0">
+                <h5 class="modal-title fw-bold text-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="confirmBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
-                <button type="button" class="btn btn-danger btn-lg" id="confirmBtn">✅ Confirmar</button>
+            <div class="modal-body pt-3" id="confirmBody"></div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger rounded-pill px-4" id="confirmBtn">Confirmar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de vista previa -->
-<div class="modal fade" id="previewModal" tabindex="-1">
+<!-- Vista previa PDF (almacenado) -->
+<div class="modal fade" id="previewModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title">Vista Previa del PDF</h5>
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-dark text-white border-0">
+                <h5 class="modal-title fw-semibold"><i class="bi bi-eye me-2"></i>Vista previa del PDF</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
-                <iframe id="pdfPreview" src="" class="modal-pdf"></iframe>
+            <div class="modal-body p-0 bg-light">
+                <iframe id="pdfPreview" src="" class="modal-pdf-frame"></iframe>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <a id="downloadPdfLink" href="#" download class="btn btn-primary">⬇️ Descargar</a>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+                <a id="downloadPdfLink" href="#" download class="btn btn-primary rounded-pill px-4"><i class="bi bi-download me-1"></i>Descargar</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de vista previa antes de subir -->
-<div class="modal fade" id="pdfUploadPreviewModal" tabindex="-1">
+<!-- Vista previa antes de subir -->
+<div class="modal fade" id="pdfUploadPreviewModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title">Vista Previa del PDF a Subir</h5>
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-dark text-white border-0">
+                <h5 class="modal-title fw-semibold"><i class="bi bi-file-earmark-pdf me-2"></i>Vista previa del archivo</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
-                <iframe id="pdfUploadPreviewFrame" class="file-preview" style="width: 100%;"></iframe>
+            <div class="modal-body p-3 bg-light">
+                <iframe id="pdfUploadPreviewFrame" class="file-preview-frame w-100"></iframe>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="acceptUploadFileBtn">✅ Confirmar Archivo</button>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success rounded-pill px-4" id="acceptUploadFileBtn"><i class="bi bi-check2-circle me-1"></i>Confirmar Archivo</button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Loading overlay -->
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
-    <div class="spinner-box">
-        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Procesando...</span>
-        </div>
-        <h5 class="mb-0">Procesando actuación...</h5>
-        <p class="text-muted small">Por favor espera.</p>
+<div id="loadingOverlay" class="spinner-overlay-custom" style="display:none;">
+    <div class="spinner-box-custom">
+        <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
+        <h5 class="fw-bold">Procesando...</h5>
+        <p class="text-muted small mb-0">Por favor espera un momento</p>
     </div>
 </div>
 
+<!-- scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-let currentCaseId = null;
-let fileValidated = false;
+    // ════════════════════════════════════════════
+    // TODO EL CÓDIGO ORIGINAL SE MANTIENE ÍNTEGRO
+    // SOLO SE MODIFICARON ESTILOS Y ESTRUCTURA VISUAL
+    // ════════════════════════════════════════════
 
-function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-    const header = document.getElementById('notificationHeader');
-    const titleEl = document.getElementById('notificationTitle');
-    const bodyEl = document.getElementById('notificationBody');
-    header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
-    modal.show();
-}
+    let currentCaseId = null;
+    let fileValidated = false;
 
-function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
-    modal.show();
-}
-
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-}
-
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
-
-// Vista previa del PDF a subir
-document.getElementById('pdf_file').addEventListener('change', function(e) {
-    const file = this.files[0];
-    if (!file) return;
-    if (file.type !== 'application/pdf') { 
-        showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); 
-        this.value = ''; 
-        return; 
+    function showNotification(title, bodyHTML, type = 'info') {
+        const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+        const header = document.getElementById('notificationHeader');
+        const titleEl = document.getElementById('notificationTitle');
+        const bodyEl = document.getElementById('notificationBody');
+        header.className = 'modal-header border-0 pb-0';
+        if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+        else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+        else if (type === 'warning') { header.classList.add('bg-warning', 'bg-opacity-10', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+        else { header.classList.add('bg-primary', 'bg-opacity-10', 'text-primary'); titleEl.textContent = 'ℹ️ ' + title; }
+        bodyEl.innerHTML = bodyHTML;
+        modal.show();
     }
-    fileValidated = false;
-    const fileURL = URL.createObjectURL(file);
-    document.getElementById('pdfUploadPreviewFrame').src = fileURL;
-    const previewModal = new bootstrap.Modal(document.getElementById('pdfUploadPreviewModal'));
-    previewModal.show();
-    document.getElementById('acceptUploadFileBtn').onclick = function() {
-        fileValidated = true;
-        previewModal.hide();
-        document.getElementById('pdfStatus').textContent = '✅ Validado: ' + file.name;
-        showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
-    };
-});
 
-// Búsqueda con Enter
-document.getElementById('searchInput').addEventListener('keydown', function(e) { 
-    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } 
-});
+    function showConfirm(title, bodyHTML, onConfirm) {
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        document.getElementById('confirmBody').innerHTML = bodyHTML;
+        document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+        modal.show();
+    }
 
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
-    
-    showLoading();
-    
-    try {
-        const formData = new FormData();
-        formData.append('search_term', searchTerm);
-        const response = await fetch('/api/actuaciones/search-client', { method: 'POST', body: formData });
-        
-        hideLoading();
-        
-        if (!response.ok) {
-            const error = await response.json();
-            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
-            document.getElementById('resultsContainer').innerHTML = '';
-            return;
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    // Vista previa del PDF a subir
+    document.getElementById('pdf_file').addEventListener('change', function(e) {
+        const file = this.files[0];
+        if (!file) return;
+        if (file.type !== 'application/pdf') { 
+            showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); 
+            this.value = ''; 
+            return; 
         }
+        fileValidated = false;
+        const fileURL = URL.createObjectURL(file);
+        document.getElementById('pdfUploadPreviewFrame').src = fileURL;
+        const previewModal = new bootstrap.Modal(document.getElementById('pdfUploadPreviewModal'));
+        previewModal.show();
+        document.getElementById('acceptUploadFileBtn').onclick = function() {
+            fileValidated = true;
+            previewModal.hide();
+            document.getElementById('pdfStatus').innerHTML = '✅ Validado: ' + file.name;
+            showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
+        };
+    });
+
+    document.getElementById('searchInput').addEventListener('keydown', function(e) { 
+        if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } 
+    });
+
+    document.getElementById('searchBtn').addEventListener('click', async () => {
+        const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
+        if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
         
-        const clients = await response.json();
+        showLoading();
+        
+        try {
+            const formData = new FormData();
+            formData.append('search_term', searchTerm);
+            const response = await fetch('/api/actuaciones/search-client', { method: 'POST', body: formData });
+            
+            hideLoading();
+            
+            if (!response.ok) {
+                const error = await response.json();
+                showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
+                document.getElementById('resultsContainer').innerHTML = '';
+                return;
+            }
+            
+            const clients = await response.json();
+            const container = document.getElementById('resultsContainer');
+            
+            if (clients.length === 0) {
+                container.innerHTML = '<div class="alert alert-warning text-center shadow-sm rounded-4"><i class="bi bi-inbox me-2"></i><strong>No se encontraron clientes con expedientes.</strong></div>';
+                return;
+            }
+            
+            container.innerHTML = '<h5 class="fw-semibold mb-3"><i class="bi bi-people me-2"></i>Clientes con expedientes:</h5>';
+            
+            clients.forEach(client => {
+                const card = document.createElement('div');
+                card.className = 'client-card d-flex flex-wrap align-items-center justify-content-between';
+                card.innerHTML = `
+                    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-4">
+                        <span class="fw-semibold" style="color:#0f172a;">${client.nombre_completo}</span>
+                        <span class="badge badge-soft badge-soft-secondary"><i class="bi bi-hash me-1"></i>${client.folio_registro}</span>
+                        <span class="badge badge-soft badge-soft-primary"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
+                        <span class="text-muted small">${client.curp}</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill view-cases" data-id="${client.id}" style="padding: 0.3rem 1.2rem;">
+                        <i class="bi bi-eye me-1"></i>Ver expedientes
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+            
+            document.querySelectorAll('.view-cases').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const clientId = parseInt(this.dataset.id);
+                    const clientData = clients.find(c => c.id === clientId);
+                    if (clientData) showCaseSelection(clientData);
+                });
+            });
+            
+        } catch (error) {
+            hideLoading();
+            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+        }
+    });
+
+    function showCaseSelection(client) {
         const container = document.getElementById('resultsContainer');
+        let html = `<h5 class="fw-semibold mb-3"><i class="bi bi-folder2-open me-2"></i>Expedientes de ${client.nombre_completo}:</h5>`;
+        client.casos.forEach(caso => {
+            html += `
+                <div class="case-card d-flex flex-wrap align-items-center justify-content-between">
+                    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-4">
+                        <span class="fw-semibold" style="color:#0f172a;">${caso.expediente_tribunal}</span>
+                        <span class="text-muted">${caso.tribunal}</span>
+                        <span class="badge badge-soft badge-soft-warning">${caso.status}</span>
+                    </div>
+                    <button class="btn btn-sm btn-primary rounded-pill select-case" data-id="${caso.id}" style="padding: 0.3rem 1.5rem;">
+                        <i class="bi bi-arrow-right-circle me-1"></i>Seleccionar
+                    </button>
+                </div>
+            `;
+        });
+        html += `<button class="btn btn-outline-secondary rounded-pill btn-sm mt-2" onclick="searchAgain()"><i class="bi bi-arrow-left me-1"></i>Nueva búsqueda</button>`;
+        container.innerHTML = html;
         
-        if (clients.length === 0) {
-            container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron clientes con expedientes.</strong></div>';
+        document.querySelectorAll('.select-case').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                await loadCaseDetail(btn.dataset.id);
+            });
+        });
+    }
+
+    function searchAgain() {
+        document.getElementById('resultsContainer').innerHTML = '';
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchInput').focus();
+    }
+
+    async function loadCaseDetail(caseId) {
+        showLoading();
+        try {
+            const response = await fetch(`/api/actuaciones/case/${caseId}`);
+            const caseData = await response.json();
+            hideLoading();
+            
+            currentCaseId = caseId;
+            document.getElementById('caseDetailContainer').style.display = 'block';
+            document.getElementById('caseTitle').textContent = `Expediente: ${caseData.num_exp_tribunal}`;
+            document.getElementById('caseInfo').textContent = `Tribunal: ${caseData.tribunal} · Estatus: ${caseData.status}`;
+            document.getElementById('courtCaseId').value = caseId;
+            
+            renderActuaciones(caseData.actuaciones);
+            
+            document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth' });
+            
+        } catch (error) {
+            hideLoading();
+            showNotification('Error', `<p>Error al cargar el expediente: ${error.message}</p>`, 'error');
+        }
+    }
+
+    function renderActuaciones(actuaciones) {
+        const container = document.getElementById('actuacionesContainer');
+        container.innerHTML = '';
+        
+        if (actuaciones.length === 0) {
+            container.innerHTML = '<div class="alert alert-info bg-light border-0 rounded-4"><i class="bi bi-info-circle me-2"></i><strong>No hay actuaciones registradas.</strong></div>';
             return;
         }
         
-        container.innerHTML = '<h5 class="mb-3"><strong>Clientes con expedientes:</strong></h5>';
-        
-        clients.forEach(client => {
+        actuaciones.forEach(act => {
             const card = document.createElement('div');
-            card.className = 'client-card p-3 mb-2 rounded';
+            card.className = 'actuacion-item d-flex flex-wrap align-items-center justify-content-between';
             card.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-3"><strong>${client.nombre_completo}</strong></div>
-                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
-                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
-                    <div class="col-md-3"><small>${client.curp}</small></div>
-                    <div class="col-md-2"><button class="btn btn-sm btn-success view-cases" data-id="${client.id}">Ver expedientes</button></div>
+                <div class="d-flex flex-wrap align-items-center gap-2 gap-md-4">
+                    <span class="actuacion-badge">${act.tipo_label || act.tipo}</span>
+                    <span class="fw-semibold" style="color:#0f172a;">${act.fecha}</span>
+                    <span class="text-muted">${act.descripcion || 'Sin descripción'}</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-info rounded-pill preview-btn" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf" style="padding: 0.2rem 1rem;">
+                        <i class="bi bi-eye"></i> Ver
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger rounded-pill delete-btn" data-id="${act.id}" style="padding: 0.2rem 1rem;">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
                 </div>
             `;
             container.appendChild(card);
         });
         
-        document.querySelectorAll('.view-cases').forEach(btn => {
+        document.querySelectorAll('.preview-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const clientId = parseInt(this.dataset.id);
-                const clientData = clients.find(c => c.id === clientId);
-                if (clientData) showCaseSelection(clientData);
+                let url = this.dataset.url;
+                if (url && !url.startsWith('/')) url = '/' + url;
+                document.getElementById('pdfPreview').src = url;
+                document.getElementById('downloadPdfLink').href = url;
+                document.getElementById('downloadPdfLink').download = this.dataset.filename;
+                new bootstrap.Modal(document.getElementById('previewModal')).show();
             });
         });
         
-    } catch (error) {
-        hideLoading();
-        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-    }
-});
-
-function showCaseSelection(client) {
-    const container = document.getElementById('resultsContainer');
-    let html = `<h5 class="mb-3"><strong>Expedientes de ${client.nombre_completo}:</strong></h5>`;
-    client.casos.forEach(caso => {
-        html += `
-            <div class="case-card p-3 mb-2 rounded">
-                <div class="row align-items-center">
-                    <div class="col-md-4"><strong>${caso.expediente_tribunal}</strong></div>
-                    <div class="col-md-3">${caso.tribunal}</div>
-                    <div class="col-md-2"><span class="badge bg-secondary">${caso.status}</span></div>
-                    <div class="col-md-3"><button class="btn btn-sm btn-primary select-case" data-id="${caso.id}">Seleccionar</button></div>
-                </div>
-            </div>
-        `;
-    });
-    html += `<button class="btn btn-outline-secondary btn-sm mt-2" onclick="searchAgain()">← Nueva búsqueda</button>`;
-    container.innerHTML = html;
-    
-    document.querySelectorAll('.select-case').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            await loadCaseDetail(btn.dataset.id);
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const actuacionId = this.dataset.id;
+                showConfirm(
+                    'Eliminar Actuación',
+                    '<p>¿Estás seguro de que deseas <strong>eliminar</strong> esta actuación?</p><p class="text-danger small">Esta acción no se puede deshacer.</p>',
+                    async function() {
+                        await deleteActuacion(actuacionId);
+                    }
+                );
+            });
         });
-    });
-}
-
-function searchAgain() {
-    document.getElementById('resultsContainer').innerHTML = '';
-    document.getElementById('searchInput').value = '';
-    document.getElementById('searchInput').focus();
-}
-
-async function loadCaseDetail(caseId) {
-    showLoading();
-    
-    try {
-        const response = await fetch(`/api/actuaciones/case/${caseId}`);
-        const caseData = await response.json();
-        
-        hideLoading();
-        
-        currentCaseId = caseId;
-        document.getElementById('caseDetailContainer').style.display = 'block';
-        document.getElementById('caseTitle').textContent = `Expediente: ${caseData.num_exp_tribunal}`;
-        document.getElementById('caseInfo').textContent = `Tribunal: ${caseData.tribunal} | Estatus: ${caseData.status}`;
-        document.getElementById('courtCaseId').value = caseId;
-        
-        renderActuaciones(caseData.actuaciones);
-        
-        document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth' });
-        
-    } catch (error) {
-        hideLoading();
-        showNotification('Error', `<p>Error al cargar el expediente: ${error.message}</p>`, 'error');
     }
-}
 
-function renderActuaciones(actuaciones) {
-    const container = document.getElementById('actuacionesContainer');
-    container.innerHTML = '';
-    
-    if (actuaciones.length === 0) {
-        container.innerHTML = '<div class="alert alert-info"><strong>No hay actuaciones registradas.</strong></div>';
-        return;
+    async function deleteActuacion(actuacionId) {
+        showLoading();
+        try {
+            const response = await fetch(`/api/actuaciones/delete/${actuacionId}`, { method: 'DELETE' });
+            hideLoading();
+            if (!response.ok) {
+                const error = await response.json();
+                showNotification('Error', `<p>${error.detail || 'Error al eliminar la actuación'}</p>`, 'error');
+                return;
+            }
+            showNotification('Actuación Eliminada', '<p>La actuación ha sido eliminada correctamente.</p>', 'success');
+            await loadCaseDetail(currentCaseId);
+        } catch (error) {
+            hideLoading();
+            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+        }
     }
-    
-    actuaciones.forEach(act => {
-        const card = document.createElement('div');
-        card.className = 'actuacion-card p-3 mb-2 rounded';
-        card.innerHTML = `
-            <div class="row align-items-center">
-                <div class="col-md-2"><span class="badge bg-primary">${act.tipo_label || act.tipo}</span></div>
-                <div class="col-md-2"><strong>${act.fecha}</strong></div>
-                <div class="col-md-4">${act.descripcion || 'Sin descripción'}</div>
-                <div class="col-md-4 text-end">
-                    <button class="btn btn-sm btn-outline-info preview-btn me-1" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf">
-                        <i class="bi bi-eye"></i> Ver
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${act.id}">
-                        <i class="bi bi-trash"></i> Eliminar
-                    </button>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-    
-    // Eventos de vista previa
-    document.querySelectorAll('.preview-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            let url = this.dataset.url;
-            if (url && !url.startsWith('/')) url = '/' + url;
-            document.getElementById('pdfPreview').src = url;
-            document.getElementById('downloadPdfLink').href = url;
-            document.getElementById('downloadPdfLink').download = this.dataset.filename;
-            new bootstrap.Modal(document.getElementById('previewModal')).show();
-        });
-    });
-    
-    // Eventos de eliminación
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const actuacionId = this.dataset.id;
-            showConfirm(
-                'Eliminar Actuación',
-                '<p>¿Estás seguro de que deseas <strong>eliminar</strong> esta actuación?</p><p class="text-danger">Esta acción no se puede deshacer.</p>',
-                async function() {
-                    await deleteActuacion(actuacionId);
-                }
-            );
-        });
-    });
-}
 
-async function deleteActuacion(actuacionId) {
-    showLoading();
-    
-    try {
-        const response = await fetch(`/api/actuaciones/delete/${actuacionId}`, { method: 'DELETE' });
+    function limpiarFormulario() {
+        showConfirm(
+            'Limpiar formulario',
+            '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>',
+            function() {
+                document.getElementById('actuacionForm').reset();
+                document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                fileValidated = false;
+                document.getElementById('pdfStatus').innerHTML = '❌ No validado';
+                showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
+            }
+        );
+    }
+
+    document.getElementById('actuacionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        hideLoading();
+        const caseId = document.getElementById('courtCaseId').value;
         
-        if (!response.ok) {
-            const error = await response.json();
-            showNotification('Error', `<p>${error.detail || 'Error al eliminar la actuación'}</p>`, 'error');
+        let valid = true;
+        const fields = document.querySelectorAll('#actuacionForm [required]');
+        fields.forEach(field => {
+            if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
+            else { field.classList.remove('is-invalid'); }
+        });
+        
+        if (!fileValidated) {
+            showNotification('Archivo no validado', '<p>Por favor adjunta y valida el PDF antes de subir.</p>', 'warning');
             return;
         }
         
-        showNotification('Actuación Eliminada', '<p>La actuación ha sido eliminada correctamente.</p>', 'success');
-        
-        await loadCaseDetail(currentCaseId);
-        
-    } catch (error) {
-        hideLoading();
-        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-    }
-}
-
-function limpiarFormulario() {
-    showConfirm(
-        'Limpiar formulario',
-        '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>',
-        function() {
-            document.getElementById('actuacionForm').reset();
-            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-            fileValidated = false;
-            document.getElementById('pdfStatus').textContent = '❌ No validado';
-            showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
+        if (!valid) {
+            showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning');
+            return;
         }
-    );
-}
-
-// Enviar formulario
-document.getElementById('actuacionForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const caseId = document.getElementById('courtCaseId').value;
-    
-    let valid = true;
-    const fields = document.querySelectorAll('#actuacionForm [required]');
-    fields.forEach(field => {
-        if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
-        else { field.classList.remove('is-invalid'); }
-    });
-    
-    if (!fileValidated) {
-        showNotification('Archivo no validado', '<p>Por favor adjunta y valida el PDF antes de subir.</p>', 'warning');
-        return;
-    }
-    
-    if (!valid) {
-        showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning');
-        return;
-    }
-    
-    showConfirm(
-        'Confirmar subida',
-        '<p>¿Estás seguro de que deseas subir esta actuación?</p>',
-        async function() {
-            showLoading();
-            
-            const formData = new FormData(e.target);
-            
-            try {
-                const response = await fetch(`/api/actuaciones/register/${caseId}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                hideLoading();
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    showNotification('Error', `<p>${error.detail || 'Error al registrar la actuación'}</p>`, 'error');
-                    return;
+        
+        showConfirm(
+            'Confirmar subida',
+            '<p>¿Estás seguro de que deseas subir esta actuación?</p>',
+            async function() {
+                showLoading();
+                const formData = new FormData(e.target);
+                try {
+                    const response = await fetch(`/api/actuaciones/register/${caseId}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    hideLoading();
+                    if (!response.ok) {
+                        const error = await response.json();
+                        showNotification('Error', `<p>${error.detail || 'Error al registrar la actuación'}</p>`, 'error');
+                        return;
+                    }
+                    showNotification(
+                        'Actuación Registrada',
+                        '<div class="text-center mb-2"><span style="font-size: 48px;">✅</span></div><p>La actuación se ha subido correctamente.</p>',
+                        'success'
+                    );
+                    document.getElementById('actuacionForm').reset();
+                    fileValidated = false;
+                    document.getElementById('pdfStatus').innerHTML = '❌ No validado';
+                    await loadCaseDetail(caseId);
+                } catch (error) {
+                    hideLoading();
+                    showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
                 }
-                
-                showNotification(
-                    'Actuación Registrada',
-                    '<div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div><p>La actuación se ha subido correctamente.</p>',
-                    'success'
-                );
-                
-                document.getElementById('actuacionForm').reset();
-                fileValidated = false;
-                document.getElementById('pdfStatus').textContent = '❌ No validado';
-                
-                await loadCaseDetail(caseId);
-                
-            } catch (error) {
-                hideLoading();
-                showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
             }
-        }
-    );
-});
+        );
+    });
 </script>
 </body>
 </html>

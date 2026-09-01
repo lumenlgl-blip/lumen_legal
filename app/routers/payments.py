@@ -7,16 +7,12 @@ from app.models.core import Client, Contract, Payment
 import os, uuid, io
 from datetime import datetime
 import aiofiles
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
+
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
 UPLOAD_DIR = "uploads/payment_docs"
-RECEIPT_DIR = "uploads/receipts"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-os.makedirs(RECEIPT_DIR, exist_ok=True)
 
 SERVICE_TYPE_MAP = {
     "asesoria": "Asesoría Jurídica",
@@ -48,69 +44,46 @@ async def save_upload_file(upload_file: UploadFile, folder: str, filename: str) 
     return "/" + file_path.replace("\\", "/")
 
 def generate_payment_receipt_pdf(client, contract, payment, total_pagado, saldo_restante):
-    """Genera el PDF de recibo de pago usando ReportLab"""
-    buffer = io.BytesIO()
-    pdf_doc = SimpleDocTemplate(buffer, pagesize=letter)
-    styles = getSampleStyleSheet()
-
-    title_style = ParagraphStyle('TitleStyle', parent=styles['Title'], fontSize=18, alignment=1, spaceAfter=20)
-    subtitle_style = ParagraphStyle('SubtitleStyle', parent=styles['Heading2'], fontSize=14, alignment=1, spaceAfter=30)
-    body_style = ParagraphStyle('BodyStyle', parent=styles['BodyText'], fontSize=11, leading=16, spaceAfter=6)
-    section_style = ParagraphStyle('SectionStyle', parent=styles['Heading3'], fontSize=12, spaceBefore=15, spaceAfter=10)
-
-    story = []
-
-    story.append(Paragraph("LUMEN LEGAL", title_style))
-    story.append(Paragraph("RECIBO DE PAGO / ABONO", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, spaceAfter=20))
-
-    # Datos del cliente
-    story.append(Paragraph("DATOS DEL CLIENTE", section_style))
-    story.append(Paragraph(f"<b>Cliente:</b> {client.name} {client.paterno} {client.materno or ''}", body_style))
-    story.append(Paragraph(f"<b>CURP:</b> {client.curp}", body_style))
-    story.append(Paragraph(f"<b>Teléfono:</b> {client.phone}", body_style))
-    story.append(Paragraph(f"<b>Folio de Registro:</b> {client.folio_registro}", body_style))
-    anio = client.created_at.strftime('%Y') if client.created_at else datetime.utcnow().strftime('%Y')
-    story.append(Paragraph(f"<b>Expediente Interno:</b> {client.expediente_interno}/{anio}", body_style))
-
-    # Datos del contrato / servicio
-    story.append(Paragraph("DATOS DEL CONTRATO", section_style))
-    service_label = get_service_label(contract.service_type)
-    story.append(Paragraph(f"<b>Servicio:</b> {service_label}", body_style))
-    if contract.tipo_juicio:
-        tipo_juicio = contract.tipo_juicio
-        if contract.tipo_juicio_otro:
-            tipo_juicio = contract.tipo_juicio_otro
-        story.append(Paragraph(f"<b>Tipo de Juicio:</b> {tipo_juicio}", body_style))
-    if contract.specific_detail:
-        story.append(Paragraph(f"<b>Detalle:</b> {contract.specific_detail}", body_style))
-    story.append(Paragraph(f"<b>Fecha de Contratación:</b> {contract.created_at.strftime('%d/%m/%Y')}", body_style))
-    story.append(Paragraph(f"<b>Costo Total:</b> ${float(contract.total_cost):,.2f}", body_style))
-
-    total_anterior = float(total_pagado) - float(payment.amount)
-    story.append(Paragraph(f"<b>Total Pagado Anterior:</b> ${total_anterior:,.2f}", body_style))
-    story.append(Paragraph(f"<b>Estatus del Contrato:</b> {contract.status.upper()}", body_style))
-
-    # Datos del pago
-    story.append(Paragraph("DATOS DEL PAGO", section_style))
-    story.append(Paragraph(f"<b>Monto del Abono:</b> ${float(payment.amount):,.2f}", body_style))
-    method_label = get_payment_method_label(payment.method)
-    story.append(Paragraph(f"<b>Forma de Pago:</b> {method_label}", body_style))
-    story.append(Paragraph(f"<b>Fecha de Pago:</b> {payment.payment_date.strftime('%d/%m/%Y %H:%M')}", body_style))
-    if payment.receiver_name:
-        story.append(Paragraph(f"<b>Recibió:</b> {payment.receiver_name}", body_style))
-    story.append(Paragraph(f"<b>Total Pagado Ahora:</b> ${float(total_pagado):,.2f}", body_style))
-    story.append(Paragraph(f"<b>Saldo Restante:</b> ${float(saldo_restante):,.2f}", body_style))
-    if contract.status == "liquidado":
-        story.append(Paragraph("<b>ESTATUS:</b> LIQUIDADO ✓", body_style))
-
-    story.append(Spacer(1, 30))
-    story.append(HRFlowable(width="100%", thickness=1, spaceBefore=10, spaceAfter=10))
-    story.append(Paragraph("Aviso de Privacidad: Tus datos serán tratados conforme a la ley...", styles['BodyText']))
-
-    pdf_doc.build(story)
-    buffer.seek(0)
-    return buffer.getvalue()
+    """Genera el PDF de recibo de pago usando WeasyPrint con plantilla HTML"""
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    import os
+    
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/recibo_pago.html")
+    
+    # Ruta del logo
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
+    
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+    
+    forma_pago_map = {
+        "efectivo": "Efectivo",
+        "deposito": "Depósito",
+        "transferencia": "Transferencia"
+    }
+    
+    html_content = template.render(
+        nombre_completo=f"{client.name} {client.paterno} {client.materno or ''}",
+        curp=client.curp,
+        folio=client.folio_registro,
+        recibo_id=payment.id,
+        monto_pagado=f"{float(payment.amount):,.2f}",
+        forma_pago=forma_pago_map.get(payment.method, payment.method),
+        fecha_pago=payment.payment_date.strftime('%d/%m/%Y %H:%M') if payment.payment_date else "",
+        recibio=payment.receiver_name or "",
+        saldo_restante=f"{float(saldo_restante):,.2f}",
+        estatus="LIQUIDADO" if contract.status == "liquidado" else "PENDIENTE",
+        badge_class="badge-liquidado" if contract.status == "liquidado" else "badge-pendiente",
+        logo_base64=logo_base64
+    )
+    
+    pdf_bytes = HTML(string=html_content).write_pdf()
+    return pdf_bytes
 
 # --- RUTAS PARA ABONOS Y LIQUIDACIÓN (Feature 6) ---
 
@@ -249,7 +222,7 @@ async def register_payment(
     receipt_url = None
     if receipt_file and receipt_file.filename:
         filename = f"pago_{contract_id}_{uuid.uuid4().hex[:8]}.pdf"
-        receipt_url = await save_upload_file(receipt_file, RECEIPT_DIR, filename)
+        receipt_url = await save_upload_file(receipt_file, UPLOAD_DIR, filename)
 
     new_payment = Payment(
         contract_id=contract_id,
@@ -268,6 +241,19 @@ async def register_payment(
 
     db.commit()
     db.refresh(new_payment)
+    
+    # Registrar en bitácora
+    from app.models.core import ActivityLog
+    log = ActivityLog(
+        firm_id=1,
+        user_id=1,
+        action="create",
+        entity="Pago",
+        entity_id=new_payment.id,
+        description=f"Registró abono de ${amount} para contrato #{contract_id}"
+    )
+    db.add(log)
+    db.commit()
     db.refresh(contract)
 
     client = db.query(Client).filter(Client.id == contract.client_id).first()
@@ -414,3 +400,38 @@ async def get_client_payments(client_id: int, db: Session = Depends(get_db)):
 
    
     return result
+
+# --- Reimprimir recibo de pago ---
+@router.get("/receipt-pdf/{payment_id}")
+async def reprint_payment_receipt(payment_id: int, db: Session = Depends(get_db)):
+    """Regenera y devuelve el PDF del recibo de un pago específico"""
+    payment = db.query(Payment).filter(Payment.id == payment_id).first()
+    if not payment:
+        raise HTTPException(404, "Pago no encontrado")
+    
+    contract = db.query(Contract).filter(Contract.id == payment.contract_id).first()
+    if not contract:
+        raise HTTPException(404, "Contrato no encontrado")
+    
+    client = db.query(Client).filter(Client.id == contract.client_id).first()
+    if not client:
+        raise HTTPException(404, "Cliente no encontrado")
+    
+    # Calcular total pagado y saldo
+    total_pagado = db.query(func.sum(Payment.amount)).filter(
+        Payment.contract_id == contract.id
+    ).scalar() or 0
+    total_pagado = float(total_pagado)
+    
+    saldo_restante = float(contract.total_cost) - total_pagado
+    
+    # Generar PDF
+    pdf_bytes = generate_payment_receipt_pdf(
+        client, contract, payment, total_pagado, saldo_restante
+    )
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=recibo_pago_{client.folio_registro}_{payment.id}.pdf"}
+    )

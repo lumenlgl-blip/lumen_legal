@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
@@ -6,10 +6,6 @@ from app.database import get_db
 from app.models.core import Client, ClientDocument, Contract, Payment, CourtCase
 import uuid, os
 from datetime import datetime
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
-import io
 import aiofiles
 
 router = APIRouter(prefix="/clients", tags=["Clients"])
@@ -17,8 +13,7 @@ router = APIRouter(prefix="/clients", tags=["Clients"])
 UPLOAD_DIR = "uploads/client_docs"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-CONSTANCIA_DIR = "uploads/constancias"
-os.makedirs(CONSTANCIA_DIR, exist_ok=True)
+
 
 def generate_folio():
     return f"CL-{uuid.uuid4().hex[:8].upper()}"
@@ -38,57 +33,42 @@ async def save_upload_file(upload_file: UploadFile, subfolder: str, filename: st
     return "/" + file_path.replace("\\", "/")
 
 def generate_client_pdf(client_data):
-    buffer = io.BytesIO()
-    pdf_doc = SimpleDocTemplate(buffer, pagesize=letter)
-    styles = getSampleStyleSheet()
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    import os
+    from datetime import datetime
     
-    title_style = ParagraphStyle('TitleStyle', parent=styles['Title'], fontSize=18, alignment=1, spaceAfter=20)
-    subtitle_style = ParagraphStyle('SubtitleStyle', parent=styles['Heading2'], fontSize=14, alignment=1, spaceAfter=30)
-    body_style = ParagraphStyle('BodyStyle', parent=styles['BodyText'], fontSize=11, leading=16, spaceAfter=6)
-    section_style = ParagraphStyle('SectionStyle', parent=styles['Heading3'], fontSize=12, spaceBefore=15, spaceAfter=10)
+    # Cargar plantilla
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/constancia_cliente.html")
     
-    story = []
+    # Ruta del logo
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
     
-    story.append(Paragraph("LUMEN LEGAL", title_style))
-    story.append(Paragraph("CONSTANCIA DE REGISTRO DE CLIENTE", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, spaceAfter=20))
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode('utf-8')
     
-    story.append(Paragraph("DATOS DE REGISTRO", section_style))
-    story.append(Paragraph(f"<b>Folio de Registro:</b> {client_data.folio_registro}", body_style))
-    anio = client_data.created_at.strftime('%Y')
-    story.append(Paragraph(f"<b>Expediente Interno:</b> {client_data.expediente_interno}/{anio}", body_style))
-    story.append(Paragraph(f"<b>Fecha de Registro:</b> {client_data.created_at.strftime('%d/%m/%Y %H:%M')}", body_style))
+    anio = client_data.created_at.strftime('%Y') if client_data.created_at else datetime.now().strftime('%Y')
     
-    story.append(Paragraph("DATOS PERSONALES", section_style))
-    story.append(Paragraph(f"<b>Nombre(s):</b> {client_data.name}", body_style))
-    story.append(Paragraph(f"<b>Apellido Paterno:</b> {client_data.paterno}", body_style))
-    story.append(Paragraph(f"<b>Apellido Materno:</b> {client_data.materno or 'N/A'}", body_style))
-    story.append(Paragraph(f"<b>CURP:</b> {client_data.curp}", body_style))
-    story.append(Paragraph(f"<b>Teléfono:</b> {client_data.phone}", body_style))
-    story.append(Paragraph(f"<b>Email:</b> {client_data.email or 'N/A'}", body_style))
-    story.append(Paragraph(f"<b>Domicilio:</b> {client_data.address}", body_style))
-    story.append(Paragraph(f"<b>Ocupación:</b> {client_data.occupation}", body_style))
+    html_content = template.render(
+        nombre_completo=f"{client_data.name} {client_data.paterno} {client_data.materno or ''}",
+        curp=client_data.curp,
+        telefono=client_data.phone,
+        email=client_data.email or "",
+        domicilio=client_data.address,
+        ocupacion=client_data.occupation,
+        folio=client_data.folio_registro,
+        expediente_interno=client_data.expediente_interno,
+        anio=anio,
+        fecha_registro=client_data.created_at.strftime('%d/%m/%Y %H:%M') if client_data.created_at else datetime.now().strftime('%d/%m/%Y %H:%M'),
+        logo_base64=logo_base64
+    )
     
-    story.append(Paragraph("DOCUMENTOS PRESENTADOS", section_style))
-    if client_data.documents:
-        for document in client_data.documents:
-            doc_type_map = {
-                "CURP": "CURP",
-                "INE": "INE / Identificación Oficial",
-                "DOMICILIO": "Comprobante de Domicilio"
-            }
-            doc_label = doc_type_map.get(document.doc_type, document.doc_type)
-            story.append(Paragraph(f"• {doc_label}", body_style))
-    else:
-        story.append(Paragraph("• Ninguno", body_style))
-    
-    story.append(Spacer(1, 30))
-    story.append(HRFlowable(width="100%", thickness=1, spaceBefore=10, spaceAfter=10))
-    story.append(Paragraph("Aviso de Privacidad: Tus datos serán tratados conforme a la ley...", styles['BodyText']))
-    
-    pdf_doc.build(story)
-    buffer.seek(0)
-    return buffer.getvalue()
+    pdf_bytes = HTML(string=html_content).write_pdf()
+    return pdf_bytes
 
 @router.get("/register", response_class=HTMLResponse)
 async def show_register_form():
@@ -147,6 +127,18 @@ async def register_client(
     db.commit()
     db.refresh(new_client)
     
+    # Registrar en bitácora
+    from app.models.core import ActivityLog
+    log = ActivityLog(
+        firm_id=firm_id,
+        user_id=1,
+        action="create",
+        entity="Cliente",
+        entity_id=new_client.id,
+        description=f"Registró al cliente {new_client.name} {new_client.paterno}"
+    )
+    db.add(log)
+    
     # Guardar documentos
     docs = [
         ("CURP", curp_file),
@@ -162,32 +154,19 @@ async def register_client(
     db.commit()
     db.refresh(new_client)
     
-    # Generar constancia PDF
+    # Generar constancia PDF (solo se envía al navegador, no se guarda)
     pdf_bytes = generate_client_pdf(new_client)
-    
-    constancia_path = os.path.join(CONSTANCIA_DIR, f"constancia_{folio}.pdf")
-    with open(constancia_path, "wb") as f:
-        f.write(pdf_bytes)
     
     anio = new_client.created_at.strftime('%Y')
     
-    return {
-        "success": True,
-        "message": "Cliente registrado exitosamente",
-        "folio_registro": new_client.folio_registro,
-        "expediente_interno": f"{new_client.expediente_interno}/{anio}",
-        "nombre_completo": f"{new_client.name} {new_client.paterno} {new_client.materno}",
-        "constancia_url": f"/api/clients/constancia/{folio}"
-    }
+    # Devolver PDF directamente
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=constancia_{folio}.pdf"}
+    )
 
-@router.get("/constancia/{folio}")
-async def download_constancia(folio: str):
-    constancia_path = os.path.join(CONSTANCIA_DIR, f"constancia_{folio}.pdf")
-    if not os.path.exists(constancia_path):
-        raise HTTPException(404, "Constancia no encontrada")
-    with open(constancia_path, "rb") as f:
-        pdf_bytes = f.read()
-    return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": f"attachment; filename=constancia_{folio}.pdf"})
+
 
 # ================================================================
 # RUTAS PARA CONSULTA DE CLIENTE (FEATURE 11)
@@ -387,3 +366,121 @@ async def replace_client_document(
     db.commit()
     
     return {"message": "Documento reemplazado correctamente"}
+
+
+# --- Eliminar cliente completo (solo admin) ---
+@router.delete("/delete/{client_id}")
+async def delete_client(
+    client_id: int,
+    request: Request,
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    from app.routers.auth import get_current_user, verify_password
+    from app.models.core import ActivityLog, CourtCase, Payment, Actuacion, Contract, ClientDocument
+    
+    # Verificar autenticación
+    user = get_current_user(request, db)
+    if not user:
+        return {"success": False, "message": "No autenticado"}
+    
+    if user.role != "admin":
+        return {"success": False, "message": "Solo administradores pueden eliminar clientes"}
+    
+    # Verificar contraseña
+    if not verify_password(password, user.hashed_password):
+        return {"success": False, "message": "Contraseña incorrecta"}
+    
+    # Buscar cliente
+    client = db.query(Client).filter(Client.id == client_id).first()
+    if not client:
+        return {"success": False, "message": "Cliente no encontrado"}
+    
+    client_name = f"{client.name} {client.paterno} {client.materno or ''}"
+    
+    # Eliminar archivos de documentos
+    documents = db.query(ClientDocument).filter(ClientDocument.client_id == client_id).all()
+    for doc in documents:
+        if doc.file_url:
+            file_path = doc.file_url
+            if file_path.startswith("/"):
+                file_path = file_path[1:]
+            file_path = file_path.replace("/", os.sep)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+    
+    # Obtener contratos del cliente
+    contracts = db.query(Contract).filter(Contract.client_id == client_id).all()
+    
+    for contract in contracts:
+        # Eliminar pagos del contrato
+        db.query(Payment).filter(Payment.contract_id == contract.id).delete()
+        
+        # Eliminar expediente del contrato
+        court_case = db.query(CourtCase).filter(CourtCase.contract_id == contract.id).first()
+        if court_case:
+            # Eliminar actuaciones
+            actuaciones = db.query(Actuacion).filter(Actuacion.court_case_id == court_case.id).all()
+            for act in actuaciones:
+                if act.pdf_url:
+                    file_path = act.pdf_url
+                    if file_path.startswith("/"):
+                        file_path = file_path[1:]
+                    file_path = file_path.replace("/", os.sep)
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+            db.query(Actuacion).filter(Actuacion.court_case_id == court_case.id).delete()
+            
+            # Eliminar expediente
+            if court_case.acuse_pdf_url:
+                file_path = court_case.acuse_pdf_url
+                if file_path.startswith("/"):
+                    file_path = file_path[1:]
+                file_path = file_path.replace("/", os.sep)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+            db.delete(court_case)
+    
+    # Eliminar contratos
+    db.query(Contract).filter(Contract.client_id == client_id).delete()
+    
+    # Eliminar documentos
+    db.query(ClientDocument).filter(ClientDocument.client_id == client_id).delete()
+    
+    # Eliminar cliente
+    db.delete(client)
+    
+    # Registrar en bitácora
+    log = ActivityLog(
+        firm_id=user.firm_id,
+        user_id=user.id,
+        action="delete",
+        entity="Cliente",
+        entity_id=client_id,
+        description=f"{user.full_name} eliminó al cliente {client_name} y toda su información"
+    )
+    db.add(log)
+    
+    db.commit()
+    
+    return {
+        "success": True,
+        "message": f"Cliente {client_name} eliminado completamente"
+    }
+
+# --- Regenerar constancia del cliente ---
+@router.get("/constancia/{client_id}")
+async def regenerate_constancia(client_id: int, db: Session = Depends(get_db)):
+    """Regenera y devuelve el PDF de la constancia del cliente"""
+    client = db.query(Client).filter(Client.id == client_id).first()
+    if not client:
+        raise HTTPException(404, "Cliente no encontrado")
+    
+    # Generar PDF
+    pdf_bytes = generate_client_pdf(client)
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=constancia_{client.folio_registro}.pdf"}
+    )

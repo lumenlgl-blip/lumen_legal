@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { size: letter; margin: 1.5cm; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #1a2b4a; font-size: 10px; line-height: 1.5; }
+        .pdf-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #1a3b6b; padding-bottom: 15px; margin-bottom: 20px; }
+        .pdf-logo { width: 80px; height: auto; }
+        .pdf-header-info { text-align: right; }
+        .pdf-title { font-size: 18px; font-weight: bold; color: #1a3b6b; }
+        .pdf-subtitle { font-size: 11px; color: #6b7b8f; }
+        .pdf-section-title { background: #1a3b6b; color: white; padding: 8px 15px; font-weight: bold; font-size: 12px; margin-top: 15px; border-radius: 5px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .pdf-table th { background: #f0f4fa; padding: 6px 10px; text-align: left; font-size: 9px; text-transform: uppercase; }
+        .pdf-table td { padding: 6px 10px; border-bottom: 1px solid #eef2f7; }
+        .pdf-footer { margin-top: 30px; text-align: center; font-size: 8px; color: #8a9bb0; border-top: 1px solid #e0e5ec; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="pdf-header">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+        <div class="pdf-header-info">
+            <div class="pdf-title">LUMEN LEGAL</div>
+            <div class="pdf-subtitle">Reporte de Agenda Judicial</div>
+        </div>
+    </div>
+    
+    <div style="text-align:center; margin: 20px 0;">
+        <h2 style="color:#1a3b6b; font-size:18px; margin:0;">REPORTE DE AGENDA</h2>
+        <p style="color:#6b7b8f; font-size:11px; margin:5px 0;">{{ titulo_periodo }}</p>
+    </div>
+    
+    <div class="pdf-section-title">RESUMEN</div>
+    <table class="pdf-table">
+        <tr><td style="width:40%;font-weight:bold;">Total de eventos:</td><td>{{ total_eventos }}</td></tr>
+        <tr><td style="width:40%;font-weight:bold;">Fecha de generación:</td><td>{{ fecha_generacion }}</td></tr>
+    </table>
+    
+    <div class="pdf-section-title">EVENTOS</div>
+    {% if eventos %}
+    <table class="pdf-table">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Título</th>
+                <th>Tipo</th>
+                <th>Lugar</th>
+                <th>Expediente</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ev in eventos %}
+            <tr>
+                <td>{{ ev.fecha }}</td>
+                <td>{{ ev.hora }}</td>
+                <td>{{ ev.titulo }}</td>
+                <td>{{ ev.tipo }}</td>
+                <td>{{ ev.lugar }}</td>
+                <td>{{ ev.expediente }}</td>
+                <td>{{ ev.estado }}</td>
+            </tr>
+            {% if ev.descripcion %}
+            <tr>
+                <td colspan="7" style="font-size:9px;color:#6b7b8f;">📝 {{ ev.descripcion }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="padding: 15px;">No hay eventos en este periodo.</p>
+    {% endif %}
+    
+    <div class="pdf-footer">
+        Lumen Legal &copy; {{ anio }} - Reporte de Agenda Judicial<br>
+        Documento generado electrónicamente.
+    </div>
+</body>
+</html>

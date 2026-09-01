@@ -7,16 +7,12 @@ from app.models.core import Client, Contract, Payment
 import os, uuid, io
 from datetime import datetime
 import aiofiles
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
+
 
 router = APIRouter(prefix="/contracts", tags=["Contracts"])
 
 UPLOAD_DIR = "uploads/contract_docs"
-RECEIPT_DIR = "uploads/receipts"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-os.makedirs(RECEIPT_DIR, exist_ok=True)
 
 async def save_upload_file(upload_file: UploadFile, folder: str, filename: str) -> str:
     os.makedirs(folder, exist_ok=True)
@@ -27,30 +23,23 @@ async def save_upload_file(upload_file: UploadFile, folder: str, filename: str) 
     return file_path
 
 def generate_payment_receipt(client, contract, payment):
-    buffer = io.BytesIO()
-    pdf_doc = SimpleDocTemplate(buffer, pagesize=letter)
-    styles = getSampleStyleSheet()
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    import os
+    from datetime import datetime
     
-    title_style = ParagraphStyle('TitleStyle', parent=styles['Title'], fontSize=18, alignment=1, spaceAfter=20)
-    subtitle_style = ParagraphStyle('SubtitleStyle', parent=styles['Heading2'], fontSize=14, alignment=1, spaceAfter=30)
-    body_style = ParagraphStyle('BodyStyle', parent=styles['BodyText'], fontSize=11, leading=16, spaceAfter=6)
-    section_style = ParagraphStyle('SectionStyle', parent=styles['Heading3'], fontSize=12, spaceBefore=15, spaceAfter=10)
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/contrato_servicio.html")
     
-    story = []
-    story.append(Paragraph("LUMEN LEGAL", title_style))
-    story.append(Paragraph("CONSTANCIA DE CONTRATACIÓN Y PAGO", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, spaceAfter=20))
+    # Ruta del logo
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
     
-    story.append(Paragraph("DATOS DEL CLIENTE", section_style))
-    story.append(Paragraph(f"<b>Cliente:</b> {client.name} {client.paterno} {client.materno}", body_style))
-    story.append(Paragraph(f"<b>CURP:</b> {client.curp}", body_style))
-    story.append(Paragraph(f"<b>Teléfono:</b> {client.phone}", body_style))
-    story.append(Paragraph(f"<b>Folio Registro:</b> {client.folio_registro}", body_style))
-    story.append(Paragraph(f"<b>Expediente Interno:</b> {client.expediente_interno}", body_style))
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode('utf-8')
     
-    story.append(Paragraph("DATOS DEL CONTRATO", section_style))
-    
-    # Mostrar tipo de servicio
     service_type_map = {
         "asesoria": "Asesoría Jurídica",
         "juicio": "Inicio de Juicio",
@@ -58,42 +47,47 @@ def generate_payment_receipt(client, contract, payment):
         "contestacion": "Contestación de Demanda",
         "diligencia": "Diligenciar Oficio/Exhorto"
     }
-    service_label = service_type_map.get(contract.service_type, contract.service_type)
-    story.append(Paragraph(f"<b>Servicio:</b> {service_label}", body_style))
     
-    # Mostrar tipo de juicio si aplica
+    forma_pago_map = {
+        "efectivo": "Efectivo",
+        "deposito": "Depósito",
+        "transferencia": "Transferencia"
+    }
+    
+    tipo_juicio_display = ""
     if contract.tipo_juicio:
         tipo_juicio_display = contract.tipo_juicio
-        if contract.tipo_juicio == "Convenio" and contract.tipo_juicio_otro:
+        if contract.tipo_juicio_otro:
             tipo_juicio_display = contract.tipo_juicio_otro
-        elif contract.tipo_juicio == "Otro" and contract.tipo_juicio_otro:
-            tipo_juicio_display = contract.tipo_juicio_otro
-        story.append(Paragraph(f"<b>Tipo de Juicio:</b> {tipo_juicio_display}", body_style))
     
-    if contract.specific_detail:
-        story.append(Paragraph(f"<b>Detalle:</b> {contract.specific_detail}", body_style))
+    total_cost = float(contract.total_cost)
+    monto_pagado = float(payment.amount) if payment else 0
+    saldo_restante = total_cost - monto_pagado
     
-    story.append(Paragraph(f"<b>Costo Total:</b> ${float(contract.total_cost):,.2f}", body_style))
-    story.append(Paragraph(f"<b>Estatus:</b> {contract.status.upper()}", body_style))
-    story.append(Paragraph(f"<b>Fecha de Contratación:</b> {contract.created_at.strftime('%d/%m/%Y %H:%M')}", body_style))
+    html_content = template.render(
+        nombre_completo=f"{client.name} {client.paterno} {client.materno or ''}",
+        curp=client.curp,
+        telefono=client.phone,
+        folio=client.folio_registro,
+        contrato_id=contract.id,
+        servicio=service_type_map.get(contract.service_type, contract.service_type),
+        tipo_juicio=tipo_juicio_display or None,
+        detalle=contract.specific_detail or None,
+        costo_total=f"{total_cost:,.2f}",
+        monto_pagado=f"{monto_pagado:,.2f}" if payment else None,
+        forma_pago=forma_pago_map.get(payment.method, "") if payment else "",
+        fecha_pago=payment.payment_date.strftime('%d/%m/%Y %H:%M') if payment else "",
+        recibio=payment.receiver_name or "" if payment else "",
+        saldo_restante=f"{saldo_restante:,.2f}",
+        estatus="LIQUIDADO" if contract.status == "liquidado" else "PENDIENTE",
+        badge_class="badge-liquidado" if contract.status == "liquidado" else "badge-pendiente",
+        fecha_contratacion=contract.created_at.strftime('%d/%m/%Y %H:%M') if contract.created_at else "",
+        anio=datetime.now().strftime('%Y'),
+        logo_base64=logo_base64
+    )
     
-    if payment:
-        story.append(Paragraph("DATOS DEL PAGO", section_style))
-        story.append(Paragraph(f"<b>Monto Pagado:</b> ${float(payment.amount):,.2f}", body_style))
-        story.append(Paragraph(f"<b>Forma de Pago:</b> {payment.method}", body_style))
-        story.append(Paragraph(f"<b>Fecha de Pago:</b> {payment.payment_date.strftime('%d/%m/%Y %H:%M')}", body_style))
-        story.append(Paragraph(f"<b>Recibió:</b> {payment.receiver_name or 'No especificado'}", body_style))
-    else:
-        story.append(Paragraph("DATOS DEL PAGO", section_style))
-        story.append(Paragraph("<b>Monto Pagado:</b> $0.00 (Pago pendiente)", body_style))
-    
-    story.append(Spacer(1, 30))
-    story.append(HRFlowable(width="100%", thickness=1, spaceBefore=10, spaceAfter=10))
-    story.append(Paragraph("Aviso de Privacidad: Tus datos serán tratados conforme a la ley...", styles['BodyText']))
-    
-    pdf_doc.build(story)
-    buffer.seek(0)
-    return buffer.getvalue()
+    pdf_bytes = HTML(string=html_content).write_pdf()
+    return pdf_bytes
 
 @router.get("/register", response_class=HTMLResponse)
 async def show_contract_form():
@@ -182,12 +176,25 @@ async def register_contract(
     db.commit()
     db.refresh(new_contract)
     
+    # Registrar en bitácora
+    from app.models.core import ActivityLog
+    log = ActivityLog(
+        firm_id=1,
+        user_id=1,
+        action="create",
+        entity="Contrato",
+        entity_id=new_contract.id,
+        description=f"Contratación para {client.name} {client.paterno}"
+    )
+    db.add(log)
+    db.commit()
+    
     payment = None
     if payment_amount > 0:
         receipt_url = None
-        if receipt_file:
-            filename = f"recibo_{client.folio_registro}_{uuid.uuid4().hex[:8]}.pdf"
-            receipt_url = await save_upload_file(receipt_file, RECEIPT_DIR, filename)
+    if receipt_file:
+        filename = f"recibo_{client.folio_registro}_{uuid.uuid4().hex[:8]}.pdf"
+        receipt_url = await save_upload_file(receipt_file, UPLOAD_DIR, filename)
         
         payment = Payment(
             contract_id=new_contract.id,

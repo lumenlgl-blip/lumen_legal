@@ -1,120 +1,544 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Consulta de Pagos - Lumen Legal</title>
+    <title>Consulta de Pagos · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .client-card { border-left: 4px solid #0d6efd; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
-        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
-        .contract-card { border-left: 4px solid #ffc107; background: #fff; }
-        .modal-pdf { width: 100%; height: 80vh; border: none; }
-        .badge-liquidado { background: #198754; }
-        .badge-pendiente { background: #dc3545; }
-        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Botón menú */
+        .btn-menu-modern {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Header */
+        .page-header {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            color: #2a6df4;
+            font-size: 2rem;
+        }
+        .page-header .header-badge {
+            background: #0b1e33;
+            color: white;
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+        .page-header .header-badge i {
+            margin-right: 6px;
+            color: #7aa9ff;
+        }
+
+        /* Tarjeta de búsqueda */
+        .search-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .search-card .search-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0b1e33;
+            margin-bottom: 12px;
+        }
+        .search-card .search-title i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+        .search-card .form-control {
+            border-radius: 16px;
+            border: 1.5px solid #e9edf4;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.6);
+            transition: all 0.2s;
+            height: 56px;
+        }
+        .search-card .form-control:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: white;
+        }
+        .btn-search {
+            background: #0b1e33;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-weight: 700;
+            color: white;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 56px;
+        }
+        .btn-search:hover {
+            background: #1a3b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+        }
+
+        /* Tarjetas de clientes */
+        .client-card-modern {
+            background: white;
+            border-radius: 18px;
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border: 1px solid #edf2f9;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .client-card-modern:hover {
+            border-color: #cbd9ed;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .client-card-modern .client-name {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.95rem;
+        }
+        .client-card-modern .client-curp {
+            color: #6b7b8f;
+            font-size: 0.8rem;
+        }
+        .client-card-modern .badge-custom {
+            font-weight: 600;
+            font-size: 0.65rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .badge-folio { background: #eef3fa; color: #4a5b6e; }
+        .badge-interno { background: #e2edff; color: #1f4f9e; }
+        .badge-contratos { background: #e3f5ee; color: #1a8b5c; }
+        .badge-deuda { background: #fee9e7; color: #b12a2a; }
+        .badge-pagado { background: #e3f5ee; color: #1a8b5c; }
+
+        .btn-view-details {
+            background: #0b1e33;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 18px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        .btn-view-details:hover {
+            background: #2a6df4;
+            transform: scale(1.02);
+        }
+
+        /* Detalle del cliente */
+        .detail-container {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: none;
+        }
+        .detail-container .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .detail-container .client-header h4 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin: 0;
+        }
+        .detail-container .client-header .client-meta {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
+
+        /* Contratos */
+        .contract-card-modern {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border-left: 4px solid #f5b342;
+            transition: all 0.15s;
+        }
+        .contract-card-modern:hover {
+            background: #fafcff;
+        }
+        .contract-card-modern .contract-service {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.9rem;
+        }
+
+        .status-badge-modern {
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+        .status-liquidado { background: #e3f5e9; color: #1f8b4c; }
+        .status-pendiente { background: #fee9e7; color: #b12a2a; }
+
+        .btn-toggle-payments {
+            background: rgba(42,109,244,0.06);
+            border: none;
+            border-radius: 40px;
+            padding: 6px 16px;
+            color: #2a6df4;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        .btn-toggle-payments:hover {
+            background: #2a6df4;
+            color: white;
+        }
+
+        /* Pagos */
+        .payment-item {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid #edf2f9;
+            transition: all 0.15s;
+            height: 100%;
+        }
+        .payment-item:hover {
+            border-color: #cbd9ed;
+        }
+        .payment-item .payment-amount {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.95rem;
+        }
+        .payment-item .payment-method {
+            font-size: 0.75rem;
+            color: #6b7b8f;
+        }
+        .payment-item .payment-date {
+            font-size: 0.7rem;
+            color: #8a9bb0;
+        }
+        .payment-item .payment-received {
+            font-size: 0.7rem;
+            color: #6b7b8f;
+        }
+
+        .btn-view-receipt {
+            background: rgba(220,53,69,0.06);
+            border: none;
+            border-radius: 40px;
+            padding: 3px 12px;
+            color: #dc3545;
+            font-weight: 600;
+            font-size: 0.65rem;
+            transition: all 0.2s;
+        }
+        .btn-view-receipt:hover {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Resumen de pagos */
+        .summary-card {
+            background: linear-gradient(135deg, #f8faff, #eef3fa);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-top: 16px;
+            border: 1px solid #e9edf4;
+        }
+        .summary-card .summary-item {
+            text-align: center;
+            padding: 4px 0;
+        }
+        .summary-card .summary-item .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b7b8f;
+            font-weight: 600;
+        }
+        .summary-card .summary-item .value {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        .summary-card .summary-item .value.text-success { color: #1a8b5c; }
+        .summary-card .summary-item .value.text-danger { color: #b12a2a; }
+
+        /* Modales modernos */
+        .modal-modern .modal-content {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 20px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+        }
+
+        .modal-pdf {
+            width: 100%;
+            height: 75vh;
+            border: none;
+            border-radius: 12px;
+        }
+
+        /* Loading */
         .spinner-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
             z-index: 9999;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
         }
         .spinner-box {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 36px 48px;
+            border-radius: 32px;
             text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #d0d8e3;
+            margin-bottom: 12px;
+        }
+        .empty-state h5 {
+            color: #0b1e33;
+            font-weight: 600;
+        }
+        .empty-state p {
+            color: #8a9bb0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 1.3rem; }
+            .page-header h1 i { font-size: 1.4rem; }
+            .search-card { padding: 16px 18px; }
+            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+            .detail-container .client-header { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .client-card-modern { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+<!-- Botón menú -->
+<a href="/" class="btn-menu-modern">
+    <i class="bi bi-arrow-left"></i> Menú Principal
+</a>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">📊 Consulta de Pagos</h1>
-    
+<div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-cash-stack"></i> Consulta de Pagos
+        </h1>
+        <span class="header-badge">
+            <i class="bi bi-search"></i> Historial financiero
+        </span>
+    </div>
+
     <!-- Buscador -->
-    <div class="card p-4 shadow mb-4">
-        <h5 class="mb-3"><strong>Buscar Cliente</strong></h5>
-        <div class="row">
-            <div class="col-md-8 mb-2">
-                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..." autocomplete="off">
+    <div class="search-card">
+        <div class="search-title">
+            <i class="bi bi-search"></i> Buscar Cliente
+        </div>
+        <div class="row g-3">
+            <div class="col-md-8">
+                <input type="text" id="searchInput" class="form-control"
+                       placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..."
+                       autocomplete="off">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+                <button id="searchBtn" class="btn-search">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Resultados -->
     <div id="resultsContainer"></div>
-    
+
     <!-- Detalle del cliente -->
-    <div id="clientDetailContainer" style="display:none;" class="mt-4">
-        <div class="card p-4 shadow">
-            <h4 id="clientNameDisplay" class="text-primary"></h4>
-            <p id="clientInfoDisplay" class="text-muted"></p>
-            <hr>
-            <div id="contractsContainer"></div>
-        </div>
+    <div id="clientDetailContainer" class="detail-container">
+        <div id="clientContent"></div>
     </div>
 </div>
 
-<!-- Modal para ver comprobante -->
-<div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+<!-- ================================================== -->
+<!-- MODAL COMPROBANTE -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="receiptModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Comprobante de Pago</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Comprobante de Pago</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
-                <iframe id="pdfViewer" src="" class="modal-pdf"></iframe>
+            <div class="modal-body p-0">
+                <iframe id="pdfViewer" class="modal-pdf"></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <a id="downloadPdfBtn" href="#" download class="btn btn-primary">⬇️ Descargar</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="downloadPdfBtn" href="#" download class="btn btn-primary">
+                    <i class="bi bi-download"></i> Descargar
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de notificaciones -->
-<div class="modal fade" id="notificationModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIONES -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Loading overlay -->
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
     <div class="spinner-box">
-        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-        <h5 class="mb-0">Cargando información...</h5>
-        <p class="text-muted small">Por favor espera.</p>
+        <div class="spinner-border" role="status"></div>
+        <h5>Cargando información</h5>
+        <p>Por favor espera.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ============================================================
+// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
+// ============================================================
+
 function showNotification(title, bodyHTML, type = 'info') {
     const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
     const header = document.getElementById('notificationHeader');
@@ -137,7 +561,6 @@ function hideLoading() {
     document.getElementById('loadingOverlay').style.display = 'none';
 }
 
-// Buscar con Enter
 document.getElementById('searchInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
@@ -151,70 +574,74 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning');
         return;
     }
-    
-    // Limpiar búsqueda anterior y detalle del cliente
+
     document.getElementById('resultsContainer').innerHTML = '';
     document.getElementById('clientDetailContainer').style.display = 'none';
-    document.getElementById('contractsContainer').innerHTML = '';
-    
+    document.getElementById('clientContent').innerHTML = '';
+
     showLoading();
-    
+
     try {
         const formData = new FormData();
         formData.append('search_term', searchTerm);
-        
-        // Usar endpoint de consulta general (todos los clientes)
+
         const response = await fetch('/api/payments/search-client-all', {
             method: 'POST',
             body: formData
         });
-        
+
         hideLoading();
-        
+
         if (!response.ok) {
             const error = await response.json();
             showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
             document.getElementById('resultsContainer').innerHTML = '';
             return;
         }
-        
+
         const clients = await response.json();
         const container = document.getElementById('resultsContainer');
-        
+
         if (clients.length === 0) {
-            container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron clientes.</strong></div>';
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No se encontraron clientes</h5>
+                    <p>Intenta con otro término de búsqueda.</p>
+                </div>
+            `;
             return;
         }
-        
-        container.innerHTML = '<h5 class="mb-3"><strong>Clientes encontrados:</strong></h5>';
-        
+
+        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes encontrados</h5>';
+
         clients.forEach(client => {
             const card = document.createElement('div');
-            card.className = 'client-card p-3 mb-2 rounded';
+            card.className = 'client-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2';
             card.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-3"><strong>${client.nombre_completo}</strong></div>
-                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
-                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
-                    <div class="col-md-3"><small>${client.curp}</small></div>
-                    <div class="col-md-2"><button class="btn btn-sm btn-success view-client" data-id="${client.id}">Ver detalles</button></div>
+                <div>
+                    <div class="client-name">${client.nombre_completo}</div>
+                    <div class="client-curp">${client.curp}</div>
                 </div>
-                <div class="mt-2">
-                    <small class="text-muted">Contratos: ${client.contratos_count}</small><br>
-                    <small class="text-success"><strong>Total pagado:</strong> $${client.total_pagado.toLocaleString()}</small><br>
-                    <small class="text-danger"><strong>Total deuda:</strong> $${client.deuda_total.toLocaleString()}</small>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
+                    <span class="badge-custom badge-contratos"><i class="bi bi-files me-1"></i>${client.contratos_count} contratos</span>
+                    <span class="badge-custom badge-pagado"><i class="bi bi-coin me-1"></i>$${client.total_pagado.toLocaleString()}</span>
+                    <span class="badge-custom badge-deuda"><i class="bi bi-exclamation-triangle me-1"></i>$${client.deuda_total.toLocaleString()}</span>
+                    <button class="btn-view-details view-client" data-id="${client.id}"><i class="bi bi-eye me-1"></i>Ver detalles</button>
                 </div>
             `;
             container.appendChild(card);
         });
-        
+
         document.querySelectorAll('.view-client').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const clientId = btn.dataset.id;
                 await loadClientDetail(clientId);
             });
         });
-        
+
     } catch (error) {
         hideLoading();
         showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
@@ -223,74 +650,97 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
 
 async function loadClientDetail(clientId) {
     showLoading();
-    
+
     try {
         const response = await fetch(`/api/payments/client/${clientId}`);
         const client = await response.json();
-        
+
         hideLoading();
-        
+
+        const container = document.getElementById('clientContent');
         document.getElementById('clientDetailContainer').style.display = 'block';
-        document.getElementById('clientNameDisplay').textContent = client.nombre_completo;
-        document.getElementById('clientInfoDisplay').textContent = 
-            `CURP: ${client.curp} | Teléfono: ${client.telefono} | Exp. Interno: ${client.expediente_interno} | Folio: ${client.folio_registro}`;
-        
-        const container = document.getElementById('contractsContainer');
-        container.innerHTML = '';
-        
+
+        let html = `
+            <div class="client-header">
+                <div>
+                    <h4><i class="bi bi-person-circle text-primary me-2"></i>${client.nombre_completo}</h4>
+                    <div class="client-meta">
+                        <span class="me-3"><i class="bi bi-person"></i> ${client.curp}</span>
+                        <span class="me-3"><i class="bi bi-telephone"></i> ${client.telefono}</span>
+                        <span class="me-3"><i class="bi bi-folder"></i> Exp. ${client.expediente_interno}</span>
+                        <span><i class="bi bi-tag"></i> ${client.folio_registro}</span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div id="contractsContainer"></div>
+        `;
+
+        container.innerHTML = html;
+
+        const contractsContainer = document.getElementById('contractsContainer');
+        contractsContainer.innerHTML = '';
+
         if (client.contratos.length === 0) {
-            container.innerHTML = '<div class="alert alert-warning"><strong>Este cliente no tiene contratos registrados.</strong></div>';
+            contractsContainer.innerHTML = '<div class="alert alert-info rounded-4">Este cliente no tiene contratos registrados.</div>';
             return;
         }
-        
+
         client.contratos.forEach(contract => {
             const card = document.createElement('div');
-            card.className = 'contract-card p-3 mb-3 shadow-sm';
+            card.className = 'contract-card-modern';
             card.innerHTML = `
-                <div class="row">
+                <div class="row align-items-center">
                     <div class="col-md-8">
-                        <h6><i class="bi bi-file-earmark-text"></i> ${contract.servicio}</h6>
-                        <p><strong>Total:</strong> $${contract.total.toLocaleString()} | 
-                           <strong>Pagado:</strong> $${contract.pagado.toLocaleString()} | 
-                           <strong>Saldo:</strong> $${contract.saldo.toLocaleString()}</p>
-                        <span class="badge ${contract.status === 'liquidado' ? 'badge-liquidado' : 'badge-pendiente'}">
-                            ${contract.status.toUpperCase()}
-                        </span>
+                        <div class="contract-service"><i class="bi bi-file-earmark-text me-2"></i>${contract.servicio}</div>
+                        <div class="mt-1">
+                            <span class="status-badge-modern ${contract.status === 'liquidado' ? 'status-liquidado' : 'status-pendiente'}">${contract.status.toUpperCase()}</span>
+                            <span class="ms-2"><strong>Total:</strong> $${contract.total.toLocaleString()}</span>
+                            <span class="ms-2"><strong>Pagado:</strong> $${contract.pagado.toLocaleString()}</span>
+                            <span class="ms-2"><strong>Saldo:</strong> $${contract.saldo.toLocaleString()}</span>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-sm btn-info toggle-payments" data-contract="${contract.id}">
+                    <div class="col-md-4 text-end">
+                        <button class="btn-toggle-payments toggle-payments" data-contract="${contract.id}">
                             <i class="bi bi-eye"></i> Ver pagos
                         </button>
                     </div>
                 </div>
-                <div id="payments-${contract.id}" style="display:none;" class="mt-2">
+                <div id="payments-${contract.id}" style="display:none;" class="mt-3">
                     <hr>
-                    <h6>Pagos registrados</h6>
+                    <h6 class="fw-bold"><i class="bi bi-list-ul me-2"></i>Pagos registrados</h6>
                     ${contract.pagos.length === 0 ? '<p class="text-muted">No hay pagos registrados.</p>' : ''}
-                    <div class="row">
+                    <div class="row g-2">
                         ${contract.pagos.map(p => `
-                            <div class="col-md-6 col-lg-4 mb-2">
-                                <div class="card p-2">
-                                    <small><strong>$${p.monto.toLocaleString()}</strong> - ${p.metodo}</small><br>
-                                    <small class="text-muted">${p.fecha}</small><br>
-                                    <small class="text-muted">Recibió: ${p.recibio}</small>
-                                    ${p.comprobante ? `
-                                        <button class="btn btn-sm btn-outline-primary view-receipt mt-1" 
-                                            data-url="${p.comprobante}" 
-                                            data-filename="comprobante_${p.id}.pdf">
-                                            <i class="bi bi-file-pdf"></i> Ver comprobante
+                            <div class="col-md-6 col-lg-4">
+                                <div class="payment-item">
+                                    <div class="payment-amount">$${p.monto.toLocaleString()}</div>
+                                    <div class="payment-method"><i class="bi bi-credit-card me-1"></i>${p.metodo}</div>
+                                    <div class="payment-date"><i class="bi bi-calendar3 me-1"></i>${p.fecha}</div>
+                                    <div class="payment-received"><i class="bi bi-person me-1"></i>${p.recibio}</div>
+                                    <div class="d-flex flex-column gap-1 mt-1">
+                                        ${p.metodo !== 'efectivo' && p.comprobante ? `
+                                            <button class="btn-view-receipt view-receipt" 
+                                                data-url="${p.comprobante}" 
+                                                data-filename="comprobante_${p.id}.pdf">
+                                                <i class="bi bi-file-pdf me-1"></i> Ver comprobante
+                                            </button>
+                                        ` : ''}
+                                        <button class="btn-view-receipt reprint-receipt" 
+                                            data-payment-id="${p.id}" 
+                                            style="background:rgba(26,139,92,0.08);color:#1a8b5c;">
+                                            <i class="bi bi-printer me-1"></i> Reimprimir recibo
                                         </button>
-                                    ` : '<span class="text-muted">Sin comprobante</span>'}
+                                    </div>
                                 </div>
                             </div>
                         `).join('')}
                     </div>
                 </div>
             `;
-            container.appendChild(card);
+            contractsContainer.appendChild(card);
         });
-        
-        // Mostrar/ocultar pagos
+
         document.querySelectorAll('.toggle-payments').forEach(btn => {
             btn.addEventListener('click', function() {
                 const contractId = this.dataset.contract;
@@ -304,8 +754,7 @@ async function loadClientDetail(clientId) {
                 }
             });
         });
-        
-        // Ver comprobante
+
         document.querySelectorAll('.view-receipt').forEach(btn => {
             btn.addEventListener('click', function() {
                 const url = this.dataset.url;
@@ -316,32 +765,50 @@ async function loadClientDetail(clientId) {
                 new bootstrap.Modal(document.getElementById('receiptModal')).show();
             });
         });
-        
-        // Agregar resumen general al final
-        const totalContainer = document.createElement('div');
-        totalContainer.className = 'alert alert-info mt-3';
-        totalContainer.innerHTML = `
-            <div class="row text-center">
-                <div class="col-md-6">
-                    <h5 class="text-success mb-0"><strong>💰 Total Pagado:</strong></h5>
-                    <h4 class="text-success">$${client.total_pagado_general.toLocaleString()}</h4>
+
+        document.querySelectorAll('.reprint-receipt').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const paymentId = this.dataset.paymentId;
+                reimprimirRecibo(paymentId);
+            });
+        });
+
+        // Resumen general
+        const summaryDiv = document.createElement('div');
+        summaryDiv.className = 'summary-card';
+        summaryDiv.innerHTML = `
+            <div class="row">
+                <div class="col-md-6 summary-item">
+                    <div class="label"><i class="bi bi-coin me-1"></i>Total Pagado</div>
+                    <div class="value text-success">$${client.total_pagado_general.toLocaleString()}</div>
                 </div>
-                <div class="col-md-6">
-                    <h5 class="text-danger mb-0"><strong>📋 Total Deuda:</strong></h5>
-                    <h4 class="text-danger">$${client.total_deuda_general.toLocaleString()}</h4>
+                <div class="col-md-6 summary-item">
+                    <div class="label"><i class="bi bi-exclamation-triangle me-1"></i>Total Deuda</div>
+                    <div class="value text-danger">$${client.total_deuda_general.toLocaleString()}</div>
                 </div>
             </div>
         `;
-        container.appendChild(totalContainer);
-        
+        contractsContainer.appendChild(summaryDiv);
+
         document.getElementById('clientDetailContainer').scrollIntoView({ behavior: 'smooth' });
-        
+
     } catch (error) {
         hideLoading();
         showNotification('Error', `<p>Error al cargar detalles: ${error.message}</p>`, 'error');
     }
 }
 
+// ============================================================
+// REIMPRIMIR RECIBO DE PAGO
+// ============================================================
+
+function reimprimirRecibo(paymentId) {
+    showLoading();
+    
+    window.open(`/api/payments/receipt-pdf/${paymentId}`, '_blank');
+    
+    setTimeout(() => hideLoading(), 1500);
+}
 </script>
 </body>
 </html>

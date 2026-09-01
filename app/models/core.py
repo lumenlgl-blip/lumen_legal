@@ -105,6 +105,7 @@ class CourtCase(Base):
     
     contract = relationship("Contract", back_populates="court_case")
     actuaciones = relationship("Actuacion", back_populates="court_case", cascade="all, delete-orphan")
+    agenda_events = relationship("AgendaEvent", back_populates="court_case", cascade="all, delete-orphan")
 
 # --- Pagos ---
 class Payment(Base):
@@ -137,3 +138,40 @@ class Actuacion(Base):
     uploaded_at = Column(DateTime, default=datetime.utcnow)
     
     court_case = relationship("CourtCase", back_populates="actuaciones")
+    
+    # --- Agenda Judicial ---
+class AgendaEvent(Base):
+    __tablename__ = "agenda_events"
+    id = Column(Integer, primary_key=True, index=True)
+    firm_id = Column(Integer, ForeignKey("firms.id"), nullable=False)
+    court_case_id = Column(Integer, ForeignKey("court_cases.id"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    
+    title = Column(String(200), nullable=False)
+    event_type = Column(String(30), nullable=False)  # audiencia, plazos, junta, otro
+    description = Column(Text, nullable=True)
+    event_date = Column(Date, nullable=False)
+    event_time = Column(String(10), nullable=True)  # HH:MM
+    location = Column(String(200), nullable=True)
+    reminder_days = Column(Integer, default=1)
+    is_completed = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # 🆕 NUEVO CAMPO: expediente manual (texto libre)
+    expediente_manual = Column(String(100), nullable=True)
+    
+    court_case = relationship("CourtCase", back_populates="agenda_events")
+    
+    # --- Bitácora de Actividades ---
+# --- Bitácora de Actividades ---
+class ActivityLog(Base):
+    __tablename__ = "activity_logs"
+    id = Column(Integer, primary_key=True, index=True)
+    firm_id = Column(Integer, ForeignKey("firms.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    action = Column(String(50), nullable=False)
+    entity = Column(String(50), nullable=False)
+    entity_id = Column(Integer, nullable=True)
+    description = Column(Text, nullable=True)
+    ip_address = Column(String(50), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)

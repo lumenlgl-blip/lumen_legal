@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: letter;
+            margin: 1.5cm;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #1a2b4a;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #1a3b6b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .pdf-logo {
+            width: 100px;
+            height: auto;
+        }
+        .pdf-header-info {
+            text-align: right;
+        }
+        .pdf-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a3b6b;
+        }
+        .pdf-subtitle {
+            font-size: 12px;
+            color: #6b7b8f;
+        }
+        .pdf-section {
+            margin-top: 20px;
+            border: 1px solid #e0e5ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .pdf-section-title {
+            background: #1a3b6b;
+            color: white;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .pdf-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .pdf-table td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #eef2f7;
+        }
+        .pdf-table td:first-child {
+            font-weight: bold;
+            width: 35%;
+            background: #f8fafc;
+            color: #4a5b6e;
+        }
+        .pdf-footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 9px;
+            color: #8a9bb0;
+            border-top: 1px solid #e0e5ec;
+            padding-top: 10px;
+        }
+        .highlight {
+            color: #2a6df4;
+            font-weight: bold;
+        }
+        .badge-pdf {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .badge-pendiente { background: #fee9e7; color: #b12a2a; }
+        .badge-liquidado { background: #e3f5e9; color: #1f8b4c; }
+    </style>
+</head>
+<body>
+    <div class="pdf-header">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+        <div class="pdf-header-info">
+            <div class="pdf-title">LUMEN LEGAL</div>
+            <div class="pdf-subtitle">Recibo de Pago</div>
+        </div>
+    </div>
+    
+    <div style="text-align:center; margin: 25px 0;">
+        <h1 style="color:#1a3b6b; font-size:20px; margin:0;">RECIBO OFICIAL DE PAGO</h1>
+        <p style="color:#6b7b8f; font-size:12px; margin:5px 0;">Recibo N°: <span class="highlight">{{ recibo_id }}</span></p>
+    </div>
+    
+    <div class="pdf-section">
+        <div class="pdf-section-title">DATOS DEL CLIENTE</div>
+        <table class="pdf-table">
+            <tr><td>Nombre:</td><td>{{ nombre_completo }}</td></tr>
+            <tr><td>CURP:</td><td>{{ curp }}</td></tr>
+            <tr><td>Folio Registro:</td><td>{{ folio }}</td></tr>
+        </table>
+    </div>
+    
+    <div class="pdf-section">
+        <div class="pdf-section-title">DETALLE DEL PAGO</div>
+        <table class="pdf-table">
+            <tr><td>Monto Pagado:</td><td><span class="highlight">${{ monto_pagado }}</span></td></tr>
+            <tr><td>Forma de Pago:</td><td>{{ forma_pago }}</td></tr>
+            <tr><td>Fecha de Pago:</td><td>{{ fecha_pago }}</td></tr>
+            {% if recibio %}
+            <tr><td>Recibió:</td><td>{{ recibio }}</td></tr>
+            {% endif %}
+            <tr><td>Saldo Restante:</td><td>${{ saldo_restante }}</td></tr>
+            <tr><td>Estatus:</td><td><span class="badge-pdf {{ badge_class }}">{{ estatus }}</span></td></tr>
+        </table>
+    </div>
+    
+    <div class="pdf-footer">
+        Este recibo es un comprobante oficial de pago.<br>
+        Conserve este documento para futuras aclaraciones.
+    </div>
+</body>
+</html>

@@ -1,202 +1,649 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Consultar Expediente - Lumen Legal</title>
+    <title>Consultar Expediente · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .detail-card { border-left: 4px solid #0d6efd; background: #f8f9fa; border-radius: 5px; }
-        .actuacion-item { border-left: 4px solid #198754; background: #fff; border-radius: 5px; }
-        .modal-pdf { width: 100%; height: 75vh; border: none; }
-        .client-card { border-left: 4px solid #0d6efd; background: #f8f9fa; transition: all 0.3s ease; cursor: pointer; }
-        .client-card:hover { background: #e9ecef; transform: translateX(5px); }
-        .case-card { border-left: 4px solid #ffc107; background: #fff; transition: all 0.3s ease; cursor: pointer; }
-        .case-card:hover { background: #f8f9fa; }
-        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Botón menú */
+        .btn-menu-modern {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Header */
+        .page-header {
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-header h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .page-header h1 i {
+            color: #2a6df4;
+            font-size: 2rem;
+        }
+        .page-header .header-badge {
+            background: #0b1e33;
+            color: white;
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+        .page-header .header-badge i {
+            margin-right: 6px;
+            color: #7aa9ff;
+        }
+
+        /* Tarjeta de búsqueda */
+        .search-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .search-card .search-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0b1e33;
+            margin-bottom: 12px;
+        }
+        .search-card .search-title i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+        .search-card .form-control {
+            border-radius: 16px;
+            border: 1.5px solid #e9edf4;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.6);
+            transition: all 0.2s;
+            height: 56px;
+        }
+        .search-card .form-control:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: white;
+        }
+        .btn-search {
+            background: #0b1e33;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 24px;
+            font-weight: 700;
+            color: white;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 56px;
+        }
+        .btn-search:hover {
+            background: #1a3b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+        }
+
+        /* Tarjetas de clientes */
+        .client-card-modern {
+            background: white;
+            border-radius: 18px;
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border: 1px solid #edf2f9;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .client-card-modern:hover {
+            border-color: #cbd9ed;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .client-card-modern .client-name {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.95rem;
+        }
+        .client-card-modern .client-curp {
+            color: #6b7b8f;
+            font-size: 0.8rem;
+        }
+        .client-card-modern .badge-custom {
+            font-weight: 600;
+            font-size: 0.65rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .badge-folio { background: #eef3fa; color: #4a5b6e; }
+        .badge-interno { background: #e2edff; color: #1f4f9e; }
+        .badge-casos { background: #e3f5ee; color: #1a8b5c; }
+
+        .btn-view-cases {
+            background: rgba(42,109,244,0.06);
+            border: none;
+            border-radius: 40px;
+            padding: 6px 18px;
+            color: #2a6df4;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .btn-view-cases:hover {
+            background: #2a6df4;
+            color: white;
+        }
+
+        /* Tarjetas de casos */
+        .case-card-modern {
+            background: white;
+            border-radius: 18px;
+            padding: 14px 18px;
+            margin-bottom: 6px;
+            border: 1px solid #edf2f9;
+            transition: all 0.2s ease;
+        }
+        .case-card-modern:hover {
+            border-color: #cbd9ed;
+            background: #fafcff;
+        }
+        .case-card-modern .case-exp {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.9rem;
+        }
+        .case-card-modern .case-tribunal {
+            color: #4a5b6e;
+            font-size: 0.85rem;
+        }
+
+        .btn-consult-case {
+            background: #0b1e33;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 18px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+        .btn-consult-case:hover {
+            background: #2a6df4;
+            transform: scale(1.02);
+        }
+
+        /* Detalle del expediente */
+        .detail-container {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            display: none;
+        }
+        .detail-container .section-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0b1e33;
+            margin-bottom: 12px;
+        }
+        .detail-container .section-title i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+
+        .info-grid-detail {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px 16px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+        .info-grid-detail .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .info-grid-detail .info-item .label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #8a9bb0;
+            font-weight: 600;
+        }
+        .info-grid-detail .info-item .value {
+            font-weight: 600;
+            color: #0b1e33;
+            font-size: 0.9rem;
+        }
+
+        .actuacion-item-modern {
+            background: white;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-left: 4px solid #2a6df4;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+        .actuacion-item-modern:hover {
+            background: #fafcff;
+        }
+        .actuacion-item-modern .act-tipo {
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 3px 14px;
+            border-radius: 40px;
+            background: #e2edff;
+            color: #1f4f9e;
+        }
+        .actuacion-item-modern .act-fecha {
+            font-size: 0.8rem;
+            color: #4a5b6e;
+        }
+        .actuacion-item-modern .act-desc {
+            font-size: 0.85rem;
+            color: #1e293b;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-preview-pdf {
+            background: rgba(42,109,244,0.06);
+            border: none;
+            border-radius: 40px;
+            padding: 4px 14px;
+            color: #2a6df4;
+            font-weight: 600;
+            font-size: 0.7rem;
+            transition: all 0.2s;
+        }
+        .btn-preview-pdf:hover {
+            background: #2a6df4;
+            color: white;
+        }
+
+        /* Badge estatus */
+        .status-badge-modern {
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-block;
+        }
+        .status-iniciado { background: #e2edff; color: #1f4f9e; }
+        .status-terminado { background: #e3f5e9; color: #1f8b4c; }
+        .status-inactivo { background: #eef2f6; color: #3d4a5c; }
+        .status-desistido { background: #fee9e7; color: #b12a2a; }
+        .status-caducado { background: #ffedd5; color: #9b5e00; }
+        .status-revocado { background: #ede7fe; color: #6f42c1; }
+        .status-pendiente { background: #fee9e7; color: #b12a2a; }
+        .status-liquidado { background: #e3f5e9; color: #1f8b4c; }
+
+        /* Botones de acción */
+        .action-btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .action-btn-group .btn {
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* Modales modernos */
+        .modal-modern .modal-content {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 20px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+        }
+
+        .modal-pdf {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            border-radius: 12px;
+        }
+
+        /* Loading */
         .spinner-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
             z-index: 9999;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
         }
         .spinner-box {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 36px 48px;
+            border-radius: 32px;
             text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
         }
-        .status-badge {
-            padding: 5px 12px;
-            border-radius: 20px;
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
             font-size: 0.85rem;
-            font-weight: bold;
         }
-        .status-iniciado { background: #0d6efd; color: white; }
-        .status-terminado { background: #198754; color: white; }
-        .status-inactivo { background: #6c757d; color: white; }
-        .status-desistido { background: #dc3545; color: white; }
-        .status-caducado { background: #fd7e14; color: white; }
-        .status-revocado { background: #6f42c1; color: white; }
-        
+
         .fade-out {
-            animation: fadeOutSlide 0.4s ease forwards;
+            animation: fadeOutSlide 0.35s ease forwards;
         }
         @keyframes fadeOutSlide {
             from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 0; transform: translateX(-30px); }
         }
         .fade-in {
-            animation: fadeInSlide 0.5s ease forwards;
+            animation: fadeInSlide 0.4s ease forwards;
         }
         @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #d0d8e3;
+            margin-bottom: 12px;
+        }
+        .empty-state h5 {
+            color: #0b1e33;
+            font-weight: 600;
+        }
+        .empty-state p {
+            color: #8a9bb0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 { font-size: 1.3rem; }
+            .page-header h1 i { font-size: 1.4rem; }
+            .search-card { padding: 16px 18px; }
+            .info-grid-detail { grid-template-columns: 1fr 1fr; }
+            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+            .actuacion-item-modern { flex-direction: column; align-items: stretch; }
+        }
+        @media (max-width: 480px) {
+            .info-grid-detail { grid-template-columns: 1fr; }
+            .client-card-modern { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+<!-- Botón menú -->
+<a href="/" class="btn-menu-modern">
+    <i class="bi bi-arrow-left"></i> Menú Principal
+</a>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">📋 Consultar Expediente</h1>
-    
+<div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-folder2-open"></i> Consultar Expediente
+        </h1>
+        <span class="header-badge">
+            <i class="bi bi-search"></i> Búsqueda avanzada
+        </span>
+    </div>
+
     <!-- Buscador -->
-    <div class="card p-4 shadow mb-4">
-        <h5 class="mb-3"><strong>Buscar Cliente o Expediente del Tribunal</strong></h5>
-        <div class="row">
-            <div class="col-md-8 mb-2">
-                <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..." autocomplete="off">
+    <div class="search-card">
+        <div class="search-title">
+            <i class="bi bi-search"></i> Buscar Cliente o Expediente
+        </div>
+        <div class="row g-3">
+            <div class="col-md-8">
+                <input type="text" id="searchInput" class="form-control"
+                       placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..."
+                       autocomplete="off">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn btn-primary btn-lg w-100">🔍 Buscar</button>
+                <button id="searchBtn" class="btn-search">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Resultados -->
     <div id="resultsContainer"></div>
-    
+
     <!-- Detalle del expediente -->
-    <div id="caseDetailContainer" style="display:none;" class="mt-4 fade-in">
-        <div class="card p-4 shadow">
-            <div id="caseContent"></div>
-        </div>
+    <div id="caseDetailContainer" class="detail-container fade-in">
+        <div id="caseContent"></div>
     </div>
 </div>
 
-<!-- Modal de notificaciones -->
-<div class="modal fade" id="notificationModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIONES -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1">
+<!-- ================================================== -->
+<!-- MODAL CONFIRMACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title">⚠️ Confirmación</h5>
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
-                <button type="button" class="btn btn-success btn-lg" id="confirmBtn">✅ Confirmar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para vista previa de PDF individual -->
-<div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+<!-- ================================================== -->
+<!-- MODAL PDF PREVIEW -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="pdfModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title"><i class="bi bi-file-pdf text-danger"></i> Vista Previa de Documento</h5>
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Vista Previa</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center p-0">
-                <iframe id="pdfPreview" src="" class="modal-pdf"></iframe>
+            <div class="modal-body p-0">
+                <iframe id="pdfPreview" class="modal-pdf"></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <a id="downloadPdfLink" href="#" download class="btn btn-primary">⬇️ Descargar</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="downloadPdfLink" href="#" download class="btn btn-primary">
+                    <i class="bi bi-download"></i> Descargar
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para vista previa del expediente completo -->
-<div class="modal fade" id="fullCasePreviewModal" tabindex="-1" aria-hidden="true">
+<!-- ================================================== -->
+<!-- MODAL EXPEDIENTE COMPLETO -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="fullCasePreviewModal" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="bi bi-folder2-open"></i> Expediente Electrónico Completo</h5>
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-folder2-open me-2"></i>Expediente Electrónico Completo</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center p-0">
-                <iframe id="fullCasePreviewFrame" src="" style="width: 100%; height: 75vh; border: none;"></iframe>
+            <div class="modal-body p-0">
+                <iframe id="fullCasePreviewFrame" style="width:100%;height:70vh;border:none;border-radius:0;"></iframe>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cerrar</button>
-                <a id="fullCaseDownloadLink" href="#" download class="btn btn-success btn-lg">⬇️ Descargar PDF</a>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="fullCaseDownloadLink" href="#" download class="btn btn-success">
+                    <i class="bi bi-download"></i> Descargar PDF
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal para solicitar contraseña -->
-<div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true">
+<!-- ================================================== -->
+<!-- MODAL PASSWORD -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="passwordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="max-width: 400px; margin: 0 auto;">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title">🔒 Verificar Identidad</h5>
+        <div class="modal-content" style="max-width:400px;margin:0 auto;">
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-lock me-2"></i>Verificar Identidad</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Ingresa tu contraseña para continuar:</p>
-                <input type="password" id="passwordInput" class="form-control form-control-lg" placeholder="Contraseña..." autocomplete="off">
+                <p class="text-muted">Ingresa tu contraseña para continuar:</p>
+                <input type="password" id="passwordInput" class="form-control form-control-lg"
+                       placeholder="Contraseña..." autocomplete="off">
                 <div id="passwordError" class="text-danger mt-2" style="display:none;">Contraseña incorrecta</div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" id="confirmPasswordBtn" class="btn btn-primary">Confirmar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Loading overlay -->
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
     <div class="spinner-box">
-        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Cargando...</span>
-        </div>
-        <h5 class="mb-0">Generando expediente...</h5>
-        <p class="text-muted small">Combinando documentos PDF, por favor espera.</p>
+        <div class="spinner-border" role="status"></div>
+        <h5>Generando expediente</h5>
+        <p>Combinando documentos PDF, por favor espera.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ============================================================
+// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
+// ============================================================
+
 let currentAction = null;
 let currentData = null;
 
@@ -236,9 +683,9 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
 document.getElementById('searchBtn').addEventListener('click', async () => {
     const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
     if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
-    
+
     showLoading();
-    
+
     try {
         const formData = new FormData();
         formData.append('search_term', searchTerm);
@@ -246,42 +693,51 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
             method: 'POST',
             body: formData
         });
-        
+
         hideLoading();
-        
+
         if (!response.ok) {
             const error = await response.json();
             showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
             document.getElementById('resultsContainer').innerHTML = '';
             return;
         }
-        
+
         const clients = await response.json();
         const container = document.getElementById('resultsContainer');
-        
+
         if (clients.length === 0) {
-            container.innerHTML = '<div class="alert alert-warning text-center"><strong>No se encontraron expedientes.</strong></div>';
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h5>No se encontraron expedientes</h5>
+                    <p>Intenta con otro término de búsqueda.</p>
+                </div>
+            `;
             return;
         }
-        
-        container.innerHTML = '<h5 class="mb-3"><strong>Clientes con expedientes:</strong></h5>';
+
+        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes con expedientes</h5>';
         container.classList.add('fade-in');
-        
+
         clients.forEach(client => {
             const card = document.createElement('div');
-            card.className = 'client-card p-3 mb-2 rounded';
+            card.className = 'client-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2';
             card.innerHTML = `
-                <div class="row align-items-center">
-                    <div class="col-md-3"><strong>${client.nombre_completo}</strong><br><small class="text-muted">${client.curp}</small></div>
-                    <div class="col-md-2"><span class="badge bg-secondary">${client.folio_registro}</span></div>
-                    <div class="col-md-2"><span class="badge bg-primary">Exp. ${client.expediente_interno}</span></div>
-                    <div class="col-md-2"><span class="badge bg-info">${client.casos.length} expediente(s)</span></div>
-                    <div class="col-md-3"><button class="btn btn-sm btn-success view-cases" data-id="${client.id}">Ver expedientes</button></div>
+                <div>
+                    <div class="client-name">${client.nombre_completo}</div>
+                    <div class="client-curp">${client.curp}</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
+                    <span class="badge-custom badge-casos"><i class="bi bi-files me-1"></i>${client.casos.length} expediente(s)</span>
+                    <button class="btn-view-cases view-cases" data-id="${client.id}"><i class="bi bi-eye me-1"></i>Ver expedientes</button>
                 </div>
             `;
             container.appendChild(card);
         });
-        
+
         document.querySelectorAll('.view-cases').forEach(btn => {
             btn.addEventListener('click', function() {
                 const clientId = parseInt(this.dataset.id);
@@ -289,7 +745,7 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
                 if (clientData) showCaseSelection(clientData);
             });
         });
-        
+
     } catch (error) {
         hideLoading();
         showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
@@ -298,28 +754,30 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
 
 function showCaseSelection(client) {
     const container = document.getElementById('resultsContainer');
-    let html = `<h5 class="mb-3"><strong>Expedientes de ${client.nombre_completo}:</strong></h5>`;
-    
+    let html = `<h5 class="mb-3 fw-bold"><i class="bi bi-folder me-2" style="color:#2a6df4;"></i>Expedientes de ${client.nombre_completo}</h5>`;
+
     client.casos.forEach(caso => {
         const statusClass = `status-${caso.status}`;
         html += `
-            <div class="case-card p-3 mb-2 rounded">
-                <div class="row align-items-center">
-                    <div class="col-md-3"><strong>${caso.expediente_tribunal}</strong></div>
-                    <div class="col-md-3">${caso.tribunal}</div>
-                    <div class="col-md-2"><span class="status-badge ${statusClass}">${caso.status.replace(/_/g, ' ').toUpperCase()}</span></div>
-                    <div class="col-md-2"><small>${caso.fecha_presentacion}</small></div>
-                    <div class="col-md-2"><button class="btn btn-sm btn-primary view-case" data-id="${caso.id}">Consultar</button></div>
+            <div class="case-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <div class="case-exp"><i class="bi bi-file-earmark-text me-1"></i>${caso.expediente_tribunal}</div>
+                    <div class="case-tribunal">${caso.tribunal}</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="status-badge-modern ${statusClass}">${caso.status.replace(/_/g, ' ').toUpperCase()}</span>
+                    <span class="text-muted small">${caso.fecha_presentacion}</span>
+                    <button class="btn-consult-case view-case" data-id="${caso.id}"><i class="bi bi-folder2-open me-1"></i>Consultar</button>
                 </div>
             </div>
         `;
     });
-    
-    html += `<button class="btn btn-outline-secondary btn-sm mt-2" onclick="newSearch()">← Nueva búsqueda</button>`;
+
+    html += `<button class="btn btn-outline-secondary btn-sm mt-2" onclick="newSearch()"><i class="bi bi-arrow-left me-1"></i> Nueva búsqueda</button>`;
     container.innerHTML = html;
     container.classList.remove('fade-in');
     container.classList.add('fade-in');
-    
+
     document.querySelectorAll('.view-case').forEach(btn => {
         btn.addEventListener('click', async () => {
             await loadCaseDetail(btn.dataset.id);
@@ -330,10 +788,10 @@ function showCaseSelection(client) {
 function newSearch() {
     const container = document.getElementById('resultsContainer');
     const detailContainer = document.getElementById('caseDetailContainer');
-    
+
     container.classList.add('fade-out');
     detailContainer.classList.add('fade-out');
-    
+
     setTimeout(() => {
         container.innerHTML = '';
         container.classList.remove('fade-out');
@@ -341,31 +799,31 @@ function newSearch() {
         detailContainer.classList.remove('fade-out');
         document.getElementById('searchInput').value = '';
         document.getElementById('searchInput').focus();
-    }, 400);
+    }, 350);
 }
 
 async function loadCaseDetail(caseId) {
     showLoading();
-    
+
     try {
         const response = await fetch(`/api/cases/consult-detail/${caseId}`);
         const data = await response.json();
-        
+
         hideLoading();
-        
+
         const resultsContainer = document.getElementById('resultsContainer');
         resultsContainer.classList.add('fade-out');
-        
+
         setTimeout(() => {
             resultsContainer.innerHTML = '';
             resultsContainer.classList.remove('fade-out');
-            
+
             document.getElementById('caseDetailContainer').style.display = 'block';
             document.getElementById('caseDetailContainer').classList.add('fade-in');
             currentData = data;
-            
+
             document.getElementById('caseContent').innerHTML = renderCaseDetail(data);
-            
+
             document.querySelectorAll('.preview-pdf').forEach(btn => {
                 btn.addEventListener('click', function() {
                     let url = this.dataset.url;
@@ -377,7 +835,7 @@ async function loadCaseDetail(caseId) {
                     new bootstrap.Modal(document.getElementById('pdfModal')).show();
                 });
             });
-            
+
             document.querySelectorAll('.require-password').forEach(btn => {
                 btn.addEventListener('click', function() {
                     currentAction = this.dataset.action;
@@ -386,112 +844,89 @@ async function loadCaseDetail(caseId) {
                     new bootstrap.Modal(document.getElementById('passwordModal')).show();
                 });
             });
-            
+
             document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth' });
-        }, 400);
-        
+        }, 350);
+
     } catch (error) {
         hideLoading();
         showNotification('Error', `<p>Error al cargar el expediente: ${error.message}</p>`, 'error');
     }
 }
 
-// Abrir PDF unificado en modal con vista previa (NO descarga automática)
 function openFullCasePDF() {
     if (!currentData || !currentData.expediente || !currentData.expediente.id) {
         showNotification('Error', '<p>No se pudo cargar el expediente.</p>', 'error');
         return;
     }
-    
+
     const caseId = currentData.expediente.id;
     const pdfUrl = `/api/cases/full-case-pdf/${caseId}`;
-    
+
     showLoading();
-    
-    // Configurar iframe y enlace de descarga
+
     document.getElementById('fullCasePreviewFrame').src = pdfUrl;
     document.getElementById('fullCaseDownloadLink').href = pdfUrl;
     document.getElementById('fullCaseDownloadLink').setAttribute('download', `expediente_completo_${currentData.expediente.num_exp_tribunal}.pdf`);
-    
-    // Esperar a que cargue el iframe
+
     document.getElementById('fullCasePreviewFrame').onload = function() {
         hideLoading();
     };
-    
-    // Mostrar modal
+
     const modal = new bootstrap.Modal(document.getElementById('fullCasePreviewModal'));
     modal.show();
-    
-    // Timeout de seguridad por si onload no dispara
+
     setTimeout(() => hideLoading(), 2000);
 }
 
 function renderCaseDetail(data) {
     return `
-        <h4 class="text-primary"><i class="bi bi-person"></i> Datos del Cliente</h4>
-        <div class="row detail-card p-3">
-            <div class="col-md-6"><strong>Nombre:</strong> ${data.cliente.nombre_completo}</div>
-            <div class="col-md-6"><strong>CURP:</strong> ${data.cliente.curp}</div>
-            <div class="col-md-6"><strong>Teléfono:</strong> ${data.cliente.telefono}</div>
-            <div class="col-md-6"><strong>Email:</strong> ${data.cliente.email}</div>
-            <div class="col-md-12"><strong>Domicilio:</strong> ${data.cliente.domicilio}</div>
-            <div class="col-md-6"><strong>Ocupación:</strong> ${data.cliente.ocupacion}</div>
-            <div class="col-md-6"><strong>Expediente Interno:</strong> ${data.cliente.expediente_interno}</div>
-            <div class="col-md-6"><strong>Folio Registro:</strong> ${data.cliente.folio_registro}</div>
+        <div class="section-title"><i class="bi bi-person"></i> Datos del Cliente</div>
+        <div class="info-grid-detail">
+            <div class="info-item"><span class="label">Nombre</span><span class="value">${data.cliente.nombre_completo}</span></div>
+            <div class="info-item"><span class="label">CURP</span><span class="value">${data.cliente.curp}</span></div>
+            <div class="info-item"><span class="label">Teléfono</span><span class="value">${data.cliente.telefono}</span></div>
+            <div class="info-item"><span class="label">Email</span><span class="value">${data.cliente.email}</span></div>
+            <div class="info-item"><span class="label">Domicilio</span><span class="value">${data.cliente.domicilio}</span></div>
+            <div class="info-item"><span class="label">Ocupación</span><span class="value">${data.cliente.ocupacion}</span></div>
+            <div class="info-item"><span class="label">Expediente Interno</span><span class="value">${data.cliente.expediente_interno}</span></div>
+            <div class="info-item"><span class="label">Folio Registro</span><span class="value">${data.cliente.folio_registro}</span></div>
         </div>
-        
-        <hr>
-        
-        <h4 class="text-primary"><i class="bi bi-folder"></i> Datos del Expediente</h4>
-        <div class="row detail-card p-3">
-            <div class="col-md-6"><strong>N° Expediente:</strong> ${data.expediente.num_exp_tribunal}</div>
-            <div class="col-md-6"><strong>Folio:</strong> ${data.expediente.folio_tribunal}</div>
-            <div class="col-md-6"><strong>Tribunal:</strong> ${data.expediente.tribunal}</div>
-            <div class="col-md-6"><strong>Secretaría:</strong> ${data.expediente.secretaria}</div>
-            <div class="col-md-6"><strong>Fecha Presentación:</strong> ${data.expediente.fecha_presentacion}</div>
-            <div class="col-md-6"><strong>Estatus:</strong> <span class="status-badge status-${data.expediente.status}">${data.expediente.status.toUpperCase()}</span></div>
-            <div class="col-md-6"><strong>Demandado:</strong> ${data.expediente.demandado_nombre}</div>
-            <div class="col-md-6"><strong>Actor:</strong> ${data.expediente.actor_nombre}</div>
+
+        <div class="section-title"><i class="bi bi-folder"></i> Datos del Expediente</div>
+        <div class="info-grid-detail">
+            <div class="info-item"><span class="label">N° Expediente</span><span class="value">${data.expediente.num_exp_tribunal}</span></div>
+            <div class="info-item"><span class="label">Folio</span><span class="value">${data.expediente.folio_tribunal}</span></div>
+            <div class="info-item"><span class="label">Tribunal</span><span class="value">${data.expediente.tribunal}</span></div>
+            <div class="info-item"><span class="label">Secretaría</span><span class="value">${data.expediente.secretaria}</span></div>
+            <div class="info-item"><span class="label">Fecha Presentación</span><span class="value">${data.expediente.fecha_presentacion}</span></div>
+            <div class="info-item"><span class="label">Estatus</span><span class="value"><span class="status-badge-modern status-${data.expediente.status}">${data.expediente.status.toUpperCase()}</span></span></div>
+            <div class="info-item"><span class="label">Demandado</span><span class="value">${data.expediente.demandado_nombre}</span></div>
+            <div class="info-item"><span class="label">Actor</span><span class="value">${data.expediente.actor_nombre}</span></div>
         </div>
-        
-        <hr>
-        
-        <h4 class="text-primary"><i class="bi bi-list-ul"></i> Actuaciones (${data.actuaciones.length})</h4>
-        ${data.actuaciones.length === 0 ? '<div class="alert alert-info">No hay actuaciones registradas.</div>' : ''}
+
+        <div class="section-title"><i class="bi bi-list-ul"></i> Actuaciones (${data.actuaciones.length})</div>
+        ${data.actuaciones.length === 0 ? '<div class="alert alert-info rounded-4">No hay actuaciones registradas.</div>' : ''}
         ${data.actuaciones.map(act => `
-            <div class="actuacion-item p-2 mb-2">
-                <div class="row align-items-center">
-                    <div class="col-md-2"><span class="badge bg-primary">${act.tipo}</span></div>
-                    <div class="col-md-2"><strong>${act.fecha}</strong></div>
-                    <div class="col-md-4">${act.descripcion || 'Sin descripción'}</div>
-                    <div class="col-md-2"><small class="text-muted">${act.subido_en}</small></div>
-                    <div class="col-md-2">
-                        <button class="btn btn-sm btn-outline-info preview-pdf" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf">
-                            <i class="bi bi-eye"></i> Ver
-                        </button>
-                    </div>
+            <div class="actuacion-item-modern">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="act-tipo">${act.tipo}</span>
+                    <span class="act-fecha"><i class="bi bi-calendar3 me-1"></i>${act.fecha}</span>
+                    <span class="act-desc">${act.descripcion || 'Sin descripción'}</span>
+                    <span class="text-muted small">${act.subido_en}</span>
                 </div>
+                <button class="btn-preview-pdf preview-pdf" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf">
+                    <i class="bi bi-eye"></i> Ver
+                </button>
             </div>
         `).join('')}
-        
-        <hr>
-        
-        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
-            <button class="btn btn-outline-secondary" onclick="newSearch()">← Nueva búsqueda</button>
-            <div>
-                <button class="btn btn-primary me-1" onclick="openFullCasePDF()">
-                    <i class="bi bi-folder2-open"></i> Ver Expediente PDF Completo
-                </button>
-                <button class="btn btn-success me-1" onclick="window.print()">
-                    <i class="bi bi-printer"></i> Imprimir
-                </button>
-                <button class="btn btn-info me-1 require-password" data-action="email">
-                    <i class="bi bi-envelope"></i> Enviar por Email
-                </button>
-                <button class="btn btn-success require-password" data-action="whatsapp">
-                    <i class="bi bi-whatsapp"></i> Enviar por WhatsApp
-                </button>
-            </div>
+
+        <div class="action-btn-group">
+            <button class="btn btn-outline-secondary" onclick="newSearch()"><i class="bi bi-arrow-left"></i> Nueva búsqueda</button>
+            <button class="btn btn-primary" onclick="openFullCasePDF()"><i class="bi bi-folder2-open"></i> Ver PDF Completo</button>
+            <button class="btn btn-outline-info" onclick="window.print()"><i class="bi bi-printer"></i> Imprimir</button>
+            <button class="btn btn-outline-primary require-password" data-action="email"><i class="bi bi-envelope"></i> Enviar Email</button>
+            <button class="btn btn-outline-success require-password" data-action="whatsapp"><i class="bi bi-whatsapp"></i> WhatsApp</button>
         </div>
     `;
 }
@@ -503,24 +938,24 @@ document.getElementById('confirmPasswordBtn').addEventListener('click', async ()
         document.getElementById('passwordError').style.display = 'block';
         return;
     }
-    
+
     try {
         const formData = new FormData();
         formData.append('password', password);
-        
+
         const response = await fetch('/api/cases/verify-password', {
             method: 'POST',
             body: formData
         });
-        
+
         if (!response.ok) {
             document.getElementById('passwordError').textContent = 'Contraseña incorrecta';
             document.getElementById('passwordError').style.display = 'block';
             return;
         }
-        
+
         bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
-        
+
         switch(currentAction) {
             case 'email':
                 showNotification('📧 Email', '<p>Función de envío por email - En desarrollo</p>', 'info');
@@ -531,7 +966,7 @@ document.getElementById('confirmPasswordBtn').addEventListener('click', async ()
             default:
                 showNotification('Completado', '<p>Acción completada.</p>', 'success');
         }
-        
+
     } catch (error) {
         showNotification('Error', `<p>${error.message}</p>`, 'error');
     }
@@ -543,7 +978,6 @@ document.getElementById('passwordInput').addEventListener('keypress', (e) => {
     }
 });
 
-// Limpiar iframe al cerrar el modal
 document.getElementById('fullCasePreviewModal').addEventListener('hidden.bs.modal', function() {
     document.getElementById('fullCasePreviewFrame').src = '';
 });

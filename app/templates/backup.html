@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backup · Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Fondo decorativo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(42,109,244,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -15%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(42,109,244,0.04) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Botón menú */
+        .btn-menu-modern {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Contenedor principal */
+        .backup-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* Tarjeta principal */
+        .backup-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 40px 36px 36px;
+            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.14);
+            border: 1px solid rgba(255,255,255,0.5);
+            text-align: center;
+            transition: box-shadow 0.2s;
+        }
+        .backup-card:hover {
+            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.18);
+        }
+
+        /* Icono animado */
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.08), rgba(42,109,244,0.02));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+        .icon-wrapper i {
+            font-size: 3.8rem;
+            color: #2a6df4;
+        }
+        .icon-wrapper .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 30px;
+            border: 2px solid rgba(42,109,244,0.1);
+            animation: pulse-ring 2.4s ease-in-out infinite;
+        }
+        @keyframes pulse-ring {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.08); opacity: 0.1; }
+        }
+
+        /* Títulos */
+        .backup-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+        .backup-title i {
+            color: #2a6df4;
+            margin-right: 6px;
+        }
+        .backup-subtitle {
+            color: #6b7b8f;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+        .backup-subtitle span {
+            background: #eef3fa;
+            padding: 2px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2a4a7a;
+        }
+
+        .backup-desc {
+            color: #8a9bb0;
+            font-size: 0.85rem;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .backup-desc i {
+            color: #2a6df4;
+        }
+
+        /* Botón principal */
+        .btn-backup {
+            background: #0b1e33;
+            border: none;
+            border-radius: 60px;
+            padding: 16px 20px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-backup:hover {
+            background: #1a3b6b;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -8px rgba(11,30,51,0.3);
+        }
+        .btn-backup:active {
+            transform: scale(0.97);
+        }
+        .btn-backup .btn-shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            animation: shimmer 3.2s infinite;
+        }
+        @keyframes shimmer {
+            0% { left: -60%; }
+            100% { left: 120%; }
+        }
+
+        /* Información adicional */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eef3fa;
+        }
+        .info-item {
+            background: rgba(255,255,255,0.5);
+            border-radius: 16px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+        .info-item .info-icon {
+            font-size: 1.2rem;
+            color: #2a6df4;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .info-item .info-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #8a9bb0;
+            font-weight: 600;
+        }
+        .info-item .info-value {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #0b1e33;
+        }
+
+        /* Alerta de recomendación */
+        .alert-modern {
+            border-radius: 20px;
+            padding: 14px 20px;
+            margin-top: 16px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            background: rgba(42,109,244,0.06);
+            color: #1a3b6b;
+            font-weight: 500;
+        }
+        .alert-modern i {
+            font-size: 1.4rem;
+            color: #2a6df4;
+        }
+        .alert-modern strong {
+            color: #0b1e33;
+        }
+
+        /* Loading overlay */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 36px 48px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
+
+        /* Modal moderno */
+        .modal-modern .modal-content {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 20px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .backup-card { padding: 28px 20px 24px; }
+            .backup-title { font-size: 1.4rem; }
+            .icon-wrapper { width: 80px; height: 80px; }
+            .icon-wrapper i { font-size: 2.8rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Botón menú -->
+<a href="/" class="btn-menu-modern">
+    <i class="bi bi-arrow-left"></i> Menú Principal
+</a>
+
+<div class="backup-container">
+
+    <!-- Tarjeta principal -->
+    <div class="backup-card">
+
+        <!-- Icono -->
+        <div class="icon-wrapper">
+            <span class="pulse-ring"></span>
+            <i class="bi bi-cloud-arrow-down"></i>
+        </div>
+
+        <!-- Títulos -->
+        <h1 class="backup-title"><i class="bi bi-database"></i> Backup</h1>
+        <div class="backup-subtitle">
+            Respaldo del Sistema
+            <span><i class="bi bi-shield-check me-1"></i> Seguro</span>
+        </div>
+
+        <p class="backup-desc">
+            <i class="bi bi-check-circle-fill me-1"></i>
+            Incluye base de datos y todos los archivos PDF del sistema.
+        </p>
+
+        <!-- Botón de descarga -->
+        <a href="/api/backup/download" class="btn-backup" id="downloadBtn">
+            <span class="btn-shimmer"></span>
+            <i class="bi bi-download"></i> Descargar Backup Completo
+        </a>
+
+        <!-- Grid de información -->
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-icon"><i class="bi bi-hdd-stack"></i></span>
+                <div class="info-label">Tamaño estimado</div>
+                <div class="info-value">~ 50 MB</div>
+            </div>
+            <div class="info-item">
+                <span class="info-icon"><i class="bi bi-clock-history"></i></span>
+                <div class="info-label">Último backup</div>
+                <div class="info-value" id="lastBackupTime">Hoy</div>
+            </div>
+        </div>
+
+        <!-- Alerta de recomendación -->
+        <div class="alert-modern">
+            <i class="bi bi-info-circle"></i>
+            <div>
+                <strong>Recomendación:</strong> Realiza un backup al menos cada semana para proteger tu información.
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5>Preparando backup</h5>
+        <p>Esto puede tomar unos segundos.</p>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mostrar notificaciones
+    function showNotification(title, bodyHTML, type = 'info') {
+        const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+        const header = document.getElementById('notificationHeader');
+        const titleEl = document.getElementById('notificationTitle');
+        const bodyEl = document.getElementById('notificationBody');
+        header.className = 'modal-header';
+        if (type === 'success') {
+            header.classList.add('bg-success', 'text-white');
+            titleEl.textContent = '✅ ' + title;
+        } else if (type === 'error') {
+            header.classList.add('bg-danger', 'text-white');
+            titleEl.textContent = '❌ ' + title;
+        } else if (type === 'warning') {
+            header.classList.add('bg-warning', 'text-dark');
+            titleEl.textContent = '⚠️ ' + title;
+        } else {
+            header.classList.add('bg-primary', 'text-white');
+            titleEl.textContent = 'ℹ️ ' + title;
+        }
+        bodyEl.innerHTML = bodyHTML;
+        modal.show();
+    }
+
+    // Mostrar/ocultar loading
+    function showLoading() {
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    // Obtener fecha del último backup (simulado)
+    function getLastBackupTime() {
+        const now = new Date();
+        const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return now.toLocaleDateString('es-ES', options);
+    }
+
+    // Actualizar fecha del último backup
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('lastBackupTime').textContent = getLastBackupTime();
+    });
+
+    // Manejar clic en el botón de descarga
+    document.getElementById('downloadBtn').addEventListener('click', function(e) {
+        showLoading();
+
+        // Simular tiempo de preparación
+        setTimeout(() => {
+            hideLoading();
+            // Mostrar notificación de éxito (el backup ya se está descargando)
+            showNotification(
+                'Backup iniciado',
+                '<p>La descarga del backup ha comenzado.</p><p class="text-muted small">El archivo se guardará automáticamente en tu computadora.</p>',
+                'success'
+            );
+            // Actualizar la fecha del último backup
+            document.getElementById('lastBackupTime').textContent = getLastBackupTime();
+        }, 1500);
+    });
+
+    // Si el backup falla (por ejemplo, error de red), se puede mostrar error
+    // Esto es solo para manejar posibles errores en la descarga
+    document.querySelector('.btn-backup').addEventListener('error', function() {
+        hideLoading();
+        showNotification(
+            'Error en la descarga',
+            '<p>Hubo un problema al iniciar la descarga del backup.</p><p class="text-muted small">Por favor, intenta nuevamente más tarde.</p>',
+            'error'
+        );
+    });
+</script>
+</body>
+</html>

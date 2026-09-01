@@ -1,76 +1,585 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Mi Perfil - Lumen Legal</title>
+    <title>Mi Perfil · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .btn-menu { position: fixed; top: 20px; left: 20px; z-index: 1000; }
-        .profile-card {
-            max-width: 500px;
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            padding-top: 20px;
+            padding-bottom: 40px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Botón menú */
+        .btn-menu-modern {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            color: #0b1e33;
+        }
+
+        /* Contenedor principal */
+        .profile-container {
+            width: 100%;
+            max-width: 560px;
             margin: 0 auto;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 0 16px;
+        }
+
+        /* Tarjeta de perfil */
+        .profile-card {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 36px 32px 32px;
+            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.16);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: box-shadow 0.2s;
+        }
+        .profile-card:hover {
+            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.2);
+        }
+
+        /* Avatar */
+        .avatar-wrapper {
+            text-align: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .avatar-wrapper .avatar-icon {
+            font-size: 5rem;
+            color: #2a6df4;
+            background: rgba(42,109,244,0.06);
+            border-radius: 50%;
+            padding: 8px;
+            display: inline-block;
+            border: 3px solid rgba(42,109,244,0.12);
+        }
+        .avatar-wrapper .avatar-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 50%;
+            transform: translateX(50%);
+            background: #0b1e33;
+            color: white;
+            font-weight: 700;
+            font-size: 0.65rem;
+            padding: 4px 16px;
+            border-radius: 40px;
+            border: 2px solid white;
+            white-space: nowrap;
+        }
+
+        .profile-name {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #0b1e33;
+            text-align: center;
+            letter-spacing: -0.02em;
+            margin-bottom: 2px;
+        }
+        .profile-role {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #2a6df4;
+            background: rgba(42,109,244,0.08);
+            padding: 4px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            margin: 0 auto 16px;
+        }
+
+        /* Información del perfil */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 16px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+        }
+        .info-grid .info-item {
+            display: flex;
+            flex-direction: column;
+            padding: 4px 0;
+        }
+        .info-grid .info-item .label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #8a9bb0;
+            font-weight: 600;
+        }
+        .info-grid .info-item .value {
+            font-weight: 600;
+            color: #0b1e33;
+            font-size: 0.85rem;
+            word-break: break-word;
+        }
+        .info-grid .info-item .value .badge-status {
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: 40px;
+        }
+        .badge-status.active { background: #e3f5ee; color: #1a8b5c; }
+        .badge-status.inactive { background: #eef2f6; color: #4a5b6e; }
+
+        /* Permisos */
+        .permissions-section {
+            margin-bottom: 16px;
+        }
+        .permissions-section .perm-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #4a5b6e;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .permission-tag {
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 40px;
+            background: #eef3fa;
+            color: #4a5b6e;
+            display: inline-block;
+            margin: 2px 3px;
+        }
+        .permission-tag.all {
+            background: #0b1e33;
+            color: white;
+        }
+
+        /* Botones */
+        .btn-group-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .btn-group-actions .btn {
+            border-radius: 60px;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-group-actions .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-group-actions .btn-change {
+            background: #f5b342;
+            border: none;
+            color: #0b1e33;
+        }
+        .btn-group-actions .btn-change:hover {
+            background: #e6a030;
+            box-shadow: 0 8px 20px -8px rgba(245,179,66,0.3);
+        }
+
+        .btn-group-actions .btn-back {
+            background: rgba(255,255,255,0.6);
+            border: 1px solid #e9edf4;
+            color: #4a5b6e;
+        }
+        .btn-group-actions .btn-back:hover {
+            background: white;
+            border-color: #cbd9ed;
+        }
+        .btn-group-actions .btn-logout {
+            background: #dc3545;
+            border: none;
+            color: white;
+        }
+        .btn-group-actions .btn-logout:hover {
+            background: #b12a2a;
+            box-shadow: 0 8px 20px -8px rgba(220,53,69,0.3);
+        }
+
+        .btn-group-actions .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        /* Modales modernos */
+        .modal-modern .modal-content {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(8px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 20px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+        }
+        .modal-modern .form-control {
+            border-radius: 16px;
+            border: 1.5px solid #e9edf4;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.6);
+            transition: all 0.2s;
+            height: 54px;
+        }
+        .modal-modern .form-control:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: white;
+        }
+        .modal-modern .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #4a5b6e;
+        }
+
+        /* Loading */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-box {
+            background: white;
+            padding: 36px 48px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .profile-card { padding: 24px 20px; }
+            .profile-name { font-size: 1.3rem; }
+            .info-grid { grid-template-columns: 1fr; gap: 2px; }
+            .btn-group-actions .btn-row { grid-template-columns: 1fr; }
+            .avatar-wrapper .avatar-icon { font-size: 3.5rem; }
+            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-<a href="/" class="btn btn-outline-dark btn-menu">← Menú Principal</a>
+<!-- Botón menú -->
+<a href="/" class="btn-menu-modern">
+    <i class="bi bi-arrow-left"></i> Menú Principal
+</a>
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">👤 Mi Perfil</h1>
-    
-    <div class="card profile-card p-4">
-        <div class="text-center mb-4">
-            <i class="bi bi-person-circle" style="font-size: 80px; color: #0d6efd;"></i>
-            <h3 class="mt-2">{{ user.full_name }}</h3>
-            <span class="badge bg-primary">{{ user.role.upper() }}</span>
+<div class="profile-container">
+
+    <!-- Tarjeta de perfil -->
+    <div class="profile-card">
+
+        <!-- Avatar -->
+        <div class="avatar-wrapper">
+            <span class="avatar-icon"><i class="bi bi-person-circle"></i></span>
+            <span class="avatar-badge">{{ user.role.upper() }}</span>
         </div>
-        
-        <hr>
-        
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Email:</strong></div>
-            <div class="col-md-8">{{ user.email }}</div>
+
+        <!-- Nombre y rol -->
+        <h1 class="profile-name">{{ user.full_name }}</h1>
+        <div style="text-align: center;">
+            <span class="profile-role"><i class="bi bi-shield-check me-1"></i> {{ user.role.upper() }}</span>
         </div>
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Firma ID:</strong></div>
-            <div class="col-md-8">{{ user.firm_id }}</div>
+
+        <!-- Información -->
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="label"><i class="bi bi-envelope me-1"></i>Email</span>
+                <span class="value">{{ user.email }}</span>
+            </div>
+            <div class="info-item">
+                <span class="label"><i class="bi bi-circle-fill me-1"></i>Estado</span>
+                <span class="value">
+                    <span class="badge-status {% if user.is_active %}active{% else %}inactive{% endif %}">
+                        {% if user.is_active %}✅ Activo{% else %}❌ Inactivo{% endif %}
+                    </span>
+                </span>
+            </div>
+            <div class="info-item" style="grid-column: 1 / -1;">
+                <span class="label"><i class="bi bi-clock me-1"></i>Registro</span>
+                <span class="value">{{ user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at else 'N/A' }}</span>
+            </div>
         </div>
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Estado:</strong></div>
-            <div class="col-md-8">{% if user.is_active %}✅ Activo{% else %}❌ Inactivo{% endif %}</div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Permisos:</strong></div>
-            <div class="col-md-8">
+
+        <!-- Permisos -->
+        <div class="permissions-section">
+            <span class="perm-label"><i class="bi bi-key me-1"></i>Permisos asignados</span>
+            <div>
                 {% if user.role == "admin" or user.permissions == "all" %}
-                    <span class="badge bg-dark">Todos</span>
+                    <span class="permission-tag all"><i class="bi bi-star-fill me-1"></i>Todos los permisos</span>
                 {% elif user.permissions %}
+                    {% set perm_labels = {
+                        "clients": "👤 Clientes",
+                        "contracts": "📜 Contratos",
+                        "cases": "📁 Expedientes",
+                        "payments": "💰 Pagos",
+                        "actuaciones": "📄 Actuaciones",
+                        "consult": "🔍 Consultas",
+                        "agenda": "📅 Agenda",
+                        "dashboard": "📊 Dashboard",
+                        "audit": "🔎 Auditoría"
+                    } %}
                     {% for perm in user.permissions.split(",") %}
-                        <span class="badge bg-primary me-1">{{ perm.strip() }}</span>
+                        {% set p = perm.strip() %}
+                        {% if p in perm_labels %}
+                            <span class="permission-tag">{{ perm_labels[p] }}</span>
+                        {% endif %}
                     {% endfor %}
                 {% else %}
-                    <span class="text-muted">Sin permisos</span>
+                    <span class="text-muted" style="font-size:0.85rem;">Sin permisos asignados</span>
                 {% endif %}
             </div>
         </div>
-        <div class="row mb-2">
-            <div class="col-md-4"><strong>Registro:</strong></div>
-            <div class="col-md-8">{{ user.created_at.strftime('%d/%m/%Y %H:%M') if user.created_at else 'N/A' }}</div>
+
+        <!-- Botones -->
+        <div class="btn-group-actions">
+            <button class="btn btn-change" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                <i class="bi bi-key"></i> Cambiar Contraseña
+            </button>
+            <div class="btn-row">
+                <a href="/" class="btn btn-back">
+                    <i class="bi bi-arrow-left"></i> Volver
+                </a>
+                <a href="/auth/logout" class="btn btn-logout">
+                    <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                </a>
+            </div>
         </div>
-        
-        <hr>
-        
-        <div class="d-flex justify-content-between">
-            <a href="/" class="btn btn-outline-secondary">← Volver</a>
-            <a href="/auth/logout" class="btn btn-danger">🚪 Cerrar Sesión</a>
+
+    </div>
+
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL CAMBIAR CONTRASEÑA -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="changePasswordModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-key me-2"></i>Cambiar Contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Contraseña Actual <span class="text-danger">*</span></label>
+                    <input type="password" id="currentPassword" class="form-control form-control-lg"
+                           autocomplete="off" placeholder="Tu contraseña actual">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nueva Contraseña <span class="text-danger">*</span></label>
+                    <input type="password" id="newPasswordProfile" class="form-control form-control-lg"
+                           autocomplete="off" placeholder="Mínimo 8 caracteres">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirmar Nueva Contraseña <span class="text-danger">*</span></label>
+                    <input type="password" id="confirmNewPassword" class="form-control form-control-lg"
+                           autocomplete="off" placeholder="Repite la contraseña">
+                </div>
+                <div id="passwordError" class="text-danger mt-2" style="display:none;font-size:0.9rem;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="savePasswordBtn" class="btn btn-warning">
+                    <i class="bi bi-check2"></i> Guardar
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIONES -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5>Cambiando contraseña</h5>
+        <p>Por favor espera.</p>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ============================================================
+// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
+// ============================================================
+
+function showNotification(title, bodyHTML, type = 'info') {
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+    header.className = 'modal-header';
+    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
+    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
+    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
+    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+    bodyEl.innerHTML = bodyHTML;
+    modal.show();
+}
+
+function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+document.getElementById('savePasswordBtn').addEventListener('click', async () => {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPasswordProfile').value;
+    const confirmPassword = document.getElementById('confirmNewPassword').value;
+    const errorEl = document.getElementById('passwordError');
+
+    if (!currentPassword) {
+        errorEl.textContent = 'Ingresa tu contraseña actual';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    if (!newPassword || newPassword.length < 8) {
+        errorEl.textContent = 'La nueva contraseña debe tener al menos 8 caracteres';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        errorEl.textContent = 'Las contraseñas no coinciden';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    if (newPassword === currentPassword) {
+        errorEl.textContent = 'La nueva contraseña no puede ser igual a la anterior';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    errorEl.style.display = 'none';
+    showLoading();
+
+    const formData = new FormData();
+    formData.append('current_password', currentPassword);
+    formData.append('new_password', newPassword);
+
+    try {
+        const response = await fetch('/auth/change-password-auth', {
+            method: 'POST',
+            body: formData
+        });
+
+        hideLoading();
+
+        if (!response.ok) {
+            const error = await response.json();
+            errorEl.textContent = error.detail || 'Error al cambiar contraseña';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+        showNotification('Contraseña Actualizada', '<p>Tu contraseña se cambió correctamente.</p>', 'success');
+
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPasswordProfile').value = '';
+        document.getElementById('confirmNewPassword').value = '';
+
+    } catch (error) {
+        hideLoading();
+        errorEl.textContent = 'Error de conexión';
+        errorEl.style.display = 'block';
+    }
+});
+</script>
 </body>
 </html>

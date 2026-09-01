@@ -7,11 +7,7 @@ from app.models.core import Client, Contract, CourtCase, Actuacion, User
 import os, uuid
 from datetime import datetime
 import aiofiles
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from PyPDF2 import PdfReader, PdfWriter
-import io
+
 
 router = APIRouter(prefix="/cases", tags=["Cases"])
 
@@ -197,6 +193,19 @@ async def relate_case(
     db.add(new_case)
     db.commit()
     db.refresh(new_case)
+    
+    # Registrar en bitácora
+    from app.models.core import ActivityLog
+    log = ActivityLog(
+        firm_id=1,
+        user_id=1,
+        action="create",
+        entity="Expediente",
+        entity_id=new_case.id,
+        description=f"Relacionó expediente {num_exp_tribunal}"
+    )
+    db.add(log)
+    db.commit()
     
     return {
         "message": "Expediente relacionado exitosamente",
@@ -461,6 +470,11 @@ async def verify_user_password(
 @router.get("/full-case-pdf/{court_case_id}")
 async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
     """Genera un PDF único con todos los documentos del expediente"""
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    from datetime import datetime
+    
     court_case = db.query(CourtCase).filter(CourtCase.id == court_case_id).first()
     if not court_case:
         raise HTTPException(404, "Expediente no encontrado")
@@ -472,58 +486,49 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
         Actuacion.court_case_id == court_case_id
     ).order_by(Actuacion.fecha_actuacion.asc()).all()
     
-    pdf_writer = PdfWriter()
+    # Ruta del logo
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
     
-    # Portada
-    portada_buffer = io.BytesIO()
-    portada_doc = SimpleDocTemplate(portada_buffer, pagesize=letter)
-    styles = getSampleStyleSheet()
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode('utf-8')
     
-    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, alignment=1, spaceAfter=20)
-    body_style = ParagraphStyle('Body', parent=styles['BodyText'], fontSize=11, leading=16, spaceAfter=6)
+    # Cargar plantilla
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/expediente_completo.html")
     
-    story = []
-    story.append(Paragraph("LUMEN LEGAL", title_style))
-    story.append(Paragraph("EXPEDIENTE ELECTRÓNICO COMPLETO", title_style))
-    story.append(Spacer(1, 20))
-    story.append(Paragraph(f"<b>N° Expediente:</b> {court_case.num_exp_tribunal}", body_style))
-    story.append(Paragraph(f"<b>Folio:</b> {court_case.folio_tribunal}", body_style))
-    story.append(Paragraph(f"<b>Tribunal:</b> {court_case.tribunal}", body_style))
-    story.append(Paragraph(f"<b>Secretaría:</b> {court_case.secretaria}", body_style))
-    story.append(Paragraph(f"<b>Fecha Presentación:</b> {court_case.fecha_presentacion.strftime('%d/%m/%Y')}", body_style))
-    story.append(Spacer(1, 20))
-    story.append(Paragraph(f"<b>Cliente:</b> {client.name} {client.paterno} {client.materno or ''}", body_style))
-    story.append(Paragraph(f"<b>CURP:</b> {client.curp}", body_style))
-    story.append(Spacer(1, 30))
-    story.append(Paragraph(f"<b>Total de Actuaciones:</b> {len(actuaciones)}", body_style))
-    
-    portada_doc.build(story)
-    portada_buffer.seek(0)
-    
-    portada_pdf = PdfReader(portada_buffer)
-    pdf_writer.add_page(portada_pdf.pages[0])
-    
-    # Agregar cada actuación
+    actuaciones_data = []
     for act in actuaciones:
-        if act.pdf_url:
-            file_path = act.pdf_url
-            if file_path.startswith("/"):
-                file_path = file_path[1:]
-            file_path = file_path.replace("/", os.sep)
-            if os.path.exists(file_path):
-                try:
-                    act_pdf = PdfReader(file_path)
-                    for page in act_pdf.pages:
-                        pdf_writer.add_page(page)
-                except:
-                    pass
+        actuaciones_data.append({
+            "tipo": act.tipo.upper(),
+            "fecha": act.fecha_actuacion.strftime('%d/%m/%Y'),
+            "descripcion": act.descripcion or ""
+        })
     
-    output_buffer = io.BytesIO()
-    pdf_writer.write(output_buffer)
-    output_buffer.seek(0)
+    html_content = template.render(
+        logo_base64=logo_base64,
+        num_expediente=court_case.num_exp_tribunal,
+        folio=court_case.folio_tribunal,
+        tribunal=court_case.tribunal,
+        secretaria=court_case.secretaria,
+        fecha_presentacion=court_case.fecha_presentacion.strftime('%d/%m/%Y'),
+        estatus=court_case.status.upper(),
+        actor=court_case.actor_nombre or 'N/A',
+        demandado=court_case.demandado_nombre or 'N/A',
+        nombre_completo=f"{client.name} {client.paterno} {client.materno or ''}",
+        curp=client.curp,
+        telefono=client.phone,
+        domicilio=client.address,
+        total_actuaciones=len(actuaciones),
+        actuaciones=actuaciones_data,
+        anio=datetime.now().strftime('%Y')
+    )
+    
+    pdf_bytes = HTML(string=html_content).write_pdf()
     
     return Response(
-        content=output_buffer.getvalue(),
+        content=pdf_bytes,
         media_type="application/pdf",
         headers={"Content-Disposition": f"inline; filename=expediente_completo_{court_case.num_exp_tribunal}.pdf"}
     )
