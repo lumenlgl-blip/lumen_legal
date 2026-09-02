@@ -94,6 +94,7 @@ from app.routers.auth import get_current_user
 
 # --- RUTA RAÍZ ---
 @app.get("/", response_class=HTMLResponse)
+@app.head("/", response_class=HTMLResponse)
 async def root(request: Request):
     user = get_current_user(request)
     
@@ -154,4 +155,11 @@ async def loading_page(request: Request):
     """Página de inicio con loading para Render"""
     with open("app/templates/loading.html", "r", encoding="utf-8") as f:
         return HTMLResponse(content=f.read())
+    
+    
+    # --- Health check para monitores ---
+@app.get("/ping")
+@app.head("/ping")
+async def ping():
+    return {"status": "ok"}
 
