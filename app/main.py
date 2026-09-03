@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.middleware.base import BaseHTTPMiddleware
+from fastapi.middleware.cors import CORSMiddleware  # 🔥 NUEVO IMPORT
 import os
 from dotenv import load_dotenv
 from app.database import engine, Base
@@ -13,6 +14,17 @@ load_dotenv()
 
 # Inicializar la app
 app = FastAPI(title="Lumen Legal", version="1.0.0")
+
+# 🔥 CONFIGURAR CORS PARA PERMITIR SOLICITUDES DESDE EL TELÉFONO
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite cualquier origen (útil para móvil)
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Crear carpetas necesarias para producción
 REQUIRED_DIRS = [

@@ -5,6 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> <!-- ✅ AGREGAR ESTA LÍNEA -->
     <style>
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -576,24 +577,51 @@
             <div class="step-content" id="step2">
                 <div class="step-title"><i class="bi bi-file-pdf"></i> Documentos (PDF)</div>
                 <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label-modern">CURP <span class="required">*</span></label>
-                        <input type="file" name="curp_file" id="curp_file" accept=".pdf" class="form-control form-control-modern" required>
-                        <div class="invalid-feedback">Sube el CURP en PDF</div>
-                        <span class="file-status invalid" id="curpStatus">❌ No validado</span>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
-                        <input type="file" name="ine_file" id="ine_file" accept=".pdf" class="form-control form-control-modern" required>
-                        <div class="invalid-feedback">Sube el INE en PDF</div>
-                        <span class="file-status invalid" id="ineStatus">❌ No validado</span>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
-                        <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf" class="form-control form-control-modern" required>
-                        <div class="invalid-feedback">Sube el comprobante en PDF</div>
-                        <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
-                    </div>
+<div class="col-md-4">
+    <label class="form-label-modern">CURP <span class="required">*</span></label>
+    <div class="d-flex gap-2 flex-wrap">
+        <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('curp_file')" style="white-space:nowrap;">
+            <i class="bi bi-qr-code"></i> Subir desde móvil
+        </button>
+    </div>
+    <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
+    <span class="file-status invalid" id="curpStatus">❌ No validado</span>
+    <!-- Indicador de carga móvil -->
+    <div id="curp_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+        <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+    </div>
+</div>
+<div class="col-md-4">
+    <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
+    <div class="d-flex gap-2 flex-wrap">
+        <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('ine_file')" style="white-space:nowrap;">
+            <i class="bi bi-qr-code"></i> Subir desde móvil
+        </button>
+    </div>
+    <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
+    <span class="file-status invalid" id="ineStatus">❌ No validado</span>
+    <!-- Indicador de carga móvil -->
+    <div id="ine_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+        <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+    </div>
+</div>
+<div class="col-md-4">
+    <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
+    <div class="d-flex gap-2 flex-wrap">
+        <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('domicilio_file')" style="white-space:nowrap;">
+            <i class="bi bi-qr-code"></i> Subir desde móvil
+        </button>
+    </div>
+    <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
+    <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
+    <!-- Indicador de carga móvil -->
+    <div id="domicilio_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+        <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+    </div>
+</div>
                 </div>
                 <div class="btn-group-actions">
                     <div class="left-actions">
@@ -1051,6 +1079,328 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         }
     );
 });
+
+// ============================================================
+// QR Y CARGA DESDE MÓVIL
+// ============================================================
+
+// Variable global para controlar qué input se está llenando
+let currentMobileField = null;
+let currentDocType = null;
+let clientTempId = null;
+
+// Generar ID temporal único para la sesión
+function generateTempId() {
+    if (!clientTempId) {
+        clientTempId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+    return clientTempId;
+}
+
+// Abrir escáner QR para un campo específico
+function openQRScanner(inputId) {
+    console.log('🔍 Abriendo QR para:', inputId);
+    
+    currentMobileField = inputId;
+    
+    // Determinar tipo de documento
+    if (inputId === 'curp_file') currentDocType = 'CURP';
+    else if (inputId === 'ine_file') currentDocType = 'INE';
+    else if (inputId === 'domicilio_file') currentDocType = 'DOMICILIO';
+    
+    // Generar token temporal
+    const tempId = generateTempId();
+    
+    // 🔥 CONFIGURAR URL PÚBLICA PARA PRODUCCIÓN
+    // En desarrollo usa localhost, en producción usa la URL de Render
+    let baseUrl;
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        baseUrl = window.location.origin; // http://localhost:8000
+    } else {
+        // En producción, usar la URL de Render
+        baseUrl = window.location.origin; // https://lumen-legal.onrender.com
+    }
+    
+    const uploadUrl = `${baseUrl}/api/clients/upload-mobile/${tempId}?doc_type=${currentDocType}`;
+    
+    console.log('📱 URL para QR:', uploadUrl);
+    
+    // Mostrar QR
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '';
+    
+    // Esperar un momento para que el DOM se actualice
+    setTimeout(() => {
+        try {
+            // Verificar si la librería QR está disponible
+            if (typeof QRCode === 'undefined') {
+                console.error('❌ QRCode no está definido');
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <p>No se pudo cargar la librería QR.</p>
+                        <p class="small">URL: ${uploadUrl}</p>
+                        <p class="small">Abre esta URL en tu teléfono para subir el archivo.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Generar QR
+            const qr = new QRCode(container, {
+                text: uploadUrl,
+                width: 220,
+                height: 220,
+                colorDark: '#0b1e33',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            console.log('✅ QR generado correctamente');
+            
+            // Agregar instrucciones debajo del QR
+            const linkEl = document.createElement('p');
+            linkEl.className = 'text-muted small mt-2';
+            linkEl.style.wordBreak = 'break-all';
+            linkEl.style.fontSize = '0.65rem';
+            linkEl.textContent = uploadUrl;
+            container.appendChild(linkEl);
+            
+        } catch (error) {
+            console.error('❌ Error al generar QR:', error);
+            container.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <p>No se pudo generar el código QR.</p>
+                    <p class="small">URL: ${uploadUrl}</p>
+                    <p class="small">Abre esta URL en tu teléfono para subir el archivo.</p>
+                </div>
+            `;
+        }
+    }, 300); // Esperar 300ms para que el DOM se actualice
+    
+    // Mostrar estado de espera
+    document.getElementById('mobileUploadStatus').style.display = 'none';
+    
+    // Mostrar modal
+    new bootstrap.Modal(document.getElementById('qrModal')).show();
+    
+    // Iniciar polling para verificar si se subió el archivo
+    startPollingForUpload(tempId);
+}
+
+function generateQRCode(url, container) {
+    try {
+        // Limpiar contenedor
+        container.innerHTML = '';
+        
+        // Crear un div específico para el QR
+        const qrDiv = document.createElement('div');
+        qrDiv.id = 'qrCodeImage';
+        container.appendChild(qrDiv);
+        
+        // Generar QR
+        const qr = new QRCode(qrDiv, {
+            text: url,
+            width: 220,
+            height: 220,
+            colorDark: '#0b1e33',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        // Agregar la URL debajo
+        const linkEl = document.createElement('p');
+        linkEl.className = 'text-muted small mt-2';
+        linkEl.style.wordBreak = 'break-all';
+        linkEl.style.fontSize = '0.65rem';
+        linkEl.textContent = url;
+        container.appendChild(linkEl);
+        
+        console.log('✅ QR generado correctamente');
+        
+    } catch (e) {
+        console.error('❌ Error al generar QR:', e);
+        showMobileUrlFallback(url);
+    }
+}
+
+function startPollingForUpload(tempId) {
+    // Mostrar indicador de espera
+    if (currentMobileField) {
+        const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+        if (statusEl) {
+            statusEl.style.display = 'block';
+        }
+    }
+    
+    let attempts = 0;
+    const maxAttempts = 60; // 60 segundos máximo
+    
+    const checkInterval = setInterval(async () => {
+        attempts++;
+        
+        try {
+            // Verificar si ya se subió el archivo
+            const response = await fetch(`/api/clients/check-upload/${tempId}`);
+            const data = await response.json();
+            
+            if (data.success && data.file_url) {
+                // Archivo recibido
+                clearInterval(checkInterval);
+                
+                // Actualizar el input file con el archivo subido
+                const fileInput = document.getElementById(currentMobileField);
+                if (fileInput) {
+                    // Crear un objeto File simulado
+                    const file = new File([''], data.filename, { type: 'application/pdf' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+                
+                // Actualizar estado
+                const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+                if (statusEl) {
+                    statusEl.textContent = '✅ Archivo subido desde móvil';
+                    statusEl.style.color = '#1a8b5c';
+                }
+                
+                // Mostrar éxito en modal
+                document.getElementById('mobileUploadStatus').style.display = 'block';
+                document.getElementById('mobileUploadStatus').innerHTML = `
+                    <i class="bi bi-check-circle"></i> 
+                    ${currentDocType} subido correctamente desde móvil.<br>
+                    <small>Haz clic en "Cerrar" para continuar.</small>
+                `;
+                
+                // Cerrar modal después de 2 segundos
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('qrModal')).hide();
+                }, 2500);
+                
+                // Recargar el estado de validación
+                filesValidated[currentMobileField.replace('_file', '')] = true;
+                const statusId = currentMobileField.replace('_file', '') + 'Status';
+                document.getElementById(statusId).textContent = '✅ Validado desde móvil';
+                document.getElementById(statusId).className = 'file-status valid';
+            }
+            
+            if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+                if (statusEl) {
+                    statusEl.textContent = '⏰ Tiempo de espera agotado. Intenta de nuevo.';
+                    statusEl.style.color = '#dc3545';
+                }
+            }
+            
+        } catch (error) {
+            // El archivo aún no está disponible
+            console.log('Esperando archivo... intento', attempts);
+        }
+        
+    }, 1000); // Intentar cada segundo
+}
+
+// Cuando se cierra el modal, ocultar el indicador
+document.getElementById('qrModal').addEventListener('hidden.bs.modal', function () {
+    if (currentMobileField) {
+        const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+        if (statusEl) {
+            statusEl.style.display = 'none';
+        }
+    }
+});
+
+// ============================================================
+// ENDPOINT DE VERIFICACIÓN
+// ============================================================
+// Nota: En el backend, agregar este endpoint:
+// @router.get("/check-upload/{temp_id}")
+// async def check_upload(temp_id: str):
+//     # Verificar si existe archivo en uploads/temp/{temp_id}
+//     folder = f"uploads/temp/{temp_id}"
+//     if os.path.exists(folder):
+//         files = os.listdir(folder)
+//         if files:
+//             return {"success": True, "file_url": f"/uploads/temp/{temp_id}/{files[0]}", "filename": files[0]}
+//     return {"success": False}
+
+// ============================================================
+// SOLUCIÓN DE RESPALDO: Mostrar URL si el QR falla
+// ============================================================
+function showMobileUrlFallback(uploadUrl) {
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = `
+        <div class="alert alert-info" style="width:100%;">
+            <i class="bi bi-info-circle"></i>
+            <p><strong>No se pudo generar el código QR.</strong></p>
+            <p>Abre este enlace en tu teléfono:</p>
+            <p style="word-break:break-all; font-size:0.8rem; background:#f0f4fa; padding:10px; border-radius:8px;">
+                ${uploadUrl}
+            </p>
+            <button class="btn btn-primary btn-sm mt-2" onclick="copyMobileUrl()">
+                <i class="bi bi-copy"></i> Copiar enlace
+            </button>
+        </div>
+    `;
+}
+
+function copyMobileUrl() {
+    const urlElement = document.querySelector('#qrCodeContainer .alert-info p:last-child');
+    if (urlElement) {
+        const url = urlElement.textContent.trim();
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
+        }).catch(() => {
+            // Fallback
+            const range = document.createRange();
+            range.selectNode(urlElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
+        });
+    }
+}
 </script>
+
+<!-- ================================================== -->
+<!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
+<!-- ================================================== -->
+<<!-- ================================================== -->
+<!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-qr-code me-2"></i>Subir desde móvil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Escanea este QR con tu teléfono para subir el documento:</p>
+                <div id="qrCodeContainer" style="margin: 20px auto; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="text-muted small mt-2">Generando código QR...</p>
+                </div>
+                <p class="text-muted small">
+                    <i class="bi bi-phone me-1"></i> Abre la cámara de tu teléfono y escanea el código.<br>
+                    Selecciona la foto o archivo y se subirá automáticamente.
+                </p>
+                <div id="mobileUploadStatus" style="display:none;" class="alert alert-success">
+                    <i class="bi bi-check-circle"></i> Archivo recibido correctamente.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

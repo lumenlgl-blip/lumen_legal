@@ -484,3 +484,64 @@ async def regenerate_constancia(client_id: int, db: Session = Depends(get_db)):
         media_type="application/pdf",
         headers={"Content-Disposition": f"inline; filename=constancia_{client.folio_registro}.pdf"}
     )
+    
+    # --- Subir documento desde móvil (vía QR) ---
+@router.post("/upload-mobile/{client_temp_id}")
+async def upload_mobile_document(
+    client_temp_id: str,
+    file: UploadFile = File(...),
+    doc_type: str = Form(...)
+):
+    """
+    Endpoint para subir documentos desde el teléfono.
+    Recibe: client_temp_id (temporal), file (imagen o PDF), doc_type (CURP, INE, DOMICILIO)
+    """
+    try:
+        # Guardar archivo temporalmente
+        upload_dir = f"uploads/temp/{client_temp_id}"
+        os.makedirs(upload_dir, exist_ok=True)
+        
+        filename = f"{doc_type}_{uuid.uuid4().hex[:8]}.pdf"
+        file_path = os.path.join(upload_dir, filename)
+        
+        content = await file.read()
+        file_ext = file.filename.split('.')[-1].lower() if file.filename else 'pdf'
+        
+        # Si es imagen, convertir a PDF
+        if file_ext in ['jpg', 'jpeg', 'png']:
+            pdf_bytes = convert_image_to_pdf(content)
+            with open(file_path, "wb") as f:
+                f.write(pdf_bytes)
+        else:
+            # Guardar PDF directamente
+            with open(file_path, "wb") as f:
+                f.write(content)
+        
+        # Devolver URL del archivo para que el frontend lo use
+        return {
+            "success": True,
+            "file_url": "/" + file_path.replace("\\", "/"),
+            "filename": filename,
+            "doc_type": doc_type,
+            "message": f"📄 {doc_type} subido correctamente desde móvil"
+        }
+        
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+    
+    # --- Verificar si ya se subió un archivo desde móvil ---
+@router.get("/check-upload/{temp_id}")
+async def check_upload(temp_id: str):
+    folder = f"uploads/temp/{temp_id}"
+    if os.path.exists(folder):
+        files = os.listdir(folder)
+        if files:
+            # Tomar el primer archivo
+            filename = files[0]
+            # Moverlo a la carpeta permanente (será movido por el frontend)
+            return {
+                "success": True,
+                "file_url": f"/uploads/temp/{temp_id}/{filename}",
+                "filename": filename
+            }
+    return {"success": False}
