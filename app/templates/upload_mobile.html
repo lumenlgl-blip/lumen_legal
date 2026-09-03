@@ -6,61 +6,426 @@
     <title>Subir Documento · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        body { background: #f2f5fb; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .upload-card { background: white; border-radius: 28px; padding: 30px; max-width: 500px; width: 100%; box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
-        .logo-area { text-align: center; margin-bottom: 20px; }
-        .logo-area img { max-height: 80px; width: auto; border-radius: 12px; }
-        .upload-title { font-weight: 700; font-size: 1.4rem; color: #0b1e33; text-align: center; }
-        .upload-subtitle { text-align: center; color: #6b7b8f; font-size: 0.9rem; margin-bottom: 20px; }
-        .drop-zone { border: 2px dashed #d0d8e3; border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fafcff; }
-        .drop-zone:hover { border-color: #2a6df4; background: #f0f7ff; }
-        .drop-zone.dragover { border-color: #2a6df4; background: #e3effa; }
-        .drop-zone i { font-size: 3rem; color: #8a9bb0; }
-        .drop-zone p { margin: 10px 0 0; color: #4a5b6e; }
-        .drop-zone .small { color: #8a9bb0; font-size: 0.8rem; }
-        .file-info { display: none; background: #e3f5ee; padding: 12px 16px; border-radius: 12px; margin-top: 12px; }
-        .file-info.show { display: flex; align-items: center; gap: 10px; }
-        .file-info i { font-size: 1.5rem; color: #1a8b5c; }
-        .btn-upload { background: #1a8b5c; border: none; border-radius: 60px; padding: 14px; font-weight: 700; color: white; width: 100%; transition: all 0.2s; margin-top: 16px; }
-        .btn-upload:hover { background: #0e6b46; transform: translateY(-2px); }
-        .btn-upload:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-        .status-msg { margin-top: 12px; padding: 12px; border-radius: 12px; display: none; }
-        .status-msg.success { display: block; background: #e3f5ee; color: #1a6b4c; }
-        .status-msg.error { display: block; background: #fde8e6; color: #7a2a2a; }
-        .status-msg i { margin-right: 8px; }
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f2f5fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Tarjeta principal */
+        .upload-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 36px 32px 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.16);
+            border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+        }
+        .upload-card:hover {
+            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.2);
+        }
+
+        /* Logo */
+        .logo-area {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .logo-area img {
+            max-height: 90px;
+            width: auto;
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+        }
+        .logo-area img:hover {
+            transform: scale(1.03);
+        }
+
+        /* Títulos */
+        .upload-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #0b1e33;
+            text-align: center;
+            letter-spacing: -0.02em;
+        }
+        .upload-title i {
+            color: #2a6df4;
+            margin-right: 8px;
+        }
+        .upload-subtitle {
+            text-align: center;
+            color: #6b7b8f;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .upload-subtitle .badge-doc {
+            background: #eef3fa;
+            padding: 2px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2a4a7a;
+        }
+
+        /* Drop zone */
+        .drop-zone {
+            border: 2px dashed #d0d8e3;
+            border-radius: 20px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(250,252,255,0.6);
+            position: relative;
+        }
+        .drop-zone:hover {
+            border-color: #2a6df4;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+        .drop-zone.dragover {
+            border-color: #2a6df4;
+            background: #e3effa;
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+        }
+        .drop-zone .icon-wrap {
+            font-size: 3.5rem;
+            color: #8a9bb0;
+            transition: all 0.3s ease;
+        }
+        .drop-zone:hover .icon-wrap {
+            color: #2a6df4;
+            transform: scale(1.05);
+        }
+        .drop-zone p {
+            margin: 12px 0 0;
+            color: #4a5b6e;
+            font-weight: 500;
+        }
+        .drop-zone .small {
+            color: #8a9bb0;
+            font-size: 0.8rem;
+        }
+
+        /* Archivo seleccionado */
+        .file-info {
+            display: none;
+            background: #e3f5ee;
+            padding: 14px 18px;
+            border-radius: 16px;
+            margin-top: 16px;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid rgba(26,139,92,0.15);
+            animation: slideDown 0.3s ease;
+        }
+        .file-info.show {
+            display: flex;
+        }
+        .file-info .file-icon {
+            font-size: 2rem;
+            color: #1a8b5c;
+        }
+        .file-info .file-details {
+            flex: 1;
+        }
+        .file-info .file-details .name {
+            font-weight: 600;
+            color: #0b1e33;
+            font-size: 0.95rem;
+        }
+        .file-info .file-details .size {
+            color: #6b7b8f;
+            font-size: 0.75rem;
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Botón eliminar */
+        .btn-remove-file {
+            background: rgba(220,53,69,0.08);
+            border: none;
+            border-radius: 60px;
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #b12a2a;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .btn-remove-file:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Botón subir */
+        .btn-upload {
+            background: linear-gradient(135deg, #1a8b5c, #0e6b46);
+            border: none;
+            border-radius: 60px;
+            padding: 16px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-upload:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -8px rgba(26,139,92,0.35);
+        }
+        .btn-upload:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+        .btn-upload:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-upload .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+        }
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* Estado de mensaje */
+        .status-msg {
+            margin-top: 16px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            display: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            animation: slideDown 0.3s ease;
+        }
+        .status-msg.success {
+            display: block;
+            background: #e3f5ee;
+            color: #1a6b4c;
+            border: 1px solid rgba(26,139,92,0.15);
+        }
+        .status-msg.error {
+            display: block;
+            background: #fde8e6;
+            color: #7a2a2a;
+            border: 1px solid rgba(220,53,69,0.15);
+        }
+        .status-msg i {
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* Botón reintentar */
+        .btn-retry {
+            background: #2a6df4;
+            border: none;
+            border-radius: 60px;
+            padding: 10px 24px;
+            font-weight: 700;
+            color: white;
+            transition: all 0.2s;
+            margin-top: 12px;
+            width: 100%;
+        }
+        .btn-retry:hover {
+            background: #1a5bdb;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(42,109,244,0.3);
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11,30,51,0.6);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .loading-box {
+            background: white;
+            padding: 40px 48px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        .loading-box .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #eef3fa;
+            border-top-color: #2a6df4;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        .loading-box .spinner.success {
+            border-color: #e3f5ee;
+            border-top-color: #1a8b5c;
+        }
+        .loading-box h4 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-bottom: 4px;
+        }
+        .loading-box p {
+            color: #6b7b8f;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        .loading-box .progress-bar-modern {
+            width: 100%;
+            height: 6px;
+            background: #eef3fa;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .loading-box .progress-bar-modern .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2a6df4, #5a8df4);
+            border-radius: 4px;
+            animation: progressAnim 2s ease-in-out infinite;
+        }
+        .loading-box .progress-bar-modern .fill.success {
+            background: linear-gradient(90deg, #1a8b5c, #34d399);
+            animation: none;
+            width: 100%;
+        }
+
+        /* Animaciones */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes progressAnim {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .upload-card { padding: 24px 20px; }
+            .upload-title { font-size: 1.2rem; }
+            .drop-zone { padding: 24px 16px; }
+            .drop-zone .icon-wrap { font-size: 2.8rem; }
+            .loading-box { padding: 30px 24px; }
+        }
     </style>
 </head>
 <body>
 
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-box">
+        <div class="spinner" id="loadingSpinner"></div>
+        <h4 id="loadingTitle">Subiendo documento...</h4>
+        <p id="loadingText">Por favor espera, esto puede tomar unos segundos.</p>
+        <div class="progress-bar-modern">
+            <div class="fill" id="loadingProgress"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- TARJETA PRINCIPAL -->
+<!-- ================================================== -->
 <div class="upload-card">
+    <!-- Logo -->
     <div class="logo-area">
         <img src="/static/img/logo.jpeg" alt="Lumen Legal">
     </div>
-    <h1 class="upload-title"><i class="bi bi-cloud-upload"></i> Subir Documento</h1>
-    <p class="upload-subtitle">Escanea el QR desde el sistema para subir este documento</p>
 
+    <!-- Títulos -->
+    <h1 class="upload-title">
+        <i class="bi bi-cloud-upload"></i> Subir Documento
+    </h1>
+    <p class="upload-subtitle">
+        Escanea el QR desde el sistema para subir este documento
+        <br>
+        <span class="badge-doc" id="docTypeBadge">📄 DOCUMENTO</span>
+    </p>
+
+    <!-- Formulario -->
     <form id="uploadForm" enctype="multipart/form-data">
+        <!-- Drop zone -->
         <div class="drop-zone" id="dropZone">
-            <i class="bi bi-cloud-arrow-up"></i>
+            <div class="icon-wrap">
+                <i class="bi bi-cloud-arrow-up"></i>
+            </div>
             <p><strong>Toca para seleccionar</strong></p>
             <p class="small">o toma una foto del documento</p>
             <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
         </div>
 
+        <!-- Archivo seleccionado -->
         <div class="file-info" id="fileInfo">
-            <i class="bi bi-file-earmark-check"></i>
-            <div>
-                <strong id="fileName">archivo.pdf</strong>
-                <small class="text-muted" id="fileSize">0 KB</small>
+            <div class="file-icon">
+                <i class="bi bi-file-earmark-check"></i>
             </div>
+            <div class="file-details">
+                <span class="name" id="fileName">archivo.pdf</span>
+                <span class="size" id="fileSize">0 KB</span>
+            </div>
+            <button type="button" class="btn-remove-file" id="removeFileBtn">
+                <i class="bi bi-trash3"></i> Eliminar
+            </button>
         </div>
 
+        <!-- Botón subir -->
         <button type="submit" class="btn-upload" id="submitBtn" disabled>
             <i class="bi bi-cloud-upload"></i> Subir Documento
         </button>
     </form>
 
+    <!-- Estado de mensaje -->
     <div id="statusMsg" class="status-msg"></div>
 </div>
 
@@ -72,11 +437,11 @@
     const tempId = urlParams.get('temp_id');
     const docType = urlParams.get('doc_type') || 'DOCUMENTO';
 
-    // Actualizar título del documento
-    document.querySelector('.upload-subtitle').textContent = `Subiendo: ${docType}`;
+    // Actualizar badge del documento
+    document.getElementById('docTypeBadge').textContent = `📄 ${docType}`;
 
     // ============================================================
-    // DROP ZONE Y SELECCIÓN DE ARCHIVO
+    // ELEMENTOS DEL DOM
     // ============================================================
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
@@ -84,9 +449,43 @@
     const fileName = document.getElementById('fileName');
     const fileSize = document.getElementById('fileSize');
     const submitBtn = document.getElementById('submitBtn');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const loadingTitle = document.getElementById('loadingTitle');
+    const loadingText = document.getElementById('loadingText');
+    const loadingProgress = document.getElementById('loadingProgress');
 
     let selectedFile = null;
+    let isSubmitting = false;
 
+    // ============================================================
+    // MOSTRAR / OCULTAR LOADING
+    // ============================================================
+    function showLoading(title = 'Subiendo documento...', message = 'Por favor espera, esto puede tomar unos segundos.') {
+        loadingSpinner.className = 'spinner';
+        loadingTitle.textContent = title;
+        loadingText.textContent = message;
+        loadingProgress.className = 'fill';
+        loadingOverlay.style.display = 'flex';
+    }
+
+    function updateLoading(title, message, isSuccess = false) {
+        loadingTitle.textContent = title;
+        loadingText.textContent = message;
+        if (isSuccess) {
+            loadingSpinner.className = 'spinner success';
+            loadingProgress.className = 'fill success';
+        }
+    }
+
+    function hideLoading() {
+        loadingOverlay.style.display = 'none';
+    }
+
+    // ============================================================
+    // DROP ZONE Y SELECCIÓN DE ARCHIVO
+    // ============================================================
     dropZone.addEventListener('click', () => fileInput.click());
 
     dropZone.addEventListener('dragover', (e) => {
@@ -112,10 +511,14 @@
         }
     });
 
+    // ============================================================
+    // MANEJAR ARCHIVO SELECCIONADO
+    // ============================================================
     function handleFile(file) {
         const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
         if (!validTypes.includes(file.type)) {
             showStatus('❌ Formato no válido. Sube PDF, JPG o PNG.', 'error');
+            fileInput.value = '';
             return;
         }
 
@@ -124,7 +527,69 @@
         fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
         fileInfo.classList.add('show');
         submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
         showStatus('', '');
+    }
+
+    // ============================================================
+    // ELIMINAR ARCHIVO SELECCIONADO
+    // ============================================================
+    removeFileBtn.addEventListener('click', () => {
+        // Mostrar confirmación antes de eliminar
+        if (selectedFile) {
+            const confirmRemove = confirm(`¿Eliminar el archivo "${selectedFile.name}"?`);
+            if (!confirmRemove) return;
+        }
+        clearFileSelection();
+    });
+
+    function clearFileSelection() {
+        selectedFile = null;
+        fileInput.value = '';
+        fileInfo.classList.remove('show');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+        showStatus('', '');
+        // Limpiar mensaje de error si existe
+        const statusMsg = document.getElementById('statusMsg');
+        statusMsg.className = 'status-msg';
+        statusMsg.style.display = 'none';
+    }
+
+    // ============================================================
+    // MOSTRAR ESTADO (ÉXITO / ERROR)
+    // ============================================================
+    function showStatus(message, type) {
+        const el = document.getElementById('statusMsg');
+        if (!message) {
+            el.style.display = 'none';
+            el.className = 'status-msg';
+            return;
+        }
+        el.style.display = 'block';
+        el.className = 'status-msg ' + type;
+        el.innerHTML = message;
+    }
+
+    // ============================================================
+    // CERRAR PÁGINA AUTOMÁTICAMENTE
+    // ============================================================
+    function closePage() {
+        window.close();
+        setTimeout(() => {
+            document.body.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;background:#f2f5fb;">
+                    <div style="background:white;padding:48px;border-radius:32px;max-width:420px;box-shadow:0 24px 56px -16px rgba(0,20,40,0.16);">
+                        <i class="bi bi-check-circle-fill" style="font-size:4rem;color:#1a8b5c;"></i>
+                        <h1 style="color:#0b1e33;margin-top:16px;font-weight:700;">¡Documento subido!</h1>
+                        <p style="color:#6b7b8f;">Ya puedes cerrar esta pestaña.</p>
+                        <button onclick="window.close()" style="background:#1a8b5c;border:none;border-radius:60px;padding:12px 32px;color:white;font-weight:700;margin-top:16px;cursor:pointer;transition:all 0.2s;">
+                            <i class="bi bi-x-circle"></i> Cerrar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }, 300);
     }
 
     // ============================================================
@@ -133,13 +598,20 @@
     document.getElementById('uploadForm').addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!selectedFile) {
-            showStatus('❌ Por favor selecciona un archivo.', 'error');
+        if (!selectedFile || isSubmitting) {
             return;
         }
 
+        if (selectedFile.size > 10 * 1024 * 1024) {
+            showStatus('❌ El archivo es demasiado grande. Máximo 10 MB.', 'error');
+            return;
+        }
+
+        isSubmitting = true;
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Subiendo...';
+
+        showLoading('Subiendo documento...', 'Por favor espera, esto puede tomar unos segundos.');
 
         const formData = new FormData();
         formData.append('file', selectedFile);
@@ -154,32 +626,45 @@
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showStatus('✅ ¡Documento subido correctamente! Puedes cerrar esta ventana.', 'success');
-                submitBtn.innerHTML = '<i class="bi bi-check2"></i> ¡Subido!';
-                submitBtn.disabled = true;
+                updateLoading('✅ ¡Documento subido!', 'El archivo se ha subido correctamente.', true);
+
+                setTimeout(() => {
+                    hideLoading();
+                    showStatus('✅ ¡Documento subido correctamente!', 'success');
+                    submitBtn.innerHTML = '<i class="bi bi-check2"></i> ¡Subido!';
+
+                    setTimeout(() => {
+                        closePage();
+                    }, 2000);
+
+                }, 1200);
+
             } else {
+                hideLoading();
                 showStatus('❌ Error: ' + (result.error || 'No se pudo subir el archivo.'), 'error');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+                submitBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Reintentar';
+                isSubmitting = false;
             }
+
         } catch (error) {
+            hideLoading();
             showStatus('❌ Error de conexión: ' + error.message, 'error');
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+            submitBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Reintentar';
+            isSubmitting = false;
         }
     });
 
-    function showStatus(message, type) {
-        const el = document.getElementById('statusMsg');
-        if (!message) {
-            el.style.display = 'none';
-            el.className = 'status-msg';
-            return;
+    // ============================================================
+    // TECLA ESC PARA LIMPIAR SELECCIÓN
+    // ============================================================
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && selectedFile) {
+            clearFileSelection();
+            showStatus('Archivo eliminado', 'info');
         }
-        el.style.display = 'block';
-        el.className = 'status-msg ' + type;
-        el.innerHTML = message;
-    }
+    });
 </script>
 
 </body>
