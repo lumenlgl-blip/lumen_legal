@@ -64,6 +64,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/redoc",
             "/loading",
             "/ping",
+                "/api/clients/upload-mobile",  # 🔥 PERMITE SUBIR DESDE MÓVIL SIN LOGIN
+    "/api/clients/check-upload",   # 🔥 PERMITE VERIFICAR SUBIDA
         ]
         
         # Verificar si la ruta es pública
