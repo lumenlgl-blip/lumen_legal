@@ -536,7 +536,6 @@ async def regenerate_constancia(client_id: int, db: Session = Depends(get_db)):
         headers={"Content-Disposition": f"inline; filename=constancia_{client.folio_registro}.pdf"}
     )
     
-    # --- Subir documento desde móvil (vía QR) ---
 # --- Subir documento desde móvil (vía QR) ---
 @router.post("/upload-mobile/{client_temp_id}")
 async def upload_mobile_document(
@@ -546,16 +545,24 @@ async def upload_mobile_document(
 ):
     """
     Endpoint para subir documentos desde el teléfono.
-    Recibe: client_temp_id (temporal), file (imagen o PDF), doc_type (CURP, INE, DOMICILIO)
+    El QR es de un solo uso: después de subir el archivo, se marca como usado.
     """
     try:
         # Guardar archivo temporalmente
         upload_dir = f"uploads/temp/{client_temp_id}"
         os.makedirs(upload_dir, exist_ok=True)
         
-        # Limpiar archivos anteriores en el directorio
+        # 🔥 VERIFICAR SI EL QR YA FUE USADO
+        used_file = os.path.join(upload_dir, ".used")
+        if os.path.exists(used_file):
+            return {
+                "success": False,
+                "error": "Este código QR ya ha sido utilizado. Por favor, genera uno nuevo desde el sistema."
+            }
+        
+        # Limpiar archivos anteriores del mismo tipo
         for old_file in os.listdir(upload_dir):
-            if old_file.startswith(doc_type):
+            if old_file.startswith(doc_type) and not old_file.startswith("."):
                 os.remove(os.path.join(upload_dir, old_file))
         
         filename = f"{doc_type}_{uuid.uuid4().hex[:8]}.pdf"
@@ -570,17 +577,19 @@ async def upload_mobile_document(
             with open(file_path, "wb") as f:
                 f.write(pdf_bytes)
         else:
-            # Guardar PDF directamente
             with open(file_path, "wb") as f:
                 f.write(content)
         
-        # Devolver URL del archivo para que el frontend lo use
+        # 🔥 MARCAR EL QR COMO USADO
+        with open(used_file, "w") as f:
+            f.write(f"Usado el {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} para {doc_type}")
+        
         return {
             "success": True,
             "file_url": "/" + file_path.replace("\\", "/"),
             "filename": filename,
             "doc_type": doc_type,
-            "message": f"📄 {doc_type} subido correctamente desde móvil"
+            "message": f"📄 {doc_type} subido correctamente. Este QR ya no es válido."
         }
         
     except Exception as e:
@@ -618,3 +627,21 @@ async def upload_mobile_page(
     html = html.replace('<!-- TEMP_ID -->', temp_id)
     html = html.replace('<!-- DOC_TYPE -->', doc_type)
     return HTMLResponse(content=html)
+
+# --- Verificar si el QR ya fue usado ---
+@router.get("/check-qr-status/{temp_id}")
+async def check_qr_status(temp_id: str):
+    """Verifica si un código QR ya fue utilizado"""
+    upload_dir = f"uploads/temp/{temp_id}"
+    used_file = os.path.join(upload_dir, ".used")
+    
+    if os.path.exists(used_file):
+        return {"used": True, "message": "Este QR ya fue utilizado"}
+    
+    # Verificar si hay archivos en la carpeta (subida en progreso)
+    if os.path.exists(upload_dir):
+        files = [f for f in os.listdir(upload_dir) if not f.startswith(".")]
+        if files:
+            return {"used": False, "has_files": True, "files": files}
+    
+    return {"used": False, "has_files": False}

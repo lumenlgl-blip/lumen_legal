@@ -7,453 +7,181 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: #f2f5fb; padding-top: 20px; padding-bottom: 40px; min-height: 100vh; }
 
-        body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
-            min-height: 100vh;
-        }
-
-        /* Botón menú */
         .btn-menu-modern {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
+            position: fixed; top: 24px; left: 24px; z-index: 1050;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px;
-            padding: 10px 22px;
-            font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 60px; padding: 10px 22px;
+            font-weight: 600; color: #0b1e33;
+            transition: all 0.2s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-            color: #0b1e33;
-        }
+        .btn-menu-modern:hover { background: white; box-shadow: 0 12px 28px rgba(0,0,0,0.08); transform: translateY(-2px); color: #0b1e33; }
 
-        /* Header */
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
-            margin-bottom: 28px;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(4px);
+            border-radius: 28px; padding: 24px 28px; margin-bottom: 28px;
             border: 1px solid rgba(255,255,255,0.5);
             box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
             text-align: center;
         }
-        .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        .page-header h1 i {
-            color: #2a6df4;
-            font-size: 2rem;
-        }
-        .page-header .subtitle {
-            color: #6b7b8f;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-top: 4px;
-        }
-        .page-header .subtitle span {
-            background: #eef3fa;
-            padding: 2px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #2a4a7a;
-        }
+        .page-header h1 { font-weight: 700; font-size: 1.8rem; color: #0b1e33; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
+        .page-header .subtitle { color: #6b7b8f; font-weight: 500; font-size: 0.9rem; margin-top: 4px; }
+        .page-header .subtitle span { background: #eef3fa; padding: 2px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; color: #2a4a7a; }
 
-        /* Tarjeta principal */
         .form-card {
-            background: rgba(255,255,255,0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 32px;
-            padding: 32px 28px 28px;
+            background: rgba(255,255,255,0.82); backdrop-filter: blur(16px);
+            border-radius: 32px; padding: 32px 28px 28px;
             box-shadow: 0 24px 56px -16px rgba(0,20,40,0.14);
             border: 1px solid rgba(255,255,255,0.5);
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: 900px; margin: 0 auto;
         }
 
-        /* 🔥 PROGRESS BAR MODERNA Y MÁS GRANDE */
         .progress-modern {
-            height: 14px;
-            border-radius: 40px;
-            background: #eef3fa;
-            margin-bottom: 28px;
-            overflow: hidden;
+            height: 14px; border-radius: 40px; background: #eef3fa;
+            margin-bottom: 28px; overflow: hidden;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
             position: relative;
         }
         .progress-modern .progress-bar {
-            height: 100%;
-            border-radius: 40px;
+            height: 100%; border-radius: 40px;
             background: linear-gradient(90deg, #2a6df4, #5a8df4, #7aa9ff);
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 700;
-            font-size: 0.75rem;
-            color: white;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            letter-spacing: 0.04em;
-            box-shadow: 0 0 20px rgba(42,109,244,0.15);
+            font-weight: 700; font-size: 0.75rem; color: white;
+            position: relative; display: flex; align-items: center; justify-content: center;
+            letter-spacing: 0.04em; box-shadow: 0 0 20px rgba(42,109,244,0.15);
         }
         .progress-modern .progress-bar::after {
             content: attr(data-label);
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: white;
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
+            font-size: 0.7rem; font-weight: 700; color: white;
+            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
         }
 
-        /* Step indicator */
         .step-indicator-modern {
-            display: flex;
-            justify-content: center;
-            gap: 80px;
-            margin-bottom: 32px;
-            position: relative;
-            padding: 0 20px;
+            display: flex; justify-content: center; gap: 80px;
+            margin-bottom: 32px; position: relative; padding: 0 20px;
         }
         .step-indicator-modern::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 30%;
-            right: 30%;
-            height: 3px;
-            background: #eef3fa;
-            z-index: 0;
-            border-radius: 4px;
+            content: ''; position: absolute; top: 20px; left: 30%; right: 30%;
+            height: 3px; background: #eef3fa; z-index: 0; border-radius: 4px;
             transition: background 0.5s ease;
         }
-        .step-indicator-modern.progress-step1::before {
-            background: linear-gradient(to right, #2a6df4 0%, #eef3fa 0%);
-        }
-        .step-indicator-modern.progress-step2::before {
-            background: linear-gradient(to right, #2a6df4 0%, #2a6df4 100%);
-        }
+        .step-indicator-modern.progress-step1::before { background: linear-gradient(to right, #2a6df4 0%, #eef3fa 0%); }
+        .step-indicator-modern.progress-step2::before { background: linear-gradient(to right, #2a6df4 0%, #2a6df4 100%); }
 
-        .step-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            z-index: 1;
-            cursor: default;
-        }
+        .step-item { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; cursor: default; }
         .step-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #eef3fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #8a9bb0;
-            transition: all 0.4s ease;
-            border: 3px solid transparent;
+            width: 44px; height: 44px; border-radius: 50%; background: #eef3fa;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem; color: #8a9bb0;
+            transition: all 0.4s ease; border: 3px solid transparent;
         }
-        .step-circle.active {
-            background: #2a6df4;
-            color: white;
-            border-color: #2a6df4;
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(42,109,244,0.3);
-        }
-        .step-circle.completed {
-            background: #1a8b5c;
-            color: white;
-            border-color: #1a8b5c;
-            animation: pulseGreen 0.5s ease;
-        }
+        .step-circle.active { background: #2a6df4; color: white; border-color: #2a6df4; transform: scale(1.1); box-shadow: 0 0 20px rgba(42,109,244,0.3); }
+        .step-circle.completed { background: #1a8b5c; color: white; border-color: #1a8b5c; animation: pulseGreen 0.5s ease; }
         @keyframes pulseGreen {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); box-shadow: 0 0 25px rgba(26,139,92,0.4); }
             100% { transform: scale(1); }
         }
-        .step-circle .check-icon {
-            display: none;
-        }
-        .step-circle.completed .step-number {
-            display: none;
-        }
-        .step-circle.completed .check-icon {
-            display: inline;
-        }
+        .step-circle .check-icon { display: none; }
+        .step-circle.completed .step-number { display: none; }
+        .step-circle.completed .check-icon { display: inline; }
         .step-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #8a9bb0;
-            margin-top: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            transition: color 0.3s;
-            text-align: center;
+            font-size: 0.65rem; font-weight: 700; color: #8a9bb0;
+            margin-top: 6px; text-transform: uppercase; letter-spacing: 0.04em;
+            transition: color 0.3s; text-align: center;
         }
-        .step-circle.active ~ .step-label {
-            color: #2a6df4;
-        }
-        .step-circle.completed ~ .step-label {
-            color: #1a8b5c;
-        }
+        .step-circle.active ~ .step-label { color: #2a6df4; }
+        .step-circle.completed ~ .step-label { color: #1a8b5c; }
 
-        /* Step content */
-        .step-content {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-        .step-content.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .step-content { display: none; animation: fadeIn 0.4s ease; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-        .step-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #0b1e33;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .step-title i {
-            color: #2a6df4;
-        }
+        .step-title { font-weight: 700; font-size: 1.1rem; color: #0b1e33; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .step-title i { color: #2a6df4; }
 
-        /* Formulario */
         .form-control-modern {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
-            padding: 14px 18px;
-            font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 54px;
+            border-radius: 16px; border: 1.5px solid #e9edf4;
+            padding: 14px 18px; font-size: 0.95rem;
+            background: rgba(255,255,255,0.6); transition: all 0.2s; height: 54px;
         }
-        .form-control-modern:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
-        }
-        .form-control-modern.is-invalid {
-            border-color: #dc3545;
-        }
-        .form-label-modern {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: #4a5b6e;
-            margin-bottom: 4px;
-        }
-        .form-label-modern .required {
-            color: #dc3545;
-        }
+        .form-control-modern:focus { border-color: #2a6df4; box-shadow: 0 0 0 4px rgba(42,109,244,0.08); background: white; }
+        .form-control-modern.is-invalid { border-color: #dc3545; }
+        .form-label-modern { font-weight: 600; font-size: 0.8rem; color: #4a5b6e; margin-bottom: 4px; }
+        .form-label-modern .required { color: #dc3545; }
 
-        /* Botones */
         .btn-primary-modern {
-            background: #0b1e33;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 28px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            background: #0b1e33; border: none; border-radius: 60px;
+            padding: 12px 28px; font-weight: 700; color: white;
+            transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-primary-modern:hover {
-            background: #1a3b6b;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
-        }
+        .btn-primary-modern:hover { background: #1a3b6b; transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25); }
 
         .btn-success-modern {
-            background: #1a8b5c;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 28px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            background: #1a8b5c; border: none; border-radius: 60px;
+            padding: 12px 28px; font-weight: 700; color: white;
+            transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-success-modern:hover {
-            background: #0e6b46;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(26,139,92,0.3);
-        }
+        .btn-success-modern:hover { background: #0e6b46; transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(26,139,92,0.3); }
 
         .btn-outline-secondary-modern {
-            border-radius: 60px;
-            padding: 12px 24px;
-            font-weight: 600;
-            border: 1.5px solid #e9edf4;
-            color: #4a5b6e;
-            background: transparent;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 60px; padding: 12px 24px; font-weight: 600;
+            border: 1.5px solid #e9edf4; color: #4a5b6e; background: transparent;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-outline-secondary-modern:hover {
-            background: white;
-            border-color: #cbd9ed;
-        }
+        .btn-outline-secondary-modern:hover { background: white; border-color: #cbd9ed; }
 
         .btn-danger-modern {
-            border-radius: 60px;
-            padding: 12px 24px;
-            font-weight: 600;
-            border: 1.5px solid #dc3545;
-            color: #dc3545;
-            background: transparent;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 60px; padding: 12px 24px; font-weight: 600;
+            border: 1.5px solid #dc3545; color: #dc3545; background: transparent;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-danger-modern:hover {
-            background: #dc3545;
-            color: white;
-        }
+        .btn-danger-modern:hover { background: #dc3545; color: white; }
 
         .btn-group-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; margin-top: 20px; flex-wrap: wrap;
         }
-        .btn-group-actions .left-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-group-actions .right-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .btn-group-actions .left-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group-actions .right-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* File status */
         .file-status {
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 40px;
-            display: inline-block;
-            margin-top: 4px;
+            font-size: 0.7rem; font-weight: 600; padding: 2px 12px;
+            border-radius: 40px; display: inline-block; margin-top: 4px;
         }
         .file-status.valid { background: #e3f5ee; color: #1a8b5c; }
         .file-status.invalid { background: #fee9e7; color: #b12a2a; }
 
-        /* Modales modernos */
         .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
+            border-radius: 28px; border: none; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
         }
-        .modal-modern .modal-header {
-            border-bottom: none;
-            padding: 20px 28px 8px 28px;
-        }
-        .modal-modern .modal-header .modal-title {
-            font-weight: 700;
-            color: #0b1e33;
-        }
-        .modal-modern .modal-body {
-            padding: 16px 28px 24px;
-        }
-        .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
-        }
+        .modal-modern .modal-header { border-bottom: none; padding: 20px 28px 8px 28px; }
+        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
+        .modal-modern .modal-body { padding: 16px 28px 24px; }
+        .modal-modern .modal-footer { border-top: none; padding: 8px 28px 24px; }
 
-        .file-preview-modal {
-            width: 100%;
-            height: 60vh;
-            border: none;
-            border-radius: 12px;
-        }
+        .file-preview-modal { width: 100%; height: 60vh; border: none; border-radius: 12px; }
 
-        /* Loading */
         .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(11,30,51,0.4); backdrop-filter: blur(8px); z-index: 9999;
+            display: none; align-items: center; justify-content: center;
         }
         .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            background: white; padding: 36px 48px; border-radius: 32px;
+            text-align: center; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
         }
-        .spinner-box .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
-        }
-        .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
-        }
-        .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
-        }
+        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: #2a6df4; }
+        .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
+        .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .page-header h1 { font-size: 1.3rem; }
             .page-header h1 i { font-size: 1.4rem; }
@@ -497,7 +225,7 @@
     <!-- Formulario -->
     <div class="form-card">
 
-        <!-- 🔥 PROGRESS BAR MODERNA Y MÁS GRANDE -->
+        <!-- Progress bar -->
         <div class="progress-modern">
             <div class="progress-bar" id="progressBar" data-label="50%" style="width:50%;"></div>
         </div>
@@ -777,6 +505,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+
+
+// ============================================================
+// LIMPIAR MODALES (EVITA PANTALLA GRIS) - VERSIÓN MEJORADA
+// ============================================================
+function cleanupModals() {
+    // Solo limpiar si NO hay modales activos
+    const activeModals = document.querySelectorAll('.modal.show');
+    if (activeModals.length > 0) {
+        return; // No limpiar si hay modales abiertos
+    }
+    
+    // Eliminar cualquier backdrop sobrante
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    
+    // Restaurar scroll
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    
+    // Eliminar clases fantasma
+    document.querySelectorAll('.modal').forEach(el => {
+        el.classList.remove('show');
+        el.style.display = '';
+    });
+}
 // ============================================================
 // FUNCIONES ORIGINALES
 // ============================================================
@@ -786,7 +541,29 @@ let filesValidated = { curp: false, ine: false, domicilio: false };
 let pendingFileInput = null;
 
 function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    // 🔥 VERIFICAR SI HAY OTROS MODALES ABIERTOS
+    const activeModals = document.querySelectorAll('.modal.show');
+    if (activeModals.length > 0) {
+        // Si hay otro modal abierto, cerrarlo primero
+        activeModals.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+        });
+        // Esperar a que se cierre antes de abrir el nuevo
+        setTimeout(() => {
+            showNotification(title, bodyHTML, type, downloadUrl);
+        }, 300);
+        return;
+    }
+    
+    // Limpiar solo si no hay modales activos
+    cleanupModals();
+    
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'), {
+        backdrop: 'static'
+    });
     const header = document.getElementById('notificationHeader');
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
@@ -821,11 +598,35 @@ function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
 }
 
 function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    // 🔥 VERIFICAR SI HAY OTROS MODALES ABIERTOS
+    const activeModals = document.querySelectorAll('.modal.show');
+    if (activeModals.length > 0) {
+        // Si hay otro modal abierto, cerrarlo primero
+        activeModals.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+        });
+        // Esperar a que se cierre antes de abrir el nuevo
+        setTimeout(() => {
+            showConfirm(title, bodyHTML, onConfirm);
+        }, 300);
+        return;
+    }
+    
+    cleanupModals();
+    
+    const modal = new bootstrap.Modal(document.getElementById('confirmModal'), {
+        backdrop: 'static'
+    });
     document.getElementById('confirmBody').innerHTML = bodyHTML;
     document.getElementById('confirmBtn').onclick = function() {
         modal.hide();
-        onConfirm();
+        setTimeout(() => {
+            cleanupModals();
+            onConfirm();
+        }, 300);
     };
     modal.show();
 }
@@ -1035,6 +836,26 @@ document.getElementById('address').addEventListener('keydown', function(e) { ent
 
 // Ocupación
 document.getElementById('occupation').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+
+// ============================================================
+// CUANDO SE CIERRA UN MODAL
+// ============================================================
+document.addEventListener('hidden.bs.modal', function (event) {
+    // Esperar un momento y limpiar, pero solo si no hay otros modales abiertos
+    setTimeout(() => {
+        const activeModals = document.querySelectorAll('.modal.show');
+        if (activeModals.length === 0) {
+            cleanupModals();
+        }
+    }, 300);
+});
+
+// También limpiar al hacer clic fuera del modal
+document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('modal-backdrop')) {
+        cleanupModals();
+    }
+});
 
 // --- VISTA PREVIA DE PDFs (CON BOTÓN ELIMINAR) ---
 function handleFilePreview(inputId, statusId, fileKey) {
@@ -1259,6 +1080,9 @@ function openQRScannerDirect(inputId) {
         return;
     }
     
+    // 🔥 LIMPIAR MODALES ANTES DE ABRIR
+    cleanupModals();
+    
     console.log('🔍 Abriendo QR para:', inputId);
     
     currentMobileField = inputId;
@@ -1276,8 +1100,6 @@ function openQRScannerDirect(inputId) {
         docTypeKey = 'domicilio';
     }
     
-    const tempId = generateTempId(docTypeKey);
-    
     let baseUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         baseUrl = window.location.origin;
@@ -1285,54 +1107,81 @@ function openQRScannerDirect(inputId) {
         baseUrl = window.location.origin;
     }
     
-    const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
+    // GENERAR tempId Y VERIFICAR SI EL QR YA FUE USADO
+    let tempId = generateTempId(docTypeKey);
+    let uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
     
-    console.log('📱 URL para QR (' + currentDocType + '):', uploadUrl);
+    // HACER UNA PRIMERA VERIFICACIÓN ASÍNCRONA DEL ESTADO DEL QR
+    fetch(`/api/clients/check-qr-status/${tempId}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.used) {
+                // El QR ya fue usado, generar uno nuevo
+                console.warn('⚠️ QR ya usado, generando nuevo...');
+                tempIds[docTypeKey] = null;
+                tempId = generateTempId(docTypeKey);
+                uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
+                console.log('📱 Nuevo QR generado:', uploadUrl);
+                generateQRCodeDisplay(uploadUrl);
+            } else {
+                generateQRCodeDisplay(uploadUrl);
+            }
+        })
+        .catch(error => {
+            console.log('⚠️ Error verificando QR, generando de todos modos:', error);
+            generateQRCodeDisplay(uploadUrl);
+        });
     
-    const container = document.getElementById('qrCodeContainer');
-    container.innerHTML = '';
-    
-    document.getElementById('qrModalTitle').textContent = 
-        'Escanea este QR con tu teléfono para subir: ' + currentDocType;
-    
-    if (typeof QRCode === 'undefined') {
-        console.warn('⚠️ QRCode no está disponible, usando fallback');
-        showMobileUrlFallback(uploadUrl);
-        document.getElementById('mobileUploadStatus').style.display = 'none';
-        new bootstrap.Modal(document.getElementById('qrModal')).show();
-        startPollingForUpload(tempId, docTypeKey);
-        return;
-    }
-    
-    setTimeout(() => {
-        try {
-            const qr = new QRCode(container, {
-                text: uploadUrl,
-                width: 220,
-                height: 220,
-                colorDark: '#0b1e33',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            
-            console.log('✅ QR generado correctamente para', currentDocType);
-            
-            const linkEl = document.createElement('p');
-            linkEl.className = 'text-muted small mt-2';
-            linkEl.style.wordBreak = 'break-all';
-            linkEl.style.fontSize = '0.65rem';
-            linkEl.textContent = uploadUrl;
-            container.appendChild(linkEl);
-            
-        } catch (error) {
-            console.error('❌ Error al generar QR:', error);
+    function generateQRCodeDisplay(uploadUrl) {
+        const container = document.getElementById('qrCodeContainer');
+        container.innerHTML = '';
+        
+        document.getElementById('qrModalTitle').textContent = 
+            'Escanea este QR con tu teléfono para subir: ' + currentDocType;
+        
+        if (typeof QRCode === 'undefined') {
+            console.warn('⚠️ QRCode no está disponible, usando fallback');
             showMobileUrlFallback(uploadUrl);
+            document.getElementById('mobileUploadStatus').style.display = 'none';
+            new bootstrap.Modal(document.getElementById('qrModal')).show();
+            startPollingForUpload(tempId, docTypeKey);
+            return;
         }
-    }, 300);
-    
-    document.getElementById('mobileUploadStatus').style.display = 'none';
-    new bootstrap.Modal(document.getElementById('qrModal')).show();
-    startPollingForUpload(tempId, docTypeKey);
+        
+        setTimeout(() => {
+            try {
+                const qr = new QRCode(container, {
+                    text: uploadUrl,
+                    width: 220,
+                    height: 220,
+                    colorDark: '#0b1e33',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                console.log('✅ QR generado correctamente para', currentDocType);
+                
+                const linkEl = document.createElement('p');
+                linkEl.className = 'text-muted small mt-2';
+                linkEl.style.wordBreak = 'break-all';
+                linkEl.style.fontSize = '0.65rem';
+                linkEl.textContent = uploadUrl;
+                container.appendChild(linkEl);
+                
+            } catch (error) {
+                console.error('❌ Error al generar QR:', error);
+                showMobileUrlFallback(uploadUrl);
+            }
+        }, 300);
+        
+// Dentro de generateQRCodeDisplay, reemplaza:
+document.getElementById('mobileUploadStatus').style.display = 'none';
+const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
+    backdrop: 'static'
+});
+qrModal.show();
+startPollingForUpload(tempId, docTypeKey);
+    }
 }
 
 // ============================================================
@@ -1410,7 +1259,7 @@ function copyMobileUrl() {
 }
 
 // ============================================================
-// POLLING PARA VERIFICAR SUBIDA
+// POLLING PARA VERIFICAR SUBIDA (CON QR DE UN SOLO USO)
 // ============================================================
 function startPollingForUpload(tempId, docTypeKey) {
     if (currentMobileField) {
@@ -1425,89 +1274,119 @@ function startPollingForUpload(tempId, docTypeKey) {
     let attempts = 0;
     const maxAttempts = 60;
     let fileReceived = false;
+    let qrUsed = false;
     
     const checkInterval = setInterval(async () => {
         attempts++;
         
         try {
-            const response = await fetch(`/api/clients/check-upload/${tempId}`);
-            const data = await response.json();
+            // VERIFICAR PRIMERO SI EL QR YA FUE USADO
+            const statusResponse = await fetch(`/api/clients/check-qr-status/${tempId}`);
+            const statusData = await statusResponse.json();
             
-            if (data.success && data.file_url && !fileReceived) {
-                fileReceived = true;
+            if (statusData.used) {
+                // QR ya fue usado
+                qrUsed = true;
                 clearInterval(checkInterval);
                 
-                if (docTypeKey) {
-                    tempIds[docTypeKey] = null;
-                }
-                
-                const currentField = currentMobileField;
-                const currentDoc = currentDocType;
-                
-// Dentro de startPollingForUpload, cuando se recibe el archivo:
-const fileInput = document.getElementById(currentField);
-if (fileInput) {
-    try {
-        const fileResponse = await fetch(data.file_url);
-        const blob = await fileResponse.blob();
-        const file = new File([blob], data.filename, { type: 'application/pdf' });
-        
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        fileInput.files = dataTransfer.files;
-        
-        // 🔥 DISPARAR EVENTO change PARA VISTA PREVIA
-        const event = new Event('change', { bubbles: true });
-        fileInput.dispatchEvent(event);
-        
-        // 🔥 FORZAR VISTA PREVIA DIRECTAMENTE
-        setTimeout(() => {
-            forcePdfPreview(currentField);
-        }, 500);
-        
-    } catch (err) {
-        console.error('❌ Error al cargar archivo desde móvil:', err);
-        const file = new File([''], data.filename, { type: 'application/pdf' });
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(file);
-        fileInput.files = dataTransfer.files;
-        fileInput.dispatchEvent(new Event('change'));
-    }
-}
-                
-                const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
+                const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
                 if (statusEl) {
-                    statusEl.textContent = '✅ Archivo subido desde móvil';
-                    statusEl.style.color = '#1a8b5c';
+                    statusEl.textContent = '⛔ QR ya utilizado. Genera uno nuevo.';
+                    statusEl.style.color = '#dc3545';
                 }
                 
                 document.getElementById('mobileUploadStatus').style.display = 'block';
+                document.getElementById('mobileUploadStatus').className = 'alert alert-warning';
                 document.getElementById('mobileUploadStatus').innerHTML = `
-                    <i class="bi bi-check-circle"></i> 
-                    ${currentDoc} subido correctamente.<br>
-                    <small>Cerrando...</small>
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Este código QR ya ha sido utilizado.<br>
+                    <small>Por favor, genera uno nuevo desde el sistema.</small>
                 `;
                 
-                filesValidated[currentField.replace('_file', '')] = true;
-                const statusId = currentField.replace('_file', '') + 'Status';
-                document.getElementById(statusId).textContent = '✅ Validado desde móvil';
-                document.getElementById(statusId).className = 'file-status valid';
-                
-                const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
-                if (clearBtn) {
-                    clearBtn.style.display = 'inline-block';
-                }
-                
-                setTimeout(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
-                    if (modal) {
-                        modal.hide();
-                    }
-                    isProcessingQR = false;
-                }, 2000);
+                isProcessingQR = false;
+                return;
             }
             
-            if (attempts >= maxAttempts) {
+            // Si hay archivos en la carpeta, significa que se subió
+            if (statusData.has_files && statusData.files && statusData.files.length > 0 && !fileReceived) {
+                // El archivo ya está en la carpeta, ahora obtenerlo
+                const response = await fetch(`/api/clients/check-upload/${tempId}`);
+                const data = await response.json();
+                
+                if (data.success && data.file_url && !fileReceived) {
+                    fileReceived = true;
+                    clearInterval(checkInterval);
+                    
+                    if (docTypeKey) {
+                        tempIds[docTypeKey] = null;
+                    }
+                    
+                    const currentField = currentMobileField;
+                    const currentDoc = currentDocType;
+                    
+                    const fileInput = document.getElementById(currentField);
+                    if (fileInput) {
+                        try {
+                            const fileResponse = await fetch(data.file_url);
+                            const blob = await fileResponse.blob();
+                            const file = new File([blob], data.filename, { type: 'application/pdf' });
+                            
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            fileInput.files = dataTransfer.files;
+                            
+                            const event = new Event('change', { bubbles: true });
+                            fileInput.dispatchEvent(event);
+                            
+                            setTimeout(() => {
+                                forcePdfPreview(currentField);
+                            }, 500);
+                            
+                        } catch (err) {
+                            console.error('❌ Error:', err);
+                            const file = new File([''], data.filename, { type: 'application/pdf' });
+                            const dataTransfer = new DataTransfer();
+                            dataTransfer.items.add(file);
+                            fileInput.files = dataTransfer.files;
+                            fileInput.dispatchEvent(new Event('change'));
+                        }
+                    }
+                    
+                    const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
+                    if (statusEl) {
+                        statusEl.textContent = '✅ Archivo subido desde móvil';
+                        statusEl.style.color = '#1a8b5c';
+                    }
+                    
+                    document.getElementById('mobileUploadStatus').style.display = 'block';
+                    document.getElementById('mobileUploadStatus').className = 'alert alert-success';
+                    document.getElementById('mobileUploadStatus').innerHTML = `
+                        <i class="bi bi-check-circle"></i> 
+                        ${currentDoc} subido correctamente.<br>
+                        <small>Cerrando automáticamente...</small>
+                    `;
+                    
+                    filesValidated[currentField.replace('_file', '')] = true;
+                    const statusId = currentField.replace('_file', '') + 'Status';
+                    document.getElementById(statusId).textContent = '✅ Validado desde móvil';
+                    document.getElementById(statusId).className = 'file-status valid';
+                    
+                    const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
+                    if (clearBtn) {
+                        clearBtn.style.display = 'inline-block';
+                    }
+                    
+                    setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+                        if (modal) {
+                            modal.hide();
+                        }
+                        isProcessingQR = false;
+                    }, 2000);
+                }
+            }
+            
+            if (attempts >= maxAttempts && !fileReceived) {
                 clearInterval(checkInterval);
                 const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
                 if (statusEl) {
@@ -1534,6 +1413,25 @@ function forcePdfPreview(fileInputId) {
         return;
     }
     
+    // 🔥 VERIFICAR SI HAY OTROS MODALES ABIERTOS
+    const activeModals = document.querySelectorAll('.modal.show');
+    if (activeModals.length > 0) {
+        // Si hay otro modal abierto, cerrarlo primero
+        activeModals.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+        });
+        // Esperar a que se cierre antes de abrir el nuevo
+        setTimeout(() => {
+            forcePdfPreview(fileInputId);
+        }, 300);
+        return;
+    }
+    
+    cleanupModals();
+    
     const file = fileInput.files[0];
     const fileURL = URL.createObjectURL(file);
     
@@ -1542,12 +1440,12 @@ function forcePdfPreview(fileInputId) {
         previewFrame.src = fileURL;
         console.log('✅ Vista previa forzada para:', file.name);
         
-        // Mostrar el modal de vista previa automáticamente
-        const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+        const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'), {
+            backdrop: 'static'
+        });
         previewModal.show();
     }
 }
-
 
 // ============================================================
 // CUANDO SE CIERRA EL MODAL QR
@@ -1560,6 +1458,20 @@ document.getElementById('qrModal').addEventListener('hidden.bs.modal', function 
         }
     }
     isProcessingQR = false;
+});
+
+// ============================================================
+// BOTÓN CERRAR DEL MODAL QR
+// ============================================================
+document.getElementById('closeQRModalBtn').addEventListener('click', function() {
+    const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+    if (modal) {
+        modal.hide();
+    }
+    setTimeout(() => {
+        cleanupModals();
+        isProcessingQR = false;
+    }, 300);
 });
 </script>
 </body>
