@@ -504,34 +504,27 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-
-
 
 // ============================================================
 // LIMPIAR MODALES (EVITA PANTALLA GRIS) - VERSIÓN MEJORADA
 // ============================================================
 function cleanupModals() {
-    // Solo limpiar si NO hay modales activos
     const activeModals = document.querySelectorAll('.modal.show');
     if (activeModals.length > 0) {
-        return; // No limpiar si hay modales abiertos
+        return;
     }
-    
-    // Eliminar cualquier backdrop sobrante
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-    
-    // Restaurar scroll
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
     document.body.style.paddingRight = '';
-    
-    // Eliminar clases fantasma
     document.querySelectorAll('.modal').forEach(el => {
         el.classList.remove('show');
         el.style.display = '';
     });
 }
+
 // ============================================================
 // FUNCIONES ORIGINALES
 // ============================================================
@@ -541,26 +534,20 @@ let filesValidated = { curp: false, ine: false, domicilio: false };
 let pendingFileInput = null;
 
 function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
-    // 🔥 VERIFICAR SI HAY OTROS MODALES ABIERTOS
     const activeModals = document.querySelectorAll('.modal.show');
     if (activeModals.length > 0) {
-        // Si hay otro modal abierto, cerrarlo primero
         activeModals.forEach(modal => {
             const bsModal = bootstrap.Modal.getInstance(modal);
             if (bsModal) {
                 bsModal.hide();
             }
         });
-        // Esperar a que se cierre antes de abrir el nuevo
         setTimeout(() => {
             showNotification(title, bodyHTML, type, downloadUrl);
         }, 300);
         return;
     }
-    
-    // Limpiar solo si no hay modales activos
     cleanupModals();
-    
     const modal = new bootstrap.Modal(document.getElementById('notificationModal'), {
         backdrop: 'static'
     });
@@ -568,9 +555,7 @@ function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
     const downloadLink = document.getElementById('downloadLink');
-
     header.className = 'modal-header';
-
     if (type === 'success') {
         header.classList.add('bg-success', 'text-white');
         titleEl.textContent = '✅ ' + title;
@@ -584,39 +569,31 @@ function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
         header.classList.add('bg-primary', 'text-white');
         titleEl.textContent = 'ℹ️ ' + title;
     }
-
     bodyEl.innerHTML = bodyHTML;
-
     if (downloadUrl) {
         downloadLink.href = downloadUrl;
         downloadLink.style.display = 'inline-block';
     } else {
         downloadLink.style.display = 'none';
     }
-
     modal.show();
 }
 
 function showConfirm(title, bodyHTML, onConfirm) {
-    // 🔥 VERIFICAR SI HAY OTROS MODALES ABIERTOS
     const activeModals = document.querySelectorAll('.modal.show');
     if (activeModals.length > 0) {
-        // Si hay otro modal abierto, cerrarlo primero
         activeModals.forEach(modal => {
             const bsModal = bootstrap.Modal.getInstance(modal);
             if (bsModal) {
                 bsModal.hide();
             }
         });
-        // Esperar a que se cierre antes de abrir el nuevo
         setTimeout(() => {
             showConfirm(title, bodyHTML, onConfirm);
         }, 300);
         return;
     }
-    
     cleanupModals();
-    
     const modal = new bootstrap.Modal(document.getElementById('confirmModal'), {
         backdrop: 'static'
     });
@@ -644,10 +621,8 @@ function updateProgress() {
     const progressBar = document.getElementById('progressBar');
     progressBar.style.width = percent + '%';
     progressBar.setAttribute('data-label', Math.round(percent) + '%');
-
     const indicator = document.getElementById('stepIndicator');
     indicator.className = 'step-indicator-modern progress-step' + currentStep;
-
     for (let i = 1; i <= 2; i++) {
         const circle = document.getElementById('circle' + i);
         circle.classList.remove('active', 'completed');
@@ -675,19 +650,16 @@ function validateStep(step) {
             field.classList.remove('is-invalid');
         }
     });
-
     const curp = document.getElementById('curp');
     if (curp && curp.value.length !== 18) {
         curp.classList.add('is-invalid');
         valid = false;
     }
-
     const phone = document.getElementById('phone');
     if (phone && phone.value.length !== 10) {
         phone.classList.add('is-invalid');
         valid = false;
     }
-
     const email = document.getElementById('email');
     if (email.value && !email.checkValidity()) {
         email.classList.add('is-invalid');
@@ -695,7 +667,6 @@ function validateStep(step) {
     } else if (email.value) {
         email.classList.remove('is-invalid');
     }
-
     return valid;
 }
 
@@ -714,31 +685,25 @@ function clearFileInput(inputId, statusId, fileKey) {
                 fileInput.files = dataTransfer.files;
                 fileInput.dispatchEvent(new Event('change'));
             }
-            
             filesValidated[fileKey] = false;
-            
             const statusEl = document.getElementById(statusId);
             if (statusEl) {
                 statusEl.textContent = '❌ No validado';
                 statusEl.className = 'file-status invalid';
             }
-            
             const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
             if (clearBtn) {
                 clearBtn.style.display = 'none';
             }
-            
             const mobileStatus = document.getElementById(inputId.replace('_file', '_mobile_status'));
             if (mobileStatus) {
                 mobileStatus.style.display = 'none';
                 mobileStatus.textContent = '';
             }
-            
             const previewFrame = document.getElementById('pdfPreviewFrame');
             if (previewFrame) {
                 previewFrame.src = '';
             }
-            
             showNotification('Archivo eliminado', '<p>El archivo ha sido eliminado correctamente.</p>', 'info');
         }
     );
@@ -801,7 +766,6 @@ function enterParaSiguiente(event, nextFieldId) {
     }
 }
 
-// Nombres y apellidos
 ['name', 'paterno', 'materno'].forEach(id => {
     document.getElementById(id).addEventListener('keypress', soloLetras);
     document.getElementById(id).addEventListener('input', function() {
@@ -812,14 +776,12 @@ function enterParaSiguiente(event, nextFieldId) {
 document.getElementById('name').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'paterno'); });
 document.getElementById('paterno').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'materno'); });
 
-// CURP
 document.getElementById('curp').addEventListener('input', function() {
     this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (this.value.length > 18) this.value = this.value.slice(0, 18);
 });
 document.getElementById('curp').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'phone'); });
 
-// Teléfono
 document.getElementById('phone').addEventListener('keypress', soloNumeros);
 document.getElementById('phone').addEventListener('input', function() {
     this.value = this.value.replace(/[^0-9]/g, '');
@@ -827,21 +789,17 @@ document.getElementById('phone').addEventListener('input', function() {
 });
 document.getElementById('phone').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'email'); });
 
-// Email
 document.getElementById('email').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'address'); });
 
-// Domicilio
 document.getElementById('address').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 document.getElementById('address').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'occupation'); });
 
-// Ocupación
 document.getElementById('occupation').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 
 // ============================================================
 // CUANDO SE CIERRA UN MODAL
 // ============================================================
 document.addEventListener('hidden.bs.modal', function (event) {
-    // Esperar un momento y limpiar, pero solo si no hay otros modales abiertos
     setTimeout(() => {
         const activeModals = document.querySelectorAll('.modal.show');
         if (activeModals.length === 0) {
@@ -850,26 +808,25 @@ document.addEventListener('hidden.bs.modal', function (event) {
     }, 300);
 });
 
-// También limpiar al hacer clic fuera del modal
 document.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal-backdrop')) {
         cleanupModals();
     }
 });
 
-// --- VISTA PREVIA DE PDFs (CON BOTÓN ELIMINAR) ---
+// ============================================================
+// VISTA PREVIA DE PDFs (CON BOTÓN ELIMINAR)
+// ============================================================
 function handleFilePreview(inputId, statusId, fileKey) {
     document.getElementById(inputId).addEventListener('change', function(e) {
         const file = this.files[0];
         const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
-        
         if (!file) {
             if (clearBtn) {
                 clearBtn.style.display = 'none';
             }
             return;
         }
-
         if (file.type !== 'application/pdf' && 
             file.type !== 'image/jpeg' && 
             file.type !== 'image/png') {
@@ -883,37 +840,28 @@ function handleFilePreview(inputId, statusId, fileKey) {
             }
             return;
         }
-
         if (clearBtn) {
             clearBtn.style.display = 'inline-block';
         }
-
         const currentFile = file;
         const currentFileKey = fileKey;
         const currentStatusId = statusId;
-        
         const fileURL = URL.createObjectURL(file);
-        
         const previewFrame = document.getElementById('pdfPreviewFrame');
         if (previewFrame) {
             previewFrame.src = fileURL;
         }
-        
         const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
         previewModal.show();
-        
         document.getElementById('acceptFileBtn').onclick = function() {
             filesValidated[currentFileKey] = true;
             previewModal.hide();
-            
             const statusEl = document.getElementById(currentStatusId);
             if (statusEl) {
                 statusEl.textContent = '✅ Validado: ' + currentFile.name;
                 statusEl.className = 'file-status valid';
             }
-            
             showNotification('Archivo aceptado', `<p><strong>${currentFile.name}</strong> ha sido validado correctamente.</p>`, 'success');
-            
             setTimeout(() => {
                 URL.revokeObjectURL(fileURL);
             }, 1000);
@@ -925,11 +873,11 @@ handleFilePreview('curp_file', 'curpStatus', 'curp');
 handleFilePreview('ine_file', 'ineStatus', 'ine');
 handleFilePreview('domicilio_file', 'domicilioStatus', 'domicilio');
 
-// --- SUBMIT ---
-
+// ============================================================
+// SUBMIT
+// ============================================================
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-
     if (!filesValidated.curp || !filesValidated.ine || !filesValidated.domicilio) {
         showNotification(
             'Archivos no validados',
@@ -938,28 +886,22 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         );
         return;
     }
-
     if (!validateStep(2)) {
         showStep(2);
         return;
     }
-
     showConfirm(
         'Confirmar registro',
         '<p>¿Estás seguro de que deseas registrar este cliente?</p>',
         async function() {
             showLoading();
-
             const formData = new FormData(document.getElementById('registerForm'));
-
             try {
                 const response = await fetch('/api/clients/register', {
                     method: 'POST',
                     body: formData
                 });
-
                 hideLoading();
-
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
@@ -967,7 +909,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                     a.href = url;
                     a.download = `constancia_${Date.now()}.pdf`;
                     a.click();
-                    
                     showNotification(
                         'Cliente Registrado Exitosamente',
                         `
@@ -979,7 +920,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                         `,
                         'success'
                     );
-
                     document.getElementById('registerForm').reset();
                     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
                     filesValidated = { curp: false, ine: false, domicilio: false };
@@ -990,7 +930,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                     document.getElementById('domicilioStatus').textContent = '❌ No validado';
                     document.getElementById('domicilioStatus').className = 'file-status invalid';
                     showStep(1);
-
                 } else {
                     let result;
                     try {
@@ -998,7 +937,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                     } catch {
                         result = { detail: 'Error del servidor' };
                     }
-
                     if (result.existing_client) {
                         showNotification(
                             'Cliente ya registrado',
@@ -1019,7 +957,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                         showNotification('Error', '<p>No se pudo completar la operación.</p>', 'error');
                     }
                 }
-
             } catch (error) {
                 hideLoading();
                 showNotification('Error de conexión', '<p>No se pudo conectar con el servidor.</p>', 'error');
@@ -1034,7 +971,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
 let currentMobileField = null;
 let currentDocType = null;
-// CADA DOCUMENTO TIENE SU PROPIO tempId
 let tempIds = {
     curp: null,
     ine: null,
@@ -1080,7 +1016,6 @@ function openQRScannerDirect(inputId) {
         return;
     }
     
-    // 🔥 LIMPIAR MODALES ANTES DE ABRIR
     cleanupModals();
     
     console.log('🔍 Abriendo QR para:', inputId);
@@ -1107,16 +1042,14 @@ function openQRScannerDirect(inputId) {
         baseUrl = window.location.origin;
     }
     
-    // GENERAR tempId Y VERIFICAR SI EL QR YA FUE USADO
     let tempId = generateTempId(docTypeKey);
     let uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
     
-    // HACER UNA PRIMERA VERIFICACIÓN ASÍNCRONA DEL ESTADO DEL QR
+    // VERIFICAR SI EL QR YA FUE USADO
     fetch(`/api/clients/check-qr-status/${tempId}`)
         .then(res => res.json())
         .then(data => {
             if (data.used) {
-                // El QR ya fue usado, generar uno nuevo
                 console.warn('⚠️ QR ya usado, generando nuevo...');
                 tempIds[docTypeKey] = null;
                 tempId = generateTempId(docTypeKey);
@@ -1135,7 +1068,6 @@ function openQRScannerDirect(inputId) {
     function generateQRCodeDisplay(uploadUrl) {
         const container = document.getElementById('qrCodeContainer');
         container.innerHTML = '';
-        
         document.getElementById('qrModalTitle').textContent = 
             'Escanea este QR con tu teléfono para subir: ' + currentDocType;
         
@@ -1143,7 +1075,10 @@ function openQRScannerDirect(inputId) {
             console.warn('⚠️ QRCode no está disponible, usando fallback');
             showMobileUrlFallback(uploadUrl);
             document.getElementById('mobileUploadStatus').style.display = 'none';
-            new bootstrap.Modal(document.getElementById('qrModal')).show();
+            const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
+                backdrop: 'static'
+            });
+            qrModal.show();
             startPollingForUpload(tempId, docTypeKey);
             return;
         }
@@ -1158,29 +1093,25 @@ function openQRScannerDirect(inputId) {
                     colorLight: '#ffffff',
                     correctLevel: QRCode.CorrectLevel.H
                 });
-                
                 console.log('✅ QR generado correctamente para', currentDocType);
-                
                 const linkEl = document.createElement('p');
                 linkEl.className = 'text-muted small mt-2';
                 linkEl.style.wordBreak = 'break-all';
                 linkEl.style.fontSize = '0.65rem';
                 linkEl.textContent = uploadUrl;
                 container.appendChild(linkEl);
-                
             } catch (error) {
                 console.error('❌ Error al generar QR:', error);
                 showMobileUrlFallback(uploadUrl);
             }
         }, 300);
         
-// Dentro de generateQRCodeDisplay, reemplaza:
-document.getElementById('mobileUploadStatus').style.display = 'none';
-const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
-    backdrop: 'static'
-});
-qrModal.show();
-startPollingForUpload(tempId, docTypeKey);
+        document.getElementById('mobileUploadStatus').style.display = 'none';
+        const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
+            backdrop: 'static'
+        });
+        qrModal.show();
+        startPollingForUpload(tempId, docTypeKey);
     }
 }
 
@@ -1195,26 +1126,21 @@ function clearFileInputDirect(inputId) {
         fileInput.files = dataTransfer.files;
         fileInput.dispatchEvent(new Event('change'));
     }
-    
     const fileKey = inputId.replace('_file', '');
     filesValidated[fileKey] = false;
-    
     if (fileKey === 'curp') tempIds.curp = null;
     else if (fileKey === 'ine') tempIds.ine = null;
     else if (fileKey === 'domicilio') tempIds.domicilio = null;
-    
     const statusId = fileKey + 'Status';
     const statusEl = document.getElementById(statusId);
     if (statusEl) {
         statusEl.textContent = '❌ No validado';
         statusEl.className = 'file-status invalid';
     }
-    
     const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
     if (clearBtn) {
         clearBtn.style.display = 'none';
     }
-    
     const mobileStatus = document.getElementById(inputId.replace('_file', '_mobile_status'));
     if (mobileStatus) {
         mobileStatus.style.display = 'none';
@@ -1259,7 +1185,7 @@ function copyMobileUrl() {
 }
 
 // ============================================================
-// POLLING PARA VERIFICAR SUBIDA (CON QR DE UN SOLO USO)
+// POLLING PARA VERIFICAR SUBIDA (SIN MENSAJE DE QR USADO EN PC)
 // ============================================================
 function startPollingForUpload(tempId, docTypeKey) {
     if (currentMobileField) {
@@ -1270,122 +1196,73 @@ function startPollingForUpload(tempId, docTypeKey) {
             statusEl.style.color = '#2a6df4';
         }
     }
-    
     let attempts = 0;
     const maxAttempts = 60;
     let fileReceived = false;
-    let qrUsed = false;
-    
     const checkInterval = setInterval(async () => {
         attempts++;
-        
         try {
-            // VERIFICAR PRIMERO SI EL QR YA FUE USADO
-            const statusResponse = await fetch(`/api/clients/check-qr-status/${tempId}`);
-            const statusData = await statusResponse.json();
-            
-            if (statusData.used) {
-                // QR ya fue usado
-                qrUsed = true;
+            const response = await fetch(`/api/clients/check-upload/${tempId}`);
+            const data = await response.json();
+            if (data.success && data.file_url && !fileReceived) {
+                fileReceived = true;
                 clearInterval(checkInterval);
-                
-                const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+                if (docTypeKey) {
+                    tempIds[docTypeKey] = null;
+                }
+                const currentField = currentMobileField;
+                const currentDoc = currentDocType;
+                const fileInput = document.getElementById(currentField);
+                if (fileInput) {
+                    try {
+                        const fileResponse = await fetch(data.file_url);
+                        const blob = await fileResponse.blob();
+                        const file = new File([blob], data.filename, { type: 'application/pdf' });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                        setTimeout(() => {
+                            forcePdfPreview(currentField);
+                        }, 500);
+                    } catch (err) {
+                        console.error('❌ Error:', err);
+                        const file = new File([''], data.filename, { type: 'application/pdf' });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                        fileInput.dispatchEvent(new Event('change'));
+                    }
+                }
+                const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
                 if (statusEl) {
-                    statusEl.textContent = '⛔ QR ya utilizado. Genera uno nuevo.';
-                    statusEl.style.color = '#dc3545';
+                    statusEl.textContent = '✅ Archivo subido desde móvil';
+                    statusEl.style.color = '#1a8b5c';
                 }
-                
                 document.getElementById('mobileUploadStatus').style.display = 'block';
-                document.getElementById('mobileUploadStatus').className = 'alert alert-warning';
+                document.getElementById('mobileUploadStatus').className = 'alert alert-success';
                 document.getElementById('mobileUploadStatus').innerHTML = `
-                    <i class="bi bi-exclamation-triangle"></i>
-                    Este código QR ya ha sido utilizado.<br>
-                    <small>Por favor, genera uno nuevo desde el sistema.</small>
+                    <i class="bi bi-check-circle"></i> 
+                    ${currentDoc} subido correctamente.<br>
+                    <small>Cerrando automáticamente...</small>
                 `;
-                
-                isProcessingQR = false;
-                return;
-            }
-            
-            // Si hay archivos en la carpeta, significa que se subió
-            if (statusData.has_files && statusData.files && statusData.files.length > 0 && !fileReceived) {
-                // El archivo ya está en la carpeta, ahora obtenerlo
-                const response = await fetch(`/api/clients/check-upload/${tempId}`);
-                const data = await response.json();
-                
-                if (data.success && data.file_url && !fileReceived) {
-                    fileReceived = true;
-                    clearInterval(checkInterval);
-                    
-                    if (docTypeKey) {
-                        tempIds[docTypeKey] = null;
-                    }
-                    
-                    const currentField = currentMobileField;
-                    const currentDoc = currentDocType;
-                    
-                    const fileInput = document.getElementById(currentField);
-                    if (fileInput) {
-                        try {
-                            const fileResponse = await fetch(data.file_url);
-                            const blob = await fileResponse.blob();
-                            const file = new File([blob], data.filename, { type: 'application/pdf' });
-                            
-                            const dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(file);
-                            fileInput.files = dataTransfer.files;
-                            
-                            const event = new Event('change', { bubbles: true });
-                            fileInput.dispatchEvent(event);
-                            
-                            setTimeout(() => {
-                                forcePdfPreview(currentField);
-                            }, 500);
-                            
-                        } catch (err) {
-                            console.error('❌ Error:', err);
-                            const file = new File([''], data.filename, { type: 'application/pdf' });
-                            const dataTransfer = new DataTransfer();
-                            dataTransfer.items.add(file);
-                            fileInput.files = dataTransfer.files;
-                            fileInput.dispatchEvent(new Event('change'));
-                        }
-                    }
-                    
-                    const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
-                    if (statusEl) {
-                        statusEl.textContent = '✅ Archivo subido desde móvil';
-                        statusEl.style.color = '#1a8b5c';
-                    }
-                    
-                    document.getElementById('mobileUploadStatus').style.display = 'block';
-                    document.getElementById('mobileUploadStatus').className = 'alert alert-success';
-                    document.getElementById('mobileUploadStatus').innerHTML = `
-                        <i class="bi bi-check-circle"></i> 
-                        ${currentDoc} subido correctamente.<br>
-                        <small>Cerrando automáticamente...</small>
-                    `;
-                    
-                    filesValidated[currentField.replace('_file', '')] = true;
-                    const statusId = currentField.replace('_file', '') + 'Status';
-                    document.getElementById(statusId).textContent = '✅ Validado desde móvil';
-                    document.getElementById(statusId).className = 'file-status valid';
-                    
-                    const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
-                    if (clearBtn) {
-                        clearBtn.style.display = 'inline-block';
-                    }
-                    
-                    setTimeout(() => {
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
-                        if (modal) {
-                            modal.hide();
-                        }
-                        isProcessingQR = false;
-                    }, 2000);
+                filesValidated[currentField.replace('_file', '')] = true;
+                const statusId = currentField.replace('_file', '') + 'Status';
+                document.getElementById(statusId).textContent = '✅ Validado desde móvil';
+                document.getElementById(statusId).className = 'file-status valid';
+                const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
+                if (clearBtn) {
+                    clearBtn.style.display = 'inline-block';
                 }
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    isProcessingQR = false;
+                }, 2000);
             }
-            
             if (attempts >= maxAttempts && !fileReceived) {
                 clearInterval(checkInterval);
                 const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
@@ -1395,11 +1272,9 @@ function startPollingForUpload(tempId, docTypeKey) {
                 }
                 isProcessingQR = false;
             }
-            
         } catch (error) {
             console.log('⏳ Esperando... intento', attempts);
         }
-        
     }, 1000);
 }
 
@@ -1412,34 +1287,26 @@ function forcePdfPreview(fileInputId) {
         console.log('⚠️ No hay archivo para previsualizar');
         return;
     }
-    
-    // 🔥 VERIFICAR SI HAY OTROS MODALES ABIERTOS
     const activeModals = document.querySelectorAll('.modal.show');
     if (activeModals.length > 0) {
-        // Si hay otro modal abierto, cerrarlo primero
         activeModals.forEach(modal => {
             const bsModal = bootstrap.Modal.getInstance(modal);
             if (bsModal) {
                 bsModal.hide();
             }
         });
-        // Esperar a que se cierre antes de abrir el nuevo
         setTimeout(() => {
             forcePdfPreview(fileInputId);
         }, 300);
         return;
     }
-    
     cleanupModals();
-    
     const file = fileInput.files[0];
     const fileURL = URL.createObjectURL(file);
-    
     const previewFrame = document.getElementById('pdfPreviewFrame');
     if (previewFrame) {
         previewFrame.src = fileURL;
         console.log('✅ Vista previa forzada para:', file.name);
-        
         const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'), {
             backdrop: 'static'
         });

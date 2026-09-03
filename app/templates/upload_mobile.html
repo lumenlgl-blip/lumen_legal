@@ -595,76 +595,77 @@
     // ============================================================
     // ENVIAR ARCHIVO
     // ============================================================
-    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+// ============================================================
+// ENVIAR ARCHIVO (CON VALIDACIÓN DE QR UN SOLO USO)
+// ============================================================
+document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-        if (!selectedFile || isSubmitting) {
-            return;
-        }
+    if (!selectedFile) {
+        showStatus('❌ Por favor selecciona un archivo.', 'error');
+        return;
+    }
 
-        if (selectedFile.size > 10 * 1024 * 1024) {
-            showStatus('❌ El archivo es demasiado grande. Máximo 10 MB.', 'error');
-            return;
-        }
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Subiendo...';
 
-        isSubmitting = true;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Subiendo...';
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+    formData.append('doc_type', docType);
 
-        showLoading('Subiendo documento...', 'Por favor espera, esto puede tomar unos segundos.');
+    try {
+        const response = await fetch(`/api/clients/upload-mobile/${tempId}`, {
+            method: 'POST',
+            body: formData
+        });
 
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('doc_type', docType);
+        const result = await response.json();
 
-        try {
-            const response = await fetch(`/api/clients/upload-mobile/${tempId}`, {
-                method: 'POST',
-                body: formData
+        if (response.ok && result.success) {
+            showStatus('✅ ¡Documento subido correctamente!', 'success');
+            submitBtn.innerHTML = '<i class="bi bi-check2"></i> ¡Subido!';
+            submitBtn.disabled = true;
+            
+            // 🔥 DESHABILITAR EL FORMULARIO PARA SIEMPRE
+            document.getElementById('uploadForm').querySelectorAll('input, button').forEach(el => {
+                el.disabled = true;
             });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-                updateLoading('✅ ¡Documento subido!', 'El archivo se ha subido correctamente.', true);
-
-                setTimeout(() => {
-                    hideLoading();
-                    showStatus('✅ ¡Documento subido correctamente!', 'success');
-                    submitBtn.innerHTML = '<i class="bi bi-check2"></i> ¡Subido!';
-
-                    setTimeout(() => {
-                        closePage();
-                    }, 2000);
-
-                }, 1200);
-
+            dropZone.style.opacity = '0.5';
+            dropZone.style.cursor = 'not-allowed';
+            dropZone.innerHTML = `
+                <i class="bi bi-check-circle" style="font-size:3rem;color:#1a8b5c;"></i>
+                <p><strong>Documento subido correctamente</strong></p>
+                <p class="small text-muted">Este QR ya no es válido para nuevas subidas.</p>
+            `;
+            
+        } else {
+            // 🔥 ERROR: QR YA USADO
+            if (result.error && result.error.includes('ya ha sido utilizado')) {
+                showStatus('⛔ Este código QR ya fue utilizado. Genera uno nuevo desde el sistema.', 'error');
+                submitBtn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> QR Expirado';
+                submitBtn.disabled = true;
+                document.getElementById('uploadForm').querySelectorAll('input, button').forEach(el => {
+                    el.disabled = true;
+                });
+                dropZone.style.opacity = '0.5';
+                dropZone.style.cursor = 'not-allowed';
+                dropZone.innerHTML = `
+                    <i class="bi bi-exclamation-triangle" style="font-size:3rem;color:#dc3545;"></i>
+                    <p><strong>QR ya utilizado</strong></p>
+                    <p class="small text-muted">Genera uno nuevo desde el sistema.</p>
+                `;
             } else {
-                hideLoading();
                 showStatus('❌ Error: ' + (result.error || 'No se pudo subir el archivo.'), 'error');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Reintentar';
-                isSubmitting = false;
+                submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
             }
-
-        } catch (error) {
-            hideLoading();
-            showStatus('❌ Error de conexión: ' + error.message, 'error');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Reintentar';
-            isSubmitting = false;
         }
-    });
-
-    // ============================================================
-    // TECLA ESC PARA LIMPIAR SELECCIÓN
-    // ============================================================
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && selectedFile) {
-            clearFileSelection();
-            showStatus('Archivo eliminado', 'info');
-        }
-    });
+    } catch (error) {
+        showStatus('❌ Error de conexión: ' + error.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+    }
+});
 </script>
 
 </body>

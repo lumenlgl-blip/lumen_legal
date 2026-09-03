@@ -552,7 +552,7 @@ async def upload_mobile_document(
         upload_dir = f"uploads/temp/{client_temp_id}"
         os.makedirs(upload_dir, exist_ok=True)
         
-        # 🔥 VERIFICAR SI EL QR YA FUE USADO
+        # 🔥 VERIFICAR SI EL QR YA FUE USADO (EN EL BACKEND)
         used_file = os.path.join(upload_dir, ".used")
         if os.path.exists(used_file):
             return {
@@ -580,7 +580,7 @@ async def upload_mobile_document(
             with open(file_path, "wb") as f:
                 f.write(content)
         
-        # 🔥 MARCAR EL QR COMO USADO
+        # 🔥 MARCAR EL QR COMO USADO (DESPUÉS DE SUBIR EXITOSAMENTE)
         with open(used_file, "w") as f:
             f.write(f"Usado el {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} para {doc_type}")
         
@@ -594,6 +594,7 @@ async def upload_mobile_document(
         
     except Exception as e:
         return {"success": False, "error": str(e)}
+    
     
     # --- Verificar si ya se subió un archivo desde móvil ---
 @router.get("/check-upload/{temp_id}")
