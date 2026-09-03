@@ -59,6 +59,7 @@ def get_current_user(request: Request, db: Session = None):
 
 # --- LOGIN ---
 @router.get("/login", response_class=HTMLResponse)
+@router.head("/login", response_class=HTMLResponse)
 async def login_form(request: Request):
     user = get_current_user(request)
     if user:

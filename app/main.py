@@ -51,6 +51,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/openapi.json",
             "/redoc",
             "/loading",
+            "/ping",
         ]
         
         # Verificar si la ruta es pública
