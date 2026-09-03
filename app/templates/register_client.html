@@ -1213,14 +1213,19 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
 let currentMobileField = null;
 let currentDocType = null;
-let clientTempId = null;
+// CADA DOCUMENTO TIENE SU PROPIO tempId
+let tempIds = {
+    curp: null,
+    ine: null,
+    domicilio: null
+};
 let isProcessingQR = false;
 
-function generateTempId() {
-    if (!clientTempId) {
-        clientTempId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+function generateTempId(docType) {
+    if (!tempIds[docType]) {
+        tempIds[docType] = 'temp_' + docType + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     }
-    return clientTempId;
+    return tempIds[docType];
 }
 
 // ============================================================
@@ -1259,11 +1264,19 @@ function openQRScannerDirect(inputId) {
     currentMobileField = inputId;
     isProcessingQR = true;
     
-    if (inputId === 'curp_file') currentDocType = 'CURP';
-    else if (inputId === 'ine_file') currentDocType = 'INE';
-    else if (inputId === 'domicilio_file') currentDocType = 'DOMICILIO';
+    let docTypeKey;
+    if (inputId === 'curp_file') {
+        currentDocType = 'CURP';
+        docTypeKey = 'curp';
+    } else if (inputId === 'ine_file') {
+        currentDocType = 'INE';
+        docTypeKey = 'ine';
+    } else if (inputId === 'domicilio_file') {
+        currentDocType = 'DOMICILIO';
+        docTypeKey = 'domicilio';
+    }
     
-    const tempId = generateTempId();
+    const tempId = generateTempId(docTypeKey);
     
     let baseUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -1274,17 +1287,20 @@ function openQRScannerDirect(inputId) {
     
     const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
     
-    console.log('📱 URL para QR:', uploadUrl);
+    console.log('📱 URL para QR (' + currentDocType + '):', uploadUrl);
     
     const container = document.getElementById('qrCodeContainer');
     container.innerHTML = '';
+    
+    document.getElementById('qrModalTitle').textContent = 
+        'Escanea este QR con tu teléfono para subir: ' + currentDocType;
     
     if (typeof QRCode === 'undefined') {
         console.warn('⚠️ QRCode no está disponible, usando fallback');
         showMobileUrlFallback(uploadUrl);
         document.getElementById('mobileUploadStatus').style.display = 'none';
         new bootstrap.Modal(document.getElementById('qrModal')).show();
-        startPollingForUpload(tempId);
+        startPollingForUpload(tempId, docTypeKey);
         return;
     }
     
@@ -1299,7 +1315,7 @@ function openQRScannerDirect(inputId) {
                 correctLevel: QRCode.CorrectLevel.H
             });
             
-            console.log('✅ QR generado correctamente');
+            console.log('✅ QR generado correctamente para', currentDocType);
             
             const linkEl = document.createElement('p');
             linkEl.className = 'text-muted small mt-2';
@@ -1316,7 +1332,7 @@ function openQRScannerDirect(inputId) {
     
     document.getElementById('mobileUploadStatus').style.display = 'none';
     new bootstrap.Modal(document.getElementById('qrModal')).show();
-    startPollingForUpload(tempId);
+    startPollingForUpload(tempId, docTypeKey);
 }
 
 // ============================================================
@@ -1333,6 +1349,10 @@ function clearFileInputDirect(inputId) {
     
     const fileKey = inputId.replace('_file', '');
     filesValidated[fileKey] = false;
+    
+    if (fileKey === 'curp') tempIds.curp = null;
+    else if (fileKey === 'ine') tempIds.ine = null;
+    else if (fileKey === 'domicilio') tempIds.domicilio = null;
     
     const statusId = fileKey + 'Status';
     const statusEl = document.getElementById(statusId);
@@ -1392,11 +1412,13 @@ function copyMobileUrl() {
 // ============================================================
 // POLLING PARA VERIFICAR SUBIDA
 // ============================================================
-function startPollingForUpload(tempId) {
+function startPollingForUpload(tempId, docTypeKey) {
     if (currentMobileField) {
         const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
         if (statusEl) {
             statusEl.style.display = 'block';
+            statusEl.textContent = '📱 Escanea el QR desde tu teléfono...';
+            statusEl.style.color = '#2a6df4';
         }
     }
     
@@ -1414,6 +1436,10 @@ function startPollingForUpload(tempId) {
             if (data.success && data.file_url && !fileReceived) {
                 fileReceived = true;
                 clearInterval(checkInterval);
+                
+                if (docTypeKey) {
+                    tempIds[docTypeKey] = null;
+                }
                 
                 const currentField = currentMobileField;
                 const currentDoc = currentDocType;
@@ -1433,7 +1459,7 @@ function startPollingForUpload(tempId) {
                         fileInput.dispatchEvent(event);
                         
                     } catch (err) {
-                        console.error('❌ Error al cargar archivo desde móvil:', err);
+                        console.error('❌ Error:', err);
                         const file = new File([''], data.filename, { type: 'application/pdf' });
                         const dataTransfer = new DataTransfer();
                         dataTransfer.items.add(file);
@@ -1451,14 +1477,19 @@ function startPollingForUpload(tempId) {
                 document.getElementById('mobileUploadStatus').style.display = 'block';
                 document.getElementById('mobileUploadStatus').innerHTML = `
                     <i class="bi bi-check-circle"></i> 
-                    ${currentDoc} subido correctamente desde móvil.<br>
-                    <small>Cerrando automáticamente...</small>
+                    ${currentDoc} subido correctamente.<br>
+                    <small>Cerrando...</small>
                 `;
                 
                 filesValidated[currentField.replace('_file', '')] = true;
                 const statusId = currentField.replace('_file', '') + 'Status';
                 document.getElementById(statusId).textContent = '✅ Validado desde móvil';
                 document.getElementById(statusId).className = 'file-status valid';
+                
+                const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
+                if (clearBtn) {
+                    clearBtn.style.display = 'inline-block';
+                }
                 
                 setTimeout(() => {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
@@ -1473,14 +1504,14 @@ function startPollingForUpload(tempId) {
                 clearInterval(checkInterval);
                 const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
                 if (statusEl) {
-                    statusEl.textContent = '⏰ Tiempo de espera agotado. Intenta de nuevo.';
+                    statusEl.textContent = '⏰ Tiempo agotado. Intenta de nuevo.';
                     statusEl.style.color = '#dc3545';
                 }
                 isProcessingQR = false;
             }
             
         } catch (error) {
-            console.log('⏳ Esperando archivo... intento', attempts);
+            console.log('⏳ Esperando... intento', attempts);
         }
         
     }, 1000);
