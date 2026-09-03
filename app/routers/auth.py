@@ -49,10 +49,16 @@ def get_current_user(request: Request, db: Session = None):
             from app.database import SessionLocal
             db = SessionLocal()
             try:
-                return db.query(User).filter(User.id == user_id).first()
+                user = db.query(User).filter(User.id == user_id).first()
+                if user and not user.is_active:
+                    return None
+                return user
             finally:
                 db.close()
         else:
+            user = db.query(User).filter(User.id == user_id).first()
+            if user and not user.is_active:
+                return None
             return db.query(User).filter(User.id == user_id).first()
     except JWTError:
         return None
@@ -77,17 +83,43 @@ async def login(
     password: str = Form(...),
     db: Session = Depends(get_db)
 ):
+    # Buscar usuario por email o nombre
     user = db.query(User).filter(
-        (User.email == email) | (User.full_name == email),
-        User.is_active == True
+        (User.email == email) | (User.full_name == email)
     ).first()
-    if not user or not verify_password(password, user.hashed_password):
-        with open("app/templates/login.html", "r", encoding="utf-8") as f:
-            html = f.read()
-        html = html.replace("<!-- ERROR_MESSAGE -->", '<div class="alert alert-danger">⚠️ Credenciales incorrectas</div>')
+
+    # Leer el template base
+    with open("app/templates/login.html", "r", encoding="utf-8") as f:
+        html_template = f.read()
+
+    # Caso 1: Usuario no existe
+    if not user:
+        error_html = '<div class="alert-custom alert-error"><i class="bi bi-exclamation-circle"></i><div><span class="alert-title">Error de acceso</span><span class="alert-sub">Credenciales incorrectas. Verifica tu email y contraseña.</span></div></div>'
+        html = html_template.replace("<!-- ERROR_MESSAGE -->", error_html)
         return HTMLResponse(content=html, status_code=401)
-    
-    # Registrar en bitácora
+
+    # Caso 2: Usuario BLOQUEADO - ALERTA MODERNA DE RESTRINGIDO
+    if not user.is_active:
+        error_html = '''
+        <div class="alert-custom alert-blocked" id="blockedAlert">
+            <div class="blocked-icon-wrapper"><i class="bi bi-shield-lock-fill"></i></div>
+            <div>
+                <span class="alert-title">⛔ ACCESO RESTRINGIDO</span>
+                <span class="alert-sub">Tu cuenta ha sido <strong>BLOQUEADA</strong>. Contacta al Administrador del Sistema para restaurar el acceso.</span>
+            </div>
+        </div>
+        <script>setTimeout(()=>{ if(window.showBlockedModal) window.showBlockedModal(); }, 350);</script>
+        '''
+        html = html_template.replace("<!-- ERROR_MESSAGE -->", error_html)
+        return HTMLResponse(content=html, status_code=403)
+
+    # Caso 3: Contraseña incorrecta
+    if not verify_password(password, user.hashed_password):
+        error_html = '<div class="alert-custom alert-error"><i class="bi bi-exclamation-circle"></i><div><span class="alert-title">Error de acceso</span><span class="alert-sub">Credenciales incorrectas. Verifica tu email y contraseña.</span></div></div>'
+        html = html_template.replace("<!-- ERROR_MESSAGE -->", error_html)
+        return HTMLResponse(content=html, status_code=401)
+
+    # ✅ Login exitoso - Registrar en bitácora
     from app.models.core import ActivityLog
     log = ActivityLog(
         firm_id=user.firm_id,
@@ -99,9 +131,10 @@ async def login(
     )
     db.add(log)
     db.commit()
-    
+
+    # Crear token
     access_token = create_access_token(data={"sub": str(user.id), "role": user.role, "firm_id": user.firm_id})
-    
+
     response = RedirectResponse("/", status_code=302)
     response.set_cookie(
         key="access_token",
@@ -126,7 +159,7 @@ async def register_form(request: Request):
     user = get_current_user(request)
     if not user:
         return RedirectResponse("/auth/login", status_code=302)
-    if user.role != "admin":
+    if user.role!= "admin":
         return HTMLResponse("<h1>Acceso denegado</h1>", status_code=403)
     try:
         with open("app/templates/register_user.html", "r", encoding="utf-8") as f:
@@ -147,13 +180,13 @@ async def register_user(
     current_user = get_current_user(request)
     if not current_user:
         raise HTTPException(401, "No autenticado")
-    if current_user.role != "admin":
+    if current_user.role!= "admin":
         raise HTTPException(403, "Solo administradores pueden registrar usuarios")
-    
+
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         raise HTTPException(400, "El email ya está registrado")
-    
+
     new_user = User(
         firm_id=current_user.firm_id,
         full_name=full_name,
@@ -167,7 +200,7 @@ async def register_user(
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    
+
     return {"message": "Usuario registrado exitosamente", "user_id": new_user.id, "email": new_user.email, "role": new_user.role}
 
 # --- LISTAR USUARIOS ---
@@ -176,61 +209,98 @@ async def list_users(request: Request, db: Session = Depends(get_db)):
     user = get_current_user(request)
     if not user:
         return RedirectResponse("/auth/login", status_code=302)
-    if user.role != "admin":
+    if user.role!= "admin":
         return HTMLResponse("<h1>Acceso denegado</h1>", status_code=403)
-    
+
     users = db.query(User).filter(User.firm_id == user.firm_id).all()
-    
+
     rows_html = ""
     for u in users:
-        status = "✅ Activo" if u.is_active else "❌ Inactivo"
-        role_badge = "bg-danger" if u.role == "admin" else "bg-success" if u.role == "abogado" else "bg-info"
-        
+        # Estado y texto
+        status_text = "✅ Activo" if u.is_active else "❌ Bloqueado"
+        status_badge = "active" if u.is_active else "inactive"
+
+        # Texto y clase del botón de bloqueo
+        block_btn_text = "🔒 Bloquear" if u.is_active else "🔓 Desbloquear"
+        block_btn_class = "toggle-status" if u.is_active else "toggle-status unblock"
+        block_action = "bloquear" if u.is_active else "desbloquear"
+
+        # Rol badge
+        if u.role == "admin":
+            role_badge_class = "admin"
+        elif u.role == "abogado":
+            role_badge_class = "operador"
+        else:
+            role_badge_class = "consultor"
+
+        # Permisos con colores
         permissions_html = ""
         if u.role == "admin" or u.permissions == "all":
-            permissions_html = '<span class="badge bg-dark permission-badge">Todos</span>'
+            permissions_html = '<span class="permission-badge all">Todos</span>'
         elif u.permissions:
+            perm_colors = {
+                "clients": "clients",
+                "contracts": "contracts",
+                "cases": "cases",
+                "payments": "payments",
+                "actuaciones": "actuaciones",
+                "consult": "consult",
+                "agenda": "agenda",
+                "dashboard": "dashboard",
+                "audit": "audit"
+            }
             perm_labels = {
-                "clients": "👤 Clientes",
-                "contracts": "📜 Contratos",
-                "cases": "📁 Expedientes",
-                "payments": "💰 Pagos",
-                "actuaciones": "📄 Actuaciones",
-                "consult": "🔍 Consultas",
-                "agenda": "📅 Agenda",
-                "dashboard": "📊 Dashboard",
-                "audit": "🔎 Auditoría"
+                "clients": "Clientes",
+                "contracts": "Contratos",
+                "cases": "Expedientes",
+                "payments": "Pagos",
+                "actuaciones": "Actuaciones",
+                "consult": "Consultas",
+                "agenda": "Agenda",
+                "dashboard": "Dashboard",
+                "audit": "Auditoría"
             }
             for perm in u.permissions.split(","):
                 perm = perm.strip()
                 if perm in perm_labels:
-                    permissions_html += f'<span class="badge bg-primary permission-badge me-1">{perm_labels[perm]}</span>'
+                    color_class = perm_colors.get(perm, "")
+                    permissions_html += f'<span class="permission-badge {color_class}">{perm_labels[perm]}</span>'
         else:
-            permissions_html = '<span class="text-muted">Sin permisos</span>'
-        
+            permissions_html = '<span class="text-muted" style="font-size:0.7rem;">Sin permisos</span>'
+
+        # Construir fila de la tabla
         rows_html += f"""
             <tr>
                 <td>{u.id}</td>
                 <td><strong>{u.full_name}</strong></td>
                 <td>{u.email}</td>
-                <td><span class="badge {role_badge}">{u.role.upper()}</span></td>
-                <td>{status}</td>
+                <td><span class="badge-role {role_badge_class}">{u.role.upper()}</span></td>
+                <td><span class="badge-status {status_badge}">{status_text}</span></td>
                 <td>{permissions_html}</td>
                 <td>
-                    <button class="btn btn-sm btn-warning reset-password" data-id="{u.id}" data-name="{u.full_name}">
-                        🔑 Restablecer
+                    <button class="btn-action reset-password" data-id="{u.id}" data-name="{u.full_name}">
+                        <i class="bi bi-key"></i> Restablecer
                     </button>
-                    <button class="btn btn-sm btn-info edit-permissions" data-id="{u.id}" data-name="{u.full_name}" data-permissions="{u.permissions or ''}">
-                        ⚙️ Permisos
+                    <button class="btn-action edit-permissions" data-id="{u.id}" data-name="{u.full_name}" data-permissions="{u.permissions or ''}">
+                        <i class="bi bi-gear"></i> Permisos
+                    </button>
+                    <button class="btn-action edit-user" data-id="{u.id}" data-name="{u.full_name}" data-email="{u.email}">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button class="btn-action {block_btn_class}" data-id="{u.id}" data-name="{u.full_name}" data-action="{block_action}">
+                        {block_btn_text}
+                    </button>
+                    <button class="btn-action delete-user" data-id="{u.id}" data-name="{u.full_name}">
+                        <i class="bi bi-trash3"></i> Eliminar
                     </button>
                 </td>
             </tr>
         """
-    
+
     with open("app/templates/list_users.html", "r", encoding="utf-8") as f:
         html = f.read()
     html = html.replace("{{ rows }}", rows_html)
-    
+
     return HTMLResponse(content=html)
 
 # --- RESTABLECER CONTRASEÑA ---
@@ -242,17 +312,17 @@ async def reset_password(
     db: Session = Depends(get_db)
 ):
     current_user = get_current_user(request)
-    if not current_user or current_user.role != "admin":
+    if not current_user or current_user.role!= "admin":
         raise HTTPException(403, "Solo administradores pueden restablecer contraseñas")
-    
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(404, "Usuario no encontrado")
-    
+
     user.hashed_password = get_password_hash(new_password)
     user.must_change_password = True
     db.commit()
-    
+
     return {"message": f"Contraseña restablecida para {user.full_name}"}
 
 # --- ACTUALIZAR PERMISOS ---
@@ -264,16 +334,16 @@ async def update_permissions(
     db: Session = Depends(get_db)
 ):
     current_user = get_current_user(request)
-    if not current_user or current_user.role != "admin":
+    if not current_user or current_user.role!= "admin":
         raise HTTPException(403, "Solo administradores pueden actualizar permisos")
-    
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(404, "Usuario no encontrado")
-    
+
     user.permissions = permissions
     db.commit()
-    
+
     return {"message": f"Permisos actualizados para {user.full_name}"}
 
 # --- VERIFICAR CAMBIO DE CONTRASEÑA ---
@@ -294,14 +364,14 @@ async def change_password(
     user = get_current_user(request, db)
     if not user:
         raise HTTPException(401, "No autenticado")
-    
+
     if len(new_password) < 8:
         raise HTTPException(400, "La contraseña debe tener al menos 8 caracteres")
-    
+
     user.hashed_password = get_password_hash(new_password)
     user.must_change_password = False
     db.commit()
-    
+
     return {"message": "Contraseña actualizada correctamente"}
 
 # --- CAMBIAR CONTRASEÑA (desde perfil) ---
@@ -315,20 +385,20 @@ async def change_password_auth(
     user = get_current_user(request, db)
     if not user:
         raise HTTPException(401, "No autenticado")
-    
+
     if not verify_password(current_password, user.hashed_password):
         raise HTTPException(400, "La contraseña actual es incorrecta")
-    
+
     if len(new_password) < 8:
         raise HTTPException(400, "La nueva contraseña debe tener al menos 8 caracteres")
-    
+
     if verify_password(new_password, user.hashed_password):
         raise HTTPException(400, "La nueva contraseña no puede ser igual a la anterior")
-    
+
     user.hashed_password = get_password_hash(new_password)
     user.must_change_password = False
     db.commit()
-    
+
     return {"message": "Contraseña actualizada correctamente"}
 
 # --- PÁGINA DE CAMBIO DE CONTRASEÑA ---
@@ -339,7 +409,7 @@ async def change_password_page(request: Request):
         return RedirectResponse("/auth/login", status_code=302)
     if not user.must_change_password:
         return RedirectResponse("/", status_code=302)
-    
+
     with open("app/templates/change_password.html", "r", encoding="utf-8") as f:
         return HTMLResponse(content=f.read())
 
@@ -360,11 +430,11 @@ async def refresh_permissions(
     user = get_current_user(request, db)
     if not user:
         raise HTTPException(401, "No autenticado")
-    
+
     access_token = create_access_token(
         data={"sub": str(user.id), "role": user.role, "firm_id": user.firm_id}
     )
-    
+
     response = RedirectResponse("/", status_code=302)
     response.set_cookie(
         key="access_token",
@@ -391,23 +461,126 @@ async def change_password_login(
     confirm_password: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    # Buscar usuario
     user = db.query(User).filter(User.email == email, User.is_active == True).first()
-    
+
     if not user or not verify_password(current_password, user.hashed_password):
         raise HTTPException(400, "Email o contraseña actual incorrecta")
-    
+
     if len(new_password) < 8:
         raise HTTPException(400, "La nueva contraseña debe tener al menos 8 caracteres")
-    
-    if new_password != confirm_password:
+
+    if new_password!= confirm_password:
         raise HTTPException(400, "Las contraseñas no coinciden")
-    
+
     if verify_password(new_password, user.hashed_password):
         raise HTTPException(400, "La nueva contraseña no puede ser igual a la anterior")
-    
+
     user.hashed_password = get_password_hash(new_password)
     user.must_change_password = False
     db.commit()
-    
+
     return RedirectResponse("/auth/login", status_code=302)
+
+# ============================================================
+# EDITAR USUARIO (nombre y email)
+# ============================================================
+@router.put("/edit-user/{user_id}")
+async def edit_user(
+    request: Request,
+    user_id: int,
+    full_name: str = Form(...),
+    email: str = Form(...),
+    admin_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    admin = get_current_user(request, db)
+    if not admin:
+        raise HTTPException(401, "No autenticado")
+    if admin.role!= "admin":
+        raise HTTPException(403, "Solo administradores pueden editar usuarios")
+
+    if not verify_password(admin_password, admin.hashed_password):
+        raise HTTPException(400, "Contraseña de administrador incorrecta")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(404, "Usuario no encontrado")
+
+    existing = db.query(User).filter(User.email == email, User.id!= user_id).first()
+    if existing:
+        raise HTTPException(400, "El email ya está registrado por otro usuario")
+
+    user.full_name = full_name
+    user.email = email
+
+    db.commit()
+    db.refresh(user)
+
+    return {"message": f"Usuario {user.full_name} actualizado correctamente"}
+
+# ============================================================
+# BLOQUEAR / DESBLOQUEAR USUARIO
+# ============================================================
+@router.post("/toggle-user-status/{user_id}")
+async def toggle_user_status(
+    request: Request,
+    user_id: int,
+    admin_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    admin = get_current_user(request, db)
+    if not admin:
+        raise HTTPException(401, "No autenticado")
+    if admin.role!= "admin":
+        raise HTTPException(403, "Solo administradores pueden cambiar el estado de usuarios")
+
+    if not verify_password(admin_password, admin.hashed_password):
+        raise HTTPException(400, "Contraseña de administrador incorrecta")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(404, "Usuario no encontrado")
+
+    if user.id == admin.id:
+        raise HTTPException(400, "No puedes bloquear tu propia cuenta")
+
+    user.is_active = not user.is_active
+
+    db.commit()
+    db.refresh(user)
+
+    estado = "bloqueado" if not user.is_active else "desbloqueado"
+    return {"message": f"Usuario {user.full_name} {estado} correctamente", "is_active": user.is_active}
+
+# ============================================================
+# ELIMINAR USUARIO (solo admin)
+# ============================================================
+@router.delete("/delete-user/{user_id}")
+async def delete_user(
+    request: Request,
+    user_id: int,
+    admin_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    admin = get_current_user(request, db)
+    if not admin:
+        raise HTTPException(401, "No autenticado")
+    if admin.role!= "admin":
+        raise HTTPException(403, "Solo administradores pueden eliminar usuarios")
+
+    if not verify_password(admin_password, admin.hashed_password):
+        raise HTTPException(400, "Contraseña de administrador incorrecta")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(404, "Usuario no encontrado")
+
+    if user.id == admin.id:
+        raise HTTPException(400, "No puedes eliminar tu propia cuenta")
+
+    user_name = user.full_name
+
+    db.delete(user)
+    db.commit()
+
+    return {"message": f"Usuario {user_name} eliminado correctamente"}

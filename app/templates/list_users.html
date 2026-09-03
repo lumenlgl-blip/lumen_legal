@@ -6,281 +6,148 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
-        }
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background: #f2f5fb; padding-top: 20px; padding-bottom: 40px; }
 
         /* Botón menú */
         .btn-menu-modern {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
+            position: fixed; top: 24px; left: 24px; z-index: 1050;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px;
-            padding: 10px 22px;
-            font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            border-radius: 60px; padding: 10px 22px;
+            font-weight: 600; color: #0b1e33;
+            transition: all 0.2s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-            color: #0b1e33;
-        }
+        .btn-menu-modern:hover { background: white; box-shadow: 0 12px 28px rgba(0,0,0,0.08); transform: translateY(-2px); color: #0b1e33; }
 
         /* Header */
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
-            margin-bottom: 28px;
+            background: rgba(255,255,255,0.7); backdrop-filter: blur(4px);
+            border-radius: 28px; padding: 24px 28px; margin-bottom: 28px;
             border: 1px solid rgba(255,255,255,0.5);
             box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
         }
-        .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .page-header h1 i {
-            color: #2a6df4;
-            font-size: 2rem;
-        }
-        .page-header .header-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .page-header .header-actions .btn {
-            border-radius: 60px;
-            padding: 8px 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
+        .page-header h1 { font-weight: 700; font-size: 1.8rem; color: #0b1e33; margin: 0; display: flex; align-items: center; gap: 12px; }
+        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
+        .page-header .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .page-header .header-actions .btn { border-radius: 60px; padding: 8px 20px; font-weight: 600; font-size: 0.85rem; }
 
-        /* Tarjeta principal */
+        /* Tarjeta */
         .card-modern {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
-            padding: 24px 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.5); border-radius: 24px;
+            padding: 24px 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
         .card-modern .card-header-custom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #eef3fa;
-            margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+            padding-bottom: 16px; border-bottom: 2px solid #eef3fa; margin-bottom: 16px;
         }
-        .card-modern .card-header-custom h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin: 0;
-            font-size: 1rem;
-        }
-        .card-modern .card-header-custom h5 i {
-            color: #2a6df4;
-            margin-right: 8px;
-        }
-        .card-modern .card-header-custom .badge-count {
-            background: #0b1e33;
-            color: white;
-            font-weight: 600;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-        }
+        .card-modern .card-header-custom h5 { font-weight: 700; color: #0b1e33; margin: 0; font-size: 1rem; }
+        .card-modern .card-header-custom h5 i { color: #2a6df4; margin-right: 8px; }
+        .card-modern .card-header-custom .badge-count { background: #0b1e33; color: white; font-weight: 600; padding: 4px 14px; border-radius: 40px; font-size: 0.7rem; }
 
         /* Tabla */
-        .table-modern {
-            font-size: 0.85rem;
-            margin: 0;
-        }
-        .table-modern thead {
-            background: #f8faff;
-            border-bottom: 2px solid #eef3fa;
-        }
-        .table-modern thead th {
-            font-weight: 700;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #4a5b6e;
-            padding: 10px 12px;
-            border: none;
-        }
-        .table-modern tbody td {
-            padding: 10px 12px;
-            vertical-align: middle;
-            border-bottom: 1px solid #edf2f9;
-            color: #1e293b;
-        }
-        .table-modern tbody tr:hover {
-            background: rgba(42,109,244,0.02);
-        }
-        .table-modern tbody tr:last-child td {
-            border-bottom: none;
-        }
+        .table-modern { font-size: 0.85rem; margin: 0; }
+        .table-modern thead { background: #f8faff; border-bottom: 2px solid #eef3fa; }
+        .table-modern thead th { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: #4a5b6e; padding: 10px 12px; border: none; }
+        .table-modern tbody td { padding: 10px 12px; vertical-align: middle; border-bottom: 1px solid #edf2f9; color: #1e293b; }
+        .table-modern tbody tr:hover { background: rgba(42,109,244,0.02); }
+        .table-modern tbody tr:last-child td { border-bottom: none; }
 
         /* Badges */
-        .badge-role {
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            display: inline-block;
-        }
+        .badge-role { padding: 4px 14px; border-radius: 40px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
         .badge-role.admin { background: #0b1e33; color: white; }
         .badge-role.operador { background: #e2edff; color: #1f4f9e; }
         .badge-role.consultor { background: #e3f5ee; color: #1a8b5c; }
 
-        .badge-status {
-            padding: 3px 12px;
-            border-radius: 40px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
+        .badge-status { padding: 3px 12px; border-radius: 40px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
         .badge-status.active { background: #e3f5ee; color: #1a8b5c; }
         .badge-status.inactive { background: #eef2f6; color: #4a5b6e; }
-        .badge-status.pending { background: #ffedd5; color: #9b5e00; }
 
+        /* 📌 PERMISSION BADGES REDISEÑADOS */
         .permission-badge {
-            font-size: 0.55rem;
-            font-weight: 600;
-            padding: 2px 10px;
-            border-radius: 40px;
-            background: #eef3fa;
-            color: #4a5b6e;
             display: inline-block;
-            margin: 1px 2px;
-        }
-
-        /* Botones de acción */
-        .btn-action {
+            padding: 2px 12px;
             border-radius: 40px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 600;
-            transition: all 0.2s;
-            border: none;
+            margin: 1px 3px;
+            border: 1px solid transparent;
+            background: #eef2f6;
+            color: #2a3a4e;
         }
-        .btn-action i { margin-right: 3px; }
-        .btn-action.reset { background: rgba(245,179,66,0.12); color: #b7791f; }
-        .btn-action.reset:hover { background: #f5b342; color: white; }
-        .btn-action.permissions { background: rgba(42,109,244,0.08); color: #2a6df4; }
-        .btn-action.permissions:hover { background: #2a6df4; color: white; }
-        .btn-action.delete { background: rgba(220,53,69,0.08); color: #b12a2a; }
-        .btn-action.delete:hover { background: #dc3545; color: white; }
+        .permission-badge:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .permission-badge.clients { background: #dbeafe; color: #1e40af; border-color: #93bbfc; }
+        .permission-badge.contracts { background: #fef3c7; color: #92400e; border-color: #fbbf24; }
+        .permission-badge.cases { background: #e0e7ff; color: #3730a3; border-color: #818cf8; }
+        .permission-badge.payments { background: #d1fae5; color: #065f46; border-color: #34d399; }
+        .permission-badge.actuaciones { background: #fce4ec; color: #9a1f3e; border-color: #f06292; }
+        .permission-badge.consult { background: #e8f5e9; color: #2e7d32; border-color: #81c784; }
+        .permission-badge.agenda { background: #f3e5f5; color: #6a1b9a; border-color: #ce93d8; }
+        .permission-badge.dashboard { background: #e3f2fd; color: #0d47a1; border-color: #64b5f6; }
+        .permission-badge.audit { background: #f5f5f5; color: #424242; border-color: #bdbdbd; }
+        .permission-badge.all { background: #0b1e33; color: white; border-color: #0b1e33; }
+
+/* Botones acción */
+.btn-action {
+    border-radius: 40px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    margin: 2px 2px;
+}
+.btn-action i { margin-right: 3px; }
+.btn-action.reset-password { background: rgba(245,179,66,0.12); color: #b7791f; }
+.btn-action.reset-password:hover { background: #f5b342; color: white; }
+.btn-action.edit-permissions { background: rgba(42,109,244,0.08); color: #2a6df4; }
+.btn-action.edit-permissions:hover { background: #2a6df4; color: white; }
+.btn-action.edit-user { background: rgba(42,109,244,0.08); color: #2a6df4; }
+.btn-action.edit-user:hover { background: #2a6df4; color: white; }
+.btn-action.toggle-status { background: rgba(220,53,69,0.08); color: #b12a2a; }
+.btn-action.toggle-status:hover { background: #dc3545; color: white; }
+.btn-action.toggle-status.unblock { background: rgba(26,139,92,0.08); color: #1a8b5c; }
+.btn-action.toggle-status.unblock:hover { background: #1a8b5c; color: white; }
+.btn-action.delete-user { background: rgba(220,53,69,0.08); color: #b12a2a; }
+.btn-action.delete-user:hover { background: #dc3545; color: white; }
 
         /* Modales modernos */
-        .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
-        }
-        .modal-modern .modal-header {
-            border-bottom: none;
-            padding: 20px 28px 8px 28px;
-        }
-        .modal-modern .modal-header .modal-title {
-            font-weight: 700;
-            color: #0b1e33;
-        }
-        .modal-modern .modal-body {
-            padding: 16px 28px 24px;
-        }
-        .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
-        }
-        .modal-modern .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
-            padding: 14px 18px;
-            font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-        }
-        .modal-modern .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
-        }
+        .modal-modern .modal-content { border-radius: 28px; border: none; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2); overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); }
+        .modal-modern .modal-header { border-bottom: none; padding: 20px 28px 8px 28px; }
+        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
+        .modal-modern .modal-body { padding: 16px 28px 24px; }
+        .modal-modern .modal-footer { border-top: none; padding: 8px 28px 24px; }
+        .modal-modern .form-control { border-radius: 16px; border: 1.5px solid #e9edf4; padding: 14px 18px; font-size: 0.95rem; background: rgba(255,255,255,0.6); transition: all 0.2s; }
+        .modal-modern .form-control:focus { border-color: #2a6df4; box-shadow: 0 0 0 4px rgba(42,109,244,0.08); background: white; }
+        .modal-modern .form-label { font-weight: 600; font-size: 0.85rem; color: #1e293b; margin-bottom: 4px; }
 
-        .modal-modern .permission-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px 16px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 16px;
-            padding: 14px 18px;
-            border: 1px solid #edf2f9;
-        }
-        .modal-modern .permission-grid .form-check {
-            padding: 4px 0;
-        }
-        .modal-modern .permission-grid .form-check-input {
-            border-radius: 4px;
-            border: 1.5px solid #d0d8e3;
-            cursor: pointer;
-        }
-        .modal-modern .permission-grid .form-check-input:checked {
-            background-color: #2a6df4;
-            border-color: #2a6df4;
-        }
-        .modal-modern .permission-grid .form-check-label {
-            font-size: 0.8rem;
-            color: #1e293b;
-            cursor: pointer;
-            padding-left: 4px;
-        }
+        .permission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; background: rgba(255,255,255,0.4); border-radius: 16px; padding: 14px 18px; border: 1px solid #edf2f9; }
+        .permission-grid .form-check { padding: 4px 0; }
+        .permission-grid .form-check-input { border-radius: 4px; border: 1.5px solid #d0d8e3; cursor: pointer; }
+        .permission-grid .form-check-input:checked { background-color: #2a6df4; border-color: #2a6df4; }
+        .permission-grid .form-check-label { font-size: 0.8rem; color: #1e293b; cursor: pointer; }
+
+        /* Loading overlay */
+        .spinner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,30,51,0.4); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
+        .spinner-box { background: white; padding: 36px 48px; border-radius: 32px; text-align: center; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2); }
+        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: #2a6df4; }
+        .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
+        .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
 
         /* Responsive */
         @media (max-width: 768px) {
             .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
             .page-header { flex-direction: column; align-items: stretch; text-align: center; }
             .page-header .header-actions { justify-content: center; }
             .card-modern { padding: 16px; }
-            .modal-modern .permission-grid { grid-template-columns: 1fr; }
+            .permission-grid { grid-template-columns: 1fr; }
             .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
             .table-modern { font-size: 0.75rem; }
             .table-modern thead th { font-size: 0.6rem; padding: 6px 8px; }
@@ -333,7 +200,7 @@
                         <th>Rol</th>
                         <th>Estado</th>
                         <th>Permisos</th>
-                        <th style="min-width:160px;">Acciones</th>
+                        <th style="min-width:240px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="usersTableBody">
@@ -343,6 +210,17 @@
         </div>
     </div>
 
+</div>
+
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5>Procesando...</h5>
+        <p>Por favor espera, estamos realizando tu solicitud.</p>
+    </div>
 </div>
 
 <!-- ================================================== -->
@@ -358,7 +236,8 @@
             <div class="modal-body">
                 <p>Nueva contraseña para: <strong id="resetUserName"></strong></p>
                 <input type="password" id="newPasswordInput" class="form-control form-control-lg"
-                       placeholder="Nueva contraseña..." autocomplete="off">
+                       placeholder="Nueva contraseña (mínimo 8 caracteres)" autocomplete="off">
+                <small class="text-muted">La contraseña debe tener al menos 8 caracteres.</small>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -406,6 +285,70 @@
 </div>
 
 <!-- ================================================== -->
+<!-- MODAL EDITAR USUARIO -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="editUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-pencil me-2"></i>Editar Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Editando usuario: <strong id="editUserNameDisplay"></strong></p>
+                <input type="hidden" id="editUserId">
+                <div class="mb-3">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" id="editFullName" class="form-control form-control-lg" placeholder="Nombre completo">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="editEmail" class="form-control form-control-lg" placeholder="email@ejemplo.com">
+                </div>
+                <hr>
+                <div class="mb-3">
+                    <label class="form-label">🔐 Contraseña de Administrador (para confirmar cambios)</label>
+                    <input type="password" id="editAdminPassword" class="form-control form-control-lg" placeholder="Tu contraseña de admin...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="saveEditUserBtn" class="btn btn-primary">
+                    <i class="bi bi-check2"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL CONFIRMAR CONTRASEÑA PARA ACCIONES -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="confirmPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#fdf3e0;">
+                <h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Confirmar Identidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmPasswordMessage">Ingresa tu contraseña de administrador para confirmar esta acción:</p>
+                <input type="password" id="adminPasswordInput" class="form-control form-control-lg" placeholder="Tu contraseña...">
+                <input type="hidden" id="confirmActionType">
+                <input type="hidden" id="confirmActionId">
+                <input type="hidden" id="confirmActionData">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="confirmPasswordBtn" class="btn btn-danger">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
 <!-- MODAL NOTIFICACIONES -->
 <!-- ================================================== -->
 <div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
@@ -445,8 +388,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ============================================================
-// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
+// FUNCIONES GLOBALES
 // ============================================================
+
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
 
 function showNotification(title, bodyHTML, type = 'info') {
     const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
@@ -465,7 +416,7 @@ function showNotification(title, bodyHTML, type = 'info') {
 function showConfirm(title, bodyHTML, onConfirm) {
     const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
     document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); setTimeout(onConfirm, 200); };
+    document.getElementById('confirmBtn').onclick = function() { modal.hide(); setTimeout(onConfirm, 300); };
     modal.show();
 }
 
@@ -477,7 +428,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('userCount').textContent = rows.length;
 });
 
-// Restablecer contraseña
+// ============================================================
+// RESTABLECER CONTRASEÑA
+// ============================================================
 document.querySelectorAll('.reset-password').forEach(btn => {
     btn.addEventListener('click', function() {
         currentResetUserId = this.dataset.id;
@@ -489,8 +442,8 @@ document.querySelectorAll('.reset-password').forEach(btn => {
 
 document.getElementById('confirmResetBtn').addEventListener('click', async () => {
     const newPassword = document.getElementById('newPasswordInput').value;
-    if (!newPassword) {
-        showNotification('Contraseña vacía', '<p>Por favor ingresa una nueva contraseña.</p>', 'warning');
+    if (!newPassword || newPassword.length < 8) {
+        showNotification('Contraseña inválida', '<p>La contraseña debe tener al menos 8 caracteres.</p>', 'warning');
         return;
     }
 
@@ -498,33 +451,34 @@ document.getElementById('confirmResetBtn').addEventListener('click', async () =>
 
     setTimeout(() => {
         showConfirm('Restablecer Contraseña', '<p>¿Estás seguro de restablecer la contraseña de este usuario?</p>', async function() {
+            showLoading();
             const formData = new FormData();
             formData.append('new_password', newPassword);
-
             try {
                 const response = await fetch(`/auth/reset-password/${currentResetUserId}`, { method: 'POST', body: formData });
-                if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error'}</p>`, 'error'); return; }
+                hideLoading();
+                if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al restablecer'}</p>`, 'error'); return; }
                 showNotification('Contraseña Restablecida', '<p>La contraseña se restableció correctamente.</p>', 'success');
                 setTimeout(() => location.reload(), 1500);
             } catch (error) {
+                hideLoading();
                 showNotification('Error', `<p>${error.message}</p>`, 'error');
             }
         });
     }, 300);
 });
 
-// Editar permisos
+// ============================================================
+// EDITAR PERMISOS
+// ============================================================
 document.querySelectorAll('.edit-permissions').forEach(btn => {
     btn.addEventListener('click', function() {
         const userId = this.dataset.id;
         const name = this.dataset.name;
         const permissions = this.dataset.permissions || '';
-
         document.getElementById('editPermUserId').value = userId;
         document.getElementById('editPermUserName').textContent = name;
-
         document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => { cb.checked = false; });
-
         if (permissions === 'all') {
             document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => { cb.checked = true; });
         } else {
@@ -533,7 +487,6 @@ document.querySelectorAll('.edit-permissions').forEach(btn => {
                 if (cb) cb.checked = true;
             });
         }
-
         new bootstrap.Modal(document.getElementById('editPermissionsModal')).show();
     });
 });
@@ -542,28 +495,201 @@ document.getElementById('savePermissionsBtn').addEventListener('click', async ()
     const userId = document.getElementById('editPermUserId').value;
     const selectedPermissions = [];
     document.querySelectorAll('#editPermissionsModal input[type="checkbox"]:checked').forEach(cb => { selectedPermissions.push(cb.value); });
-
     const formData = new FormData();
     formData.append('permissions', selectedPermissions.join(','));
-
+    showLoading();
     try {
         const response = await fetch(`/auth/update-permissions/${userId}`, { method: 'POST', body: formData });
-        if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error'}</p>`, 'error'); return; }
-
+        hideLoading();
+        if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al actualizar permisos'}</p>`, 'error'); return; }
         bootstrap.Modal.getInstance(document.getElementById('editPermissionsModal')).hide();
         showNotification('Permisos Actualizados', '<p>Los permisos se actualizaron correctamente.</p>', 'success');
-
         const sessionResponse = await fetch('/auth/check-session');
         const sessionData = await sessionResponse.json();
-
         if (sessionData.authenticated && sessionData.user_id == userId) {
             await fetch('/auth/refresh-permissions', { method: 'POST' });
         }
-
         setTimeout(() => location.reload(), 1500);
-
     } catch (error) {
+        hideLoading();
         showNotification('Error', `<p>${error.message}</p>`, 'error');
+    }
+});
+
+// ============================================================
+// EDITAR USUARIO
+// ============================================================
+document.querySelectorAll('.edit-user').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const userId = this.dataset.id;
+        const userName = this.dataset.name;
+        const userEmail = this.dataset.email;
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editUserNameDisplay').textContent = userName;
+        document.getElementById('editFullName').value = userName;
+        document.getElementById('editEmail').value = userEmail;
+        document.getElementById('editAdminPassword').value = '';
+        new bootstrap.Modal(document.getElementById('editUserModal')).show();
+    });
+});
+
+document.getElementById('saveEditUserBtn').addEventListener('click', async () => {
+    const userId = document.getElementById('editUserId').value;
+    const fullName = document.getElementById('editFullName').value.trim();
+    const email = document.getElementById('editEmail').value.trim();
+    const adminPassword = document.getElementById('editAdminPassword').value;
+    if (!fullName || !email) {
+        showNotification('Campos incompletos', '<p>Completa todos los campos.</p>', 'warning');
+        return;
+    }
+    if (!adminPassword) {
+        showNotification('Contraseña requerida', '<p>Ingresa tu contraseña de administrador.</p>', 'warning');
+        return;
+    }
+    bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+    setTimeout(() => {
+        showConfirm('Confirmar Edición', `<p>¿Estás seguro de actualizar los datos de <strong>${fullName}</strong>?</p>`, async function() {
+            showLoading();
+            const formData = new FormData();
+            formData.append('full_name', fullName);
+            formData.append('email', email);
+            formData.append('admin_password', adminPassword);
+            try {
+                const response = await fetch(`/auth/edit-user/${userId}`, { method: 'PUT', body: formData });
+                hideLoading();
+                if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al actualizar'}</p>`, 'error'); return; }
+                showNotification('Usuario Actualizado', `<p>${fullName} actualizado correctamente.</p>`, 'success');
+                setTimeout(() => location.reload(), 1500);
+            } catch (error) {
+                hideLoading();
+                showNotification('Error', `<p>${error.message}</p>`, 'error');
+            }
+        });
+    }, 300);
+});
+
+// ============================================================
+// BLOQUEAR / DESBLOQUEAR USUARIO
+// ============================================================
+document.querySelectorAll('.toggle-status').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const userId = this.dataset.id;
+        const userName = this.dataset.name;
+        const action = this.dataset.action;
+        document.getElementById('confirmActionId').value = userId;
+        document.getElementById('confirmActionType').value = 'toggle';
+        document.getElementById('confirmActionData').value = action;
+        document.getElementById('confirmPasswordMessage').textContent = 
+            `Ingresa tu contraseña de administrador para ${action} al usuario ${userName}:`;
+        document.getElementById('adminPasswordInput').value = '';
+        new bootstrap.Modal(document.getElementById('confirmPasswordModal')).show();
+    });
+});
+
+// ============================================================
+// ELIMINAR USUARIO
+// ============================================================
+document.querySelectorAll('.delete-user').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const userId = this.dataset.id;
+        const userName = this.dataset.name;
+        document.getElementById('confirmActionId').value = userId;
+        document.getElementById('confirmActionType').value = 'delete';
+        document.getElementById('confirmActionData').value = userName;
+        document.getElementById('confirmPasswordMessage').textContent = 
+            `⚠️ ¡ADVERTENCIA! Estás a punto de ELIMINAR PERMANENTEMENTE al usuario ${userName}. Esta acción no se puede deshacer. Ingresa tu contraseña de administrador para confirmar:`;
+        document.getElementById('adminPasswordInput').value = '';
+        new bootstrap.Modal(document.getElementById('confirmPasswordModal')).show();
+    });
+});
+
+// ============================================================
+// CONFIRMAR CONTRASEÑA PARA ACCIONES
+// ============================================================
+document.getElementById('confirmPasswordBtn').addEventListener('click', async () => {
+    const password = document.getElementById('adminPasswordInput').value;
+    const actionType = document.getElementById('confirmActionType').value;
+    const userId = document.getElementById('confirmActionId').value;
+    const actionData = document.getElementById('confirmActionData').value;
+    if (!password) {
+        showNotification('Contraseña requerida', '<p>Ingresa tu contraseña de administrador.</p>', 'warning');
+        return;
+    }
+    bootstrap.Modal.getInstance(document.getElementById('confirmPasswordModal')).hide();
+    const formData = new FormData();
+    formData.append('admin_password', password);
+
+    if (actionType === 'toggle') {
+        const action = actionData;
+        const actionText = action === 'bloquear' ? 'bloquear' : 'desbloquear';
+        setTimeout(() => {
+            showConfirm(`Confirmar ${actionText}`, `<p>¿Estás seguro de ${actionText} a este usuario?</p>`, async function() {
+                showLoading();
+                try {
+                    const response = await fetch(`/auth/toggle-user-status/${userId}`, { method: 'POST', body: formData });
+                    hideLoading();
+                    if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al cambiar estado'}</p>`, 'error'); return; }
+                    const result = await response.json();
+                    showNotification('Usuario Actualizado', `<p>${result.message}</p>`, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    hideLoading();
+                    showNotification('Error', `<p>${error.message}</p>`, 'error');
+                }
+            });
+        }, 300);
+    } else if (actionType === 'delete') {
+        const userName = actionData;
+        setTimeout(() => {
+            showConfirm(`⚠️ ELIMINAR USUARIO`, `
+                <div class="alert alert-danger">
+                    <strong>¡ADVERTENCIA EXTREMA!</strong><br>
+                    Estás a punto de eliminar <strong>PERMANENTEMENTE</strong> al usuario:
+                    <h5 class="mt-2">${userName}</h5>
+                    <p class="mb-0">Esta acción <strong>NO se puede deshacer</strong>.</p>
+                </div>
+            `, async function() {
+                showLoading();
+                try {
+                    const response = await fetch(`/auth/delete-user/${userId}`, { method: 'DELETE', body: formData });
+                    hideLoading();
+                    if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al eliminar'}</p>`, 'error'); return; }
+                    const result = await response.json();
+                    showNotification('Usuario Eliminado', `<p>${result.message}</p>`, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    hideLoading();
+                    showNotification('Error', `<p>${error.message}</p>`, 'error');
+                }
+            });
+        }, 300);
+    }
+});
+
+// ============================================================
+// ENTER PARA CONFIRMAR CONTRASEÑA
+// ============================================================
+document.getElementById('adminPasswordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('confirmPasswordBtn').click();
+    }
+});
+
+// ============================================================
+// ENTER PARA CONFIRMAR EDICIÓN
+// ============================================================
+document.getElementById('editAdminPassword').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('saveEditUserBtn').click();
+    }
+});
+
+// ============================================================
+// ENTER PARA RESTABLECER CONTRASEÑA
+// ============================================================
+document.getElementById('newPasswordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('confirmResetBtn').click();
     }
 });
 </script>
