@@ -329,17 +329,35 @@
     <div class="row g-4">
         <!-- COLUMNA CALENDARIO -->
         <div class="col-lg-8">
-            <div class="card card-modern p-4">
-                <div class="calendar-header">
-                    <button class="btn-circle" onclick="changeMonth(-1)"><i class="bi bi-chevron-left"></i></button>
-                    <h3 id="monthTitle" class="mb-0"></h3>
-                    <div class="d-flex gap-2">
-                        <button class="btn-circle" onclick="openReportModal()" title="Imprimir reporte" style="width:auto;padding:0 16px;font-size:0.85rem;">
-                            <i class="bi bi-printer me-1"></i> Reporte
-                        </button>
-                        <button class="btn-circle" onclick="changeMonth(1)"><i class="bi bi-chevron-right"></i></button>
-                    </div>
-                </div>
+<div class="card card-modern p-4">
+    <div class="calendar-header">
+        <button class="btn-circle" onclick="changeMonth(-1)"><i class="bi bi-chevron-left"></i></button>
+        <h3 id="monthTitle" class="mb-0"></h3>
+        <div class="d-flex gap-2">
+            <button class="btn-circle" onclick="openReportModal()" title="Imprimir reporte" style="width:auto;padding:0 16px;font-size:0.85rem;">
+                <i class="bi bi-printer me-1"></i> Reporte
+            </button>
+            <button class="btn-circle" onclick="changeMonth(1)"><i class="bi bi-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- 🆕 FILTRO DE USUARIO (SOLO PARA ADMIN) -->
+    <div id="userFilterContainer" class="mb-3" style="display:none;">
+        <div class="row g-2">
+            <div class="col-md-8">
+                <select id="userFilterSelect" class="form-select" style="border-radius:40px;padding:8px 16px;font-size:0.85rem;">
+                    <option value="all">👥 Todos los usuarios</option>
+                    <option value="me">👤 Mis eventos</option>
+                    <!-- Los usuarios se cargarán dinámicamente -->
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button id="applyFilterBtn" class="btn btn-primary" style="border-radius:40px;padding:8px 16px;font-size:0.85rem;width:100%;">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+            </div>
+        </div>
+    </div>
 
                 <!-- Días de semana -->
                 <div class="calendar-grid mb-2" style="grid-template-columns: repeat(7,1fr); gap:6px;">
@@ -475,23 +493,31 @@
                 <h5 class="modal-title text-white"><i class="bi bi-printer me-2"></i>Reporte de Agenda</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Periodo</label>
-                    <select id="reportPeriod" class="form-select">
-                        <option value="mes">Mes actual</option>
-                        <option value="semana">Semana actual</option>
-                        <option value="hoy">Solo hoy</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Solo pendientes</label>
-                    <select id="reportFilter" class="form-select">
-                        <option value="pendientes">Solo pendientes</option>
-                        <option value="todos">Todos (incluye completados)</option>
-                    </select>
-                </div>
-            </div>
+<div class="modal-body">
+    <div class="mb-3">
+        <label class="form-label">Periodo</label>
+        <select id="reportPeriod" class="form-select">
+            <option value="mes">Mes actual</option>
+            <option value="semana">Semana actual</option>
+            <option value="hoy">Solo hoy</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Solo pendientes</label>
+        <select id="reportFilter" class="form-select">
+            <option value="pendientes">Solo pendientes</option>
+            <option value="todos">Todos (incluye completados)</option>
+        </select>
+    </div>
+    <!-- 🆕 FILTRO DE USUARIO EN REPORTE (SOLO ADMIN) -->
+    <div id="reportUserFilterContainer" class="mb-3" style="display:none;">
+        <label class="form-label">Filtrar por usuario</label>
+        <select id="reportUserFilter" class="form-select">
+            <option value="all">👥 Todos los usuarios</option>
+            <option value="me">👤 Mis eventos</option>
+        </select>
+    </div>
+</div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="generarReporte()">
@@ -571,16 +597,143 @@ function changeMonth(delta) {
     currentMonth += delta;
     if (currentMonth < 0) { currentMonth = 11; currentYear--; }
     if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-    loadCalendar();
+    // Usar el filtro actual
+    const select = document.getElementById('userFilterSelect');
+    const filterValue = select ? select.value : 'all';
+    loadCalendarWithFilter(filterValue);
 }
 
 async function loadCalendar() {
+    // Obtener el filtro actual del select
+    const select = document.getElementById('userFilterSelect');
+    const filterValue = select ? select.value : 'all';
+    await loadCalendarWithFilter(filterValue);
+}
+// ============================================================
+// CARGAR CALENDARIO CON FILTRO
+// ============================================================
+async function loadCalendarWithFilter(filterValue) {
     showLoading();
     const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     document.getElementById('monthTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    
     try {
-        const response = await fetch(`/api/agenda/events/${currentYear}/${currentMonth + 1}`);
+        let url = `/api/agenda/events/${currentYear}/${currentMonth + 1}`;
+        if (filterValue) {
+            url += `?user_filter=${filterValue}`;
+        }
+        
+        const response = await fetch(url);
         currentEvents = await response.json();
+        
+        // Renderizar calendario con los eventos filtrados
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+        const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const today = new Date();
+
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'calendar-day other-month';
+            grid.appendChild(empty);
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayEvents = currentEvents.filter(e => e.event_date === dateStr);
+            const isToday = today.getFullYear() === currentYear && today.getMonth() === currentMonth && today.getDate() === day;
+            const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+            const dayDiv = document.createElement('div');
+            dayDiv.className = `calendar-day ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-events' : ''} ${isWeekend ? 'weekend' : ''}`;
+            
+            if (isWeekend) {
+                dayDiv.style.backgroundColor = '#fef2f2';
+            }
+            dayDiv.setAttribute('onclick', `openCreateModal('${dateStr}')`);
+
+            const numberSpan = document.createElement('div');
+            numberSpan.className = 'day-number';
+            numberSpan.textContent = day;
+            dayDiv.appendChild(numberSpan);
+
+            dayEvents.forEach(ev => {
+                const badge = document.createElement('div');
+                let badgeClass = `event-badge event-${ev.event_type}`;
+                if (ev.is_completed) {
+                    badgeClass += ' event-completed';
+                }
+                badge.className = badgeClass;
+                badge.textContent = ev.title;
+                badge.setAttribute('onclick', `event.stopPropagation(); openEventDetail(${ev.id})`);
+                dayDiv.appendChild(badge);
+            });
+
+            grid.appendChild(dayDiv);
+        }
+
+        hideLoading();
+        loadUpcomingEvents();
+        updateDayEvents();
+    } catch (error) {
+        hideLoading();
+        showNotification('Error', `<p>${error.message}</p>`, 'error');
+    }
+}
+
+// ============================================================
+// CARGAR USUARIOS PARA EL FILTRO (SOLO ADMIN)
+// ============================================================
+async function loadUserFilter() {
+    try {
+        const response = await fetch('/api/agenda/users');
+        if (response.ok) {
+            const users = await response.json();
+            const select = document.getElementById('userFilterSelect');
+            
+            // Mostrar el contenedor del filtro
+            document.getElementById('userFilterContainer').style.display = 'block';
+            
+            // Agregar opciones de usuarios
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id;
+                option.textContent = `👤 ${user.full_name} (${user.role})`;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.log('Error al cargar usuarios:', error);
+    }
+}
+
+// ============================================================
+// APLICAR FILTRO DE USUARIO
+// ============================================================
+function applyUserFilter() {
+    const select = document.getElementById('userFilterSelect');
+    const filterValue = select.value;
+    
+    // Recargar el calendario con el filtro
+    loadCalendarWithFilter(filterValue);
+}
+
+async function loadCalendarWithFilter(filterValue) {
+    showLoading();
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    document.getElementById('monthTitle').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    
+    try {
+        let url = `/api/agenda/events/${currentYear}/${currentMonth + 1}`;
+        if (filterValue) {
+            url += `?user_filter=${filterValue}`;
+        }
+        
+        const response = await fetch(url);
+        currentEvents = await response.json();
+        
+        // Renderizar calendario con los eventos filtrados
         const grid = document.getElementById('calendarGrid');
         grid.innerHTML = '';
         const firstDay = new Date(currentYear, currentMonth, 1).getDay();
@@ -745,17 +898,15 @@ async function loadUpcomingEvents() {
             }
         }
         
+        // 🆕 FILTRO: SOLO EVENTOS PENDIENTES (NO COMPLETADOS)
         const upcoming = allUpcomingEvents
-            .filter(e => e.event_date >= today)
-            .sort((a, b) => {
-                if (a.is_completed !== b.is_completed) return a.is_completed ? 1 : -1;
-                return a.event_date.localeCompare(b.event_date);
-            })
+            .filter(e => e.event_date >= today && !e.is_completed)  // ← AGREGAR !e.is_completed
+            .sort((a, b) => a.event_date.localeCompare(b.event_date))
             .slice(0, 8);
         
         const container = document.getElementById('upcomingEvents');
         if (upcoming.length === 0) {
-            container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">No hay eventos próximos.</p>';
+            container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">No hay eventos próximos pendientes.</p>';
             return;
         }
         
@@ -802,7 +953,6 @@ async function loadUpcomingEvents() {
         container.innerHTML = '<p class="text-muted" style="font-size:0.9rem;">Error al cargar eventos futuros.</p>';
     }
 }
-
 // ============================================================
 // NUEVA FUNCIÓN 1: deleteEventDirect()
 // ============================================================
@@ -957,7 +1107,16 @@ function openEventDetail(eventId) {
     selectedEventId = eventId;
     const event = currentEvents.find(e => e.id === eventId);
     if (!event) return;
-    const typeLabels = { audiencia: '🎯 Audiencia', plazos: '⏰ Plazo Legal', junta: '🤝 Junta', otro: '📋 Otro' };
+    
+    const typeLabels = { 
+        audiencia: '🎯 Audiencia', 
+        plazos: '⏰ Plazo Legal', 
+        junta: '🤝 Junta', 
+        otro: '📋 Otro' 
+    };
+    
+    const isCompleted = event.is_completed;
+    
     document.getElementById('eventDetailBody').innerHTML = `
         <h4 style="font-weight:700;">${event.title}</h4>
         <p><strong>Tipo:</strong> ${typeLabels[event.event_type] || event.event_type}</p>
@@ -966,12 +1125,18 @@ function openEventDetail(eventId) {
         ${event.location ? `<p><strong>Lugar:</strong> ${event.location}</p>` : ''}
         ${event.description ? `<p><strong>Descripción:</strong> ${event.description}</p>` : ''}
         ${event.case_info ? `<p><strong>Expediente:</strong> ${event.case_info}</p>` : ''}
-        <p><strong>Estado:</strong> ${event.is_completed ? '✅ Completado' : '⏳ Pendiente'}</p>
+        ${event.user_name ? `<p><strong>Creado por:</strong> ${event.user_name}</p>` : ''}
+        <p><strong>Estado:</strong> ${isCompleted ? '✅ Completado' : '⏳ Pendiente'}</p>
     `;
-    document.getElementById('completeEventBtn').textContent = event.is_completed ? '↩️ Reabrir' : '✅ Completar';
+    
+    // Botón de completar/reabrir (SIEMPRE visible)
+    document.getElementById('completeEventBtn').textContent = isCompleted ? '↩️ Reabrir' : '✅ Completar';
+    
+    // Botón de eliminar (SIEMPRE visible)
+    document.getElementById('deleteEventBtn').style.display = 'inline-block';
+    
     new bootstrap.Modal(document.getElementById('eventDetailModal')).show();
 }
-
 // ============================================================
 // COMPLETAR EVENTO
 // ============================================================
@@ -1003,6 +1168,17 @@ document.getElementById('deleteEventBtn').addEventListener('click', () => {
 // ============================================================
 
 function openReportModal() {
+    // Si es admin, cargar usuarios en el filtro de reporte
+    const container = document.getElementById('reportUserFilterContainer');
+    const select = document.getElementById('reportUserFilter');
+    
+    // Copiar opciones del filtro principal al de reporte
+    const mainSelect = document.getElementById('userFilterSelect');
+    if (mainSelect && mainSelect.options.length > 0) {
+        container.style.display = 'block';
+        select.innerHTML = mainSelect.innerHTML;
+    }
+    
     new bootstrap.Modal(document.getElementById('reportModal')).show();
 }
 
@@ -1010,14 +1186,33 @@ function generarReporte() {
     const periodo = document.getElementById('reportPeriod').value;
     const filtro = document.getElementById('reportFilter').value;
     
+    // Obtener filtro de usuario si existe
+    let userFilter = 'all';
+    const reportUserFilter = document.getElementById('reportUserFilter');
+    if (reportUserFilter) {
+        userFilter = reportUserFilter.value;
+    }
+    
     showLoading();
     
-    window.open(`/api/agenda/report-pdf?periodo=${periodo}&filtro=${filtro}`, '_blank');
+    window.open(`/api/agenda/report-pdf?periodo=${periodo}&filtro=${filtro}&user_filter=${userFilter}`, '_blank');
     
     setTimeout(() => hideLoading(), 1500);
 }
 
-loadCalendar();
+// Inicializar carga
+async function initAgenda() {
+    // Cargar usuarios para el filtro (si es admin)
+    await loadUserFilter();
+    
+    // Cargar el calendario con el filtro predeterminado
+    loadCalendar();
+    
+    // Evento para el botón de aplicar filtro
+    document.getElementById('applyFilterBtn')?.addEventListener('click', applyUserFilter);
+}
+
+initAgenda();
 </script>
 </body>
 </html>

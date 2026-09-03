@@ -40,35 +40,37 @@
     <div class="pdf-section-title">EVENTOS</div>
     {% if eventos %}
     <table class="pdf-table">
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Título</th>
-                <th>Tipo</th>
-                <th>Lugar</th>
-                <th>Expediente</th>
-                <th>Estado</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for ev in eventos %}
-            <tr>
-                <td>{{ ev.fecha }}</td>
-                <td>{{ ev.hora }}</td>
-                <td>{{ ev.titulo }}</td>
-                <td>{{ ev.tipo }}</td>
-                <td>{{ ev.lugar }}</td>
-                <td>{{ ev.expediente }}</td>
-                <td>{{ ev.estado }}</td>
-            </tr>
-            {% if ev.descripcion %}
-            <tr>
-                <td colspan="7" style="font-size:9px;color:#6b7b8f;">📝 {{ ev.descripcion }}</td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
+<thead>
+    <tr>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Título</th>
+        <th>Tipo</th>
+        <th>Lugar</th>
+        <th>Expediente</th>
+        <th>Usuario</th>
+        <th>Estado</th>
+    </tr>
+</thead>
+<tbody>
+    {% for ev in eventos %}
+    <tr>
+        <td>{{ ev.fecha }}</td>
+        <td>{{ ev.hora }}</td>
+        <td>{{ ev.titulo }}</td>
+        <td>{{ ev.tipo }}</td>
+        <td>{{ ev.lugar }}</td>
+        <td>{{ ev.expediente }}</td>
+        <td>{{ ev.usuario }}</td>
+        <td>{{ ev.estado }}</td>
+    </tr>
+    {% if ev.descripcion %}
+    <tr>
+        <td colspan="8" style="font-size:9px;color:#6b7b8f;">📝 {{ ev.descripcion }}</td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</tbody>
     </table>
     {% else %}
     <p style="padding: 15px;">No hay eventos en este periodo.</p>
