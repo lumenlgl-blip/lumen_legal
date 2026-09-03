@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Documento · Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background: #f2f5fb; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .upload-card { background: white; border-radius: 28px; padding: 30px; max-width: 500px; width: 100%; box-shadow: 0 20px 40px -12px rgba(0,0,0,0.12); }
+        .logo-area { text-align: center; margin-bottom: 20px; }
+        .logo-area img { max-height: 80px; width: auto; border-radius: 12px; }
+        .upload-title { font-weight: 700; font-size: 1.4rem; color: #0b1e33; text-align: center; }
+        .upload-subtitle { text-align: center; color: #6b7b8f; font-size: 0.9rem; margin-bottom: 20px; }
+        .drop-zone { border: 2px dashed #d0d8e3; border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; transition: all 0.2s; background: #fafcff; }
+        .drop-zone:hover { border-color: #2a6df4; background: #f0f7ff; }
+        .drop-zone.dragover { border-color: #2a6df4; background: #e3effa; }
+        .drop-zone i { font-size: 3rem; color: #8a9bb0; }
+        .drop-zone p { margin: 10px 0 0; color: #4a5b6e; }
+        .drop-zone .small { color: #8a9bb0; font-size: 0.8rem; }
+        .file-info { display: none; background: #e3f5ee; padding: 12px 16px; border-radius: 12px; margin-top: 12px; }
+        .file-info.show { display: flex; align-items: center; gap: 10px; }
+        .file-info i { font-size: 1.5rem; color: #1a8b5c; }
+        .btn-upload { background: #1a8b5c; border: none; border-radius: 60px; padding: 14px; font-weight: 700; color: white; width: 100%; transition: all 0.2s; margin-top: 16px; }
+        .btn-upload:hover { background: #0e6b46; transform: translateY(-2px); }
+        .btn-upload:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .status-msg { margin-top: 12px; padding: 12px; border-radius: 12px; display: none; }
+        .status-msg.success { display: block; background: #e3f5ee; color: #1a6b4c; }
+        .status-msg.error { display: block; background: #fde8e6; color: #7a2a2a; }
+        .status-msg i { margin-right: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="upload-card">
+    <div class="logo-area">
+        <img src="/static/img/logo.jpeg" alt="Lumen Legal">
+    </div>
+    <h1 class="upload-title"><i class="bi bi-cloud-upload"></i> Subir Documento</h1>
+    <p class="upload-subtitle">Escanea el QR desde el sistema para subir este documento</p>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <div class="drop-zone" id="dropZone">
+            <i class="bi bi-cloud-arrow-up"></i>
+            <p><strong>Toca para seleccionar</strong></p>
+            <p class="small">o toma una foto del documento</p>
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+        </div>
+
+        <div class="file-info" id="fileInfo">
+            <i class="bi bi-file-earmark-check"></i>
+            <div>
+                <strong id="fileName">archivo.pdf</strong>
+                <small class="text-muted" id="fileSize">0 KB</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-upload" id="submitBtn" disabled>
+            <i class="bi bi-cloud-upload"></i> Subir Documento
+        </button>
+    </form>
+
+    <div id="statusMsg" class="status-msg"></div>
+</div>
+
+<script>
+    // ============================================================
+    // DETECTAR PARÁMETROS DE LA URL
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const tempId = urlParams.get('temp_id');
+    const docType = urlParams.get('doc_type') || 'DOCUMENTO';
+
+    // Actualizar título del documento
+    document.querySelector('.upload-subtitle').textContent = `Subiendo: ${docType}`;
+
+    // ============================================================
+    // DROP ZONE Y SELECCIÓN DE ARCHIVO
+    // ============================================================
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const submitBtn = document.getElementById('submitBtn');
+
+    let selectedFile = null;
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+            showStatus('❌ Formato no válido. Sube PDF, JPG o PNG.', 'error');
+            return;
+        }
+
+        selectedFile = file;
+        fileName.textContent = file.name;
+        fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+        fileInfo.classList.add('show');
+        submitBtn.disabled = false;
+        showStatus('', '');
+    }
+
+    // ============================================================
+    // ENVIAR ARCHIVO
+    // ============================================================
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!selectedFile) {
+            showStatus('❌ Por favor selecciona un archivo.', 'error');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Subiendo...';
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        formData.append('doc_type', docType);
+
+        try {
+            const response = await fetch(`/api/clients/upload-mobile/${tempId}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showStatus('✅ ¡Documento subido correctamente! Puedes cerrar esta ventana.', 'success');
+                submitBtn.innerHTML = '<i class="bi bi-check2"></i> ¡Subido!';
+                submitBtn.disabled = true;
+            } else {
+                showStatus('❌ Error: ' + (result.error || 'No se pudo subir el archivo.'), 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+            }
+        } catch (error) {
+            showStatus('❌ Error de conexión: ' + error.message, 'error');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+        }
+    });
+
+    function showStatus(message, type) {
+        const el = document.getElementById('statusMsg');
+        if (!message) {
+            el.style.display = 'none';
+            el.className = 'status-msg';
+            return;
+        }
+        el.style.display = 'block';
+        el.className = 'status-msg ' + type;
+        el.innerHTML = message;
+    }
+</script>
+
+</body>
+</html>

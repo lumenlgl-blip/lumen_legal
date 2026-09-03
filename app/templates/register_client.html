@@ -1081,7 +1081,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 });
 
 // ============================================================
-// QR Y CARGA DESDE MÓVIL
+// QR Y CARGA DESDE MÓVIL (VERSIÓN DEFINITIVA)
 // ============================================================
 
 // Variable global para controlar qué input se está llenando
@@ -1097,7 +1097,9 @@ function generateTempId() {
     return clientTempId;
 }
 
-// Abrir escáner QR para un campo específico
+// ============================================================
+// ABRIR ESCÁNER QR PARA UN CAMPO ESPECÍFICO
+// ============================================================
 function openQRScanner(inputId) {
     console.log('🔍 Abriendo QR para:', inputId);
     
@@ -1112,16 +1114,15 @@ function openQRScanner(inputId) {
     const tempId = generateTempId();
     
     // 🔥 CONFIGURAR URL PÚBLICA PARA PRODUCCIÓN
-    // En desarrollo usa localhost, en producción usa la URL de Render
     let baseUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         baseUrl = window.location.origin; // http://localhost:8000
     } else {
-        // En producción, usar la URL de Render
         baseUrl = window.location.origin; // https://lumen-legal.onrender.com
     }
     
-    const uploadUrl = `${baseUrl}/api/clients/upload-mobile/${tempId}?doc_type=${currentDocType}`;
+    // 🔥 URL CORRECTA: Página HTML para móvil, NO el endpoint POST
+    const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
     
     console.log('📱 URL para QR:', uploadUrl);
     
@@ -1129,23 +1130,19 @@ function openQRScanner(inputId) {
     const container = document.getElementById('qrCodeContainer');
     container.innerHTML = '';
     
+    // Verificar si la librería QR está disponible
+    if (typeof QRCode === 'undefined') {
+        console.warn('⚠️ QRCode no está disponible, usando fallback');
+        showMobileUrlFallback(uploadUrl);
+        document.getElementById('mobileUploadStatus').style.display = 'none';
+        new bootstrap.Modal(document.getElementById('qrModal')).show();
+        startPollingForUpload(tempId);
+        return;
+    }
+    
     // Esperar un momento para que el DOM se actualice
     setTimeout(() => {
         try {
-            // Verificar si la librería QR está disponible
-            if (typeof QRCode === 'undefined') {
-                console.error('❌ QRCode no está definido');
-                container.innerHTML = `
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        <p>No se pudo cargar la librería QR.</p>
-                        <p class="small">URL: ${uploadUrl}</p>
-                        <p class="small">Abre esta URL en tu teléfono para subir el archivo.</p>
-                    </div>
-                `;
-                return;
-            }
-            
             // Generar QR
             const qr = new QRCode(container, {
                 text: uploadUrl,
@@ -1168,16 +1165,9 @@ function openQRScanner(inputId) {
             
         } catch (error) {
             console.error('❌ Error al generar QR:', error);
-            container.innerHTML = `
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <p>No se pudo generar el código QR.</p>
-                    <p class="small">URL: ${uploadUrl}</p>
-                    <p class="small">Abre esta URL en tu teléfono para subir el archivo.</p>
-                </div>
-            `;
+            showMobileUrlFallback(uploadUrl);
         }
-    }, 300); // Esperar 300ms para que el DOM se actualice
+    }, 300);
     
     // Mostrar estado de espera
     document.getElementById('mobileUploadStatus').style.display = 'none';
@@ -1189,6 +1179,9 @@ function openQRScanner(inputId) {
     startPollingForUpload(tempId);
 }
 
+// ============================================================
+// GENERAR QR (FUNCIÓN DE RESPALDO)
+// ============================================================
 function generateQRCode(url, container) {
     try {
         // Limpiar contenedor
@@ -1225,6 +1218,52 @@ function generateQRCode(url, container) {
     }
 }
 
+// ============================================================
+// SOLUCIÓN DE RESPALDO: Mostrar URL si el QR falla
+// ============================================================
+function showMobileUrlFallback(uploadUrl) {
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = `
+        <div class="alert alert-info" style="width:100%;">
+            <i class="bi bi-info-circle"></i>
+            <p><strong>Escanea o abre este enlace en tu teléfono:</strong></p>
+            <p style="word-break:break-all; font-size:0.8rem; background:#f0f4fa; padding:10px; border-radius:8px;">
+                ${uploadUrl}
+            </p>
+            <button class="btn btn-primary btn-sm mt-2" onclick="copyMobileUrl()">
+                <i class="bi bi-copy"></i> Copiar enlace
+            </button>
+            <button class="btn btn-success btn-sm mt-2 ms-2" onclick="openQRScanner(currentMobileField)">
+                <i class="bi bi-arrow-repeat"></i> Reintentar QR
+            </button>
+        </div>
+    `;
+}
+
+// ============================================================
+// COPIAR URL AL PORTAPAPELES
+// ============================================================
+function copyMobileUrl() {
+    const urlElement = document.querySelector('#qrCodeContainer .alert-info p:last-child');
+    if (urlElement) {
+        const url = urlElement.textContent.trim();
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles. Envíalo a tu teléfono.</p>', 'success');
+        }).catch(() => {
+            // Fallback: seleccionar el texto
+            const range = document.createRange();
+            range.selectNode(urlElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
+        });
+    }
+}
+
+// ============================================================
+// POLLING PARA VERIFICAR SUBIDA
+// ============================================================
 function startPollingForUpload(tempId) {
     // Mostrar indicador de espera
     if (currentMobileField) {
@@ -1297,14 +1336,15 @@ function startPollingForUpload(tempId) {
             }
             
         } catch (error) {
-            // El archivo aún no está disponible
-            console.log('Esperando archivo... intento', attempts);
+            console.log('⏳ Esperando archivo... intento', attempts);
         }
         
     }, 1000); // Intentar cada segundo
 }
 
-// Cuando se cierra el modal, ocultar el indicador
+// ============================================================
+// CUANDO SE CIERRA EL MODAL, OCULTAR EL INDICADOR
+// ============================================================
 document.getElementById('qrModal').addEventListener('hidden.bs.modal', function () {
     if (currentMobileField) {
         const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
@@ -1313,58 +1353,6 @@ document.getElementById('qrModal').addEventListener('hidden.bs.modal', function 
         }
     }
 });
-
-// ============================================================
-// ENDPOINT DE VERIFICACIÓN
-// ============================================================
-// Nota: En el backend, agregar este endpoint:
-// @router.get("/check-upload/{temp_id}")
-// async def check_upload(temp_id: str):
-//     # Verificar si existe archivo en uploads/temp/{temp_id}
-//     folder = f"uploads/temp/{temp_id}"
-//     if os.path.exists(folder):
-//         files = os.listdir(folder)
-//         if files:
-//             return {"success": True, "file_url": f"/uploads/temp/{temp_id}/{files[0]}", "filename": files[0]}
-//     return {"success": False}
-
-// ============================================================
-// SOLUCIÓN DE RESPALDO: Mostrar URL si el QR falla
-// ============================================================
-function showMobileUrlFallback(uploadUrl) {
-    const container = document.getElementById('qrCodeContainer');
-    container.innerHTML = `
-        <div class="alert alert-info" style="width:100%;">
-            <i class="bi bi-info-circle"></i>
-            <p><strong>No se pudo generar el código QR.</strong></p>
-            <p>Abre este enlace en tu teléfono:</p>
-            <p style="word-break:break-all; font-size:0.8rem; background:#f0f4fa; padding:10px; border-radius:8px;">
-                ${uploadUrl}
-            </p>
-            <button class="btn btn-primary btn-sm mt-2" onclick="copyMobileUrl()">
-                <i class="bi bi-copy"></i> Copiar enlace
-            </button>
-        </div>
-    `;
-}
-
-function copyMobileUrl() {
-    const urlElement = document.querySelector('#qrCodeContainer .alert-info p:last-child');
-    if (urlElement) {
-        const url = urlElement.textContent.trim();
-        navigator.clipboard.writeText(url).then(() => {
-            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
-        }).catch(() => {
-            // Fallback
-            const range = document.createRange();
-            range.selectNode(urlElement);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
-        });
-    }
-}
 </script>
 
 <!-- ================================================== -->

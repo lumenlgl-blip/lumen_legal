@@ -545,3 +545,19 @@ async def check_upload(temp_id: str):
                 "filename": filename
             }
     return {"success": False}
+
+
+# --- Página móvil para subir documentos ---
+@router.get("/upload-mobile-page")
+async def upload_mobile_page(
+    temp_id: str,
+    doc_type: str = "DOCUMENTO",
+    db: Session = Depends(get_db)
+):
+    """Sirve la página HTML para que el usuario suba el documento desde su teléfono"""
+    with open("app/templates/upload_mobile.html", "r", encoding="utf-8") as f:
+        html = f.read()
+    # Reemplazar los placeholders con los parámetros
+    html = html.replace('<!-- TEMP_ID -->', temp_id)
+    html = html.replace('<!-- DOC_TYPE -->', doc_type)
+    return HTMLResponse(content=html)

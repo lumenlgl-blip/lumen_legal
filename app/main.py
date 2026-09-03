@@ -66,6 +66,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/ping",
                 "/api/clients/upload-mobile",  # 🔥 PERMITE SUBIR DESDE MÓVIL SIN LOGIN
     "/api/clients/check-upload",   # 🔥 PERMITE VERIFICAR SUBIDA
+    "/api/clients/upload-mobile-page",  # 🔥 PERMITE LA PÁGINA MÓVIL
         ]
         
         # Verificar si la ruta es pública
