@@ -707,7 +707,7 @@
 <!-- ================================================== -->
 <!-- MODAL VISTA PREVIA PDF -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1">
+<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background:#0b1e33;">
@@ -1444,29 +1444,36 @@ function startPollingForUpload(tempId, docTypeKey) {
                 const currentField = currentMobileField;
                 const currentDoc = currentDocType;
                 
-                const fileInput = document.getElementById(currentField);
-                if (fileInput) {
-                    try {
-                        const fileResponse = await fetch(data.file_url);
-                        const blob = await fileResponse.blob();
-                        const file = new File([blob], data.filename, { type: 'application/pdf' });
-                        
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        fileInput.files = dataTransfer.files;
-                        
-                        const event = new Event('change', { bubbles: true });
-                        fileInput.dispatchEvent(event);
-                        
-                    } catch (err) {
-                        console.error('❌ Error:', err);
-                        const file = new File([''], data.filename, { type: 'application/pdf' });
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        fileInput.files = dataTransfer.files;
-                        fileInput.dispatchEvent(new Event('change'));
-                    }
-                }
+// Dentro de startPollingForUpload, cuando se recibe el archivo:
+const fileInput = document.getElementById(currentField);
+if (fileInput) {
+    try {
+        const fileResponse = await fetch(data.file_url);
+        const blob = await fileResponse.blob();
+        const file = new File([blob], data.filename, { type: 'application/pdf' });
+        
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        
+        // 🔥 DISPARAR EVENTO change PARA VISTA PREVIA
+        const event = new Event('change', { bubbles: true });
+        fileInput.dispatchEvent(event);
+        
+        // 🔥 FORZAR VISTA PREVIA DIRECTAMENTE
+        setTimeout(() => {
+            forcePdfPreview(currentField);
+        }, 500);
+        
+    } catch (err) {
+        console.error('❌ Error al cargar archivo desde móvil:', err);
+        const file = new File([''], data.filename, { type: 'application/pdf' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+    }
+}
                 
                 const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
                 if (statusEl) {
@@ -1516,6 +1523,31 @@ function startPollingForUpload(tempId, docTypeKey) {
         
     }, 1000);
 }
+
+// ============================================================
+// FORZAR VISTA PREVIA DEL PDF SUBIDO
+// ============================================================
+function forcePdfPreview(fileInputId) {
+    const fileInput = document.getElementById(fileInputId);
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        console.log('⚠️ No hay archivo para previsualizar');
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    const fileURL = URL.createObjectURL(file);
+    
+    const previewFrame = document.getElementById('pdfPreviewFrame');
+    if (previewFrame) {
+        previewFrame.src = fileURL;
+        console.log('✅ Vista previa forzada para:', file.name);
+        
+        // Mostrar el modal de vista previa automáticamente
+        const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+        previewModal.show();
+    }
+}
+
 
 // ============================================================
 // CUANDO SE CIERRA EL MODAL QR
