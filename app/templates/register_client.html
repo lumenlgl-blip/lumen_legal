@@ -5,7 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> <!-- ✅ AGREGAR ESTA LÍNEA -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -99,30 +99,38 @@
             margin: 0 auto;
         }
 
-        /* Progress bar */
+        /* 🔥 PROGRESS BAR MODERNA Y MÁS GRANDE */
         .progress-modern {
-            height: 8px;
+            height: 14px;
             border-radius: 40px;
             background: #eef3fa;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
+            position: relative;
         }
         .progress-modern .progress-bar {
             height: 100%;
             border-radius: 40px;
-            background: linear-gradient(90deg, #2a6df4, #5a8df4);
-            transition: width 0.6s ease;
+            background: linear-gradient(90deg, #2a6df4, #5a8df4, #7aa9ff);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 700;
-            font-size: 0;
+            font-size: 0.75rem;
+            color: white;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.04em;
+            box-shadow: 0 0 20px rgba(42,109,244,0.15);
         }
         .progress-modern .progress-bar::after {
             content: attr(data-label);
             font-size: 0.7rem;
             font-weight: 700;
-            color: #0b1e33;
+            color: white;
             position: absolute;
-            right: 8px;
+            right: 12px;
             top: 50%;
             transform: translateY(-50%);
         }
@@ -164,8 +172,8 @@
             cursor: default;
         }
         .step-circle {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: #eef3fa;
             display: flex;
@@ -489,7 +497,7 @@
     <!-- Formulario -->
     <div class="form-card">
 
-        <!-- Progress bar -->
+        <!-- 🔥 PROGRESS BAR MODERNA Y MÁS GRANDE -->
         <div class="progress-modern">
             <div class="progress-bar" id="progressBar" data-label="50%" style="width:50%;"></div>
         </div>
@@ -577,51 +585,62 @@
             <div class="step-content" id="step2">
                 <div class="step-title"><i class="bi bi-file-pdf"></i> Documentos (PDF)</div>
                 <div class="row g-3">
-<div class="col-md-4">
-    <label class="form-label-modern">CURP <span class="required">*</span></label>
-    <div class="d-flex gap-2 flex-wrap">
-        <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('curp_file')" style="white-space:nowrap;">
-            <i class="bi bi-qr-code"></i> Subir desde móvil
-        </button>
-    </div>
-    <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
-    <span class="file-status invalid" id="curpStatus">❌ No validado</span>
-    <!-- Indicador de carga móvil -->
-    <div id="curp_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-        <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
-    </div>
-</div>
-<div class="col-md-4">
-    <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
-    <div class="d-flex gap-2 flex-wrap">
-        <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('ine_file')" style="white-space:nowrap;">
-            <i class="bi bi-qr-code"></i> Subir desde móvil
-        </button>
-    </div>
-    <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
-    <span class="file-status invalid" id="ineStatus">❌ No validado</span>
-    <!-- Indicador de carga móvil -->
-    <div id="ine_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-        <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
-    </div>
-</div>
-<div class="col-md-4">
-    <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
-    <div class="d-flex gap-2 flex-wrap">
-        <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('domicilio_file')" style="white-space:nowrap;">
-            <i class="bi bi-qr-code"></i> Subir desde móvil
-        </button>
-    </div>
-    <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
-    <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
-    <!-- Indicador de carga móvil -->
-    <div id="domicilio_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-        <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
-    </div>
-</div>
+                    <!-- CURP -->
+                    <div class="col-md-4">
+                        <label class="form-label-modern">CURP <span class="required">*</span></label>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('curp_file')" style="white-space:nowrap;">
+                                <i class="bi bi-qr-code"></i> Subir desde móvil
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearFileInput('curp_file', 'curpStatus', 'curp')" style="white-space:nowrap; display:none;" id="curp_clear_btn">
+                                <i class="bi bi-trash3"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
+                        <span class="file-status invalid" id="curpStatus">❌ No validado</span>
+                        <div id="curp_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+                            <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        </div>
+                    </div>
+
+                    <!-- INE -->
+                    <div class="col-md-4">
+                        <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('ine_file')" style="white-space:nowrap;">
+                                <i class="bi bi-qr-code"></i> Subir desde móvil
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearFileInput('ine_file', 'ineStatus', 'ine')" style="white-space:nowrap; display:none;" id="ine_clear_btn">
+                                <i class="bi bi-trash3"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
+                        <span class="file-status invalid" id="ineStatus">❌ No validado</span>
+                        <div id="ine_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+                            <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        </div>
+                    </div>
+
+                    <!-- DOMICILIO -->
+                    <div class="col-md-4">
+                        <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('domicilio_file')" style="white-space:nowrap;">
+                                <i class="bi bi-qr-code"></i> Subir desde móvil
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearFileInput('domicilio_file', 'domicilioStatus', 'domicilio')" style="white-space:nowrap; display:none;" id="domicilio_clear_btn">
+                                <i class="bi bi-trash3"></i> Eliminar
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
+                        <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
+                        <div id="domicilio_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+                            <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        </div>
+                    </div>
                 </div>
                 <div class="btn-group-actions">
                     <div class="left-actions">
@@ -719,10 +738,47 @@
     </div>
 </div>
 
+<!-- ================================================== -->
+<!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#0b1e33;">
+                <h5 class="modal-title text-white"><i class="bi bi-qr-code me-2"></i>Subir desde móvil</h5>
+                <button type="button" class="btn-close btn-close-white" id="closeQRModalBtn" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p id="qrModalTitle">Escanea este QR con tu teléfono para subir el documento:</p>
+                <div id="qrCodeContainer" style="margin: 20px auto; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="text-muted small mt-2">Generando código QR...</p>
+                </div>
+                <p class="text-muted small">
+                    <i class="bi bi-phone me-1"></i> Abre la cámara de tu teléfono y escanea el código.<br>
+                    Selecciona la foto o archivo y se subirá automáticamente.
+                </p>
+                <div id="mobileUploadStatus" style="display:none;" class="alert alert-success">
+                    <i class="bi bi-check-circle"></i> Archivo recibido correctamente.<br>
+                    <small>Cerrando automáticamente...</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="openQRScanner(currentMobileField)">
+                    <i class="bi bi-arrow-repeat"></i> Reintentar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ============================================================
-// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
+// FUNCIONES ORIGINALES
 // ============================================================
 
 let currentStep = 1;
@@ -842,6 +898,51 @@ function validateStep(step) {
     return valid;
 }
 
+// ============================================================
+// ELIMINAR ARCHIVO ADJUNTO
+// ============================================================
+function clearFileInput(inputId, statusId, fileKey) {
+    showConfirm(
+        'Eliminar archivo',
+        '<p>¿Estás seguro de que deseas eliminar este archivo adjunto?</p>',
+        function() {
+            const fileInput = document.getElementById(inputId);
+            if (fileInput) {
+                fileInput.value = '';
+                const dataTransfer = new DataTransfer();
+                fileInput.files = dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+            
+            filesValidated[fileKey] = false;
+            
+            const statusEl = document.getElementById(statusId);
+            if (statusEl) {
+                statusEl.textContent = '❌ No validado';
+                statusEl.className = 'file-status invalid';
+            }
+            
+            const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
+            if (clearBtn) {
+                clearBtn.style.display = 'none';
+            }
+            
+            const mobileStatus = document.getElementById(inputId.replace('_file', '_mobile_status'));
+            if (mobileStatus) {
+                mobileStatus.style.display = 'none';
+                mobileStatus.textContent = '';
+            }
+            
+            const previewFrame = document.getElementById('pdfPreviewFrame');
+            if (previewFrame) {
+                previewFrame.src = '';
+            }
+            
+            showNotification('Archivo eliminado', '<p>El archivo ha sido eliminado correctamente.</p>', 'info');
+        }
+    );
+}
+
 function nextStep(step) {
     if (validateStep(step)) {
         showStep(step + 1);
@@ -935,37 +1036,66 @@ document.getElementById('address').addEventListener('keydown', function(e) { ent
 // Ocupación
 document.getElementById('occupation').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 
-// --- VISTA PREVIA DE PDFs ---
-
+// --- VISTA PREVIA DE PDFs (CON BOTÓN ELIMINAR) ---
 function handleFilePreview(inputId, statusId, fileKey) {
     document.getElementById(inputId).addEventListener('change', function(e) {
         const file = this.files[0];
-        if (!file) return;
+        const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
+        
+        if (!file) {
+            if (clearBtn) {
+                clearBtn.style.display = 'none';
+            }
+            return;
+        }
 
-        if (file.type !== 'application/pdf') {
-            showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error');
+        if (file.type !== 'application/pdf' && 
+            file.type !== 'image/jpeg' && 
+            file.type !== 'image/png') {
+            showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF o imagen (JPG, PNG).</p>', 'error');
             this.value = '';
             filesValidated[fileKey] = false;
             document.getElementById(statusId).textContent = '❌ No validado';
             document.getElementById(statusId).className = 'file-status invalid';
+            if (clearBtn) {
+                clearBtn.style.display = 'none';
+            }
             return;
         }
 
-        filesValidated[fileKey] = false;
-        pendingFileInput = this;
+        if (clearBtn) {
+            clearBtn.style.display = 'inline-block';
+        }
 
+        const currentFile = file;
+        const currentFileKey = fileKey;
+        const currentStatusId = statusId;
+        
         const fileURL = URL.createObjectURL(file);
-        document.getElementById('pdfPreviewFrame').src = fileURL;
-
+        
+        const previewFrame = document.getElementById('pdfPreviewFrame');
+        if (previewFrame) {
+            previewFrame.src = fileURL;
+        }
+        
         const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
         previewModal.show();
-
+        
         document.getElementById('acceptFileBtn').onclick = function() {
-            filesValidated[fileKey] = true;
+            filesValidated[currentFileKey] = true;
             previewModal.hide();
-            document.getElementById(statusId).textContent = '✅ Validado: ' + file.name;
-            document.getElementById(statusId).className = 'file-status valid';
-            showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
+            
+            const statusEl = document.getElementById(currentStatusId);
+            if (statusEl) {
+                statusEl.textContent = '✅ Validado: ' + currentFile.name;
+                statusEl.className = 'file-status valid';
+            }
+            
+            showNotification('Archivo aceptado', `<p><strong>${currentFile.name}</strong> ha sido validado correctamente.</p>`, 'success');
+            
+            setTimeout(() => {
+                URL.revokeObjectURL(fileURL);
+            }, 1000);
         };
     });
 }
@@ -1010,7 +1140,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                 hideLoading();
 
                 if (response.ok) {
-                    // La respuesta es un PDF (blob)
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
@@ -1030,7 +1159,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                         'success'
                     );
 
-                    // Limpiar formulario
                     document.getElementById('registerForm').reset();
                     document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
                     filesValidated = { curp: false, ine: false, domicilio: false };
@@ -1043,7 +1171,6 @@ document.getElementById('registerForm').addEventListener('submit', async functio
                     showStep(1);
 
                 } else {
-                    // Si hay error, la respuesta es JSON
                     let result;
                     try {
                         result = await response.json();
@@ -1084,12 +1211,11 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 // QR Y CARGA DESDE MÓVIL (VERSIÓN DEFINITIVA)
 // ============================================================
 
-// Variable global para controlar qué input se está llenando
 let currentMobileField = null;
 let currentDocType = null;
 let clientTempId = null;
+let isProcessingQR = false;
 
-// Generar ID temporal único para la sesión
 function generateTempId() {
     if (!clientTempId) {
         clientTempId = 'temp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -1098,39 +1224,61 @@ function generateTempId() {
 }
 
 // ============================================================
-// ABRIR ESCÁNER QR PARA UN CAMPO ESPECÍFICO
+// ABRIR ESCÁNER QR (CON VERIFICACIÓN DE ARCHIVO EXISTENTE)
 // ============================================================
 function openQRScanner(inputId) {
+    const fileInput = document.getElementById(inputId);
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        const fileName = fileInput.files[0].name;
+        showConfirm(
+            'Archivo existente',
+            `<p>Ya tienes un archivo adjunto: <strong>${fileName}</strong></p>
+             <p>¿Deseas reemplazarlo con uno nuevo desde el móvil?</p>`,
+            function() {
+                clearFileInputDirect(inputId);
+                setTimeout(() => {
+                    openQRScannerDirect(inputId);
+                }, 300);
+            }
+        );
+        return;
+    }
+    openQRScannerDirect(inputId);
+}
+
+// ============================================================
+// ABRIR ESCÁNER QR DIRECTAMENTE (SIN VERIFICACIÓN)
+// ============================================================
+function openQRScannerDirect(inputId) {
+    if (isProcessingQR) {
+        return;
+    }
+    
     console.log('🔍 Abriendo QR para:', inputId);
     
     currentMobileField = inputId;
+    isProcessingQR = true;
     
-    // Determinar tipo de documento
     if (inputId === 'curp_file') currentDocType = 'CURP';
     else if (inputId === 'ine_file') currentDocType = 'INE';
     else if (inputId === 'domicilio_file') currentDocType = 'DOMICILIO';
     
-    // Generar token temporal
     const tempId = generateTempId();
     
-    // 🔥 CONFIGURAR URL PÚBLICA PARA PRODUCCIÓN
     let baseUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        baseUrl = window.location.origin; // http://localhost:8000
+        baseUrl = window.location.origin;
     } else {
-        baseUrl = window.location.origin; // https://lumen-legal.onrender.com
+        baseUrl = window.location.origin;
     }
     
-    // 🔥 URL CORRECTA: Página HTML para móvil, NO el endpoint POST
     const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
     
     console.log('📱 URL para QR:', uploadUrl);
     
-    // Mostrar QR
     const container = document.getElementById('qrCodeContainer');
     container.innerHTML = '';
     
-    // Verificar si la librería QR está disponible
     if (typeof QRCode === 'undefined') {
         console.warn('⚠️ QRCode no está disponible, usando fallback');
         showMobileUrlFallback(uploadUrl);
@@ -1140,10 +1288,8 @@ function openQRScanner(inputId) {
         return;
     }
     
-    // Esperar un momento para que el DOM se actualice
     setTimeout(() => {
         try {
-            // Generar QR
             const qr = new QRCode(container, {
                 text: uploadUrl,
                 width: 220,
@@ -1155,7 +1301,6 @@ function openQRScanner(inputId) {
             
             console.log('✅ QR generado correctamente');
             
-            // Agregar instrucciones debajo del QR
             const linkEl = document.createElement('p');
             linkEl.className = 'text-muted small mt-2';
             linkEl.style.wordBreak = 'break-all';
@@ -1169,57 +1314,47 @@ function openQRScanner(inputId) {
         }
     }, 300);
     
-    // Mostrar estado de espera
     document.getElementById('mobileUploadStatus').style.display = 'none';
-    
-    // Mostrar modal
     new bootstrap.Modal(document.getElementById('qrModal')).show();
-    
-    // Iniciar polling para verificar si se subió el archivo
     startPollingForUpload(tempId);
 }
 
 // ============================================================
-// GENERAR QR (FUNCIÓN DE RESPALDO)
+// ELIMINAR ARCHIVO DIRECTAMENTE (SIN CONFIRMACIÓN)
 // ============================================================
-function generateQRCode(url, container) {
-    try {
-        // Limpiar contenedor
-        container.innerHTML = '';
-        
-        // Crear un div específico para el QR
-        const qrDiv = document.createElement('div');
-        qrDiv.id = 'qrCodeImage';
-        container.appendChild(qrDiv);
-        
-        // Generar QR
-        const qr = new QRCode(qrDiv, {
-            text: url,
-            width: 220,
-            height: 220,
-            colorDark: '#0b1e33',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-        });
-        
-        // Agregar la URL debajo
-        const linkEl = document.createElement('p');
-        linkEl.className = 'text-muted small mt-2';
-        linkEl.style.wordBreak = 'break-all';
-        linkEl.style.fontSize = '0.65rem';
-        linkEl.textContent = url;
-        container.appendChild(linkEl);
-        
-        console.log('✅ QR generado correctamente');
-        
-    } catch (e) {
-        console.error('❌ Error al generar QR:', e);
-        showMobileUrlFallback(url);
+function clearFileInputDirect(inputId) {
+    const fileInput = document.getElementById(inputId);
+    if (fileInput) {
+        fileInput.value = '';
+        const dataTransfer = new DataTransfer();
+        fileInput.files = dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+    }
+    
+    const fileKey = inputId.replace('_file', '');
+    filesValidated[fileKey] = false;
+    
+    const statusId = fileKey + 'Status';
+    const statusEl = document.getElementById(statusId);
+    if (statusEl) {
+        statusEl.textContent = '❌ No validado';
+        statusEl.className = 'file-status invalid';
+    }
+    
+    const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
+    if (clearBtn) {
+        clearBtn.style.display = 'none';
+    }
+    
+    const mobileStatus = document.getElementById(inputId.replace('_file', '_mobile_status'));
+    if (mobileStatus) {
+        mobileStatus.style.display = 'none';
+        mobileStatus.textContent = '';
     }
 }
 
 // ============================================================
-// SOLUCIÓN DE RESPALDO: Mostrar URL si el QR falla
+// SOLUCIÓN DE RESPALDO
 // ============================================================
 function showMobileUrlFallback(uploadUrl) {
     const container = document.getElementById('qrCodeContainer');
@@ -1233,16 +1368,10 @@ function showMobileUrlFallback(uploadUrl) {
             <button class="btn btn-primary btn-sm mt-2" onclick="copyMobileUrl()">
                 <i class="bi bi-copy"></i> Copiar enlace
             </button>
-            <button class="btn btn-success btn-sm mt-2 ms-2" onclick="openQRScanner(currentMobileField)">
-                <i class="bi bi-arrow-repeat"></i> Reintentar QR
-            </button>
         </div>
     `;
 }
 
-// ============================================================
-// COPIAR URL AL PORTAPAPELES
-// ============================================================
 function copyMobileUrl() {
     const urlElement = document.querySelector('#qrCodeContainer .alert-info p:last-child');
     if (urlElement) {
@@ -1250,7 +1379,6 @@ function copyMobileUrl() {
         navigator.clipboard.writeText(url).then(() => {
             showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles. Envíalo a tu teléfono.</p>', 'success');
         }).catch(() => {
-            // Fallback: seleccionar el texto
             const range = document.createRange();
             range.selectNode(urlElement);
             window.getSelection().removeAllRanges();
@@ -1264,11 +1392,7 @@ function copyMobileUrl() {
 // ============================================================
 // POLLING PARA VERIFICAR SUBIDA
 // ============================================================
-// ============================================================
-// POLLING PARA VERIFICAR SUBIDA (CORREGIDO)
-// ============================================================
 function startPollingForUpload(tempId) {
-    // Mostrar indicador de espera
     if (currentMobileField) {
         const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
         if (statusEl) {
@@ -1277,14 +1401,13 @@ function startPollingForUpload(tempId) {
     }
     
     let attempts = 0;
-    const maxAttempts = 60; // 60 segundos máximo
-    let fileReceived = false; // Evitar múltiples procesamientos
+    const maxAttempts = 60;
+    let fileReceived = false;
     
     const checkInterval = setInterval(async () => {
         attempts++;
         
         try {
-            // Verificar si ya se subió el archivo
             const response = await fetch(`/api/clients/check-upload/${tempId}`);
             const data = await response.json();
             
@@ -1292,29 +1415,39 @@ function startPollingForUpload(tempId) {
                 fileReceived = true;
                 clearInterval(checkInterval);
                 
-                // ✅ GUARDAR EL TIPO DE DOCUMENTO ACTUAL
-                const currentDoc = currentDocType;
                 const currentField = currentMobileField;
+                const currentDoc = currentDocType;
                 
-                // Actualizar el input file con el archivo subido
                 const fileInput = document.getElementById(currentField);
                 if (fileInput) {
-                    // Crear un objeto File simulado
-                    const file = new File([''], data.filename, { type: 'application/pdf' });
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    fileInput.files = dataTransfer.files;
-                    fileInput.dispatchEvent(new Event('change'));
+                    try {
+                        const fileResponse = await fetch(data.file_url);
+                        const blob = await fileResponse.blob();
+                        const file = new File([blob], data.filename, { type: 'application/pdf' });
+                        
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                        
+                        const event = new Event('change', { bubbles: true });
+                        fileInput.dispatchEvent(event);
+                        
+                    } catch (err) {
+                        console.error('❌ Error al cargar archivo desde móvil:', err);
+                        const file = new File([''], data.filename, { type: 'application/pdf' });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                        fileInput.dispatchEvent(new Event('change'));
+                    }
                 }
                 
-                // Actualizar estado
                 const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
                 if (statusEl) {
                     statusEl.textContent = '✅ Archivo subido desde móvil';
                     statusEl.style.color = '#1a8b5c';
                 }
                 
-                // Mostrar éxito en modal
                 document.getElementById('mobileUploadStatus').style.display = 'block';
                 document.getElementById('mobileUploadStatus').innerHTML = `
                     <i class="bi bi-check-circle"></i> 
@@ -1322,19 +1455,18 @@ function startPollingForUpload(tempId) {
                     <small>Cerrando automáticamente...</small>
                 `;
                 
-                // Recargar el estado de validación
                 filesValidated[currentField.replace('_file', '')] = true;
                 const statusId = currentField.replace('_file', '') + 'Status';
                 document.getElementById(statusId).textContent = '✅ Validado desde móvil';
                 document.getElementById(statusId).className = 'file-status valid';
                 
-                // 🔥 CERRAR MODAL AUTOMÁTICAMENTE DESPUÉS DE 2 SEGUNDOS
                 setTimeout(() => {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
                     if (modal) {
                         modal.hide();
                     }
-                }, 2500);
+                    isProcessingQR = false;
+                }, 2000);
             }
             
             if (attempts >= maxAttempts) {
@@ -1344,17 +1476,18 @@ function startPollingForUpload(tempId) {
                     statusEl.textContent = '⏰ Tiempo de espera agotado. Intenta de nuevo.';
                     statusEl.style.color = '#dc3545';
                 }
+                isProcessingQR = false;
             }
             
         } catch (error) {
             console.log('⏳ Esperando archivo... intento', attempts);
         }
         
-    }, 1000); // Intentar cada segundo
+    }, 1000);
 }
 
 // ============================================================
-// CUANDO SE CIERRA EL MODAL, OCULTAR EL INDICADOR
+// CUANDO SE CIERRA EL MODAL QR
 // ============================================================
 document.getElementById('qrModal').addEventListener('hidden.bs.modal', function () {
     if (currentMobileField) {
@@ -1363,44 +1496,8 @@ document.getElementById('qrModal').addEventListener('hidden.bs.modal', function 
             statusEl.style.display = 'none';
         }
     }
+    isProcessingQR = false;
 });
 </script>
-
-<<!-- ================================================== -->
-<!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-qr-code me-2"></i>Subir desde móvil</h5>
-                <button type="button" class="btn-close btn-close-white" id="closeQRModalBtn" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p id="qrModalTitle">Escanea este QR con tu teléfono para subir el documento:</p>
-                <div id="qrCodeContainer" style="margin: 20px auto; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando...</span>
-                    </div>
-                    <p class="text-muted small mt-2">Generando código QR...</p>
-                </div>
-                <p class="text-muted small">
-                    <i class="bi bi-phone me-1"></i> Abre la cámara de tu teléfono y escanea el código.<br>
-                    Selecciona la foto o archivo y se subirá automáticamente.
-                </p>
-                <div id="mobileUploadStatus" style="display:none;" class="alert alert-success">
-                    <i class="bi bi-check-circle"></i> Archivo recibido correctamente.<br>
-                    <small>Cerrando automáticamente...</small>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="openQRScanner(currentMobileField)">
-                    <i class="bi bi-arrow-repeat"></i> Reintentar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 </html>
