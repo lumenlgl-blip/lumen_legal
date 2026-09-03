@@ -7,6 +7,9 @@ from app.models.core import Client, ClientDocument, Contract, Payment, CourtCase
 import uuid, os
 from datetime import datetime
 import aiofiles
+from PIL import Image
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
 router = APIRouter(prefix="/clients", tags=["Clients"])
 
@@ -69,6 +72,54 @@ def generate_client_pdf(client_data):
     
     pdf_bytes = HTML(string=html_content).write_pdf()
     return pdf_bytes
+
+def convert_image_to_pdf(image_bytes):
+    """Convierte una imagen JPG/PNG a PDF usando ReportLab"""
+    try:
+        from PIL import Image
+        import io
+        from reportlab.pdfgen import canvas
+        from reportlab.lib.pagesizes import letter
+        
+        # Abrir imagen con PIL
+        img = Image.open(io.BytesIO(image_bytes))
+        
+        # Crear buffer para PDF
+        buffer = io.BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        
+        # Obtener tamaño de página
+        width, height = letter
+        
+        # Redimensionar imagen para que quepa en la página
+        img_width, img_height = img.size
+        scale = min(width / img_width, height / img_height) * 0.9
+        new_width = img_width * scale
+        new_height = img_height * scale
+        
+        # Calcular posición para centrar
+        x = (width - new_width) / 2
+        y = (height - new_height) / 2
+        
+        # Guardar imagen temporal
+        temp_path = "temp_img.jpg"
+        img.save(temp_path, "JPEG", quality=95)
+        
+        # Dibujar en PDF
+        c.drawImage(temp_path, x, y, new_width, new_height)
+        c.save()
+        
+        # Limpiar temp
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        
+        buffer.seek(0)
+        return buffer.getvalue()
+        
+    except Exception as e:
+        print(f"❌ Error al convertir imagen a PDF: {e}")
+        # Si falla, devolver los bytes originales
+        return image_bytes
 
 @router.get("/register", response_class=HTMLResponse)
 async def show_register_form():
@@ -486,6 +537,7 @@ async def regenerate_constancia(client_id: int, db: Session = Depends(get_db)):
     )
     
     # --- Subir documento desde móvil (vía QR) ---
+# --- Subir documento desde móvil (vía QR) ---
 @router.post("/upload-mobile/{client_temp_id}")
 async def upload_mobile_document(
     client_temp_id: str,
@@ -500,6 +552,11 @@ async def upload_mobile_document(
         # Guardar archivo temporalmente
         upload_dir = f"uploads/temp/{client_temp_id}"
         os.makedirs(upload_dir, exist_ok=True)
+        
+        # Limpiar archivos anteriores en el directorio
+        for old_file in os.listdir(upload_dir):
+            if old_file.startswith(doc_type):
+                os.remove(os.path.join(upload_dir, old_file))
         
         filename = f"{doc_type}_{uuid.uuid4().hex[:8]}.pdf"
         file_path = os.path.join(upload_dir, filename)

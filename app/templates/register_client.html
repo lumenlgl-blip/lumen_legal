@@ -1264,6 +1264,9 @@ function copyMobileUrl() {
 // ============================================================
 // POLLING PARA VERIFICAR SUBIDA
 // ============================================================
+// ============================================================
+// POLLING PARA VERIFICAR SUBIDA (CORREGIDO)
+// ============================================================
 function startPollingForUpload(tempId) {
     // Mostrar indicador de espera
     if (currentMobileField) {
@@ -1275,6 +1278,7 @@ function startPollingForUpload(tempId) {
     
     let attempts = 0;
     const maxAttempts = 60; // 60 segundos máximo
+    let fileReceived = false; // Evitar múltiples procesamientos
     
     const checkInterval = setInterval(async () => {
         attempts++;
@@ -1284,12 +1288,16 @@ function startPollingForUpload(tempId) {
             const response = await fetch(`/api/clients/check-upload/${tempId}`);
             const data = await response.json();
             
-            if (data.success && data.file_url) {
-                // Archivo recibido
+            if (data.success && data.file_url && !fileReceived) {
+                fileReceived = true;
                 clearInterval(checkInterval);
                 
+                // ✅ GUARDAR EL TIPO DE DOCUMENTO ACTUAL
+                const currentDoc = currentDocType;
+                const currentField = currentMobileField;
+                
                 // Actualizar el input file con el archivo subido
-                const fileInput = document.getElementById(currentMobileField);
+                const fileInput = document.getElementById(currentField);
                 if (fileInput) {
                     // Crear un objeto File simulado
                     const file = new File([''], data.filename, { type: 'application/pdf' });
@@ -1300,7 +1308,7 @@ function startPollingForUpload(tempId) {
                 }
                 
                 // Actualizar estado
-                const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+                const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
                 if (statusEl) {
                     statusEl.textContent = '✅ Archivo subido desde móvil';
                     statusEl.style.color = '#1a8b5c';
@@ -1310,20 +1318,23 @@ function startPollingForUpload(tempId) {
                 document.getElementById('mobileUploadStatus').style.display = 'block';
                 document.getElementById('mobileUploadStatus').innerHTML = `
                     <i class="bi bi-check-circle"></i> 
-                    ${currentDocType} subido correctamente desde móvil.<br>
-                    <small>Haz clic en "Cerrar" para continuar.</small>
+                    ${currentDoc} subido correctamente desde móvil.<br>
+                    <small>Cerrando automáticamente...</small>
                 `;
                 
-                // Cerrar modal después de 2 segundos
-                setTimeout(() => {
-                    bootstrap.Modal.getInstance(document.getElementById('qrModal')).hide();
-                }, 2500);
-                
                 // Recargar el estado de validación
-                filesValidated[currentMobileField.replace('_file', '')] = true;
-                const statusId = currentMobileField.replace('_file', '') + 'Status';
+                filesValidated[currentField.replace('_file', '')] = true;
+                const statusId = currentField.replace('_file', '') + 'Status';
                 document.getElementById(statusId).textContent = '✅ Validado desde móvil';
                 document.getElementById(statusId).className = 'file-status valid';
+                
+                // 🔥 CERRAR MODAL AUTOMÁTICAMENTE DESPUÉS DE 2 SEGUNDOS
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                }, 2500);
             }
             
             if (attempts >= maxAttempts) {
@@ -1355,21 +1366,18 @@ document.getElementById('qrModal').addEventListener('hidden.bs.modal', function 
 });
 </script>
 
-<!-- ================================================== -->
-<!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
-<!-- ================================================== -->
 <<!-- ================================================== -->
 <!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="qrModal" tabindex="-1">
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" style="background:#0b1e33;">
                 <h5 class="modal-title text-white"><i class="bi bi-qr-code me-2"></i>Subir desde móvil</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" id="closeQRModalBtn" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-center">
-                <p>Escanea este QR con tu teléfono para subir el documento:</p>
+                <p id="qrModalTitle">Escanea este QR con tu teléfono para subir el documento:</p>
                 <div id="qrCodeContainer" style="margin: 20px auto; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Cargando...</span>
@@ -1381,11 +1389,15 @@ document.getElementById('qrModal').addEventListener('hidden.bs.modal', function 
                     Selecciona la foto o archivo y se subirá automáticamente.
                 </p>
                 <div id="mobileUploadStatus" style="display:none;" class="alert alert-success">
-                    <i class="bi bi-check-circle"></i> Archivo recibido correctamente.
+                    <i class="bi bi-check-circle"></i> Archivo recibido correctamente.<br>
+                    <small>Cerrando automáticamente...</small>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="openQRScanner(currentMobileField)">
+                    <i class="bi bi-arrow-repeat"></i> Reintentar
+                </button>
             </div>
         </div>
     </div>
