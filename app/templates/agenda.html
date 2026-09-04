@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda Judicial · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -316,6 +318,44 @@
 
                 .calendar-day.weekend .day-number {
             color: #dc3545;
+        }
+                /* ========== ADAPTACIÓN MÓVIL AGENDA ========== */
+        @media (max-width: 992px){
+            .btn-menu{position:relative; top:auto; left:auto; margin:0 0 16px 16px; display:inline-flex;}
+            body{padding-top:12px;}
+            .page-title{font-size:1.8rem; margin-left:16px;}
+        }
+        @media (max-width: 768px){
+            .container{padding-left:0; padding-right:0;}
+            .page-title{font-size:1.4rem; margin:0 12px 12px 12px;}
+            .page-title i{font-size:1.4rem;}
+            .card-modern{border-radius:20px; padding:16px !important; margin:0 12px 12px 12px;}
+            .calendar-header{flex-wrap:wrap; gap:8px;}
+            .calendar-header h3{font-size:1.2rem; order:1; width:100%; text-align:center;}
+            .calendar-header .btn-circle{height:40px; font-size:1rem;}
+            .calendar-grid{gap:4px;}
+            .calendar-day{min-height:80px; border-radius:12px; padding:6px 4px 4px 6px;}
+            .day-number{font-size:0.85rem;}
+            .event-badge{font-size:0.55rem; padding:2px 6px; margin:1px 0;}
+            .weekday-label{font-size:0.65rem;}
+            #userFilterContainer .row{--bs-gutter-y:6px;}
+            .form-control,.form-select{font-size:16px;}
+            .side-panel-title{font-size:1rem;}
+        }
+        @media (max-width: 480px){
+            .btn-menu{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
+            .page-title{margin:0 10px 12px 10px; font-size:1.2rem;}
+            .card-modern{margin:0 10px 10px 10px; border-radius:16px; padding:12px !important;}
+            .calendar-grid{gap:3px;}
+            .calendar-day{min-height:65px; border-radius:10px; padding:4px 2px 2px 4px;}
+            .day-number{font-size:0.75rem; margin-bottom:2px;}
+            .event-badge{font-size:0.5rem; padding:1px 4px; max-width:100%;}
+            /* En móvil solo muestra 2 eventos + contador */
+            .calendar-day .event-badge:nth-child(n+4){display:none;}
+            .weekday-label{font-size:0.6rem; padding:2px 0;}
+            .btn-circle{width:36px; height:36px; font-size:0.9rem;}
+            .btn-circle[style*="width:auto"]{padding:0 12px !important; font-size:0.75rem !important;}
+            .upcoming-event-card{padding:10px 12px; border-radius:12px;}
         }
     </style>
 </head>
@@ -658,7 +698,11 @@ async function loadCalendarWithFilter(filterValue) {
             numberSpan.textContent = day;
             dayDiv.appendChild(numberSpan);
 
-            dayEvents.forEach(ev => {
+            // Lógica responsive: en móvil solo muestra 2 eventos
+            const isMobile = window.innerWidth <= 480;
+            const eventsToShow = isMobile ? dayEvents.slice(0,2) : dayEvents;
+
+            eventsToShow.forEach(ev => {
                 const badge = document.createElement('div');
                 let badgeClass = `event-badge event-${ev.event_type}`;
                 if (ev.is_completed) {
@@ -669,6 +713,16 @@ async function loadCalendarWithFilter(filterValue) {
                 badge.setAttribute('onclick', `event.stopPropagation(); openEventDetail(${ev.id})`);
                 dayDiv.appendChild(badge);
             });
+
+            if(isMobile && dayEvents.length > 2){
+                const more = document.createElement('div');
+                more.className = 'event-badge';
+                more.style.background = '#0b1e33';
+                more.style.color = 'white';
+                more.textContent = `+${dayEvents.length-2} más`;
+                more.setAttribute('onclick', `event.stopPropagation(); openCreateModal('${dateStr}')`);
+                dayDiv.appendChild(more);
+            }
 
             grid.appendChild(dayDiv);
         }
