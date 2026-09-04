@@ -6,177 +6,300 @@
     <title>Subir Documento · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background: #f2f5fb;
+            background: #f0f4fc;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fondo animado */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(42, 109, 244, 0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse at 70% 80%, rgba(26, 139, 92, 0.04) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(2%, 1%) rotate(2deg); }
         }
 
         /* Tarjeta principal */
         .upload-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 32px;
-            padding: 36px 32px 32px;
-            max-width: 500px;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 40px 36px 36px;
+            max-width: 520px;
             width: 100%;
-            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.16);
-            border: 1px solid rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
+            box-shadow: 0 30px 80px -20px rgba(0, 20, 40, 0.2),
+                        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+
         .upload-card:hover {
-            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.2);
+            box-shadow: 0 40px 100px -24px rgba(0, 20, 40, 0.25);
+            transform: translateY(-2px);
         }
 
         /* Logo */
         .logo-area {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .logo-area::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #2a6df4, #1a8b5c);
+            border-radius: 4px;
         }
         .logo-area img {
-            max-height: 90px;
+            max-height: 80px;
             width: auto;
             border-radius: 16px;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .logo-area img:hover {
-            transform: scale(1.03);
+            transform: scale(1.05) rotate(-1deg);
         }
 
         /* Títulos */
         .upload-title {
-            font-weight: 700;
-            font-size: 1.5rem;
+            font-weight: 800;
+            font-size: 1.6rem;
             color: #0b1e33;
             text-align: center;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
+            margin-top: 8px;
         }
         .upload-title i {
-            color: #2a6df4;
-            margin-right: 8px;
+            background: linear-gradient(135deg, #2a6df4, #5a8df4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 10px;
         }
         .upload-subtitle {
             text-align: center;
             color: #6b7b8f;
-            font-size: 0.9rem;
-            margin-bottom: 24px;
+            font-size: 0.92rem;
+            margin-bottom: 28px;
+            line-height: 1.6;
         }
         .upload-subtitle .badge-doc {
-            background: #eef3fa;
-            padding: 2px 14px;
+            display: inline-block;
+            background: linear-gradient(135deg, #eef3fa, #e3eaf5);
+            padding: 4px 18px;
             border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #2a4a7a;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #1a3a6a;
+            margin-top: 6px;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(42, 109, 244, 0.08);
         }
 
         /* Drop zone */
         .drop-zone {
-            border: 2px dashed #d0d8e3;
-            border-radius: 20px;
-            padding: 32px 20px;
+            border: 2.5px dashed #d5deea;
+            border-radius: 24px;
+            padding: 38px 20px 34px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: rgba(250,252,255,0.6);
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: rgba(250, 252, 255, 0.7);
             position: relative;
+            overflow: hidden;
+        }
+        .drop-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(42, 109, 244, 0.03), rgba(26, 139, 92, 0.02));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .drop-zone:hover::before {
+            opacity: 1;
         }
         .drop-zone:hover {
             border-color: #2a6df4;
-            background: #f0f7ff;
-            transform: translateY(-2px);
+            background: #f6faff;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px -12px rgba(42, 109, 244, 0.15);
         }
         .drop-zone.dragover {
             border-color: #2a6df4;
-            background: #e3effa;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            background: #ebf3fe;
+            box-shadow: 0 0 0 6px rgba(42, 109, 244, 0.06);
+            transform: scale(1.01);
         }
         .drop-zone .icon-wrap {
-            font-size: 3.5rem;
-            color: #8a9bb0;
-            transition: all 0.3s ease;
+            font-size: 3.8rem;
+            color: #9aabbf;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: block;
+            margin-bottom: 4px;
         }
         .drop-zone:hover .icon-wrap {
             color: #2a6df4;
-            transform: scale(1.05);
+            transform: scale(1.1) translateY(-4px);
         }
         .drop-zone p {
-            margin: 12px 0 0;
-            color: #4a5b6e;
-            font-weight: 500;
+            margin: 8px 0 0;
+            color: #3a4b5e;
+            font-weight: 600;
+            font-size: 1rem;
         }
         .drop-zone .small {
             color: #8a9bb0;
             font-size: 0.8rem;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+        .drop-zone .supported-formats {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .drop-zone .supported-formats span {
+            background: rgba(42, 109, 244, 0.07);
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #2a6df4;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(42, 109, 244, 0.05);
         }
 
         /* Archivo seleccionado */
         .file-info {
             display: none;
-            background: #e3f5ee;
-            padding: 14px 18px;
-            border-radius: 16px;
-            margin-top: 16px;
+            background: linear-gradient(135deg, #e6f7f0, #ddf3ea);
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-top: 18px;
             align-items: center;
-            gap: 14px;
-            border: 1px solid rgba(26,139,92,0.15);
-            animation: slideDown 0.3s ease;
+            gap: 16px;
+            border: 1px solid rgba(26, 139, 92, 0.12);
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .file-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #1a8b5c, #34d399);
+            border-radius: 0 4px 4px 0;
         }
         .file-info.show {
             display: flex;
         }
         .file-info .file-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #1a8b5c;
+            background: rgba(26, 139, 92, 0.1);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            flex-shrink: 0;
         }
         .file-info .file-details {
             flex: 1;
+            min-width: 0;
         }
         .file-info .file-details .name {
-            font-weight: 600;
+            font-weight: 700;
             color: #0b1e33;
             font-size: 0.95rem;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .file-info .file-details .size {
             color: #6b7b8f;
             font-size: 0.75rem;
             display: block;
+            font-weight: 500;
+        }
+        .file-info .file-details .size i {
+            margin-right: 4px;
         }
 
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(-16px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         /* Botón eliminar */
         .btn-remove-file {
-            background: rgba(220,53,69,0.08);
+            background: rgba(220, 53, 69, 0.06);
             border: none;
             border-radius: 60px;
-            padding: 6px 16px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            padding: 8px 16px;
+            font-size: 0.7rem;
+            font-weight: 700;
             color: #b12a2a;
-            transition: all 0.2s;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             cursor: pointer;
+            flex-shrink: 0;
+            border: 1px solid transparent;
         }
         .btn-remove-file:hover {
             background: #dc3545;
             color: white;
-            transform: scale(1.05);
+            transform: scale(1.04);
+            border-color: #dc3545;
+            box-shadow: 0 4px 16px -4px rgba(220, 53, 69, 0.3);
+        }
+        .btn-remove-file:active {
+            transform: scale(0.94);
         }
 
         /* Botón subir */
@@ -184,203 +307,552 @@
             background: linear-gradient(135deg, #1a8b5c, #0e6b46);
             border: none;
             border-radius: 60px;
-            padding: 16px;
+            padding: 17px 24px;
             font-weight: 700;
             font-size: 1rem;
             color: white;
             width: 100%;
-            transition: all 0.3s ease;
-            margin-top: 20px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-top: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             position: relative;
             overflow: hidden;
+            letter-spacing: 0.2px;
+        }
+        .btn-upload::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .btn-upload:hover:not(:disabled)::before {
+            opacity: 1;
         }
         .btn-upload:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px -8px rgba(26,139,92,0.35);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 16px 40px -12px rgba(26, 139, 92, 0.45);
         }
         .btn-upload:active:not(:disabled) {
-            transform: scale(0.97);
+            transform: scale(0.96) translateY(0);
         }
         .btn-upload:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+            filter: grayscale(0.2);
         }
-        .btn-upload .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-        }
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
+        .btn-upload .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* Estado de mensaje */
         .status-msg {
-            margin-top: 16px;
-            padding: 14px 18px;
-            border-radius: 16px;
+            margin-top: 18px;
+            padding: 14px 20px;
+            border-radius: 18px;
             display: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            animation: slideDown 0.3s ease;
+            font-weight: 600;
+            font-size: 0.88rem;
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid transparent;
+            align-items: center;
+            gap: 12px;
+        }
+        .status-msg.show {
+            display: flex;
         }
         .status-msg.success {
-            display: block;
-            background: #e3f5ee;
+            background: #e6f7f0;
             color: #1a6b4c;
-            border: 1px solid rgba(26,139,92,0.15);
+            border-color: rgba(26, 139, 92, 0.12);
         }
         .status-msg.error {
-            display: block;
             background: #fde8e6;
             color: #7a2a2a;
-            border: 1px solid rgba(220,53,69,0.15);
+            border-color: rgba(220, 53, 69, 0.12);
         }
-        .status-msg i {
-            margin-right: 8px;
-            font-size: 1.2rem;
+        .status-msg.warning {
+            background: #fef3e2;
+            color: #7a5a1a;
+            border-color: rgba(255, 193, 7, 0.12);
         }
-
-        /* Botón reintentar */
-        .btn-retry {
-            background: #2a6df4;
-            border: none;
-            border-radius: 60px;
-            padding: 10px 24px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.2s;
-            margin-top: 12px;
-            width: 100%;
+        .status-msg .status-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            width: 32px;
+            text-align: center;
         }
-        .btn-retry:hover {
-            background: #1a5bdb;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(42,109,244,0.3);
+        .status-msg .status-text {
+            flex: 1;
         }
 
-        /* Loading overlay */
+        /* ============================================================ */
+        /* LOADING OVERLAY MODERNO */
+        /* ============================================================ */
         .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(11,30,51,0.6);
-            backdrop-filter: blur(12px);
+            background: rgba(11, 30, 51, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.35s ease;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-box {
+            background: white;
+            padding: 48px 44px 40px;
+            border-radius: 40px;
+            text-align: center;
+            box-shadow: 0 60px 120px -32px rgba(0, 0, 0, 0.4);
+            max-width: 420px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2a6df4, #5a8df4, #2a6df4);
+            background-size: 200% 100%;
+            animation: shimmerBar 2s linear infinite;
+        }
+
+        @keyframes shimmerBar {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .loading-box .loader-icon {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 18px;
+            position: relative;
+        }
+        .loading-box .loader-icon .spinner-ring {
+            width: 100%;
+            height: 100%;
+            border: 4px solid #eef3fa;
+            border-top-color: #2a6df4;
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+        }
+        .loading-box .loader-icon .spinner-ring.success {
+            border-top-color: #1a8b5c;
+            border-color: #ddf3ea;
+            border-top-color: #1a8b5c;
+        }
+        .loading-box .loader-icon .check-mark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 2.4rem;
+            color: #1a8b5c;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .loading-box .loader-icon .check-mark.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .loading-box .loader-icon .error-mark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 2.4rem;
+            color: #dc3545;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .loading-box .loader-icon .error-mark.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-box h4 {
+            font-weight: 800;
+            color: #0b1e33;
+            margin-bottom: 6px;
+            font-size: 1.2rem;
+        }
+        .loading-box .loading-message {
+            color: #6b7b8f;
+            font-size: 0.88rem;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+        .loading-box .progress-track {
+            width: 100%;
+            height: 6px;
+            background: #eef3fa;
+            border-radius: 4px;
+            margin-top: 22px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loading-box .progress-track .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #2a6df4, #5a8df4);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+        .loading-box .progress-track .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+            border-radius: 4px;
+        }
+        .loading-box .progress-track .progress-fill.success {
+            background: linear-gradient(90deg, #1a8b5c, #34d399);
+            width: 100% !important;
+        }
+        .loading-box .progress-track .progress-fill.error {
+            background: linear-gradient(90deg, #dc3545, #e74c5e);
+            width: 100% !important;
+        }
+
+        .loading-box .loading-percent {
+            font-weight: 700;
+            color: #2a6df4;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: block;
+        }
+
+        /* ============================================================ */
+        /* MODAL DE CONFIRMACIÓN */
+        /* ============================================================ */
+        .modal-confirm {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 30, 51, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 10000;
             display: none;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.3s ease;
         }
-        .loading-box {
+        .modal-confirm.active {
+            display: flex;
+        }
+        .modal-confirm .modal-box {
             background: white;
-            padding: 40px 48px;
+            padding: 36px 32px 32px;
             border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.3);
             max-width: 400px;
             width: 90%;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.3);
+            animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .loading-box .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #eef3fa;
-            border-top-color: #2a6df4;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            animation: spin 0.8s linear infinite;
+        .modal-confirm .modal-box .modal-icon {
+            font-size: 3.2rem;
+            color: #dc3545;
+            margin-bottom: 12px;
+            display: block;
         }
-        .loading-box .spinner.success {
-            border-color: #e3f5ee;
-            border-top-color: #1a8b5c;
-        }
-        .loading-box h4 {
+        .modal-confirm .modal-box h4 {
             font-weight: 700;
             color: #0b1e33;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
-        .loading-box p {
+        .modal-confirm .modal-box p {
             color: #6b7b8f;
             font-size: 0.9rem;
-            margin-bottom: 0;
+            margin-bottom: 20px;
         }
-        .loading-box .progress-bar-modern {
-            width: 100%;
-            height: 6px;
+        .modal-confirm .modal-box .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-confirm .modal-box .modal-actions button {
+            padding: 10px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .modal-confirm .modal-box .modal-actions .btn-cancel {
             background: #eef3fa;
-            border-radius: 4px;
-            margin-top: 20px;
+            color: #3a4b5e;
+        }
+        .modal-confirm .modal-box .modal-actions .btn-cancel:hover {
+            background: #dde3ed;
+            transform: translateY(-2px);
+        }
+        .modal-confirm .modal-box .modal-actions .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .modal-confirm .modal-box .modal-actions .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px -8px rgba(220, 53, 69, 0.3);
+        }
+
+        /* ============================================================ */
+        /* TOAST NOTIFICATIONS */
+        /* ============================================================ */
+        .toast-container-custom {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast-custom {
+            pointer-events: auto;
+            background: white;
+            border-radius: 18px;
+            padding: 16px 20px;
+            box-shadow: 0 16px 48px -12px rgba(0, 20, 40, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-left: 4px solid #2a6df4;
+            transition: all 0.3s ease;
+            position: relative;
             overflow: hidden;
         }
-        .loading-box .progress-bar-modern .fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #2a6df4, #5a8df4);
-            border-radius: 4px;
-            animation: progressAnim 2s ease-in-out infinite;
+        .toast-custom:hover {
+            transform: translateX(-4px);
         }
-        .loading-box .progress-bar-modern .fill.success {
-            background: linear-gradient(90deg, #1a8b5c, #34d399);
-            animation: none;
-            width: 100%;
+        .toast-custom.toast-success {
+            border-left-color: #1a8b5c;
+        }
+        .toast-custom.toast-error {
+            border-left-color: #dc3545;
+        }
+        .toast-custom.toast-warning {
+            border-left-color: #ffc107;
+        }
+        .toast-custom .toast-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            width: 36px;
+            text-align: center;
+        }
+        .toast-custom .toast-content {
+            flex: 1;
+            min-width: 0;
+        }
+        .toast-custom .toast-content .toast-title {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 0.88rem;
+        }
+        .toast-custom .toast-content .toast-message {
+            color: #6b7b8f;
+            font-size: 0.8rem;
+            margin: 0;
+        }
+        .toast-custom .toast-close {
+            background: none;
+            border: none;
+            color: #9aabbf;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .toast-custom .toast-close:hover {
+            color: #3a4b5e;
+            transform: rotate(90deg);
+        }
+        .toast-custom .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: #2a6df4;
+            animation: toastProgress 4s linear forwards;
+        }
+        .toast-custom.toast-success .toast-progress {
+            background: #1a8b5c;
+        }
+        .toast-custom.toast-error .toast-progress {
+            background: #dc3545;
+        }
+        .toast-custom.toast-warning .toast-progress {
+            background: #ffc107;
         }
 
-        /* Animaciones */
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px) scale(0.92); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        @keyframes toastOut {
+            from { opacity: 1; transform: translateX(0) scale(1); }
+            to { opacity: 0; transform: translateX(40px) scale(0.92); }
         }
-        @keyframes progressAnim {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to { width: 0%; }
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .upload-card { padding: 24px 20px; }
-            .upload-title { font-size: 1.2rem; }
-            .drop-zone { padding: 24px 16px; }
-            .drop-zone .icon-wrap { font-size: 2.8rem; }
-            .loading-box { padding: 30px 24px; }
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
+        @media (max-width: 540px) {
+            .upload-card {
+                padding: 28px 20px 24px;
+                border-radius: 28px;
+            }
+            .upload-title {
+                font-size: 1.3rem;
+            }
+            .drop-zone {
+                padding: 28px 16px 24px;
+            }
+            .drop-zone .icon-wrap {
+                font-size: 3rem;
+            }
+            .loading-box {
+                padding: 36px 24px 32px;
+            }
+            .modal-confirm .modal-box {
+                padding: 28px 20px 24px;
+            }
+            .toast-container-custom {
+                top: 16px;
+                right: 16px;
+                max-width: calc(100% - 32px);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .upload-card {
+                padding: 20px 14px 18px;
+            }
+            .file-info {
+                flex-wrap: wrap;
+                padding: 14px 16px;
+            }
+            .file-info .file-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.6rem;
+            }
+            .btn-remove-file {
+                padding: 6px 12px;
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Scroll suave */
+        * {
+            scroll-behavior: smooth;
+        }
+
+        /* Ocultar input de archivo */
+        input[type="file"] {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<!-- ================================================== -->
+<!-- ============================================================ -->
+<!-- TOAST CONTAINER -->
+<!-- ============================================================ -->
+<div class="toast-container-custom" id="toastContainer"></div>
+
+<!-- ============================================================ -->
 <!-- LOADING OVERLAY -->
-<!-- ================================================== -->
+<!-- ============================================================ -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-box">
-        <div class="spinner" id="loadingSpinner"></div>
+        <div class="loader-icon" id="loaderIcon">
+            <div class="spinner-ring" id="spinnerRing"></div>
+            <div class="check-mark" id="checkMark"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="error-mark" id="errorMark"><i class="bi bi-x-circle-fill"></i></div>
+        </div>
         <h4 id="loadingTitle">Subiendo documento...</h4>
-        <p id="loadingText">Por favor espera, esto puede tomar unos segundos.</p>
-        <div class="progress-bar-modern">
-            <div class="fill" id="loadingProgress"></div>
+        <p class="loading-message" id="loadingText">Por favor espera, esto puede tomar unos segundos.</p>
+        <div class="progress-track">
+            <div class="progress-fill" id="loadingProgress"></div>
+        </div>
+        <span class="loading-percent" id="loadingPercent">0%</span>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL DE CONFIRMACIÓN -->
+<!-- ============================================================ -->
+<div class="modal-confirm" id="confirmModal">
+    <div class="modal-box">
+        <span class="modal-icon"><i class="bi bi-exclamation-triangle-fill"></i></span>
+        <h4 id="confirmTitle">¿Eliminar archivo?</h4>
+        <p id="confirmMessage">El archivo seleccionado se eliminará de la cola de subida.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" id="confirmCancel">Cancelar</button>
+            <button class="btn-danger" id="confirmAccept">Eliminar</button>
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
+<!-- ============================================================ -->
 <!-- TARJETA PRINCIPAL -->
-<!-- ================================================== -->
-<div class="upload-card">
+<!-- ============================================================ -->
+<div class="upload-card" id="uploadCard">
     <!-- Logo -->
     <div class="logo-area">
-        <img src="/static/img/logo.jpeg" alt="Lumen Legal">
+        <img src="/static/img/logo.jpeg" alt="Lumen Legal" id="logoImg">
     </div>
 
     <!-- Títulos -->
@@ -397,12 +869,17 @@
     <form id="uploadForm" enctype="multipart/form-data">
         <!-- Drop zone -->
         <div class="drop-zone" id="dropZone">
-            <div class="icon-wrap">
+            <span class="icon-wrap">
                 <i class="bi bi-cloud-arrow-up"></i>
-            </div>
+            </span>
             <p><strong>Toca para seleccionar</strong></p>
-            <p class="small">o toma una foto del documento</p>
-            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+            <p class="small">o arrastra tu archivo aquí</p>
+            <div class="supported-formats">
+                <span>PDF</span>
+                <span>JPG</span>
+                <span>PNG</span>
+            </div>
+            <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png">
         </div>
 
         <!-- Archivo seleccionado -->
@@ -412,7 +889,7 @@
             </div>
             <div class="file-details">
                 <span class="name" id="fileName">archivo.pdf</span>
-                <span class="size" id="fileSize">0 KB</span>
+                <span class="size" id="fileSize"><i class="bi bi-hdd-stack"></i> 0 KB</span>
             </div>
             <button type="button" class="btn-remove-file" id="removeFileBtn">
                 <i class="bi bi-trash3"></i> Eliminar
@@ -421,251 +898,487 @@
 
         <!-- Botón subir -->
         <button type="submit" class="btn-upload" id="submitBtn" disabled>
-            <i class="bi bi-cloud-upload"></i> Subir Documento
+            <span class="btn-content">
+                <i class="bi bi-cloud-upload"></i> Subir Documento
+            </span>
         </button>
     </form>
 
-    <!-- Estado de mensaje -->
-    <div id="statusMsg" class="status-msg"></div>
+    <!-- Estado de mensaje (inline) -->
+    <div id="statusMsg" class="status-msg">
+        <span class="status-icon" id="statusIcon"></span>
+        <span class="status-text" id="statusText"></span>
+    </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- SCRIPT PRINCIPAL -->
+<!-- ============================================================ -->
 <script>
-    // ============================================================
-    // DETECTAR PARÁMETROS DE LA URL
-    // ============================================================
-    const urlParams = new URLSearchParams(window.location.search);
-    const tempId = urlParams.get('temp_id');
-    const docType = urlParams.get('doc_type') || 'DOCUMENTO';
+    (function() {
+        'use strict';
 
-    // Actualizar badge del documento
-    document.getElementById('docTypeBadge').textContent = `📄 ${docType}`;
+        // ============================================================
+        // DETECTAR PARÁMETROS DE LA URL
+        // ============================================================
+        const urlParams = new URLSearchParams(window.location.search);
+        const tempId = urlParams.get('temp_id');
+        const docType = urlParams.get('doc_type') || 'DOCUMENTO';
 
-    // ============================================================
-    // ELEMENTOS DEL DOM
-    // ============================================================
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const fileInfo = document.getElementById('fileInfo');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    const submitBtn = document.getElementById('submitBtn');
-    const removeFileBtn = document.getElementById('removeFileBtn');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const loadingTitle = document.getElementById('loadingTitle');
-    const loadingText = document.getElementById('loadingText');
-    const loadingProgress = document.getElementById('loadingProgress');
+        document.getElementById('docTypeBadge').textContent = `📄 ${docType}`;
 
-    let selectedFile = null;
-    let isSubmitting = false;
+        // ============================================================
+        // ELEMENTOS DEL DOM
+        // ============================================================
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const submitBtn = document.getElementById('submitBtn');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const uploadForm = document.getElementById('uploadForm');
 
-    // ============================================================
-    // MOSTRAR / OCULTAR LOADING
-    // ============================================================
-    function showLoading(title = 'Subiendo documento...', message = 'Por favor espera, esto puede tomar unos segundos.') {
-        loadingSpinner.className = 'spinner';
-        loadingTitle.textContent = title;
-        loadingText.textContent = message;
-        loadingProgress.className = 'fill';
-        loadingOverlay.style.display = 'flex';
-    }
+        // Loading
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const spinnerRing = document.getElementById('spinnerRing');
+        const checkMark = document.getElementById('checkMark');
+        const errorMark = document.getElementById('errorMark');
+        const loadingTitle = document.getElementById('loadingTitle');
+        const loadingText = document.getElementById('loadingText');
+        const loadingProgress = document.getElementById('loadingProgress');
+        const loadingPercent = document.getElementById('loadingPercent');
 
-    function updateLoading(title, message, isSuccess = false) {
-        loadingTitle.textContent = title;
-        loadingText.textContent = message;
-        if (isSuccess) {
-            loadingSpinner.className = 'spinner success';
-            loadingProgress.className = 'fill success';
-        }
-    }
+        // Toast
+        const toastContainer = document.getElementById('toastContainer');
 
-    function hideLoading() {
-        loadingOverlay.style.display = 'none';
-    }
+        // Modal confirmación
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmCancel = document.getElementById('confirmCancel');
+        const confirmAccept = document.getElementById('confirmAccept');
 
-    // ============================================================
-    // DROP ZONE Y SELECCIÓN DE ARCHIVO
-    // ============================================================
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        if (e.dataTransfer.files.length > 0) {
-            handleFile(e.dataTransfer.files[0]);
-        }
-    });
-
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-            handleFile(e.target.files[0]);
-        }
-    });
-
-    // ============================================================
-    // MANEJAR ARCHIVO SELECCIONADO
-    // ============================================================
-    function handleFile(file) {
-        const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-        if (!validTypes.includes(file.type)) {
-            showStatus('❌ Formato no válido. Sube PDF, JPG o PNG.', 'error');
-            fileInput.value = '';
-            return;
-        }
-
-        selectedFile = file;
-        fileName.textContent = file.name;
-        fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
-        fileInfo.classList.add('show');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
-        showStatus('', '');
-    }
-
-    // ============================================================
-    // ELIMINAR ARCHIVO SELECCIONADO
-    // ============================================================
-    removeFileBtn.addEventListener('click', () => {
-        // Mostrar confirmación antes de eliminar
-        if (selectedFile) {
-            const confirmRemove = confirm(`¿Eliminar el archivo "${selectedFile.name}"?`);
-            if (!confirmRemove) return;
-        }
-        clearFileSelection();
-    });
-
-    function clearFileSelection() {
-        selectedFile = null;
-        fileInput.value = '';
-        fileInfo.classList.remove('show');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
-        showStatus('', '');
-        // Limpiar mensaje de error si existe
+        // Status inline
         const statusMsg = document.getElementById('statusMsg');
-        statusMsg.className = 'status-msg';
-        statusMsg.style.display = 'none';
-    }
+        const statusIcon = document.getElementById('statusIcon');
+        const statusText = document.getElementById('statusText');
 
-    // ============================================================
-    // MOSTRAR ESTADO (ÉXITO / ERROR)
-    // ============================================================
-    function showStatus(message, type) {
-        const el = document.getElementById('statusMsg');
-        if (!message) {
-            el.style.display = 'none';
-            el.className = 'status-msg';
-            return;
-        }
-        el.style.display = 'block';
-        el.className = 'status-msg ' + type;
-        el.innerHTML = message;
-    }
+        let selectedFile = null;
+        let isSubmitting = false;
+        let confirmResolve = null;
 
-    // ============================================================
-    // CERRAR PÁGINA AUTOMÁTICAMENTE
-    // ============================================================
-    function closePage() {
-        window.close();
-        setTimeout(() => {
-            document.body.innerHTML = `
-                <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;background:#f2f5fb;">
-                    <div style="background:white;padding:48px;border-radius:32px;max-width:420px;box-shadow:0 24px 56px -16px rgba(0,20,40,0.16);">
-                        <i class="bi bi-check-circle-fill" style="font-size:4rem;color:#1a8b5c;"></i>
-                        <h1 style="color:#0b1e33;margin-top:16px;font-weight:700;">¡Documento subido!</h1>
-                        <p style="color:#6b7b8f;">Ya puedes cerrar esta pestaña.</p>
-                        <button onclick="window.close()" style="background:#1a8b5c;border:none;border-radius:60px;padding:12px 32px;color:white;font-weight:700;margin-top:16px;cursor:pointer;transition:all 0.2s;">
-                            <i class="bi bi-x-circle"></i> Cerrar
-                        </button>
-                    </div>
+        // ============================================================
+        // TOAST SYSTEM
+        // ============================================================
+        function showToast(title, message, type = 'info', duration = 4000) {
+            const icons = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-x-circle-fill',
+                warning: 'bi-exclamation-triangle-fill',
+                info: 'bi-info-circle-fill'
+            };
+            const colors = {
+                success: 'toast-success',
+                error: 'toast-error',
+                warning: 'toast-warning',
+                info: ''
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast-custom ${colors[type] || ''}`;
+            toast.innerHTML = `
+                <span class="toast-icon" style="color: ${type === 'success' ? '#1a8b5c' : type === 'error' ? '#dc3545' : type === 'warning' ? '#ffc107' : '#2a6df4'}">
+                    <i class="bi ${icons[type] || icons.info}"></i>
+                </span>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <p class="toast-message">${message}</p>
                 </div>
+                <button class="toast-close" aria-label="Cerrar notificación">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                <div class="toast-progress"></div>
             `;
-        }, 300);
-    }
 
-    // ============================================================
-    // ENVIAR ARCHIVO
-    // ============================================================
-// ============================================================
-// ENVIAR ARCHIVO (CON VALIDACIÓN DE QR UN SOLO USO)
-// ============================================================
-document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+            toastContainer.appendChild(toast);
 
-    if (!selectedFile) {
-        showStatus('❌ Por favor selecciona un archivo.', 'error');
-        return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Subiendo...';
-
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('doc_type', docType);
-
-    try {
-        const response = await fetch(`/api/clients/upload-mobile/${tempId}`, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-            showStatus('✅ ¡Documento subido correctamente!', 'success');
-            submitBtn.innerHTML = '<i class="bi bi-check2"></i> ¡Subido!';
-            submitBtn.disabled = true;
-            
-            // 🔥 DESHABILITAR EL FORMULARIO PARA SIEMPRE
-            document.getElementById('uploadForm').querySelectorAll('input, button').forEach(el => {
-                el.disabled = true;
+            // Configurar cierre manual
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                removeToast(toast);
             });
-            dropZone.style.opacity = '0.5';
-            dropZone.style.cursor = 'not-allowed';
-            dropZone.innerHTML = `
-                <i class="bi bi-check-circle" style="font-size:3rem;color:#1a8b5c;"></i>
-                <p><strong>Documento subido correctamente</strong></p>
-                <p class="small text-muted">Este QR ya no es válido para nuevas subidas.</p>
-            `;
-            
-        } else {
-            // 🔥 ERROR: QR YA USADO
-            if (result.error && result.error.includes('ya ha sido utilizado')) {
-                showStatus('⛔ Este código QR ya fue utilizado. Genera uno nuevo desde el sistema.', 'error');
-                submitBtn.innerHTML = '<i class="bi bi-exclamation-triangle"></i> QR Expirado';
-                submitBtn.disabled = true;
-                document.getElementById('uploadForm').querySelectorAll('input, button').forEach(el => {
-                    el.disabled = true;
-                });
-                dropZone.style.opacity = '0.5';
-                dropZone.style.cursor = 'not-allowed';
-                dropZone.innerHTML = `
-                    <i class="bi bi-exclamation-triangle" style="font-size:3rem;color:#dc3545;"></i>
-                    <p><strong>QR ya utilizado</strong></p>
-                    <p class="small text-muted">Genera uno nuevo desde el sistema.</p>
-                `;
-            } else {
-                showStatus('❌ Error: ' + (result.error || 'No se pudo subir el archivo.'), 'error');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
+
+            // Cierre automático
+            setTimeout(() => {
+                removeToast(toast);
+            }, duration);
+
+            return toast;
+        }
+
+        function removeToast(toast) {
+            if (toast.parentNode) {
+                toast.style.animation = 'toastOut 0.3s ease forwards';
+                setTimeout(() => {
+                    if (toast.parentNode) toast.remove();
+                }, 300);
             }
         }
-    } catch (error) {
-        showStatus('❌ Error de conexión: ' + error.message, 'error');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="bi bi-cloud-upload"></i> Subir Documento';
-    }
-});
+
+        // ============================================================
+        // LOADING SYSTEM
+        // ============================================================
+        function showLoading(title = 'Subiendo documento...', message = 'Por favor espera, esto puede tomar unos segundos.') {
+            spinnerRing.className = 'spinner-ring';
+            checkMark.classList.remove('show');
+            errorMark.classList.remove('show');
+            loadingTitle.textContent = title;
+            loadingText.textContent = message;
+            loadingProgress.className = 'progress-fill';
+            loadingProgress.style.width = '0%';
+            loadingPercent.textContent = '0%';
+            loadingOverlay.classList.add('active');
+        }
+
+        function updateLoadingProgress(percent, title, message) {
+            if (title) loadingTitle.textContent = title;
+            if (message) loadingText.textContent = message;
+            const clamped = Math.min(100, Math.max(0, percent));
+            loadingProgress.style.width = clamped + '%';
+            loadingPercent.textContent = Math.round(clamped) + '%';
+        }
+
+        function setLoadingSuccess(title = '¡Completado!', message = 'El documento se subió correctamente.') {
+            spinnerRing.className = 'spinner-ring success';
+            checkMark.classList.add('show');
+            loadingTitle.textContent = title;
+            loadingText.textContent = message;
+            loadingProgress.className = 'progress-fill success';
+            loadingProgress.style.width = '100%';
+            loadingPercent.textContent = '100%';
+        }
+
+        function setLoadingError(title = 'Error', message = 'Ocurrió un problema al subir el documento.') {
+            spinnerRing.className = 'spinner-ring';
+            errorMark.classList.add('show');
+            loadingTitle.textContent = title;
+            loadingText.textContent = message;
+            loadingProgress.className = 'progress-fill error';
+            loadingProgress.style.width = '100%';
+            loadingPercent.textContent = '100%';
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove('active');
+            // Reset
+            setTimeout(() => {
+                spinnerRing.className = 'spinner-ring';
+                checkMark.classList.remove('show');
+                errorMark.classList.remove('show');
+                loadingProgress.className = 'progress-fill';
+                loadingProgress.style.width = '0%';
+                loadingPercent.textContent = '0%';
+            }, 300);
+        }
+
+        // ============================================================
+        // MODAL DE CONFIRMACIÓN (Promise based)
+        // ============================================================
+        function showConfirm(title, message) {
+            return new Promise((resolve) => {
+                confirmTitle.textContent = title;
+                confirmMessage.textContent = message;
+                confirmModal.classList.add('active');
+                confirmResolve = resolve;
+            });
+        }
+
+        confirmCancel.addEventListener('click', () => {
+            confirmModal.classList.remove('active');
+            if (confirmResolve) confirmResolve(false);
+            confirmResolve = null;
+        });
+
+        confirmAccept.addEventListener('click', () => {
+            confirmModal.classList.remove('active');
+            if (confirmResolve) confirmResolve(true);
+            confirmResolve = null;
+        });
+
+        // Cerrar modal con click fuera
+        confirmModal.addEventListener('click', (e) => {
+            if (e.target === confirmModal) {
+                confirmModal.classList.remove('active');
+                if (confirmResolve) confirmResolve(false);
+                confirmResolve = null;
+            }
+        });
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && confirmModal.classList.contains('active')) {
+                confirmModal.classList.remove('active');
+                if (confirmResolve) confirmResolve(false);
+                confirmResolve = null;
+            }
+        });
+
+        // ============================================================
+        // STATUS INLINE
+        // ============================================================
+        function showInlineStatus(message, type = 'success') {
+            if (!message) {
+                statusMsg.classList.remove('show', 'success', 'error', 'warning');
+                return;
+            }
+            const icons = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-x-circle-fill',
+                warning: 'bi-exclamation-triangle-fill'
+            };
+            statusIcon.innerHTML = `<i class="bi ${icons[type] || icons.success}"></i>`;
+            statusText.textContent = message;
+            statusMsg.className = `status-msg show ${type}`;
+        }
+
+        function hideInlineStatus() {
+            statusMsg.classList.remove('show', 'success', 'error', 'warning');
+        }
+
+        // ============================================================
+        // DROP ZONE Y SELECCIÓN DE ARCHIVO
+        // ============================================================
+        dropZone.addEventListener('click', () => {
+            if (submitBtn.disabled && selectedFile) return;
+            fileInput.click();
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // ============================================================
+        // MANEJAR ARCHIVO SELECCIONADO
+        // ============================================================
+        function handleFile(file) {
+            const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showToast('Formato no válido', 'Solo se permiten PDF, JPG o PNG.', 'error');
+                fileInput.value = '';
+                return;
+            }
+
+            // Verificar tamaño (25MB máximo)
+            if (file.size > 25 * 1024 * 1024) {
+                showToast('Archivo muy grande', 'El tamaño máximo permitido es 25MB.', 'error');
+                fileInput.value = '';
+                return;
+            }
+
+            selectedFile = file;
+            fileName.textContent = file.name;
+            fileSize.innerHTML = `<i class="bi bi-hdd-stack"></i> ${(file.size / 1024).toFixed(1)} KB`;
+            fileInfo.classList.add('show');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span class="btn-content"><i class="bi bi-cloud-upload"></i> Subir Documento</span>`;
+            hideInlineStatus();
+            showToast('Archivo seleccionado', `"${file.name}" está listo para subir.`, 'success', 3000);
+        }
+
+        // ============================================================
+        // ELIMINAR ARCHIVO CON CONFIRMACIÓN
+        // ============================================================
+        removeFileBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            const confirmed = await showConfirm(
+                '¿Eliminar archivo?',
+                `El archivo "${selectedFile.name}" se eliminará de la cola de subida.`
+            );
+
+            if (confirmed) {
+                clearFileSelection();
+                showToast('Archivo eliminado', 'El archivo fue removido correctamente.', 'warning', 2500);
+            }
+        });
+
+        function clearFileSelection() {
+            selectedFile = null;
+            fileInput.value = '';
+            fileInfo.classList.remove('show');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="btn-content"><i class="bi bi-cloud-upload"></i> Subir Documento</span>`;
+            hideInlineStatus();
+        }
+
+        // ============================================================
+        // ENVIAR ARCHIVO CON PROGRESO SIMULADO Y VALIDACIÓN
+        // ============================================================
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedFile) {
+                showToast('Sin archivo', 'Por favor selecciona un archivo para subir.', 'warning');
+                return;
+            }
+
+            if (isSubmitting) return;
+            isSubmitting = true;
+
+            // Deshabilitar botón
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="btn-content"><span class="spinner-border spinner-border-sm me-2" style="width:1rem;height:1rem;"></span> Subiendo...</span>`;
+
+            // Mostrar loading
+            showLoading('Subiendo documento...', 'Preparando archivo para enviar...');
+
+            // Simular progreso inicial
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 8 + 2;
+                if (progress > 90) progress = 90;
+                updateLoadingProgress(progress, 'Subiendo documento...', `Enviando ${selectedFile.name}...`);
+            }, 300);
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('doc_type', docType);
+
+            try {
+                const response = await fetch(`/api/clients/upload-mobile/${tempId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    // Completar progreso
+                    updateLoadingProgress(100, '¡Completado!', 'Documento subido correctamente.');
+                    setLoadingSuccess('¡Documento subido!', 'El archivo se registró exitosamente en el sistema.');
+                    showToast('Éxito', '¡Documento subido correctamente!', 'success', 4000);
+
+                    // Deshabilitar formulario permanentemente
+                    disableFormPermanent();
+
+                    setTimeout(() => {
+                        hideLoading();
+                    }, 800);
+
+                } else {
+                    // Error del servidor
+                    if (result.error && result.error.includes('ya ha sido utilizado')) {
+                        setLoadingError('QR Expirado', 'Este código QR ya fue utilizado. Genera uno nuevo desde el sistema.');
+                        showToast('QR no válido', 'Este código QR ya fue utilizado.', 'error', 5000);
+                        disableFormPermanent();
+                        setTimeout(() => hideLoading(), 1200);
+                    } else {
+                        setLoadingError('Error al subir', result.error || 'No se pudo procesar el archivo.');
+                        showToast('Error', result.error || 'No se pudo subir el archivo.', 'error', 4000);
+                        setTimeout(() => {
+                            hideLoading();
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = `<span class="btn-content"><i class="bi bi-cloud-upload"></i> Subir Documento</span>`;
+                            isSubmitting = false;
+                        }, 1200);
+                    }
+                }
+            } catch (error) {
+                clearInterval(progressInterval);
+                setLoadingError('Error de conexión', error.message || 'No se pudo conectar con el servidor.');
+                showToast('Error de conexión', error.message || 'Revisa tu conexión a internet.', 'error', 4000);
+                setTimeout(() => {
+                    hideLoading();
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<span class="btn-content"><i class="bi bi-cloud-upload"></i> Subir Documento</span>`;
+                    isSubmitting = false;
+                }, 1200);
+            }
+        });
+
+        // ============================================================
+        // DESHABILITAR FORMULARIO PERMANENTEMENTE
+        // ============================================================
+        function disableFormPermanent() {
+            // Deshabilitar todos los inputs y botones del formulario
+            uploadForm.querySelectorAll('input, button').forEach(el => {
+                el.disabled = true;
+            });
+
+            // Modificar drop zone
+            dropZone.style.opacity = '0.5';
+            dropZone.style.cursor = 'not-allowed';
+            dropZone.style.pointerEvents = 'none';
+            dropZone.innerHTML = `
+                <span class="icon-wrap" style="color:#1a8b5c;">
+                    <i class="bi bi-check-circle"></i>
+                </span>
+                <p><strong>Documento subido correctamente</strong></p>
+                <p class="small text-muted">Este QR ya no es válido para nuevas subidas.</p>
+                <div class="supported-formats">
+                    <span style="background:rgba(26,139,92,0.1);color:#1a8b5c;">✓ Completado</span>
+                </div>
+            `;
+
+            // Ocultar botón eliminar
+            removeFileBtn.style.display = 'none';
+
+            // Cambiar mensaje del badge
+            document.getElementById('docTypeBadge').textContent = '✅ SUBIDO';
+            document.getElementById('docTypeBadge').style.background = 'linear-gradient(135deg, #e6f7f0, #ddf3ea)';
+            document.getElementById('docTypeBadge').style.color = '#1a6b4c';
+        }
+
+        // ============================================================
+        // RECUPERAR ESTADO SI EL QR YA ESTÁ USADO (desde el backend)
+        // ============================================================
+        // Si la página se carga y el QR ya fue usado, podemos verificar
+        // y deshabilitar temprano. (Opcional)
+        // ============================================================
+
+        // ============================================================
+        // PREVENIR CIERRE ACCIDENTAL
+        // ============================================================
+        window.addEventListener('beforeunload', (e) => {
+            if (selectedFile && !submitBtn.disabled) {
+                e.preventDefault();
+                e.returnValue = '¿Estás seguro? El archivo no se ha subido.';
+                return e.returnValue;
+            }
+        });
+
+        // ============================================================
+        // LOG PARA DEPURACIÓN (eliminar en producción)
+        // ============================================================
+        console.log('📄 Lumen Legal Upload v2.0');
+        console.log(`📌 temp_id: ${tempId || 'No proporcionado'}`);
+        console.log(`📌 doc_type: ${docType}`);
+
+        console.log('✅ Sistema de subida modernizado cargado correctamente.');
+        console.log('📌 Funcionalidades: Drag & Drop, Toast, Modal Confirm, Loading Animado.');
+
+    })();
 </script>
 
 </body>
