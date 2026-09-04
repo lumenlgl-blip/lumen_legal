@@ -4,3 +4,11 @@ __pycache__/
 *.db
 .env
 .DS_Store
+uploads/
+1/
+create_admin.py
+test_pdf.py
+test_logo.pdf
+test_template.pdf
+test_template.html
+*.pdf
