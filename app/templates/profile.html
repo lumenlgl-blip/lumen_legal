@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -329,6 +331,30 @@
             .btn-group-actions .btn-row { grid-template-columns: 1fr; }
             .avatar-wrapper .avatar-icon { font-size: 3.5rem; }
             .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+        }
+                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
+        @media (max-width: 992px){
+            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
+            body{padding-top:12px; align-items:flex-start;}
+        }
+        @media (max-width: 768px){
+            .profile-container{max-width:100%; padding:0 16px;}
+            .profile-card{padding:28px 20px; border-radius:24px;}
+            .profile-name{font-size:1.4rem;}
+            .info-grid{grid-template-columns:1fr 1fr; padding:12px 14px;}
+            .btn-group-actions .btn{padding:12px 16px; font-size:16px;}
+        }
+        @media (max-width: 480px){
+            body{padding:8px 0 20px 0;}
+            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
+            .profile-container{padding:0 10px;}
+            .profile-card{padding:20px 14px; border-radius:18px; margin:0;}
+            .avatar-wrapper .avatar-icon{font-size:3.2rem;}
+            .profile-name{font-size:1.2rem;}
+            .info-grid{grid-template-columns:1fr; gap:2px; border-radius:12px;}
+            .btn-group-actions{gap:10px;}
+            .btn-group-actions .btn-row{grid-template-columns:1fr;}
+            .permission-tag{font-size:0.55rem; padding:2px 8px;}
         }
     </style>
 </head>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Usuario · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -391,6 +393,34 @@
             .btn-back {
                 justify-content: center;
             }
+        }
+                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 0 16px 16px; }
+            body { padding-top: 12px; align-items: flex-start; }
+            .register-container { max-width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .card-glass { padding: 24px 20px; border-radius: 24px; margin: 0 16px; }
+            .page-header h1 { font-size: 1.5rem; }
+            .form-floating-custom .form-control, .form-floating-custom .form-select { font-size: 16px; height: 52px; }
+            .permissions-section .perm-grid { grid-template-columns: 1fr 1fr; }
+            .footer-actions { flex-direction: column; align-items: stretch; }
+            .btn-back { justify-content: center; width: 100%; }
+        }
+        @media (max-width: 480px) {
+            body { padding: 8px 0 20px 0; }
+            .btn-menu { width: calc(100% - 20px); margin: 0 10px 12px 10px; justify-content: center; border-radius: 14px; }
+            .register-container { padding: 0 10px; }
+            .card-glass { margin: 0; padding: 20px 14px; border-radius: 18px; }
+            .page-header .icon-wrapper { width: 60px; height: 60px; border-radius: 18px; }
+            .page-header .icon-wrapper i { font-size: 2rem; }
+            .page-header h1 { font-size: 1.3rem; }
+            .permissions-section .perm-grid { grid-template-columns: 1fr; padding: 12px 14px; }
+            .form-floating-custom { margin-bottom: 12px; }
+            .form-floating-custom .form-control, .form-floating-custom .form-select { height: 50px; padding-left: 42px; }
+            .form-floating-custom .form-icon { left: 14px; }
+            .form-floating-custom .form-label { left: 42px; }
         }
     </style>
 </head>

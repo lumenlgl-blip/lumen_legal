@@ -287,6 +287,42 @@
             .case-detail-card { padding: 1.25rem; }
             .actuacion-form-wrapper { padding: 1.25rem; }
         }
+                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
+        @media (max-width: 992px){
+            .btn-menu-float{position:relative; top:auto; left:auto; margin:12px 0 0 16px; display:inline-flex;}
+            .page-header{padding:1.5rem 0 1rem 0;}
+            .page-header .container{padding-left:16px; padding-right:16px;}
+        }
+        @media (max-width: 768px){
+            body{padding-bottom:2rem;}
+            .container{padding-left:0; padding-right:0;}
+            .search-card{margin:0 12px; border-radius:20px; padding:1rem;}
+            .search-card .form-control-lg{font-size:16px; padding:0.75rem 1.2rem 0.75rem 2.8rem;}
+            .btn-primary-soft{width:100%; padding:0.75rem;}
+            #resultsContainer{padding:0 12px;}
+            .client-card,.case-card{flex-direction:column; align-items:flex-start; gap:8px; border-radius:16px; padding:0.9rem 1rem;}
+            .client-card .btn,.case-card .btn{width:100%; justify-content:center;}
+            #caseDetailContainer{padding:0 12px;}
+            .case-detail-card{border-radius:20px; padding:1rem;}
+            .actuacion-form-wrapper{padding:1rem; border-radius:18px;}
+            .actuacion-form-wrapper .form-control-lg,.actuacion-form-wrapper .form-select-lg{font-size:16px; padding:0.6rem 1rem; border-radius:12px;}
+            .actuacion-item{flex-direction:column; align-items:flex-start; gap:8px; border-radius:14px; padding:0.8rem 1rem;}
+            .actuacion-item > div:last-child{width:100%; display:flex; gap:8px;}
+            .actuacion-item .btn{flex:1; justify-content:center;}
+            .file-preview-frame{height:300px; border-radius:16px;}
+            .modal-pdf-frame{height:60vh;}
+        }
+        @media (max-width: 480px){
+            .btn-menu-float{margin:8px 10px 0 10px; width:calc(100% - 20px); justify-content:center; border-radius:14px; padding:10px;}
+            .page-header{margin-bottom:1rem;}
+            .page-header h1{font-size:1.35rem;}
+            .search-card{margin:0 10px; padding:0.8rem;}
+            #resultsContainer{padding:0 10px;}
+            #caseDetailContainer{padding:0 10px;}
+            .case-detail-card{padding:0.8rem;}
+            .actuacion-form-wrapper .row{--bs-gutter-y:0.8rem;}
+            .spinner-box-custom{padding:1.5rem 1.8rem; border-radius:24px;}
+        }
     </style>
 </head>
 <body>

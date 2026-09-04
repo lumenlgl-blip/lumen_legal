@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Cliente · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -458,6 +460,40 @@
         }
         @media (max-width: 480px) {
             .info-grid-detail { grid-template-columns: 1fr; }
+        }
+                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
+        @media (max-width: 992px){
+            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
+            body{padding-top:12px;}
+            .page-header,.search-card,#resultsContainer,.detail-container{margin-left:16px; margin-right:16px;}
+        }
+        @media (max-width: 768px){
+            .container{padding-left:0; padding-right:0;}
+            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; flex-direction:column; align-items:flex-start;}
+            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
+            .search-card{padding:16px; border-radius:18px; margin:0 12px 16px 12px;}
+            .search-card .form-control,.btn-search{height:48px; font-size:16px;}
+            .client-card-modern{flex-direction:column; align-items:flex-start; padding:14px;}
+            .client-card-modern > div:last-child{width:100%; display:flex; flex-wrap:wrap; gap:6px;}
+            .detail-container{padding:16px; border-radius:18px; margin:0 12px;}
+            .info-grid-detail{grid-template-columns:1fr 1fr; gap:10px; padding:12px;}
+            .doc-card{padding:12px;}
+            .contract-card-modern .row{--bs-gutter-y:6px;}
+            .action-btn-group .btn{flex:1 1 100%; justify-content:center;}
+            .modal-pdf{height:60vh;}
+        }
+        @media (max-width: 480px){
+            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
+            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
+            .page-header .header-badge{width:100%; text-align:center; display:flex; justify-content:center;}
+            .search-card{margin:0 10px 12px 10px; padding:12px; border-radius:16px;}
+            #resultsContainer{padding:0 10px; margin:0;}
+            .detail-container{margin:0 10px; padding:12px;}
+            .info-grid-detail{grid-template-columns:1fr; padding:10px;}
+            .badge-custom{font-size:0.6rem; padding:3px 8px;}
+            .btn-consult-client,.btn-view-case{width:100%; justify-content:center;}
+            .doc-card .btn-group-doc .btn{width:100%;}
+            .contract-card-modern{padding:12px;}
         }
     </style>
 </head>

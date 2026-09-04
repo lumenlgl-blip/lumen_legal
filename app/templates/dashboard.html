@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -291,6 +293,42 @@
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .stat-card-modern .stat-value { font-size: 1.2rem; }
             .chart-card { padding: 14px 16px; }
+        }
+                /* ========== ADAPTACIÓN MÓVIL REFORZADA - SOLO RESPONSIVE ========== */
+        @media (max-width: 992px){
+            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
+            body{padding-top:12px;}
+            .page-header,.stats-grid,.charts-grid,.events-grid{margin-left:16px; margin-right:16px;}
+            .charts-grid{grid-template-columns:1fr;}
+            .events-grid{grid-template-columns:1fr;}
+        }
+        @media (max-width: 768px){
+            .container{padding-left:0; padding-right:0;}
+            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; text-align:left;}
+            .page-header h1{justify-content:flex-start; font-size:1.3rem;}
+            .stats-grid{grid-template-columns:repeat(2, 1fr); gap:10px; margin:0 12px 16px 12px;}
+            .stat-card-modern{padding:14px 10px; border-radius:16px;}
+            .stat-card-modern .stat-icon{width:36px; height:36px; font-size:1rem; border-radius:10px;}
+            .stat-card-modern .stat-value{font-size:1.25rem;}
+            .charts-grid{margin:0 12px 16px 12px; gap:12px;}
+            .chart-card{padding:16px; border-radius:18px;}
+            .chart-card canvas{max-height:240px;}
+            .events-grid{margin:0 12px; gap:12px;}
+        }
+        @media (max-width: 480px){
+            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
+            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
+            .page-header h1{font-size:1.15rem;}
+            .page-header .subtitle{font-size:0.8rem;}
+            .stats-grid{margin:0 10px 12px 10px; grid-template-columns:repeat(2, 1fr); gap:8px;}
+            .stat-card-modern{padding:12px 8px; border-radius:14px;}
+            .stat-card-modern .stat-label{font-size:0.6rem;}
+            .stat-card-modern .stat-value{font-size:1.1rem;}
+            .charts-grid{margin:0 10px 12px 10px;}
+            .events-grid{margin:0 10px;}
+            .chart-card{padding:12px; border-radius:16px;}
+            .event-card-modern{padding:10px 12px; border-radius:12px;}
+            .event-card-modern .event-meta{font-size:0.65rem;}
         }
     </style>
 </head>
