@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Registrar Cliente · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -12,6 +14,9 @@
 
         .btn-menu-modern {
             position: fixed; top: 24px; left: 24px; z-index: 1050;
+            /* mejora táctil en móvil */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
             background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 8px 20px rgba(0,0,0,0.04);
@@ -158,14 +163,31 @@
         .file-status.valid { background: #e3f5ee; color: #1a8b5c; }
         .file-status.invalid { background: #fee9e7; color: #b12a2a; }
 
-        .modal-modern .modal-content {
+        .modal-modern.modal-content {
             border-radius: 28px; border: none; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+            overflow: hidden; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
         }
-        .modal-modern .modal-header { border-bottom: none; padding: 20px 28px 8px 28px; }
-        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
-        .modal-modern .modal-body { padding: 16px 28px 24px; }
-        .modal-modern .modal-footer { border-top: none; padding: 8px 28px 24px; }
+       .modal-modern.modal-header { border-bottom: none; padding: 22px 28px 10px 28px; }
+       .modal-modern.modal-header.modal-title { font-weight: 700; color: #0b1e33; font-size: 1.15rem; display:flex; align-items:center; gap:10px; }
+       .modal-modern.modal-body { padding: 16px 28px 24px; }
+       .modal-modern.modal-footer { border-top: none; padding: 8px 28px 24px; gap:10px; }
+
+        /* MODAL NOTIFICACION MODERNO - UN SOLO MENSAJE */
+       .notif-icon-box {
+            width: 64px; height: 64px; border-radius: 20px; display:flex; align-items:center; justify-content:center;
+            font-size: 2rem; margin: 0 auto 14px auto;
+        }
+       .notif-icon-box.success { background: #e3f5ee; color: #1a8b5c; }
+       .notif-icon-box.error { background: #fee9e7; color: #c53636; }
+       .notif-icon-box.warning { background: #fff4d6; color: #b47a00; }
+       .notif-icon-box.info { background: #eef3fa; color: #2a6df4; }
+       .notif-title { font-weight: 800; font-size: 1.25rem; color: #0b1e33; text-align:center; margin-bottom:6px; }
+       .notif-message { color: #4a5b6e; font-size: 0.95rem; text-align:center; line-height:1.5; }
+       .notif-message strong { color: #0b1e33; }
+       .btn-modern-close {
+            border-radius: 60px; padding: 10px 22px; font-weight: 600;
+            border: 1.5px solid #e9edf4; background: white; color: #4a5b6e;
+        }
 
         .file-preview-modal { width: 100%; height: 60vh; border: none; border-radius: 12px; }
 
@@ -182,24 +204,390 @@
         .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
         .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
 
+        /* ============================================================ */
+        /* RESPONSIVE SYSTEM - ADAPTADO A TELEFONO / TABLET / PC */
+        /* ============================================================ */
+        
+        /* TABLET Y MÓVIL GRANDE */
+        @media (max-width: 992px) {
+            .form-card { max-width: 95%; }
+            .btn-menu-modern { position: relative; top: auto; left: auto; margin: 0 0 16px 0; }
+            body { padding-top: 12px; }
+        }
+
         @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .form-card { padding: 20px 16px; }
-            .step-indicator-modern { gap: 40px; }
-            .step-indicator-modern::before { left: 20%; right: 20%; }
-            .btn-group-actions { flex-direction: column; align-items: stretch; }
-            .btn-group-actions .left-actions { justify-content: center; }
-            .btn-group-actions .right-actions { justify-content: center; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .modal-modern .modal-body { padding: 12px 16px 18px; }
+            body { background: #f2f5fb; padding-bottom: 20px; }
+            .container { padding-left: 12px; padding-right: 12px; }
+            .page-header { padding: 18px 16px; border-radius: 20px; margin-bottom: 16px; }
+            .page-header h1 { font-size: 1.35rem; gap: 8px; }
+            .page-header h1 i { font-size: 1.5rem; }
+            .page-header .subtitle { font-size: 0.8rem; }
+            .form-card { padding: 20px 14px 18px; border-radius: 22px; box-shadow: 0 12px 32px -16px rgba(0,20,40,0.12); }
+            .progress-modern { height: 10px; margin-bottom: 20px; }
+            .step-indicator-modern { gap: 36px; margin-bottom: 22px; }
+            .step-indicator-modern::before { left: 22%; right: 22%; top: 18px; }
+            .step-circle { width: 38px; height: 38px; font-size: 0.85rem; }
+            .step-title { font-size: 1rem; margin-bottom: 12px; }
+            .form-control-modern { height: 48px; font-size: 16px; /* evita zoom en iOS */ }
+            .btn-group-actions { flex-direction: column-reverse; }
+            .btn-group-actions .left-actions, .btn-group-actions .right-actions { width: 100%; justify-content: stretch; }
+            .btn-group-actions .btn-primary-modern, .btn-group-actions .btn-success-modern, .btn-group-actions .btn-danger-modern, .btn-group-actions .btn-outline-secondary-modern { width: 100%; justify-content: center; }
+            
+            /* Archivos en móvil: layout vertical */
+            .file-input-container { flex-direction: column; align-items: stretch; padding: 12px; gap: 10px; min-height: auto; }
+            .file-input-container .file-input-label { width: 100%; justify-content: center; padding: 10px; font-size: 0.8rem; }
+            .file-input-container .file-name { text-align: center; max-width: 100%; }
+            .file-actions { justify-content: space-between; width: 100%; }
+            .btn-mobile-upload { flex: 1; justify-content: center; padding: 8px; }
         }
+
+        /* MÓVIL PEQUEÑO */
         @media (max-width: 480px) {
-            .step-indicator-modern { gap: 20px; }
-            .step-indicator-modern::before { left: 15%; right: 15%; }
-            .step-circle { width: 34px; height: 34px; font-size: 0.75rem; }
-            .step-label { font-size: 0.55rem; }
+            .page-header h1 { font-size: 1.15rem; flex-direction: column; }
+            .step-indicator-modern { gap: 16px; padding: 0 5px; }
+            .step-indicator-modern::before { left: 18%; right: 18%; }
+            .step-circle { width: 32px; height: 32px; font-size: 0.7rem; border-width: 2px; }
+            .step-label { font-size: 0.5rem; letter-spacing: 0.02em; }
+            .form-card { padding: 16px 12px; border-radius: 18px; }
+            .row.g-3 { --bs-gutter-y: 0.8rem; }
+            .file-upload-group { gap: 4px; }
+            .btn-menu-modern { width: 100%; justify-content: center; border-radius: 14px; }
+            .modal-dialog { margin: 10px; }
+            #qrCodeContainer canvas, #qrCodeContainer img { width: 180px !important; height: 180px !important; }
         }
+
+        /* PC GRANDE - mejora visual */
+        @media (min-width: 1200px) {
+            .form-card { max-width: 980px; padding: 40px 36px 32px; }
+            .page-header h1 { font-size: 2rem; }
+        }
+
+        /* FIX iOS SAFARI */
+        @supports (-webkit-touch-callout: none) {
+            .form-card { backdrop-filter: none; background: rgba(255,255,255,0.95); }
+        }
+
+                /* ============================================================ */
+        /* ESTILOS PARA SUBIDA DE ARCHIVOS MODERNOS */
+        /* ============================================================ */
+        .file-upload-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .file-upload-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.6);
+            border: 1.5px dashed #d0d8e3;
+            border-radius: 14px;
+            padding: 6px 12px;
+            transition: all 0.2s;
+            min-height: 48px;
+            flex-wrap: wrap;
+        }
+        .file-input-container:hover {
+            border-color: #2a6df4;
+            background: rgba(255,255,255,0.8);
+        }
+        .file-input-container .file-input-hidden {
+            position: absolute;
+            opacity: 0;
+            width: 0.1px;
+            height: 0.1px;
+            pointer-events: none;
+        }
+        .file-input-container .file-input-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #0b1e33;
+            color: white;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .file-input-container .file-input-label:hover {
+            background: #1a3b6b;
+            transform: translateY(-1px);
+        }
+        .file-input-container .file-input-label i {
+            font-size: 0.9rem;
+        }
+        .file-input-container .file-name {
+            font-size: 0.75rem;
+            color: #6b7b8f;
+            flex: 1;
+            min-width: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .file-input-container .file-name.has-file {
+            color: #0b1e33;
+            font-weight: 500;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-mobile-upload {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: none;
+            background: rgba(42,109,244,0.08);
+            color: #2a6df4;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-mobile-upload:hover {
+            background: #2a6df4;
+            color: white;
+            transform: translateY(-1px);
+        }
+        .btn-mobile-upload i {
+            font-size: 0.9rem;
+        }
+
+        .btn-file-clear {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            border: none;
+            background: rgba(220,53,69,0.08);
+            color: #dc3545;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-file-clear:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .file-input-container {
+                flex-wrap: wrap;
+                padding: 8px 12px;
+            }
+            .file-input-container .file-input-label {
+                font-size: 0.7rem;
+                padding: 4px 12px;
+            }
+            .file-input-container .file-name {
+                font-size: 0.7rem;
+                min-width: 40px;
+                max-width: 100px;
+            }
+            .btn-mobile-upload {
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+            .file-actions {
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .file-input-container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .file-input-container .file-input-label {
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+            .file-input-container .file-name {
+                font-size: 0.65rem;
+                max-width: 80px;
+            }
+            .btn-mobile-upload {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+            .btn-mobile-upload span {
+                display: none;
+            }
+            .btn-mobile-upload i {
+                font-size: 0.8rem;
+            }
+        }
+        /* ============================================================ */
+/* ANIMACIÓN DE ÉXITO MODERNA */
+/* ============================================================ */
+.success-animation {
+    margin: 20px auto;
+}
+
+.success-animation .checkmark {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 2;
+    stroke: #1a8b5c;
+    stroke-miterlimit: 10;
+    margin: 0 auto;
+    box-shadow: 0 0 0 rgba(26, 139, 92, 0.4);
+    animation: success-pulse 1.5s ease-in-out infinite;
+}
+
+.success-animation .checkmark .checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+    stroke-miterlimit: 10;
+    stroke: #1a8b5c;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-animation .checkmark .checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke-width: 3;
+    stroke: #1a8b5c;
+    fill: none;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+}
+
+.success-animation .checkmark .checkmark-bg {
+    fill: #e8f5e9;
+    animation: success-fade-in 0.6s ease forwards;
+}
+
+@keyframes stroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes success-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(26, 139, 92, 0.2);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px 10px rgba(26, 139, 92, 0.1);
+    }
+}
+
+@keyframes success-fade-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.success-animation .confetti-container {
+    position: relative;
+    height: 40px;
+    overflow: hidden;
+}
+
+.success-animation .confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    animation: confetti-fall 2s ease-in-out forwards;
+    opacity: 0;
+}
+
+.success-animation .confetti:nth-child(1) { left: 10%; background: #f44336; animation-delay: 0.2s; }
+.success-animation .confetti:nth-child(2) { left: 20%; background: #2196f3; animation-delay: 0.4s; }
+.success-animation .confetti:nth-child(3) { left: 30%; background: #ffeb3b; animation-delay: 0.6s; }
+.success-animation .confetti:nth-child(4) { left: 40%; background: #4caf50; animation-delay: 0.3s; }
+.success-animation .confetti:nth-child(5) { left: 50%; background: #9c27b0; animation-delay: 0.7s; }
+.success-animation .confetti:nth-child(6) { left: 60%; background: #ff9800; animation-delay: 0.5s; }
+.success-animation .confetti:nth-child(7) { left: 70%; background: #e91e63; animation-delay: 0.8s; }
+.success-animation .confetti:nth-child(8) { left: 80%; background: #00bcd4; animation-delay: 0.1s; }
+.success-animation .confetti:nth-child(9) { left: 90%; background: #8bc34a; animation-delay: 0.9s; }
+.success-animation .confetti:nth-child(10) { left: 15%; background: #ff5722; animation-delay: 0.45s; }
+.success-animation .confetti:nth-child(11) { left: 45%; background: #3f51b5; animation-delay: 0.55s; }
+.success-animation .confetti:nth-child(12) { left: 75%; background: #ffeb3b; animation-delay: 0.65s; }
+
+@keyframes confetti-fall {
+    0% {
+        opacity: 1;
+        transform: translateY(-30px) rotate(0deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(60px) rotate(720deg) scale(0.5);
+    }
+}
+
+.success-animation .success-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a8b5c;
+    margin-top: 16px;
+    animation: success-text-fade 0.6s ease 0.8s forwards;
+    opacity: 0;
+}
+
+@keyframes success-text-fade {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-animation .success-subtext {
+    color: #6b7b8f;
+    font-size: 0.9rem;
+    margin-top: 4px;
+    animation: success-text-fade 0.6s ease 1s forwards;
+    opacity: 0;
+}
+
+.success-animation .success-details {
+    background: rgba(232, 245, 233, 0.5);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-top: 16px;
+    animation: success-text-fade 0.6s ease 1.2s forwards;
+    opacity: 0;
+}
     </style>
 </head>
 <body>
@@ -312,64 +700,99 @@
             <!-- PASO 2 -->
             <div class="step-content" id="step2">
                 <div class="step-title"><i class="bi bi-file-pdf"></i> Documentos (PDF)</div>
+                
+                <!-- CURP -->
                 <div class="row g-3">
-                    <!-- CURP -->
                     <div class="col-md-4">
-                        <label class="form-label-modern">CURP <span class="required">*</span></label>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('curp_file')" style="white-space:nowrap;">
-                                <i class="bi bi-qr-code"></i> Subir desde móvil
-                            </button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearFileInput('curp_file', 'curpStatus', 'curp')" style="white-space:nowrap; display:none;" id="curp_clear_btn">
-                                <i class="bi bi-trash3"></i> Eliminar
-                            </button>
-                        </div>
-                        <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
-                        <span class="file-status invalid" id="curpStatus">❌ No validado</span>
-                        <div id="curp_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-                            <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        <div class="file-upload-group">
+                            <label class="form-label-modern">CURP <span class="required">*</span></label>
+                            <div class="file-upload-wrapper">
+                                <div class="file-input-container">
+                                    <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern file-input-hidden" required>
+                                    <label for="curp_file" class="file-input-label">
+                                        <i class="bi bi-cloud-upload"></i>
+                                        <span>Seleccionar archivo</span>
+                                    </label>
+                                    <span class="file-name" id="curp_file_name">Ningún archivo seleccionado</span>
+                                </div>
+                                <div class="file-actions">
+                                    <button type="button" class="btn-mobile-upload" onclick="openQRScanner('curp_file')" title="Subir desde móvil">
+                                        <i class="bi bi-qr-code"></i> Móvil
+                                    </button>
+                                    <button type="button" class="btn-file-clear" onclick="clearFileInput('curp_file', 'curpStatus', 'curp')" id="curp_clear_btn" style="display:none;">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
+                            <span class="file-status invalid" id="curpStatus">❌ No validado</span>
+                            <div id="curp_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+                                <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                            </div>
                         </div>
                     </div>
 
                     <!-- INE -->
                     <div class="col-md-4">
-                        <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('ine_file')" style="white-space:nowrap;">
-                                <i class="bi bi-qr-code"></i> Subir desde móvil
-                            </button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearFileInput('ine_file', 'ineStatus', 'ine')" style="white-space:nowrap; display:none;" id="ine_clear_btn">
-                                <i class="bi bi-trash3"></i> Eliminar
-                            </button>
-                        </div>
-                        <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
-                        <span class="file-status invalid" id="ineStatus">❌ No validado</span>
-                        <div id="ine_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-                            <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        <div class="file-upload-group">
+                            <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
+                            <div class="file-upload-wrapper">
+                                <div class="file-input-container">
+                                    <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern file-input-hidden" required>
+                                    <label for="ine_file" class="file-input-label">
+                                        <i class="bi bi-cloud-upload"></i>
+                                        <span>Seleccionar archivo</span>
+                                    </label>
+                                    <span class="file-name" id="ine_file_name">Ningún archivo seleccionado</span>
+                                </div>
+                                <div class="file-actions">
+                                    <button type="button" class="btn-mobile-upload" onclick="openQRScanner('ine_file')" title="Subir desde móvil">
+                                        <i class="bi bi-qr-code"></i> Móvil
+                                    </button>
+                                    <button type="button" class="btn-file-clear" onclick="clearFileInput('ine_file', 'ineStatus', 'ine')" id="ine_clear_btn" style="display:none;">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
+                            <span class="file-status invalid" id="ineStatus">❌ No validado</span>
+                            <div id="ine_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+                                <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                            </div>
                         </div>
                     </div>
 
                     <!-- DOMICILIO -->
                     <div class="col-md-4">
-                        <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern" style="flex:1;" required>
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="openQRScanner('domicilio_file')" style="white-space:nowrap;">
-                                <i class="bi bi-qr-code"></i> Subir desde móvil
-                            </button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearFileInput('domicilio_file', 'domicilioStatus', 'domicilio')" style="white-space:nowrap; display:none;" id="domicilio_clear_btn">
-                                <i class="bi bi-trash3"></i> Eliminar
-                            </button>
-                        </div>
-                        <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
-                        <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
-                        <div id="domicilio_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-                            <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        <div class="file-upload-group">
+                            <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
+                            <div class="file-upload-wrapper">
+                                <div class="file-input-container">
+                                    <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern file-input-hidden" required>
+                                    <label for="domicilio_file" class="file-input-label">
+                                        <i class="bi bi-cloud-upload"></i>
+                                        <span>Seleccionar archivo</span>
+                                    </label>
+                                    <span class="file-name" id="domicilio_file_name">Ningún archivo seleccionado</span>
+                                </div>
+                                <div class="file-actions">
+                                    <button type="button" class="btn-mobile-upload" onclick="openQRScanner('domicilio_file')" title="Subir desde móvil">
+                                        <i class="bi bi-qr-code"></i> Móvil
+                                    </button>
+                                    <button type="button" class="btn-file-clear" onclick="clearFileInput('domicilio_file', 'domicilioStatus', 'domicilio')" id="domicilio_clear_btn" style="display:none;">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
+                            <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
+                            <div id="domicilio_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
+                                <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                            </div>
                         </div>
                     </div>
                 </div>
+                
                 <div class="btn-group-actions">
                     <div class="left-actions">
                         <button type="button" class="btn-outline-secondary-modern" onclick="prevStep(2)">
@@ -392,20 +815,16 @@
 
 </div>
 
-<!-- ================================================== -->
-<!-- MODAL NOTIFICACIONES -->
-<!-- ================================================== -->
+<!-- MODAL NOTIFICACIONES - MODERNIZADO SIN DOBLE MENSAJE -->
 <div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" id="notificationHeader">
-                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content" style="border-radius:32px;">
+            <div class="modal-body text-center" id="notificationBody" style="padding:32px 28px 24px;">
+                <!-- Contenido dinámico -->
             </div>
-            <div class="modal-body" id="notificationBody"></div>
-            <div class="modal-footer" id="notificationFooter">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <a href="#" id="downloadLink" class="btn btn-primary" style="display:none;">
+            <div class="modal-footer justify-content-center" id="notificationFooter" style="border:none; padding:0 28px 28px;">
+                <button type="button" class="btn-modern-close" data-bs-dismiss="modal">Cerrar</button>
+                <a href="#" id="downloadLink" class="btn btn-primary-modern" style="display:none;">
                     <i class="bi bi-file-pdf"></i> Descargar Constancia
                 </a>
             </div>
@@ -504,7 +923,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 
 // ============================================================
@@ -533,49 +951,56 @@ let currentStep = 1;
 let filesValidated = { curp: false, ine: false, domicilio: false };
 let pendingFileInput = null;
 
+// ANTI-DOBLE-MENSAJE: controla ultima notificación
+let lastNotification = { hash: '', time: 0 };
+
 function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
+    // Evita doble disparo por eventos burbujeados
+    const hash = title + '|' + bodyHTML + '|' + type;
+    const now = Date.now();
+    if (lastNotification.hash === hash && (now - lastNotification.time) < 800) {
+        return;
+    }
+    lastNotification = { hash, time: now };
+
     const activeModals = document.querySelectorAll('.modal.show');
     if (activeModals.length > 0) {
-        activeModals.forEach(modal => {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) {
-                bsModal.hide();
-            }
+        activeModals.forEach(modalEl => {
+            const bsModal = bootstrap.Modal.getInstance(modalEl);
+            if (bsModal) bsModal.hide();
         });
-        setTimeout(() => {
-            showNotification(title, bodyHTML, type, downloadUrl);
-        }, 300);
+        setTimeout(() => showNotification(title, bodyHTML, type, downloadUrl), 350);
         return;
     }
     cleanupModals();
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'), {
-        backdrop: 'static'
-    });
-    const header = document.getElementById('notificationHeader');
-    const titleEl = document.getElementById('notificationTitle');
+
     const bodyEl = document.getElementById('notificationBody');
     const downloadLink = document.getElementById('downloadLink');
-    header.className = 'modal-header';
-    if (type === 'success') {
-        header.classList.add('bg-success', 'text-white');
-        titleEl.textContent = '✅ ' + title;
-    } else if (type === 'error') {
-        header.classList.add('bg-danger', 'text-white');
-        titleEl.textContent = '❌ ' + title;
-    } else if (type === 'warning') {
-        header.classList.add('bg-warning', 'text-dark');
-        titleEl.textContent = '⚠️ ' + title;
-    } else {
-        header.classList.add('bg-primary', 'text-white');
-        titleEl.textContent = 'ℹ️ ' + title;
-    }
-    bodyEl.innerHTML = bodyHTML;
+
+    // Limpia titulo de emojis previos
+    const cleanTitle = title.replace(/^[✅❌⚠ℹ️]+\s*/, '').trim();
+
+    let icon = '', iconClass = type;
+    if (type === 'success') icon = '<i class="bi bi-check-lg"></i>';
+    else if (type === 'error') icon = '<i class="bi bi-x-lg"></i>';
+    else if (type === 'warning') icon = '<i class="bi bi-exclamation-triangle"></i>';
+    else icon = '<i class="bi bi-info-lg"></i>';
+
+    // SOLO UN MENSAJE - bodyHTML ya es suficiente, no se duplica
+    bodyEl.innerHTML = `
+        <div class="notif-icon-box ${iconClass}">${icon}</div>
+        <div class="notif-title">${cleanTitle}</div>
+        <div class="notif-message">${bodyHTML}</div>
+    `;
+
     if (downloadUrl) {
         downloadLink.href = downloadUrl;
-        downloadLink.style.display = 'inline-block';
+        downloadLink.style.display = 'inline-flex';
     } else {
         downloadLink.style.display = 'none';
     }
+
+    const modal = new bootstrap.Modal(document.getElementById('notificationModal'), { backdrop: true });
     modal.show();
 }
 
@@ -815,18 +1240,36 @@ document.addEventListener('click', function (e) {
 });
 
 // ============================================================
-// VISTA PREVIA DE PDFs (CON BOTÓN ELIMINAR)
+// VISTA PREVIA DE PDFs (CON NOMBRE DE ARCHIVO)
 // ============================================================
 function handleFilePreview(inputId, statusId, fileKey) {
     document.getElementById(inputId).addEventListener('change', function(e) {
         const file = this.files[0];
         const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
+        const fileNameEl = document.getElementById(inputId.replace('_file', '_file_name'));
+        
         if (!file) {
             if (clearBtn) {
                 clearBtn.style.display = 'none';
             }
+            if (fileNameEl) {
+                fileNameEl.textContent = 'Ningún archivo seleccionado';
+                fileNameEl.className = 'file-name';
+            }
             return;
         }
+        
+        // Mostrar nombre del archivo
+        if (fileNameEl) {
+            const maxLen = 30;
+            let displayName = file.name;
+            if (displayName.length > maxLen) {
+                displayName = displayName.substring(0, maxLen - 3) + '...';
+            }
+            fileNameEl.textContent = displayName;
+            fileNameEl.className = 'file-name has-file';
+        }
+        
         if (file.type !== 'application/pdf' && 
             file.type !== 'image/jpeg' && 
             file.type !== 'image/png') {
@@ -838,11 +1281,17 @@ function handleFilePreview(inputId, statusId, fileKey) {
             if (clearBtn) {
                 clearBtn.style.display = 'none';
             }
+            if (fileNameEl) {
+                fileNameEl.textContent = 'Ningún archivo seleccionado';
+                fileNameEl.className = 'file-name';
+            }
             return;
         }
+        
         if (clearBtn) {
-            clearBtn.style.display = 'inline-block';
+            clearBtn.style.display = 'inline-flex';
         }
+        
         const currentFile = file;
         const currentFileKey = fileKey;
         const currentStatusId = statusId;
@@ -853,18 +1302,21 @@ function handleFilePreview(inputId, statusId, fileKey) {
         }
         const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
         previewModal.show();
-        document.getElementById('acceptFileBtn').onclick = function() {
+        // Clona el botón para eliminar listeners viejos y evitar doble notificación
+        const oldBtn = document.getElementById('acceptFileBtn');
+        const newBtn = oldBtn.cloneNode(true);
+        oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+        newBtn.onclick = function() {
             filesValidated[currentFileKey] = true;
             previewModal.hide();
             const statusEl = document.getElementById(currentStatusId);
             if (statusEl) {
-                statusEl.textContent = '✅ Validado: ' + currentFile.name;
+                statusEl.textContent = '✅ ' + currentFile.name;
                 statusEl.className = 'file-status valid';
             }
-            showNotification('Archivo aceptado', `<p><strong>${currentFile.name}</strong> ha sido validado correctamente.</p>`, 'success');
-            setTimeout(() => {
-                URL.revokeObjectURL(fileURL);
-            }, 1000);
+            showNotification('Archivo aceptado', `Se validó <strong>${currentFile.name}</strong> correctamente.`, 'success');
+            setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
         };
     });
 }
@@ -874,95 +1326,87 @@ handleFilePreview('ine_file', 'ineStatus', 'ine');
 handleFilePreview('domicilio_file', 'domicilioStatus', 'domicilio');
 
 // ============================================================
-// SUBMIT
+// SUBMIT - CORREGIDO ANTI FALSO POSITIVO
 // ============================================================
+let isSubmitting = false;
+
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    if (!filesValidated.curp || !filesValidated.ine || !filesValidated.domicilio) {
-        showNotification(
-            'Archivos no validados',
-            '<p>Por favor adjunta y valida los 3 documentos PDF antes de registrar.</p>',
-            'warning'
-        );
+    if (isSubmitting) return; // evita doble click
+
+    if (!filesValidated.curp ||!filesValidated.ine ||!filesValidated.domicilio) {
+        showNotification('Archivos no validados', 'Por favor adjunta y valida los 3 documentos antes de registrar.', 'warning');
         return;
     }
+    // Valida que los archivos no estén vacíos (bug del QR)
+    for (const id of ['curp_file', 'ine_file', 'domicilio_file']) {
+        const f = document.getElementById(id).files[0];
+        if (!f || f.size < 1024) { // menos de 1KB = archivo vacío/corrupto
+            showNotification('Archivo corrupto', `El archivo <strong>${id.replace('_file','').toUpperCase()}</strong> está vacío o corrupto. Súbelo de nuevo.`, 'error');
+            return;
+        }
+    }
+
     if (!validateStep(2)) {
         showStep(2);
         return;
     }
-    showConfirm(
-        'Confirmar registro',
-        '<p>¿Estás seguro de que deseas registrar este cliente?</p>',
-        async function() {
-            showLoading();
-            const formData = new FormData(document.getElementById('registerForm'));
-            try {
-                const response = await fetch('/api/clients/register', {
-                    method: 'POST',
-                    body: formData
-                });
-                hideLoading();
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `constancia_${Date.now()}.pdf`;
-                    a.click();
-                    showNotification(
-                        'Cliente Registrado Exitosamente',
-                        `
-                        <div class="text-center mb-3">
-                            <span style="font-size: 48px;">✅</span>
-                        </div>
-                        <p class="mb-2">La constancia se descargó automáticamente.</p>
-                        <p class="text-muted small">Guarda el PDF para futuras consultas.</p>
-                        `,
-                        'success'
-                    );
-                    document.getElementById('registerForm').reset();
-                    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                    filesValidated = { curp: false, ine: false, domicilio: false };
-                    document.getElementById('curpStatus').textContent = '❌ No validado';
-                    document.getElementById('curpStatus').className = 'file-status invalid';
-                    document.getElementById('ineStatus').textContent = '❌ No validado';
-                    document.getElementById('ineStatus').className = 'file-status invalid';
-                    document.getElementById('domicilioStatus').textContent = '❌ No validado';
-                    document.getElementById('domicilioStatus').className = 'file-status invalid';
-                    showStep(1);
-                } else {
-                    let result;
-                    try {
-                        result = await response.json();
-                    } catch {
-                        result = { detail: 'Error del servidor' };
-                    }
-                    if (result.existing_client) {
-                        showNotification(
-                            'Cliente ya registrado',
-                            `
-                            <p><strong>Cliente ya registrado con ese CURP:</strong></p>
-                            <hr>
-                            <p><strong>Folio:</strong> ${result.existing_client.folio_registro}</p>
-                            <p><strong>Expediente:</strong> ${result.existing_client.expediente_interno}</p>
-                            <p><strong>Nombre:</strong> ${result.existing_client.nombre_completo}</p>
-                            `,
-                            'warning'
-                        );
-                    } else if (result.message) {
-                        showNotification('Aviso', `<p><strong>Mensaje:</strong> ${result.message}</p>`, 'warning');
-                    } else if (result.detail) {
-                        showNotification('Error', `<p><strong>Mensaje:</strong> ${result.detail}</p>`, 'error');
-                    } else {
-                        showNotification('Error', '<p>No se pudo completar la operación.</p>', 'error');
-                    }
+
+    showConfirm('Confirmar registro', '<p>¿Estás seguro de que deseas registrar este cliente?</p>', async function() {
+        isSubmitting = true;
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Registrando...';
+        showLoading();
+
+        const formData = new FormData(document.getElementById('registerForm'));
+        try {
+            const response = await fetch('/api/clients/register', { method: 'POST', body: formData });
+            const contentType = response.headers.get('content-type') || '';
+
+            if (response.ok && contentType.includes('application/pdf')) {
+                const blob = await response.blob();
+                if (blob.size < 1024) throw new Error('PDF vacío recibido del servidor');
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `constancia_${Date.now()}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+                showNotification('Cliente registrado', `La constancia se descargó automáticamente.<br><span class="text-muted small">Guarda el PDF.</span>`, 'success');
+                document.getElementById('registerForm').reset();
+                document.querySelectorAll('.file-name').forEach(el => { el.textContent = 'Ningún archivo seleccionado'; el.className = 'file-name'; });
+                document.querySelectorAll('.file-status').forEach(el => { el.textContent = '❌ No validado'; el.className = 'file-status invalid'; });
+                document.querySelectorAll('[id$="_clear_btn"]').forEach(b => b.style.display = 'none');
+                filesValidated = { curp: false, ine: false, domicilio: false };
+                showStep(1);
+            } else {
+                // Es error aunque venga con 200
+                let result;
+                try { result = await response.json(); } catch {
+                    const text = await response.text();
+                    result = { detail: text || 'Error del servidor al generar constancia' };
                 }
-            } catch (error) {
-                hideLoading();
-                showNotification('Error de conexión', '<p>No se pudo conectar con el servidor.</p>', 'error');
+                if (result.existing_client) {
+                    showNotification('Cliente ya registrado', `<strong>Folio:</strong> ${result.existing_client.folio_registro}<br><strong>Expediente:</strong> ${result.existing_client.expediente_interno}<br><strong>Nombre:</strong> ${result.existing_client.nombre_completo}`, 'warning');
+                } else {
+                    showNotification('Error al registrar', result.detail || result.message || 'No se pudo completar. Revisa los archivos.', 'error');
+                }
             }
+        } catch (error) {
+            console.error(error);
+            showNotification('Error de conexión', `No se pudo registrar: ${error.message}`, 'error');
+        } finally {
+            hideLoading();
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-check2"></i> Registrar Cliente';
         }
-    );
+    });
 });
 
 // ============================================================
@@ -1227,12 +1671,10 @@ function startPollingForUpload(tempId, docTypeKey) {
                             forcePdfPreview(currentField);
                         }, 500);
                     } catch (err) {
-                        console.error('❌ Error:', err);
-                        const file = new File([''], data.filename, { type: 'application/pdf' });
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        fileInput.files = dataTransfer.files;
-                        fileInput.dispatchEvent(new Event('change'));
+                        console.error('❌ Error al reconstruir archivo:', err);
+                        showNotification('Error de archivo móvil', 'El archivo llegó dañado desde el móvil. Intenta subirlo directo desde PC.', 'error');
+                        filesValidated[currentField.replace('_file', '')] = false;
+                        return;
                     }
                 }
                 const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
