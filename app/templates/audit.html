@@ -1,38 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auditoría · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-950: #060d1a;
+            --primary-900: #0b1e33;
+            --primary-800: #12293f;
+            --primary-700: #1a3b6b;
+            --accent-500: #2a6df4;
+            --accent-400: #4a86ff;
+            --accent-300: #7aa9ff;
+            --accent-100: #e2edff;
+            --success-500: #10b981;
+            --success-100: #d1fae5;
+            --danger-500: #ef4444;
+            --danger-100: #fee2e2;
+            --warning-500: #f59e0b;
+            --warning-100: #fef3c7;
+            --purple-500: #8b5cf6;
+            --purple-100: #ede9fe;
+            --surface: #f4f7fc;
+            --surface-card: rgba(255, 255, 255, 0.75);
+            --border-soft: rgba(255, 255, 255, 0.6);
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #8a9bb0;
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --radius-pill: 60px;
+            --shadow-sm: 0 2px 8px rgba(11, 30, 51, 0.04);
+            --shadow-md: 0 8px 24px -6px rgba(11, 30, 51, 0.08);
+            --shadow-lg: 0 20px 48px -12px rgba(0, 20, 40, 0.12);
+            --shadow-glow: 0 0 0 4px rgba(42, 109, 244, 0.12);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-display {
+            font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+            letter-spacing: -0.02em;
         }
 
         body {
-            background: #f2f5fb;
+            background: var(--surface);
+            background-image:
+                radial-gradient(circle at 15% 10%, rgba(42, 109, 244, 0.08), transparent 45%),
+                radial-gradient(circle at 85% 90%, rgba(139, 92, 246, 0.06), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03), transparent 60%);
+            background-attachment: fixed;
             padding-top: 20px;
-            padding-bottom: 40px;
+            padding-bottom: 60px;
+            min-height: 100vh;
+            color: var(--text-primary);
         }
 
-        /* Botón menú */
+        ::selection {
+            background: var(--accent-500);
+            color: white;
+        }
+
+        /* Scrollbar moderno */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(11, 30, 51, 0.15);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(11, 30, 51, 0.28); background-clip: padding-box; }
+
+        /* ========== BOTÓN MENÚ ========== */
         .btn-menu-modern {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px;
-            padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-md);
+            border-radius: var(--radius-pill);
+            padding: 11px 24px;
             font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: var(--primary-900);
+            transition: all 0.3s var(--ease);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -40,422 +107,858 @@
         }
         .btn-menu-modern:hover {
             background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-500);
         }
+        .btn-menu-modern i { transition: transform 0.3s var(--ease); }
+        .btn-menu-modern:hover i { transform: translateX(-4px); }
 
-        /* Header */
+        /* ========== HEADER ========== */
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: var(--radius-xl);
+            padding: 28px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.6s var(--ease-bounce) both;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -10%;
+            width: 320px; height: 320px;
+            background: radial-gradient(circle, rgba(42,109,244,0.12), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
         }
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.9rem;
+            color: var(--primary-900);
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+            position: relative;
+            z-index: 1;
         }
-        .page-header h1 i {
-            color: #2a6df4;
-            font-size: 2rem;
-        }
-        .page-header .header-badge {
-            background: #0b1e33;
+        .page-header h1 .title-icon {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-500), var(--purple-500));
             color: white;
-            font-weight: 600;
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 8px 20px -6px rgba(42, 109, 244, 0.5);
+            flex-shrink: 0;
         }
-        .page-header .header-badge i {
-            margin-right: 6px;
-            color: #7aa9ff;
+        .page-header .subtitle {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0;
         }
 
-        /* Tarjetas de estadísticas */
+        .header-badge {
+            background: linear-gradient(135deg, var(--primary-900), var(--primary-700));
+            color: white;
+            font-weight: 600;
+            padding: 9px 20px;
+            border-radius: var(--radius-pill);
+            font-size: 0.78rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 6px 16px -4px rgba(11, 30, 51, 0.35);
+            position: relative;
+            z-index: 1;
+        }
+        .header-badge i { color: var(--accent-300); }
+        .live-dot {
+            width: 8px; height: 8px;
+            background: var(--success-500);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        /* ========== ESTADÍSTICAS ========== */
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
             margin-bottom: 24px;
         }
         .stat-card-modern {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 20px;
-            padding: 16px 12px;
+            background: var(--surface-card);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-md);
+            padding: 18px 16px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: transform 0.15s;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.35s var(--ease);
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+            animation: fadeUp 0.5s var(--ease) both;
+        }
+        .stat-card-modern::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-500), var(--purple-500));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s var(--ease);
         }
         .stat-card-modern:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(42, 109, 244, 0.25);
         }
+        .stat-card-modern:hover::before { transform: scaleX(1); }
+        .stat-card-modern .stat-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            background: var(--accent-100);
+            color: var(--accent-500);
+            transition: transform 0.3s var(--ease-bounce);
+        }
+        .stat-card-modern:hover .stat-icon { transform: scale(1.1) rotate(-5deg); }
         .stat-card-modern .stat-value {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0b1e33;
-            line-height: 1.2;
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-900);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            display: block;
+            font-variant-numeric: tabular-nums;
         }
         .stat-card-modern .stat-label {
-            font-size: 0.7rem;
-            color: #6b7b8f;
-            font-weight: 500;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-top: 2px;
+            letter-spacing: 0.06em;
+            margin-top: 4px;
+            display: block;
         }
-        .stat-card-modern .stat-icon {
-            font-size: 1.2rem;
-            color: #2a6df4;
-            margin-right: 4px;
-        }
+        /* Colores por variante */
+        .stat-card-modern.variant-success .stat-icon { background: var(--success-100); color: var(--success-500); }
+        .stat-card-modern.variant-success::before { background: linear-gradient(90deg, var(--success-500), #34d399); }
+        .stat-card-modern.variant-warning .stat-icon { background: var(--warning-100); color: var(--warning-500); }
+        .stat-card-modern.variant-warning::before { background: linear-gradient(90deg, var(--warning-500), #fbbf24); }
+        .stat-card-modern.variant-purple .stat-icon { background: var(--purple-100); color: var(--purple-500); }
+        .stat-card-modern.variant-purple::before { background: linear-gradient(90deg, var(--purple-500), #a78bfa); }
+        .stat-card-modern.variant-money .stat-icon { background: #d1fae5; color: #059669; }
+        .stat-card-modern.variant-money::before { background: linear-gradient(90deg, #10b981, #059669); }
 
-        /* Tabs */
+        /* ========== TABS ========== */
         .tabs-container {
+            display: inline-flex;
+            gap: 4px;
+            margin-bottom: 22px;
+            padding: 5px;
+            background: var(--surface-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-pill);
+            box-shadow: var(--shadow-sm);
+        }
+        .tabs-wrapper {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
             justify-content: center;
-            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
         .tab-btn-modern {
             border: none;
-            border-radius: 60px;
-            padding: 10px 28px;
+            border-radius: var(--radius-pill);
+            padding: 10px 26px;
             font-weight: 600;
-            font-size: 0.9rem;
-            color: #4a5b6e;
-            background: rgba(255,255,255,0.5);
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255,255,255,0.3);
-            transition: all 0.2s;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            background: transparent;
+            transition: all 0.3s var(--ease);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
         }
-        .tab-btn-modern:hover {
-            background: rgba(255,255,255,0.8);
-            transform: translateY(-2px);
-        }
+        .tab-btn-modern:hover { color: var(--accent-500); background: rgba(42, 109, 244, 0.06); }
         .tab-btn-modern.active {
-            background: #0b1e33;
+            background: linear-gradient(135deg, var(--primary-900), var(--primary-700));
             color: white;
-            border-color: #0b1e33;
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.3);
+            box-shadow: 0 8px 20px -6px rgba(11, 30, 51, 0.4);
         }
-        .tab-btn-modern.active i {
-            color: #7aa9ff;
-        }
+        .tab-btn-modern.active i { color: var(--accent-300); }
 
-        /* Tarjeta de filtros */
+        /* ========== FILTROS ========== */
         .filter-card {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background: var(--surface-card);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-lg);
+            padding: 22px 26px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeUp 0.5s var(--ease) both;
+            animation-delay: 0.1s;
         }
         .filter-card .form-label {
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: #4a5b6e;
+            font-weight: 700;
+            font-size: 0.68rem;
+            color: var(--text-secondary);
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 4px;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
+        .filter-card .form-label i { color: var(--accent-500); font-size: 0.85rem; }
         .filter-card .form-control,
         .filter-card .form-select {
-            border-radius: 14px;
-            border: 1.5px solid #e9edf4;
-            padding: 10px 14px;
-            font-size: 0.9rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid #e4ebf5;
+            padding: 11px 14px;
+            font-size: 0.88rem;
+            background: rgba(255, 255, 255, 0.7);
+            transition: all 0.25s var(--ease);
+            color: var(--primary-900);
+            font-weight: 500;
         }
+        .filter-card .form-control:hover,
+        .filter-card .form-select:hover { border-color: var(--accent-300); }
         .filter-card .form-control:focus,
         .filter-card .form-select:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
+            border-color: var(--accent-500);
+            box-shadow: var(--shadow-glow);
             background: white;
+            outline: none;
         }
+
         .btn-search {
-            background: #0b1e33;
+            background: linear-gradient(135deg, var(--primary-900), var(--primary-700));
             border: none;
-            border-radius: 60px;
-            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            padding: 11px 24px;
             font-weight: 600;
+            font-size: 0.9rem;
             color: white;
-            transition: all 0.2s;
+            transition: all 0.3s var(--ease);
             display: flex;
             align-items: center;
             gap: 8px;
             width: 100%;
             justify-content: center;
-        }
-        .btn-search:hover {
-            background: #1a3b6b;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
-        }
-
-        /* Tabla */
-        .table-wrapper {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
-            padding: 4px;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .btn-search::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent-500), var(--purple-500));
+            opacity: 0;
+            transition: opacity 0.3s var(--ease);
+        }
+        .btn-search > * { position: relative; z-index: 1; }
+        .btn-search:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(11, 30, 51, 0.4); }
+        .btn-search:hover::after { opacity: 1; }
+        .btn-search:active { transform: translateY(0); }
+
+        /* ========== TABLA ========== */
+        .table-wrapper {
+            background: var(--surface-card);
+            backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius-lg);
+            padding: 6px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            animation: fadeUp 0.5s var(--ease) both;
+            animation-delay: 0.2s;
         }
         .table-modern {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.86rem;
+            border-collapse: separate;
+            border-spacing: 0;
         }
         .table-modern thead {
-            background: #0b1e33;
-            color: white;
+            background: linear-gradient(135deg, var(--primary-900), var(--primary-800));
         }
         .table-modern thead th {
-            font-weight: 600;
-            font-size: 0.7rem;
+            font-weight: 700;
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            padding: 12px 14px;
+            letter-spacing: 0.06em;
+            padding: 14px 14px;
             border: none;
             white-space: nowrap;
+            color: rgba(255, 255, 255, 0.85);
         }
+        .table-modern thead th:first-child { border-radius: 14px 0 0 14px; }
+        .table-modern thead th:last-child { border-radius: 0 14px 14px 0; }
         .table-modern tbody td {
-            padding: 10px 14px;
+            padding: 12px 14px;
             vertical-align: middle;
-            border-bottom: 1px solid #edf2f9;
+            border-bottom: 1px solid #eef3fa;
             color: #1e293b;
+            font-weight: 500;
+        }
+        .table-modern tbody tr {
+            transition: all 0.2s var(--ease);
         }
         .table-modern tbody tr:hover {
-            background: rgba(42,109,244,0.03);
+            background: rgba(42, 109, 244, 0.04);
         }
-        .table-modern tbody tr:last-child td {
-            border-bottom: none;
-        }
+        .table-modern tbody tr:last-child td { border-bottom: none; }
 
-        /* Badge estatus */
+        /* ========== BADGES ========== */
         .badge-status {
-            padding: 4px 14px;
-            border-radius: 40px;
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
             font-size: 0.65rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            display: inline-block;
-            white-space: nowrap;
-        }
-        .status-iniciado { background: #e2edff; color: #1f4f9e; }
-        .status-terminado { background: #e3f5e9; color: #1f8b4c; }
-        .status-inactivo { background: #eef2f6; color: #3d4a5c; }
-        .status-desistido { background: #fee9e7; color: #b12a2a; }
-        .status-caducado { background: #ffedd5; color: #9b5e00; }
-        .status-revocado { background: #ede7fe; color: #6f42c1; }
-        .status-pendiente { background: #fee9e7; color: #b12a2a; }
-        .status-liquidado { background: #e3f5e9; color: #1f8b4c; }
-
-        .btn-view {
-            background: rgba(42,109,244,0.08);
-            border: none;
-            border-radius: 40px;
-            padding: 4px 14px;
-            color: #2a6df4;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
+            letter-spacing: 0.05em;
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .badge-status::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.7;
+        }
+        .status-iniciado { background: #e2edff; color: #1f4f9e; border-color: #c7dcff; }
+        .status-terminado { background: #d1fae5; color: #047857; border-color: #a7f3d0; }
+        .status-inactivo { background: #eef2f6; color: #3d4a5c; border-color: #dde5ee; }
+        .status-desistido { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+        .status-caducado { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .status-revocado { background: #ede9fe; color: #6d28d9; border-color: #ddd6fe; }
+        .status-pendiente { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+        .status-liquidado { background: #d1fae5; color: #047857; border-color: #a7f3d0; }
+
+        /* ========== BOTÓN VER ========== */
+        .btn-view {
+            background: rgba(42, 109, 244, 0.1);
+            border: 1px solid rgba(42, 109, 244, 0.15);
+            border-radius: var(--radius-pill);
+            padding: 6px 16px;
+            color: var(--accent-500);
+            font-weight: 600;
+            font-size: 0.76rem;
+            transition: all 0.25s var(--ease);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         .btn-view:hover {
-            background: #2a6df4;
+            background: var(--accent-500);
             color: white;
-            transform: scale(1.02);
+            border-color: var(--accent-500);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px -4px rgba(42, 109, 244, 0.5);
         }
 
-        /* Empty state */
+        /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
+            animation: fadeUp 0.5s var(--ease) both;
         }
-        .empty-state i {
-            font-size: 3rem;
-            color: #d0d8e3;
-            margin-bottom: 12px;
+        .empty-state .empty-icon {
+            width: 84px; height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-100), #f0e9ff);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            color: var(--accent-500);
+            margin-bottom: 18px;
+            animation: floatIcon 3s ease-in-out infinite;
         }
         .empty-state h5 {
-            color: #0b1e33;
-            font-weight: 600;
+            color: var(--primary-900);
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 6px;
         }
         .empty-state p {
-            color: #8a9bb0;
+            color: var(--text-muted);
             font-size: 0.9rem;
+            max-width: 380px;
+            margin: 0 auto;
         }
 
-        /* Loading */
+        /* ========== LOADING ========== */
         .spinner-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
+            inset: 0;
+            background: rgba(11, 30, 51, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s var(--ease);
         }
         .spinner-box {
             background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
+            padding: 40px 56px;
+            border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-lg);
+            animation: popIn 0.4s var(--ease-bounce);
         }
-        .spinner-box .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
+        .spinner-box .spinner-ring {
+            width: 52px; height: 52px;
+            border: 4px solid var(--accent-100);
+            border-top-color: var(--accent-500);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto;
         }
         .spinner-box h5 {
             font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
+            color: var(--primary-900);
+            margin-top: 18px;
+            margin-bottom: 4px;
         }
         .spinner-box p {
-            color: #6b7b8f;
+            color: var(--text-muted);
             font-size: 0.85rem;
+            margin: 0;
         }
 
-        /* Modales modernos */
+        /* ========== MODALES ========== */
         .modal-modern .modal-content {
-            border-radius: 28px;
+            border-radius: var(--radius-xl);
             border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
         .modal-modern .modal-header {
             border-bottom: none;
-            padding: 20px 28px 8px 28px;
-            background: #0b1e33 !important;
+            padding: 22px 30px 12px 30px;
+            background: linear-gradient(135deg, var(--primary-900), var(--primary-700)) !important;
+            position: relative;
+        }
+        .modal-modern .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 30px; right: 30px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(122, 169, 255, 0.3), transparent);
         }
         .modal-modern .modal-header .modal-title {
             font-weight: 700;
             color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+        }
+        .modal-modern .modal-header .modal-title i {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            background: rgba(122, 169, 255, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--accent-300);
         }
         .modal-modern .modal-body {
-            padding: 20px 28px 28px;
+            padding: 24px 30px 28px;
         }
         .modal-modern .modal-footer {
             border-top: none;
-            padding: 8px 28px 24px;
+            padding: 8px 30px 26px;
+            gap: 8px;
+        }
+        .modal-backdrop.show { opacity: 0.6; backdrop-filter: blur(4px); }
+
+        /* Botones generales del modal */
+        .btn-outline-secondary {
+            border-radius: var(--radius-pill);
+            border: 1.5px solid #dde5ee;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 9px 22px;
+            transition: all 0.25s var(--ease);
+        }
+        .btn-outline-secondary:hover {
+            background: #f4f7fc;
+            border-color: var(--text-secondary);
+            color: var(--primary-900);
+        }
+        .btn-primary {
+            border-radius: var(--radius-pill);
+            border: none;
+            background: linear-gradient(135deg, var(--accent-500), var(--purple-500));
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 9px 22px;
+            transition: all 0.25s var(--ease);
+            box-shadow: 0 6px 14px -4px rgba(42, 109, 244, 0.5);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -6px rgba(42, 109, 244, 0.6);
+        }
+        .btn-danger {
+            border-radius: var(--radius-pill);
+            border: none;
+            background: linear-gradient(135deg, var(--danger-500), #dc2626);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 9px 22px;
+            transition: all 0.25s var(--ease);
+            box-shadow: 0 6px 14px -4px rgba(239, 68, 68, 0.4);
+        }
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -6px rgba(239, 68, 68, 0.5);
         }
 
+        /* Detalle filas */
         .detail-row {
             display: flex;
-            padding: 6px 0;
+            padding: 10px 12px;
             border-bottom: 1px solid #f0f4fa;
+            border-radius: 8px;
+            transition: background 0.2s var(--ease);
         }
+        .detail-row:hover { background: rgba(42, 109, 244, 0.03); }
         .detail-row .label {
             font-weight: 600;
-            color: #4a5b6e;
-            width: 140px;
+            color: var(--text-secondary);
+            width: 150px;
             flex-shrink: 0;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+        .detail-row .label i { color: var(--accent-500); font-size: 0.9rem; }
         .detail-row .value {
-            color: #0b1e33;
-            font-size: 0.9rem;
+            color: var(--primary-900);
+            font-size: 0.88rem;
+            font-weight: 500;
         }
 
-        /* Responsive */
+        /* ========== PARTES DEL JUICIO ========== */
+        .partes-juicio {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 2px;
+        }
+        .parte-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .parte-rol {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+            font-size: 0.62rem;
+            padding: 3px 11px;
+            border-radius: var(--radius-pill);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+        .parte-rol.parte-actor {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+        }
+        .parte-rol.parte-demandado {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+        }
+        .parte-rol i { font-size: 0.7rem; }
+        .parte-nombre {
+            font-weight: 600;
+            color: var(--primary-900);
+            font-size: 0.88rem;
+            word-break: break-word;
+        }
+
+        /* ========== EXPEDIENTE INLINE ========== */
+        .expediente-inline {
+            margin-top: 8px;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left: 3px solid var(--accent-500);
+            border-radius: 10px;
+            font-size: 0.84rem;
+            color: #1e40af;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .expediente-inline i { color: var(--accent-500); margin-right: 5px; }
+        .expediente-inline strong { color: var(--primary-900); font-weight: 700; }
+
+        /* ========== ALERTAS ========== */
+        .alert-modern {
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+        .alert-modern .alert-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        .alert-modern.alert-warning-modern {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            color: #92400e;
+            border-left: 4px solid var(--warning-500);
+        }
+        .alert-modern.alert-warning-modern .alert-icon { background: rgba(245, 158, 11, 0.18); color: var(--warning-500); }
+        .alert-modern.alert-danger-modern {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #991b1b;
+            border-left: 4px solid var(--danger-500);
+        }
+        .alert-modern.alert-danger-modern .alert-icon { background: rgba(239, 68, 68, 0.18); color: var(--danger-500); }
+        .alert-modern.alert-success-modern {
+            background: linear-gradient(135deg, #f0fdf4, #d1fae5);
+            color: #065f46;
+            border-left: 4px solid var(--success-500);
+        }
+        .alert-modern.alert-success-modern .alert-icon { background: rgba(16, 185, 129, 0.18); color: var(--success-500); }
+
+        /* Form labels en modales */
+        .modal-body .form-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 5px;
+        }
+        .modal-body .form-control,
+        .modal-body .form-select {
+            border-radius: var(--radius-sm);
+            border: 1.5px solid #e4ebf5;
+            padding: 9px 13px;
+            font-size: 0.86rem;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.25s var(--ease);
+            font-weight: 500;
+        }
+        .modal-body .form-control:focus,
+        .modal-body .form-select:focus {
+            border-color: var(--accent-500);
+            box-shadow: var(--shadow-glow);
+            background: white;
+        }
+        .modal-body .form-control-sm,
+        .modal-body .form-select-sm { padding: 7px 11px; font-size: 0.83rem; }
+
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-500);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(42, 109, 244, 0.12);
+        }
+        .section-title i {
+            width: 28px; height: 28px;
+            border-radius: 8px;
+            background: var(--accent-100);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+        .section-title.green { color: var(--success-500); border-bottom-color: rgba(16, 185, 129, 0.15); }
+        .section-title.green i { background: var(--success-100); }
+
+        /* ========== ANIMACIONES ========== */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .btn-menu-modern { position: relative; top: auto; left: auto; margin: 0 0 16px 16px; }
+            body { padding-top: 12px; }
+            .page-header, .stat-grid, .tabs-wrapper, .filter-card, .table-wrapper { margin-left: 16px; margin-right: 16px; }
+        }
         @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .stat-grid { grid-template-columns: repeat(3, 1fr); }
-            .stat-card-modern .stat-value { font-size: 1.2rem; }
-            .filter-card { padding: 16px; }
-            .table-modern { font-size: 0.75rem; }
-            .table-modern thead th { font-size: 0.6rem; padding: 8px 8px; }
-            .table-modern tbody td { padding: 6px 8px; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .detail-row { flex-direction: column; padding: 8px 0; }
-            .detail-row .label { width: 100%; font-size: 0.75rem; }
+            .container { padding-left: 0; padding-right: 0; }
+            .page-header { padding: 20px; border-radius: var(--radius-lg); margin: 0 12px 18px 12px; flex-direction: column; align-items: flex-start; }
+            .page-header h1 { font-size: 1.35rem; }
+            .page-header h1 .title-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+            .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 12px 18px 12px; }
+            .stat-card-modern { padding: 14px 10px; border-radius: var(--radius-sm); }
+            .stat-card-modern .stat-icon { width: 34px; height: 34px; font-size: 1rem; margin-bottom: 6px; }
+            .stat-card-modern .stat-value { font-size: 1.25rem; }
+            .stat-card-modern .stat-label { font-size: 0.6rem; }
+            .tabs-wrapper { margin: 0 12px 14px 12px; }
+            .tabs-container { width: 100%; justify-content: stretch; }
+            .tab-btn-modern { flex: 1; justify-content: center; padding: 10px 14px; font-size: 0.82rem; }
+            .filter-card { padding: 18px; border-radius: var(--radius-md); margin: 0 12px 18px 12px; }
+            .filter-card .form-control, .filter-card .form-select { font-size: 16px; }
+            .btn-search { height: 46px; }
+            .table-wrapper { margin: 0 12px; border-radius: var(--radius-md); padding: 0; background: transparent; border: none; backdrop-filter: none; box-shadow: none; }
+            .table-modern thead { display: none; }
+            .table-modern, .table-modern tbody, .table-modern tr, .table-modern td { display: block; width: 100%; }
+            .table-modern tbody tr {
+                background: var(--surface-card);
+                backdrop-filter: blur(16px);
+                border: 1px solid var(--border-soft);
+                border-radius: var(--radius-md);
+                padding: 14px;
+                margin: 10px 0;
+                box-shadow: var(--shadow-sm);
+                transition: all 0.25s var(--ease);
+            }
+            .table-modern tbody tr:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+            .table-modern tbody td {
+                border: none; padding: 6px 0; display: flex; justify-content: space-between; align-items: center; text-align: right; font-size: 0.85rem;
+            }
+            .table-modern tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                font-size: 0.63rem;
+                text-transform: uppercase;
+                color: var(--text-secondary);
+                text-align: left;
+                letter-spacing: 0.04em;
+                margin-right: 10px;
+            }
+            .table-modern tbody td:last-child {
+                flex-direction: column; align-items: stretch; margin-top: 8px; padding-top: 10px; border-top: 1px solid #eef3fa;
+            }
+            .table-modern tbody td:last-child::before { display: none; }
+            .btn-view { width: 100%; justify-content: center; padding: 9px; }
+            .detail-row { flex-direction: column; padding: 10px 8px; gap: 3px; }
+            .detail-row .label { width: 100%; font-size: 0.72rem; }
         }
         @media (max-width: 480px) {
-            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .btn-menu-modern { width: calc(100% - 20px); margin: 0 10px 14px 10px; justify-content: center; border-radius: var(--radius-sm); }
+            .page-header { margin: 0 10px 14px 10px; border-radius: var(--radius-md); padding: 16px; }
+            .page-header .header-badge { width: 100%; justify-content: center; }
+            .stat-grid { margin: 0 10px 14px 10px; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .tabs-wrapper { margin: 0 10px 14px 10px; }
+            .filter-card { margin: 0 10px 14px 10px; padding: 14px; }
+            .table-wrapper { margin: 0 10px; }
+            .table-modern tbody tr { margin: 8px 0; padding: 12px; }
         }
-                /* ========== ADAPTACIÓN MÓVIL - TABLA A CARDS ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.stat-grid,.tabs-container,.filter-card,.table-wrapper{margin-left:16px; margin-right:16px;}
+
+        /* Estilos para el detalle del modal */
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 0 18px 0;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #f0f4fa;
         }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; flex-direction:column; align-items:flex-start;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .stat-grid{grid-template-columns:repeat(3, 1fr); gap:8px; margin:0 12px 16px 12px;}
-            .stat-card-modern{padding:12px 8px; border-radius:14px;}
-            .stat-card-modern .stat-value{font-size:1.2rem;}
-            .tabs-container{margin:0 12px 12px 12px; justify-content:stretch;}
-            .tab-btn-modern{flex:1; justify-content:center; padding:10px 14px; font-size:0.85rem;}
-            .filter-card{padding:14px; border-radius:18px; margin:0 12px 16px 12px;}
-            .filter-card .form-control,.filter-card .form-select{font-size:16px;}
-            .btn-search{height:44px;}
-            .table-wrapper{margin:0 12px; border-radius:18px; padding:0;}
-            /* Tabla a Cards */
-            .table-modern thead{display:none;}
-            .table-modern, .table-modern tbody, .table-modern tr, .table-modern td{display:block; width:100%;}
-            .table-modern tbody tr{
-                background:white; border:1px solid #edf2f9; border-radius:16px; padding:12px; margin:10px;
-                box-shadow:0 2px 8px rgba(0,0,0,0.03);
-            }
-            .table-modern tbody td{
-                border:none; padding:4px 0; display:flex; justify-content:space-between; align-items:center; text-align:right; font-size:0.85rem;
-            }
-            .table-modern tbody td::before{
-                content:"Dato"; font-weight:700; font-size:0.65rem; text-transform:uppercase; color:#4a5b6e; text-align:left;
-            }
-            .table-modern tbody td:nth-child(10){flex-direction:column; align-items:stretch; margin-top:6px; padding-top:6px; border-top:1px solid #eef3fa;}
-            .table-modern tbody td:nth-child(10)::before{display:none;}
-            .btn-view{width:100%; justify-content:center;}
+        .detail-header .avatar {
+            width: 56px; height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--accent-500), var(--purple-500));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(42, 109, 244, 0.5);
         }
-        @media (max-width: 480px){
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
-            .page-header .header-badge{width:100%; text-align:center; display:flex; justify-content:center;}
-            .stat-grid{margin:0 10px 12px 10px; grid-template-columns:repeat(2, 1fr); gap:8px;}
-            .tabs-container{margin:0 10px 12px 10px;}
-            .filter-card{margin:0 10px 12px 10px; padding:12px;}
-            .table-wrapper{margin:0 10px; border-radius:16px;}
-            .table-modern tbody tr{margin:8px; padding:10px; border-radius:14px;}
-            .detail-row .label{width:100%;}
+        .detail-header .detail-title {
+            flex: 1;
+            min-width: 0;
+        }
+        .detail-header .detail-title h4 {
+            font-weight: 800;
+            color: var(--primary-900);
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+        .detail-header .detail-title span {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
     </style>
 </head>
@@ -471,10 +974,14 @@
     <!-- Header -->
     <div class="page-header">
         <h1>
-            <i class="bi bi-search"></i> Auditoría y Consulta
+            <span class="title-icon"><i class="bi bi-shield-check"></i></span>
+            <div>
+                Auditoría y Consulta
+                <span class="subtitle">Sistema de consulta y gestión legal en tiempo real</span>
+            </div>
         </h1>
         <span class="header-badge">
-            <i class="bi bi-database"></i> Consulta en vivo
+            <span class="live-dot"></span> Consulta en vivo
         </span>
     </div>
 
@@ -482,28 +989,30 @@
     <div class="stat-grid" id="resumenContainer"></div>
 
     <!-- Tabs -->
-    <div class="tabs-container">
-        <button class="tab-btn-modern active" id="tabJuicios" onclick="switchTab('juicios')">
-            <i class="bi bi-folder"></i> Juicios
-        </button>
-        <button class="tab-btn-modern" id="tabContratos" onclick="switchTab('contratos')">
-            <i class="bi bi-file-earmark-text"></i> Contratos
-        </button>
+    <div class="tabs-wrapper">
+        <div class="tabs-container">
+            <button class="tab-btn-modern active" id="tabJuicios" onclick="switchTab('juicios')">
+                <i class="bi bi-folder2-open"></i> Juicios
+            </button>
+            <button class="tab-btn-modern" id="tabContratos" onclick="switchTab('contratos')">
+                <i class="bi bi-file-earmark-text"></i> Contratos
+            </button>
+        </div>
     </div>
 
     <!-- Filtros -->
     <div class="filter-card">
         <div class="row g-3 align-items-end">
             <div class="col-md-3 col-sm-6">
-                <label class="form-label"><i class="bi bi-calendar3 me-1"></i> Fecha Inicio</label>
+                <label class="form-label"><i class="bi bi-calendar3"></i> Fecha Inicio</label>
                 <input type="date" id="fechaInicio" class="form-control">
             </div>
             <div class="col-md-3 col-sm-6">
-                <label class="form-label"><i class="bi bi-calendar3 me-1"></i> Fecha Fin</label>
+                <label class="form-label"><i class="bi bi-calendar3"></i> Fecha Fin</label>
                 <input type="date" id="fechaFin" class="form-control">
             </div>
             <div class="col-md-2 col-sm-6">
-                <label class="form-label"><i class="bi bi-tag me-1"></i> Estatus</label>
+                <label class="form-label"><i class="bi bi-tag"></i> Estatus</label>
                 <select id="filtroEstatus" class="form-select">
                     <option value="">Todos</option>
                     <option value="iniciado">Iniciado</option>
@@ -517,7 +1026,7 @@
                 </select>
             </div>
             <div class="col-md-2 col-sm-6">
-                <label class="form-label"><i class="bi bi-briefcase me-1"></i> Servicio</label>
+                <label class="form-label"><i class="bi bi-briefcase"></i> Servicio</label>
                 <select id="filtroServicio" class="form-select">
                     <option value="">Todos</option>
                     <option value="asesoria">Asesoría</option>
@@ -529,7 +1038,7 @@
             </div>
             <div class="col-md-2 col-sm-6">
                 <button class="btn-search" onclick="cargarDatos()">
-                    <i class="bi bi-search"></i> Buscar
+                    <i class="bi bi-search"></i> <span>Buscar</span>
                 </button>
             </div>
         </div>
@@ -544,9 +1053,9 @@
             </table>
         </div>
         <div id="noResults" class="empty-state" style="display:none;">
-            <i class="bi bi-inbox"></i>
+            <div class="empty-icon"><i class="bi bi-inbox"></i></div>
             <h5>No hay resultados</h5>
-            <p>No se encontraron registros con los filtros seleccionados.</p>
+            <p>No se encontraron registros con los filtros seleccionados. Intenta ajustar los criterios de búsqueda.</p>
         </div>
     </div>
 
@@ -556,15 +1065,17 @@
 <!-- MODAL DETALLE -->
 <!-- ================================================== -->
 <div class="modal fade modal-modern" id="detailModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Detalle Completo</h5>
+                <h5 class="modal-title"><i class="bi bi-info-circle"></i> Detalle Completo</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="detailBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Cerrar
+                </button>
             </div>
         </div>
     </div>
@@ -582,7 +1093,163 @@
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-check2 me-1"></i> Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL EDITAR CONTRATO -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="editContractModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Contrato</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editContractId">
+
+                <div class="section-title">
+                    <i class="bi bi-file-earmark-text"></i> Datos del Contrato
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Tipo de Servicio</label>
+                        <select id="editServiceType" class="form-select">
+                            <option value="asesoria">Asesoría Jurídica</option>
+                            <option value="juicio">Inicio de Juicio</option>
+                            <option value="escrito">Elaboración de Escrito</option>
+                            <option value="contestacion">Contestación de Demanda</option>
+                            <option value="diligencia">Diligenciar Oficio/Exhorto</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Estatus <i class="bi bi-lock-fill" style="font-size:0.7rem;"></i></label>
+                        <input type="text" id="editStatus" class="form-control" readonly style="background:#eef2f6; cursor:not-allowed;">
+                    </div>
+                    <div class="col-md-6" id="editJuicioWrapper">
+                        <label class="form-label">Tipo de Juicio</label>
+                        <select id="editTipoJuicio" class="form-select">
+                            <option value="">Selecciona...</option>
+                            <option value="Divorcio Bilateral">Divorcio Bilateral</option>
+                            <option value="Divorcio Unilateral">Divorcio Unilateral</option>
+                            <option value="Sucesorio Testamentario">Sucesorio Testamentario</option>
+                            <option value="Sucesorio Intestamentario">Sucesorio Intestamentario</option>
+                            <option value="Convenio">Convenio</option>
+                            <option value="Alimentos">Alimentos</option>
+                            <option value="Custodia">Custodia</option>
+                            <option value="Perdida de la Patria Potestad">Pérdida de la Patria Potestad</option>
+                            <option value="Convivencia">Convivencia</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6" id="editTipoJuicioOtroWrapper" style="display:none;">
+                        <label class="form-label">Especificar Tipo</label>
+                        <input type="text" id="editTipoJuicioOtro" class="form-control">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Detalle del Servicio</label>
+                        <input type="text" id="editSpecificDetail" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Costo Total <i class="bi bi-lock-fill" style="font-size:0.7rem;"></i></label>
+                        <input type="number" id="editTotalCost" step="0.01" class="form-control" readonly style="background:#eef2f6; cursor:not-allowed;">
+                    </div>
+                </div>
+
+                <div id="editCaseSection" style="display:none;">
+                    <div class="section-title green mt-4">
+                        <i class="bi bi-folder2-open"></i> Datos del Expediente
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Tribunal</label>
+                            <input type="text" id="editTribunal" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Secretaría</label>
+                            <input type="text" id="editSecretaria" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">N° Expediente</label>
+                            <input type="text" id="editNumExp" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Folio</label>
+                            <input type="text" id="editFolio" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha Presentación</label>
+                            <input type="date" id="editFechaPresentacion" class="form-control">
+                        </div>
+                        <div class="col-md-6" id="editDemandadoWrapper">
+                            <label class="form-label">Demandado(a)</label>
+                            <input type="text" id="editDemandado" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" id="editActorLabel">Actor(a)</label>
+                            <input type="text" id="editActor" class="form-control">
+                        </div>
+                        <div class="col-md-6" id="editActor2Wrapper" style="display:none;">
+                            <label class="form-label">Segundo Actor(a)</label>
+                            <input type="text" id="editActor2" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-modern alert-warning-modern mt-4">
+                    <div class="alert-icon"><i class="bi bi-shield-lock"></i></div>
+                    <div class="flex-grow-1">
+                        <label class="form-label mb-1" style="color:#92400e; font-size:0.72rem;">Contraseña de Administrador</label>
+                        <input type="password" id="editAdminPassword" class="form-control" placeholder="Confirma tu identidad para guardar cambios">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Cancelar
+                </button>
+                <button type="button" id="saveContractBtn" class="btn btn-primary">
+                    <i class="bi bi-check2-circle me-1"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="deleteContractModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #7a1a1a, #991b1b) !important;">
+                <h5 class="modal-title"><i class="bi bi-trash3"></i> Eliminar Contrato</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="deleteContractId">
+                <div class="alert-modern alert-danger-modern mb-3">
+                    <div class="alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                    <div>
+                        <strong>ADVERTENCIA:</strong> Se eliminará permanentemente el contrato y, si tiene expediente relacionado, también se borrarán sus actuaciones, pagos y archivos adjuntos en la nube. Esta acción <strong>no se puede deshacer</strong>.
+                    </div>
+                </div>
+                <label class="form-label">Contraseña de Administrador</label>
+                <input type="password" id="deleteAdminPassword" class="form-control" placeholder="Confirma tu identidad para eliminar">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Cancelar
+                </button>
+                <button type="button" id="confirmDeleteContractBtn" class="btn btn-danger">
+                    <i class="bi bi-trash3 me-1"></i> Eliminar Definitivamente
+                </button>
             </div>
         </div>
     </div>
@@ -593,7 +1260,7 @@
 <!-- ================================================== -->
 <div id="loadingOverlay" class="spinner-overlay" style="display:none;">
     <div class="spinner-box">
-        <div class="spinner-border" role="status"></div>
+        <div class="spinner-ring"></div>
         <h5>Cargando datos</h5>
         <p>Un momento, por favor.</p>
     </div>
@@ -606,65 +1273,107 @@
 <script>
 let currentTab = 'juicios';
 
+/* ============================================================
+   NOTIFICACIONES MODERNAS
+   ============================================================ */
 function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const modalEl = document.getElementById('notificationModal');
+    const modal = new bootstrap.Modal(modalEl);
     const header = document.getElementById('notificationHeader');
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
-    header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
+
+    const config = {
+        success: { bg: 'linear-gradient(135deg, #047857, #10b981)', icon: 'bi-check-circle-fill', prefix: '' },
+        error:   { bg: 'linear-gradient(135deg, #991b1b, #ef4444)', icon: 'bi-x-circle-fill', prefix: '' },
+        warning: { bg: 'linear-gradient(135deg, #b45309, #f59e0b)', icon: 'bi-exclamation-triangle-fill', prefix: '' },
+        info:    { bg: 'linear-gradient(135deg, #1f4f9e, #2a6df4)', icon: 'bi-info-circle-fill', prefix: '' }
+    };
+    const c = config[type] || config.info;
+
+    header.style.background = c.bg + ' !important';
+    titleEl.innerHTML = `<i class="bi ${c.icon}"></i> ${title}`;
     bodyEl.innerHTML = bodyHTML;
+
+    // Re-trigger animation
+    modalEl.querySelector('.modal-content').style.animation = 'none';
+    modalEl.querySelector('.modal-content').offsetHeight;
+    modalEl.querySelector('.modal-content').style.animation = 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
     modal.show();
 }
 
+/* ============================================================
+   LOADING
+   ============================================================ */
 function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
 function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
 
+/* ============================================================
+   VALIDACIONES
+   ============================================================ */
+function validarFechas() {
+    const fi = document.getElementById('fechaInicio').value;
+    const ff = document.getElementById('fechaFin').value;
+    if (fi && ff && fi > ff) {
+        showNotification('Rango de fechas inválido',
+            '<p class="mb-0">La fecha de inicio no puede ser posterior a la fecha fin. Por favor, corrige el rango.</p>',
+            'warning');
+        return false;
+    }
+    return true;
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
 function switchTab(tab) {
     currentTab = tab;
     document.getElementById('tabJuicios').classList.toggle('active', tab === 'juicios');
     document.getElementById('tabContratos').classList.toggle('active', tab === 'contratos');
+
+    // Mostrar/ocultar filtro servicio según tab
+    const servicioGroup = document.getElementById('filtroServicio').closest('.col-md-2');
+    if (servicioGroup) servicioGroup.style.opacity = (tab === 'juicios') ? '0.5' : '1';
+    document.getElementById('filtroServicio').disabled = (tab === 'juicios');
+
     cargarDatos();
 }
 
+/* ============================================================
+   RESUMEN
+   ============================================================ */
 async function cargarResumen() {
     try {
         const response = await fetch('/api/audit/resumen');
         const data = await response.json();
 
-        document.getElementById('resumenContainer').innerHTML = `
-            <div class="stat-card-modern">
-                <div><span class="stat-value">${data.total_juicios}</span></div>
-                <div class="stat-label"><i class="bi bi-folder stat-icon"></i> Total Juicios</div>
+        const cards = [
+            { value: data.total_juicios, label: 'Total Juicios', icon: 'bi-folder2-open', variant: '' },
+            { value: data.juicios_iniciados, label: 'Juicios Activos', icon: 'bi-play-circle-fill', variant: 'variant-success' },
+            { value: data.juicios_terminados, label: 'Juicios Terminados', icon: 'bi-check-circle-fill', variant: 'variant-purple' },
+            { value: data.total_contratos, label: 'Total Contratos', icon: 'bi-file-earmark-text', variant: '' },
+            { value: data.contratos_pendientes, label: 'Contratos Pendientes', icon: 'bi-hourglass-split', variant: 'variant-warning' },
+            { value: '$' + Number(data.ingresos_totales).toLocaleString(), label: 'Ingresos Totales', icon: 'bi-cash-coin', variant: 'variant-money' }
+        ];
+
+        document.getElementById('resumenContainer').innerHTML = cards.map((c, i) => `
+            <div class="stat-card-modern ${c.variant}" style="animation-delay:${i * 0.06}s">
+                <div class="stat-icon"><i class="bi ${c.icon}"></i></div>
+                <span class="stat-value">${c.value}</span>
+                <span class="stat-label">${c.label}</span>
             </div>
-            <div class="stat-card-modern">
-                <div><span class="stat-value">${data.juicios_iniciados}</span></div>
-                <div class="stat-label"><i class="bi bi-play-circle stat-icon"></i> Juicios Activos</div>
-            </div>
-            <div class="stat-card-modern">
-                <div><span class="stat-value">${data.juicios_terminados}</span></div>
-                <div class="stat-label"><i class="bi bi-check-circle stat-icon"></i> Juicios Terminados</div>
-            </div>
-            <div class="stat-card-modern">
-                <div><span class="stat-value">${data.total_contratos}</span></div>
-                <div class="stat-label"><i class="bi bi-file-earmark stat-icon"></i> Total Contratos</div>
-            </div>
-            <div class="stat-card-modern">
-                <div><span class="stat-value">${data.contratos_pendientes}</span></div>
-                <div class="stat-label"><i class="bi bi-hourglass-split stat-icon"></i> Contratos Pendientes</div>
-            </div>
-            <div class="stat-card-modern">
-                <div><span class="stat-value">$${data.ingresos_totales.toLocaleString()}</span></div>
-                <div class="stat-label"><i class="bi bi-coin stat-icon"></i> Ingresos Totales</div>
-            </div>
-        `;
-    } catch (e) {}
+        `).join('');
+    } catch (e) {
+        console.error('Error al cargar resumen:', e);
+    }
 }
 
+/* ============================================================
+   CARGA DE DATOS
+   ============================================================ */
 async function cargarDatos() {
+    if (!validarFechas()) return;
     showLoading();
 
     const fechaInicio = document.getElementById('fechaInicio').value;
@@ -672,86 +1381,91 @@ async function cargarDatos() {
     const estatus = document.getElementById('filtroEstatus').value;
     const servicio = document.getElementById('filtroServicio').value;
 
-    let url;
-    if (currentTab === 'juicios') {
-        url = `/api/audit/juicios?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&estatus=${estatus}&tribunal=&orden=asc`;
+    try {
+        let url;
+        if (currentTab === 'juicios') {
+            url = `/api/audit/juicios?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&estatus=${estatus}&tribunal=&orden=asc`;
+            const response = await fetch(url);
+            const data = await response.json();
 
-        const response = await fetch(url);
-        const data = await response.json();
+            document.getElementById('tableHead').innerHTML = `
+                <tr>
+                    <th>Expediente</th><th>Cliente</th><th>Tribunal</th><th>Fecha</th>
+                    <th>Estatus</th><th>Tipo</th><th>Costo</th><th>Pagado</th><th>Saldo</th><th>Acciones</th>
+                </tr>
+            `;
 
-        document.getElementById('tableHead').innerHTML = `
-            <tr>
-                <th>Expediente</th><th>Cliente</th><th>Tribunal</th><th>Fecha</th>
-                <th>Estatus</th><th>Tipo</th><th>Costo</th><th>Pagado</th><th>Saldo</th><th>Acciones</th>
-            </tr>
-        `;
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
 
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-
-        if (data.length === 0) {
-            document.getElementById('noResults').style.display = 'block';
+            if (data.length === 0) {
+                document.getElementById('noResults').style.display = 'block';
+            } else {
+                document.getElementById('noResults').style.display = 'none';
+                data.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td data-label="Expediente"><strong>${item.num_expediente}</strong></td>
+                            <td data-label="Cliente">${item.cliente}</td>
+                            <td data-label="Tribunal">${item.tribunal}</td>
+                            <td data-label="Fecha">${item.fecha_presentacion}</td>
+                            <td data-label="Estatus"><span class="badge-status status-${item.estatus}">${item.estatus}</span></td>
+                            <td data-label="Tipo">${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</td>
+                            <td data-label="Costo"><strong>$${Number(item.costo_total).toLocaleString()}</strong></td>
+                            <td data-label="Pagado">$${Number(item.total_pagado).toLocaleString()}</td>
+                            <td data-label="Saldo"><strong style="color:${item.saldo > 0 ? '#b91c1c' : '#047857'}">$${Number(item.saldo).toLocaleString()}</strong></td>
+                            <td data-label="Acciones"><button class="btn-view" onclick="verDetalle(${item.id})"><i class="bi bi-eye-fill"></i> Ver detalle</button></td>
+                        </tr>
+                    `;
+                });
+            }
         } else {
-            document.getElementById('noResults').style.display = 'none';
-            data.forEach(item => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${item.num_expediente}</strong></td>
-                        <td>${item.cliente}</td>
-                        <td>${item.tribunal}</td>
-                        <td>${item.fecha_presentacion}</td>
-                        <td><span class="badge-status status-${item.estatus}">${item.estatus.toUpperCase()}</span></td>
-                        <td>${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</td>
-                        <td>$${item.costo_total.toLocaleString()}</td>
-                        <td>$${item.total_pagado.toLocaleString()}</td>
-                        <td>$${item.saldo.toLocaleString()}</td>
-                        <td><button class="btn-view" onclick="verDetalle(${item.id})"><i class="bi bi-eye"></i> Ver</button></td>
-                    </tr>
-                `;
-            });
+            url = `/api/audit/contratos?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&servicio=${servicio}&estatus=${estatus}&orden=asc`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            document.getElementById('tableHead').innerHTML = `
+                <tr>
+                    <th>Cliente</th><th>Folio</th><th>Servicio</th><th>Fecha</th>
+                    <th>Estatus</th><th>Tipo</th><th>Costo</th><th>Pagado</th><th>Saldo</th><th>Acciones</th>
+                </tr>
+            `;
+
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                document.getElementById('noResults').style.display = 'block';
+            } else {
+                document.getElementById('noResults').style.display = 'none';
+                data.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td data-label="Cliente"><strong>${item.cliente}</strong></td>
+                            <td data-label="Folio">${item.folio}</td>
+                            <td data-label="Servicio"><span class="badge-status" style="background:#e2edff;color:#1f4f9e;border-color:#c7dcff;">${item.servicio}</span></td>
+                            <td data-label="Fecha">${item.fecha_contratacion}</td>
+                            <td data-label="Estatus"><span class="badge-status status-${item.estatus}">${item.estatus}</span></td>
+                            <td data-label="Tipo">${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</td>
+                            <td data-label="Costo"><strong>$${Number(item.costo_total).toLocaleString()}</strong></td>
+                            <td data-label="Pagado">$${Number(item.total_pagado).toLocaleString()}</td>
+                            <td data-label="Saldo"><strong style="color:${item.saldo > 0 ? '#b91c1c' : '#047857'}">$${Number(item.saldo).toLocaleString()}</strong></td>
+                            <td data-label="Acciones"><button class="btn-view" onclick="verDetalleContrato(${item.id})"><i class="bi bi-eye-fill"></i> Ver detalle</button></td>
+                        </tr>
+                    `;
+                });
+            }
         }
-    } else {
-        url = `/api/audit/contratos?fecha_inicio=${fechaInicio}&fecha_fin=${fechaFin}&servicio=${servicio}&estatus=${estatus}&orden=asc`;
-
-        const response = await fetch(url);
-        const data = await response.json();
-
-        document.getElementById('tableHead').innerHTML = `
-            <tr>
-                <th>Cliente</th><th>Folio</th><th>Servicio</th><th>Fecha</th>
-                <th>Estatus</th><th>Tipo</th><th>Costo</th><th>Pagado</th><th>Saldo</th><th>Acciones</th>
-            </tr>
-        `;
-
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-
-        if (data.length === 0) {
-            document.getElementById('noResults').style.display = 'block';
-        } else {
-            document.getElementById('noResults').style.display = 'none';
-            data.forEach(item => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${item.cliente}</strong></td>
-                        <td>${item.folio}</td>
-                        <td>${item.servicio.toUpperCase()}</td>
-                        <td>${item.fecha_contratacion}</td>
-                        <td><span class="badge-status status-${item.estatus}">${item.estatus.toUpperCase()}</span></td>
-                        <td>${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</td>
-                        <td>$${item.costo_total.toLocaleString()}</td>
-                        <td>$${item.total_pagado.toLocaleString()}</td>
-                        <td>$${item.saldo.toLocaleString()}</td>
-                        <td><button class="btn-view" onclick="verDetalleContrato(${item.id})"><i class="bi bi-eye"></i> Ver</button></td>
-                    </tr>
-                `;
-            });
-        }
+    } catch (e) {
+        showNotification('Error de conexión', '<p class="mb-0">No se pudieron cargar los datos. Verifica tu conexión e inténtalo de nuevo.</p>', 'error');
+    } finally {
+        hideLoading();
     }
-
-    hideLoading();
 }
 
+/* ============================================================
+   DETALLE JUICIO
+   ============================================================ */
 function verDetalle(id) {
     fetch('/api/audit/juicios')
         .then(r => r.json())
@@ -759,26 +1473,55 @@ function verDetalle(id) {
             const item = data.find(d => d.id === id);
             if (item) {
                 document.getElementById('detailBody').innerHTML = `
-                    <h4 class="mb-3" style="font-weight:700;color:#0b1e33;">${item.num_expediente}</h4>
-                    <div class="detail-row"><span class="label">Cliente</span><span class="value">${item.cliente}</span></div>
-                    <div class="detail-row"><span class="label">CURP</span><span class="value">${item.curp}</span></div>
-                    <div class="detail-row"><span class="label">Teléfono</span><span class="value">${item.telefono}</span></div>
-                    <div class="detail-row"><span class="label">Tribunal</span><span class="value">${item.tribunal}</span></div>
-                    <div class="detail-row"><span class="label">Secretaría</span><span class="value">${item.secretaria}</span></div>
-                    <div class="detail-row"><span class="label">Fecha Presentación</span><span class="value">${item.fecha_presentacion}</span></div>
-                    <div class="detail-row"><span class="label">Estatus</span><span class="value"><span class="badge-status status-${item.estatus}">${item.estatus.toUpperCase()}</span></span></div>
-                    <div class="detail-row"><span class="label">Tipo de Juicio</span><span class="value">${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</span></div>
-                    <div class="detail-row"><span class="label">Servicio</span><span class="value">${item.servicio.toUpperCase()}</span></div>
-                    <div class="detail-row"><span class="label">Costo Total</span><span class="value"><strong>$${item.costo_total.toLocaleString()}</strong></span></div>
-                    <div class="detail-row"><span class="label">Total Pagado</span><span class="value">$${item.total_pagado.toLocaleString()}</span></div>
-                    <div class="detail-row"><span class="label">Saldo</span><span class="value"><strong>$${item.saldo.toLocaleString()}</strong></span></div>
-                    <div class="detail-row"><span class="label">Actuaciones</span><span class="value">${item.total_actuaciones}</span></div>
+                    <div class="detail-header">
+                        <div class="avatar"><i class="bi bi-folder2-open"></i></div>
+                        <div class="detail-title">
+                            <h4>${item.num_expediente}</h4>
+                            <span><i class="bi bi-person-fill me-1"></i>${item.cliente}</span>
+                        </div>
+                        <span class="badge-status status-${item.estatus}">${item.estatus}</span>
+                    </div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-person-badge"></i> Cliente</span><span class="value">${item.cliente}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-credit-card-2-front"></i> CURP</span><span class="value">${item.curp || 'N/A'}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-telephone"></i> Teléfono</span><span class="value">${item.telefono || 'N/A'}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-bank"></i> Tribunal</span><span class="value">${item.tribunal}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-building"></i> Secretaría</span><span class="value">${item.secretaria}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-calendar-event"></i> Fecha Presentación</span><span class="value">${item.fecha_presentacion}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-tag"></i> Estatus</span><span class="value"><span class="badge-status status-${item.estatus}">${item.estatus}</span></span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-diagram-3"></i> Tipo de Juicio</span><span class="value">${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</span></div>
+                    ${item.actor_nombre || item.demandado_nombre ? `
+                    <div class="detail-row">
+                        <span class="label"><i class="bi bi-people"></i> Partes</span>
+                        <span class="value">
+                            <div class="partes-juicio">
+                                ${item.actor_nombre ? `
+                                <div class="parte-item">
+                                    <span class="parte-rol parte-actor"><i class="bi bi-person-fill"></i>Actor</span>
+                                    <span class="parte-nombre">${item.actor_nombre}</span>
+                                </div>` : ''}
+                                ${item.demandado_nombre ? `
+                                <div class="parte-item">
+                                    <span class="parte-rol parte-demandado"><i class="bi bi-person-fill"></i>Demandado</span>
+                                    <span class="parte-nombre">${item.demandado_nombre}</span>
+                                </div>` : ''}
+                            </div>
+                        </span>
+                    </div>` : ''}
+                    <div class="detail-row"><span class="label"><i class="bi bi-briefcase"></i> Servicio</span><span class="value">${item.servicio}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-cash-stack"></i> Costo Total</span><span class="value"><strong>$${Number(item.costo_total).toLocaleString()}</strong></span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-check-circle"></i> Total Pagado</span><span class="value" style="color:#047857;font-weight:700;">$${Number(item.total_pagado).toLocaleString()}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-exclamation-circle"></i> Saldo</span><span class="value"><strong style="color:${item.saldo > 0 ? '#b91c1c' : '#047857'}">$${Number(item.saldo).toLocaleString()}</strong></span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-list-check"></i> Actuaciones</span><span class="value"><span class="badge-status" style="background:#e2edff;color:#1f4f9e;">${item.total_actuaciones} registradas</span></span></div>
                 `;
                 new bootstrap.Modal(document.getElementById('detailModal')).show();
             }
-        });
+        })
+        .catch(() => showNotification('Error', '<p class="mb-0">No se pudo cargar el detalle del juicio.</p>', 'error'));
 }
 
+/* ============================================================
+   DETALLE CONTRATO
+   ============================================================ */
 function verDetalleContrato(id) {
     fetch('/api/audit/contratos')
         .then(r => r.json())
@@ -786,27 +1529,291 @@ function verDetalleContrato(id) {
             const item = data.find(d => d.id === id);
             if (item) {
                 document.getElementById('detailBody').innerHTML = `
-                    <h4 class="mb-3" style="font-weight:700;color:#0b1e33;">${item.cliente}</h4>
-                    <div class="detail-row"><span class="label">Folio</span><span class="value">${item.folio}</span></div>
-                    <div class="detail-row"><span class="label">CURP</span><span class="value">${item.curp}</span></div>
-                    <div class="detail-row"><span class="label">Servicio</span><span class="value">${item.servicio.toUpperCase()}</span></div>
-                    <div class="detail-row"><span class="label">Tipo de Juicio</span><span class="value">${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</span></div>
-                    <div class="detail-row"><span class="label">Detalle</span><span class="value">${item.detalle || 'N/A'}</span></div>
-                    <div class="detail-row"><span class="label">Fecha Contratación</span><span class="value">${item.fecha_contratacion}</span></div>
-                    <div class="detail-row"><span class="label">Estatus</span><span class="value"><span class="badge-status status-${item.estatus}">${item.estatus.toUpperCase()}</span></span></div>
-                    <div class="detail-row"><span class="label">Costo Total</span><span class="value"><strong>$${item.costo_total.toLocaleString()}</strong></span></div>
-                    <div class="detail-row"><span class="label">Total Pagado</span><span class="value">$${item.total_pagado.toLocaleString()}</span></div>
-                    <div class="detail-row"><span class="label">Saldo</span><span class="value"><strong>$${item.saldo.toLocaleString()}</strong></span></div>
-                    <div class="detail-row"><span class="label">Tiene Expediente</span><span class="value">${item.tiene_expediente ? '✅ Sí' : '❌ No'}</span></div>
+                    <div class="detail-header">
+                        <div class="avatar" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);"><i class="bi bi-file-earmark-text"></i></div>
+                        <div class="detail-title">
+                            <h4>${item.cliente}</h4>
+                            <span><i class="bi bi-hash me-1"></i>Folio: ${item.folio}</span>
+                        </div>
+                        <span class="badge-status status-${item.estatus}">${item.estatus}</span>
+                    </div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-hash"></i> Folio</span><span class="value">${item.folio}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-credit-card-2-front"></i> CURP</span><span class="value">${item.curp || 'N/A'}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-briefcase"></i> Servicio</span><span class="value"><span class="badge-status" style="background:#e2edff;color:#1f4f9e;">${item.servicio}</span></span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-diagram-3"></i> Tipo de Juicio</span><span class="value">${item.tipo_juicio || item.tipo_juicio_otro || 'N/A'}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-card-text"></i> Detalle</span><span class="value">${item.detalle || 'N/A'}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-calendar-event"></i> Fecha Contratación</span><span class="value">${item.fecha_contratacion}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-tag"></i> Estatus</span><span class="value"><span class="badge-status status-${item.estatus}">${item.estatus}</span></span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-cash-stack"></i> Costo Total</span><span class="value"><strong>$${Number(item.costo_total).toLocaleString()}</strong></span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-check-circle"></i> Total Pagado</span><span class="value" style="color:#047857;font-weight:700;">$${Number(item.total_pagado).toLocaleString()}</span></div>
+                    <div class="detail-row"><span class="label"><i class="bi bi-exclamation-circle"></i> Saldo</span><span class="value"><strong style="color:${item.saldo > 0 ? '#b91c1c' : '#047857'}">$${Number(item.saldo).toLocaleString()}</strong></span></div>
+                    <div class="detail-row">
+                        <span class="label"><i class="bi bi-folder2"></i> Expediente</span>
+                        <span class="value">
+                            ${item.tiene_expediente
+                                ? '<span class="badge-status status-terminado">Sí</span>'
+                                : '<span class="badge-status status-inactivo">No</span>'}
+                            ${item.court_case ? `
+                                <div class="expediente-inline">
+                                    <div><i class="bi bi-folder2-open"></i> <strong>Exp:</strong> ${item.court_case.num_exp_tribunal}</div>
+                                    <div><i class="bi bi-bank"></i> ${item.court_case.tribunal}</div>
+                                </div>
+                            ` : ''}
+                        </span>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+                        <button class="btn btn-primary btn-sm" onclick="openEditContract(${item.id})">
+                            <i class="bi bi-pencil me-1"></i> Editar
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="openDeleteContract(${item.id})">
+                            <i class="bi bi-trash3 me-1"></i> Eliminar
+                        </button>
+                    </div>
                 `;
                 new bootstrap.Modal(document.getElementById('detailModal')).show();
             }
-        });
+        })
+        .catch(() => showNotification('Error', '<p class="mb-0">No se pudo cargar el detalle del contrato.</p>', 'error'));
 }
 
-// Inicializar
-cargarResumen();
-cargarDatos();
+/* ============================================================
+   EDITAR CONTRATO
+   ============================================================ */
+let currentEditContractId = null;
+
+async function openEditContract(contractId) {
+    try {
+        const res = await fetch(`/api/audit/contract-full/${contractId}`);
+        if (!res.ok) throw new Error('No se pudo cargar la información del contrato');
+        const data = await res.json();
+
+        bootstrap.Modal.getInstance(document.getElementById('detailModal'))?.hide();
+
+        currentEditContractId = contractId;
+        document.getElementById('editContractId').value = contractId;
+
+        document.getElementById('editServiceType').value = data.contract.service_type;
+        document.getElementById('editTipoJuicio').value = data.contract.tipo_juicio || '';
+        document.getElementById('editTipoJuicioOtro').value = data.contract.tipo_juicio_otro || '';
+        document.getElementById('editSpecificDetail').value = data.contract.specific_detail || '';
+        document.getElementById('editTotalCost').value = data.contract.total_cost;
+        // Mostrar bonito pero guardar el valor real en un data-attribute
+        document.getElementById('editStatus').value = (data.contract.status || '').toUpperCase();
+        document.getElementById('editStatus').dataset.rawValue = data.contract.status || '';
+
+        const tj = data.contract.tipo_juicio || '';
+        const esOtro = tj === 'Otro' || tj === 'Convenio';
+        document.getElementById('editTipoJuicioOtroWrapper').style.display = esOtro ? 'block' : 'none';
+
+        const caseSection = document.getElementById('editCaseSection');
+        if (data.court_case) {
+            caseSection.style.display = 'block';
+            document.getElementById('editTribunal').value = data.court_case.tribunal || '';
+            document.getElementById('editSecretaria').value = data.court_case.secretaria || '';
+            document.getElementById('editNumExp').value = data.court_case.num_exp_tribunal || '';
+            document.getElementById('editFolio').value = data.court_case.folio_tribunal || '';
+            document.getElementById('editFechaPresentacion').value = data.court_case.fecha_presentacion || '';
+
+            const esBilateral = tj.toLowerCase().includes('bilateral');
+            aplicarLayoutPartes(esBilateral);
+
+            if (esBilateral) {
+                const actores = (data.court_case.actor_nombre || '').split(' / ');
+                document.getElementById('editActor').value = actores[0] || '';
+                document.getElementById('editActor2').value = actores[1] || '';
+                document.getElementById('editDemandado').value = '';
+            } else {
+                document.getElementById('editActor').value = data.court_case.actor_nombre || '';
+                document.getElementById('editActor2').value = '';
+                document.getElementById('editDemandado').value = data.court_case.demandado_nombre || '';
+            }
+        } else {
+            caseSection.style.display = 'none';
+        }
+
+        document.getElementById('editAdminPassword').value = '';
+
+        document.getElementById('editTipoJuicio').onchange = function() {
+            const val = this.value || '';
+            document.getElementById('editTipoJuicioOtroWrapper').style.display =
+                (val === 'Otro' || val === 'Convenio') ? 'block' : 'none';
+
+            if (document.getElementById('editCaseSection').style.display !== 'none') {
+                const esBilateral = val.toLowerCase().includes('bilateral');
+                aplicarLayoutPartes(esBilateral);
+                if (esBilateral) {
+                    document.getElementById('editDemandado').value = '';
+                } else {
+                    document.getElementById('editActor2').value = '';
+                }
+            }
+        };
+
+        new bootstrap.Modal(document.getElementById('editContractModal')).show();
+    } catch (err) {
+        showNotification('Error al cargar', `<p class="mb-0">${err.message}</p>`, 'error');
+    }
+}
+
+function aplicarLayoutPartes(esBilateral) {
+    const demandadoWrapper = document.getElementById('editDemandadoWrapper');
+    const actor2Wrapper = document.getElementById('editActor2Wrapper');
+    const actorLabel = document.getElementById('editActorLabel');
+
+    if (esBilateral) {
+        demandadoWrapper.style.display = 'none';
+        actor2Wrapper.style.display = 'block';
+        actorLabel.textContent = 'Primer Actor(a)';
+    } else {
+        demandadoWrapper.style.display = 'block';
+        actor2Wrapper.style.display = 'none';
+        actorLabel.textContent = 'Actor(a)';
+    }
+}
+
+document.getElementById('saveContractBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const password = document.getElementById('editAdminPassword').value;
+
+    // Validación
+    if (!password) {
+        showNotification('Contraseña requerida',
+            '<p class="mb-0">Ingresa la contraseña de administrador para guardar los cambios.</p>',
+            'warning');
+        document.getElementById('editAdminPassword').focus();
+        return;
+    }
+
+    const tipoJuicio = document.getElementById('editTipoJuicio').value;
+    if ((tipoJuicio === 'Otro' || tipoJuicio === 'Convenio') && !document.getElementById('editTipoJuicioOtro').value.trim()) {
+        showNotification('Campo requerido',
+            '<p class="mb-0">Debes especificar el tipo de juicio en el campo "Especificar Tipo".</p>',
+            'warning');
+        return;
+    }
+
+    // Loading state en el botón
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Guardando...';
+
+    const fd = new FormData();
+    fd.append('admin_password', password);
+    fd.append('service_type', document.getElementById('editServiceType').value);
+    fd.append('tipo_juicio', tipoJuicio);
+    fd.append('tipo_juicio_otro', document.getElementById('editTipoJuicioOtro').value || '');
+    fd.append('specific_detail', document.getElementById('editSpecificDetail').value || '');
+    fd.append('total_cost', document.getElementById('editTotalCost').value);
+    // Enviar siempre el valor original en minúsculas
+    const statusEl = document.getElementById('editStatus');
+    fd.append('status', statusEl.dataset.rawValue || statusEl.value.toLowerCase());
+
+    if (document.getElementById('editCaseSection').style.display !== 'none') {
+        fd.append('tribunal', document.getElementById('editTribunal').value);
+        fd.append('secretaria', document.getElementById('editSecretaria').value);
+        fd.append('num_exp_tribunal', document.getElementById('editNumExp').value);
+        fd.append('folio_tribunal', document.getElementById('editFolio').value);
+        fd.append('fecha_presentacion', document.getElementById('editFechaPresentacion').value);
+        fd.append('actor_nombre', document.getElementById('editActor').value);
+        fd.append('actor2_nombre', document.getElementById('editActor2').value || '');
+        fd.append('demandado_nombre', document.getElementById('editDemandado').value || '');
+    }
+
+    try {
+        const res = await fetch(`/api/audit/contracts/${currentEditContractId}`, {
+            method: 'PUT',
+            body: fd
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.detail || 'Error al guardar los cambios');
+
+        bootstrap.Modal.getInstance(document.getElementById('editContractModal'))?.hide();
+        showNotification('Contrato actualizado',
+            `<p class="mb-0">${result.message || 'Los cambios se guardaron correctamente.'}</p>`,
+            'success');
+        setTimeout(() => { cargarResumen(); cargarDatos(); }, 1200);
+    } catch (err) {
+        showNotification('Error al guardar', `<p class="mb-0">${err.message}</p>`, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }
+});
+
+/* ============================================================
+   ELIMINAR CONTRATO
+   ============================================================ */
+let currentDeleteContractId = null;
+
+function openDeleteContract(contractId) {
+    bootstrap.Modal.getInstance(document.getElementById('detailModal'))?.hide();
+    currentDeleteContractId = contractId;
+    document.getElementById('deleteContractId').value = contractId;
+    document.getElementById('deleteAdminPassword').value = '';
+    setTimeout(() => {
+        new bootstrap.Modal(document.getElementById('deleteContractModal')).show();
+    }, 300);
+}
+
+document.getElementById('confirmDeleteContractBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const password = document.getElementById('deleteAdminPassword').value;
+
+    if (!password) {
+        showNotification('Contraseña requerida',
+            '<p class="mb-0">Ingresa la contraseña de administrador para confirmar la eliminación.</p>',
+            'warning');
+        document.getElementById('deleteAdminPassword').focus();
+        return;
+    }
+
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Eliminando...';
+
+    const fd = new FormData();
+    fd.append('admin_password', password);
+
+    try {
+        const res = await fetch(`/api/audit/contracts/${currentDeleteContractId}`, {
+            method: 'DELETE',
+            body: fd
+        });
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.detail || 'Error al eliminar el contrato');
+
+        bootstrap.Modal.getInstance(document.getElementById('deleteContractModal'))?.hide();
+        showNotification('Contrato eliminado',
+            `<p class="mb-0">${result.message || 'El contrato se eliminó correctamente.'}</p>`,
+            'success');
+        setTimeout(() => { cargarResumen(); cargarDatos(); }, 1200);
+    } catch (err) {
+        showNotification('Error al eliminar', `<p class="mb-0">${err.message}</p>`, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    // Estado inicial de filtros según tab
+    document.getElementById('filtroServicio').disabled = true;
+    document.getElementById('filtroServicio').closest('.col-md-2').style.opacity = '0.5';
+
+    // Enter para buscar
+    document.querySelectorAll('#fechaInicio, #fechaFin, #filtroEstatus, #filtroServicio').forEach(el => {
+        el.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') cargarDatos();
+        });
+    });
+
+    cargarResumen();
+    cargarDatos();
+});
 </script>
 </body>
 </html>

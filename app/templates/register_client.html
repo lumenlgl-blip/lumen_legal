@@ -6,280 +6,522 @@
     <title>Registrar Cliente · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: #f2f5fb; padding-top: 20px; padding-bottom: 40px; min-height: 100vh; }
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: #f0f4fc;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fondo animado */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(42, 109, 244, 0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse at 70% 80%, rgba(26, 139, 92, 0.04) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite alternate;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(2%, 1%) rotate(2deg); }
+        }
+
+        /* Botón menú moderno */
         .btn-menu-modern {
-            position: fixed; top: 24px; left: 24px; z-index: 1050;
-            /* mejora táctil en móvil */
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px; padding: 10px 22px;
-            font-weight: 600; color: #0b1e33;
-            transition: all 0.2s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 600;
+            color: #0b1e33;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-menu-modern:hover { background: white; box-shadow: 0 12px 28px rgba(0,0,0,0.08); transform: translateY(-2px); color: #0b1e33; }
+        .btn-menu-modern:hover {
+            background: white;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px);
+            color: #0b1e33;
+        }
 
+        /* Header */
         .page-header {
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(4px);
-            border-radius: 28px; padding: 24px 28px; margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 48px -12px rgba(0, 20, 40, 0.06);
             text-align: center;
         }
-        .page-header h1 { font-weight: 700; font-size: 1.8rem; color: #0b1e33; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
-        .page-header .subtitle { color: #6b7b8f; font-weight: 500; font-size: 0.9rem; margin-top: 4px; }
-        .page-header .subtitle span { background: #eef3fa; padding: 2px 14px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; color: #2a4a7a; }
+        .page-header h1 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: #0b1e33;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: -0.02em;
+        }
+        .page-header h1 i {
+            background: linear-gradient(135deg, #2a6df4, #5a8df4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+        }
+        .page-header .subtitle {
+            color: #6b7b8f;
+            font-weight: 500;
+            font-size: 0.92rem;
+            margin-top: 4px;
+        }
+        .page-header .subtitle span {
+            background: linear-gradient(135deg, #eef3fa, #e3eaf5);
+            padding: 2px 16px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #2a4a7a;
+            border: 1px solid rgba(42, 109, 244, 0.06);
+        }
 
+        /* Form Card */
         .form-card {
-            background: rgba(255,255,255,0.82); backdrop-filter: blur(16px);
-            border-radius: 32px; padding: 32px 28px 28px;
-            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.14);
-            border: 1px solid rgba(255,255,255,0.5);
-            max-width: 900px; margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 32px;
+            padding: 36px 32px 32px;
+            box-shadow: 0 24px 56px -16px rgba(0, 20, 40, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 900px;
+            margin: 0 auto;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .form-card:hover {
+            box-shadow: 0 32px 72px -20px rgba(0, 20, 40, 0.18);
         }
 
-        .progress-modern {
-            height: 14px; border-radius: 40px; background: #eef3fa;
-            margin-bottom: 28px; overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
-            position: relative;
-        }
-        .progress-modern .progress-bar {
-            height: 100%; border-radius: 40px;
-            background: linear-gradient(90deg, #2a6df4, #5a8df4, #7aa9ff);
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 700; font-size: 0.75rem; color: white;
-            position: relative; display: flex; align-items: center; justify-content: center;
-            letter-spacing: 0.04em; box-shadow: 0 0 20px rgba(42,109,244,0.15);
-        }
+/* Progress Bar Modern */
+.progress-modern {
+    height: 16px;
+    border-radius: 40px;
+    background: #eef3fa;
+    margin-bottom: 28px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+    position: relative;
+}
+.progress-modern .progress-bar {
+    height: 100%;
+    border-radius: 40px;
+    background: linear-gradient(90deg, #2a6df4, #5a8df4, #7aa9ff);
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.04em;
+    box-shadow: 0 0 24px rgba(42, 109, 244, 0.2);
+    position: relative;
+    min-width: 60px;
+}
         .progress-modern .progress-bar::after {
             content: attr(data-label);
-            font-size: 0.7rem; font-weight: 700; color: white;
-            position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: white;
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .progress-modern .progress-bar .progress-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: glowMove 2s ease-in-out infinite;
+        }
+        @keyframes glowMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
+        /* Step Indicator */
         .step-indicator-modern {
-            display: flex; justify-content: center; gap: 80px;
-            margin-bottom: 32px; position: relative; padding: 0 20px;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 32px;
+            position: relative;
+            padding: 0 20px;
         }
         .step-indicator-modern::before {
-            content: ''; position: absolute; top: 20px; left: 30%; right: 30%;
-            height: 3px; background: #eef3fa; z-index: 0; border-radius: 4px;
-            transition: background 0.5s ease;
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 30%;
+            right: 30%;
+            height: 3px;
+            background: #eef3fa;
+            z-index: 0;
+            border-radius: 4px;
+            transition: background 0.6s ease;
         }
-        .step-indicator-modern.progress-step1::before { background: linear-gradient(to right, #2a6df4 0%, #eef3fa 0%); }
-        .step-indicator-modern.progress-step2::before { background: linear-gradient(to right, #2a6df4 0%, #2a6df4 100%); }
+        .step-indicator-modern.progress-step1::before {
+            background: linear-gradient(to right, #2a6df4 0%, #eef3fa 0%);
+        }
+        .step-indicator-modern.progress-step2::before {
+            background: linear-gradient(to right, #2a6df4 0%, #2a6df4 100%);
+        }
 
-        .step-item { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; cursor: default; }
-        .step-circle {
-            width: 44px; height: 44px; border-radius: 50%; background: #eef3fa;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 0.9rem; color: #8a9bb0;
-            transition: all 0.4s ease; border: 3px solid transparent;
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            cursor: default;
         }
-        .step-circle.active { background: #2a6df4; color: white; border-color: #2a6df4; transform: scale(1.1); box-shadow: 0 0 20px rgba(42,109,244,0.3); }
-        .step-circle.completed { background: #1a8b5c; color: white; border-color: #1a8b5c; animation: pulseGreen 0.5s ease; }
+        .step-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #eef3fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #8a9bb0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 3px solid transparent;
+            position: relative;
+        }
+        .step-circle::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            transition: all 0.5s ease;
+        }
+        .step-circle.active {
+            background: #2a6df4;
+            color: white;
+            border-color: #2a6df4;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(42, 109, 244, 0.25);
+        }
+        .step-circle.active::after {
+            border-color: rgba(42, 109, 244, 0.15);
+            animation: pulseRing 1.5s ease-in-out infinite;
+        }
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0; }
+        }
+        .step-circle.completed {
+            background: #1a8b5c;
+            color: white;
+            border-color: #1a8b5c;
+            animation: pulseGreen 0.6s ease;
+            box-shadow: 0 0 30px rgba(26, 139, 92, 0.2);
+        }
         @keyframes pulseGreen {
             0% { transform: scale(1); }
-            50% { transform: scale(1.2); box-shadow: 0 0 25px rgba(26,139,92,0.4); }
+            40% { transform: scale(1.2); box-shadow: 0 0 40px rgba(26, 139, 92, 0.3); }
             100% { transform: scale(1); }
         }
+        .step-circle .step-number { display: inline; }
         .step-circle .check-icon { display: none; }
         .step-circle.completed .step-number { display: none; }
         .step-circle.completed .check-icon { display: inline; }
+
         .step-label {
-            font-size: 0.65rem; font-weight: 700; color: #8a9bb0;
-            margin-top: 6px; text-transform: uppercase; letter-spacing: 0.04em;
-            transition: color 0.3s; text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #8a9bb0;
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            transition: color 0.4s ease;
+            text-align: center;
         }
         .step-circle.active ~ .step-label { color: #2a6df4; }
         .step-circle.completed ~ .step-label { color: #1a8b5c; }
 
-        .step-content { display: none; animation: fadeIn 0.4s ease; }
-        .step-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        /* Step Content */
+        .step-content {
+            display: none;
+            animation: fadeSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .step-content.active {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
-        .step-title { font-weight: 700; font-size: 1.1rem; color: #0b1e33; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-        .step-title i { color: #2a6df4; }
+        .step-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0b1e33;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-title i {
+            color: #2a6df4;
+            font-size: 1.3rem;
+        }
+
+        /* Form Controls */
+        .form-label-modern {
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #4a5b6e;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .form-label-modern .required {
+            color: #dc3545;
+            margin-left: 2px;
+        }
 
         .form-control-modern {
-            border-radius: 16px; border: 1.5px solid #e9edf4;
-            padding: 14px 18px; font-size: 0.95rem;
-            background: rgba(255,255,255,0.6); transition: all 0.2s; height: 54px;
+            border-radius: 16px;
+            border: 1.5px solid #e9edf4;
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.6);
+            transition: all 0.25s ease;
+            height: 54px;
+            width: 100%;
+            color: #0b1e33;
         }
-        .form-control-modern:focus { border-color: #2a6df4; box-shadow: 0 0 0 4px rgba(42,109,244,0.08); background: white; }
-        .form-control-modern.is-invalid { border-color: #dc3545; }
-        .form-label-modern { font-weight: 600; font-size: 0.8rem; color: #4a5b6e; margin-bottom: 4px; }
-        .form-label-modern .required { color: #dc3545; }
+        .form-control-modern:focus {
+            border-color: #2a6df4;
+            box-shadow: 0 0 0 4px rgba(42, 109, 244, 0.08);
+            background: white;
+            outline: none;
+        }
+        .form-control-modern.is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.06);
+        }
+        .form-control-modern.is-invalid:focus {
+            box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+        }
+        .form-control-modern::placeholder {
+            color: #aab5c5;
+            font-weight: 400;
+        }
 
-        .btn-primary-modern {
-            background: #0b1e33; border: none; border-radius: 60px;
-            padding: 12px 28px; font-weight: 700; color: white;
-            transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+        .invalid-feedback {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #dc3545;
+            margin-top: 4px;
+            display: none;
         }
-        .btn-primary-modern:hover { background: #1a3b6b; transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25); }
+        .form-control-modern.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn-primary-modern {
+            background: #0b1e33;
+            border: none;
+            border-radius: 60px;
+            padding: 12px 28px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .btn-primary-modern:hover {
+            background: #1a3b6b;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -8px rgba(11, 30, 51, 0.25);
+        }
+        .btn-primary-modern:active {
+            transform: scale(0.96);
+        }
 
         .btn-success-modern {
-            background: #1a8b5c; border: none; border-radius: 60px;
-            padding: 12px 28px; font-weight: 700; color: white;
-            transition: all 0.25s; display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #1a8b5c, #0e6b46);
+            border: none;
+            border-radius: 60px;
+            padding: 12px 28px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: 1px solid transparent;
         }
-        .btn-success-modern:hover { background: #0e6b46; transform: translateY(-2px); box-shadow: 0 8px 20px -8px rgba(26,139,92,0.3); }
+        .btn-success-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px -8px rgba(26, 139, 92, 0.35);
+        }
+        .btn-success-modern:active {
+            transform: scale(0.96);
+        }
+        .btn-success-modern:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
 
         .btn-outline-secondary-modern {
-            border-radius: 60px; padding: 12px 24px; font-weight: 600;
-            border: 1.5px solid #e9edf4; color: #4a5b6e; background: transparent;
-            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+            border-radius: 60px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1.5px solid #e9edf4;
+            color: #4a5b6e;
+            background: transparent;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
         }
-        .btn-outline-secondary-modern:hover { background: white; border-color: #cbd9ed; }
+        .btn-outline-secondary-modern:hover {
+            background: white;
+            border-color: #cbd9ed;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
 
         .btn-danger-modern {
-            border-radius: 60px; padding: 12px 24px; font-weight: 600;
-            border: 1.5px solid #dc3545; color: #dc3545; background: transparent;
-            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+            border-radius: 60px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1.5px solid #dc3545;
+            color: #dc3545;
+            background: transparent;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
         }
-        .btn-danger-modern:hover { background: #dc3545; color: white; }
+        .btn-danger-modern:hover {
+            background: #dc3545;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(220, 53, 69, 0.25);
+        }
 
         .btn-group-actions {
-            display: flex; justify-content: space-between; align-items: center;
-            gap: 12px; margin-top: 20px; flex-wrap: wrap;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
         }
-        .btn-group-actions .left-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .btn-group-actions .right-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group-actions .left-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-group-actions .right-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
+        /* File Status */
         .file-status {
-            font-size: 0.7rem; font-weight: 600; padding: 2px 12px;
-            border-radius: 40px; display: inline-block; margin-top: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 14px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 4px;
+            transition: all 0.3s ease;
         }
-        .file-status.valid { background: #e3f5ee; color: #1a8b5c; }
-        .file-status.invalid { background: #fee9e7; color: #b12a2a; }
-
-        .modal-modern.modal-content {
-            border-radius: 28px; border: none; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
+        .file-status.valid {
+            background: #e6f7f0;
+            color: #1a8b5c;
+            border: 1px solid rgba(26, 139, 92, 0.1);
         }
-       .modal-modern.modal-header { border-bottom: none; padding: 22px 28px 10px 28px; }
-       .modal-modern.modal-header.modal-title { font-weight: 700; color: #0b1e33; font-size: 1.15rem; display:flex; align-items:center; gap:10px; }
-       .modal-modern.modal-body { padding: 16px 28px 24px; }
-       .modal-modern.modal-footer { border-top: none; padding: 8px 28px 24px; gap:10px; }
-
-        /* MODAL NOTIFICACION MODERNO - UN SOLO MENSAJE */
-       .notif-icon-box {
-            width: 64px; height: 64px; border-radius: 20px; display:flex; align-items:center; justify-content:center;
-            font-size: 2rem; margin: 0 auto 14px auto;
-        }
-       .notif-icon-box.success { background: #e3f5ee; color: #1a8b5c; }
-       .notif-icon-box.error { background: #fee9e7; color: #c53636; }
-       .notif-icon-box.warning { background: #fff4d6; color: #b47a00; }
-       .notif-icon-box.info { background: #eef3fa; color: #2a6df4; }
-       .notif-title { font-weight: 800; font-size: 1.25rem; color: #0b1e33; text-align:center; margin-bottom:6px; }
-       .notif-message { color: #4a5b6e; font-size: 0.95rem; text-align:center; line-height:1.5; }
-       .notif-message strong { color: #0b1e33; }
-       .btn-modern-close {
-            border-radius: 60px; padding: 10px 22px; font-weight: 600;
-            border: 1.5px solid #e9edf4; background: white; color: #4a5b6e;
+        .file-status.invalid {
+            background: #fde8e6;
+            color: #b12a2a;
+            border: 1px solid rgba(220, 53, 69, 0.1);
         }
 
-        .file-preview-modal { width: 100%; height: 60vh; border: none; border-radius: 12px; }
-
-        .spinner-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11,30,51,0.4); backdrop-filter: blur(8px); z-index: 9999;
-            display: none; align-items: center; justify-content: center;
-        }
-        .spinner-box {
-            background: white; padding: 36px 48px; border-radius: 32px;
-            text-align: center; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-        }
-        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: #2a6df4; }
-        .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
-        .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
-
-        /* ============================================================ */
-        /* RESPONSIVE SYSTEM - ADAPTADO A TELEFONO / TABLET / PC */
-        /* ============================================================ */
-        
-        /* TABLET Y MÓVIL GRANDE */
-        @media (max-width: 992px) {
-            .form-card { max-width: 95%; }
-            .btn-menu-modern { position: relative; top: auto; left: auto; margin: 0 0 16px 0; }
-            body { padding-top: 12px; }
-        }
-
-        @media (max-width: 768px) {
-            body { background: #f2f5fb; padding-bottom: 20px; }
-            .container { padding-left: 12px; padding-right: 12px; }
-            .page-header { padding: 18px 16px; border-radius: 20px; margin-bottom: 16px; }
-            .page-header h1 { font-size: 1.35rem; gap: 8px; }
-            .page-header h1 i { font-size: 1.5rem; }
-            .page-header .subtitle { font-size: 0.8rem; }
-            .form-card { padding: 20px 14px 18px; border-radius: 22px; box-shadow: 0 12px 32px -16px rgba(0,20,40,0.12); }
-            .progress-modern { height: 10px; margin-bottom: 20px; }
-            .step-indicator-modern { gap: 36px; margin-bottom: 22px; }
-            .step-indicator-modern::before { left: 22%; right: 22%; top: 18px; }
-            .step-circle { width: 38px; height: 38px; font-size: 0.85rem; }
-            .step-title { font-size: 1rem; margin-bottom: 12px; }
-            .form-control-modern { height: 48px; font-size: 16px; /* evita zoom en iOS */ }
-            .btn-group-actions { flex-direction: column-reverse; }
-            .btn-group-actions .left-actions, .btn-group-actions .right-actions { width: 100%; justify-content: stretch; }
-            .btn-group-actions .btn-primary-modern, .btn-group-actions .btn-success-modern, .btn-group-actions .btn-danger-modern, .btn-group-actions .btn-outline-secondary-modern { width: 100%; justify-content: center; }
-            
-            /* Archivos en móvil: layout vertical */
-            .file-input-container { flex-direction: column; align-items: stretch; padding: 12px; gap: 10px; min-height: auto; }
-            .file-input-container .file-input-label { width: 100%; justify-content: center; padding: 10px; font-size: 0.8rem; }
-            .file-input-container .file-name { text-align: center; max-width: 100%; }
-            .file-actions { justify-content: space-between; width: 100%; }
-            .btn-mobile-upload { flex: 1; justify-content: center; padding: 8px; }
-        }
-
-        /* MÓVIL PEQUEÑO */
-        @media (max-width: 480px) {
-            .page-header h1 { font-size: 1.15rem; flex-direction: column; }
-            .step-indicator-modern { gap: 16px; padding: 0 5px; }
-            .step-indicator-modern::before { left: 18%; right: 18%; }
-            .step-circle { width: 32px; height: 32px; font-size: 0.7rem; border-width: 2px; }
-            .step-label { font-size: 0.5rem; letter-spacing: 0.02em; }
-            .form-card { padding: 16px 12px; border-radius: 18px; }
-            .row.g-3 { --bs-gutter-y: 0.8rem; }
-            .file-upload-group { gap: 4px; }
-            .btn-menu-modern { width: 100%; justify-content: center; border-radius: 14px; }
-            .modal-dialog { margin: 10px; }
-            #qrCodeContainer canvas, #qrCodeContainer img { width: 180px !important; height: 180px !important; }
-        }
-
-        /* PC GRANDE - mejora visual */
-        @media (min-width: 1200px) {
-            .form-card { max-width: 980px; padding: 40px 36px 32px; }
-            .page-header h1 { font-size: 2rem; }
-        }
-
-        /* FIX iOS SAFARI */
-        @supports (-webkit-touch-callout: none) {
-            .form-card { backdrop-filter: none; background: rgba(255,255,255,0.95); }
-        }
-
-                /* ============================================================ */
-        /* ESTILOS PARA SUBIDA DE ARCHIVOS MODERNOS */
-        /* ============================================================ */
+        /* File Upload Group */
         .file-upload-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .file-upload-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             width: 100%;
         }
 
@@ -287,17 +529,17 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.6);
             border: 1.5px dashed #d0d8e3;
             border-radius: 14px;
             padding: 6px 12px;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             min-height: 48px;
             flex-wrap: wrap;
         }
         .file-input-container:hover {
             border-color: #2a6df4;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
         }
         .file-input-container .file-input-hidden {
             position: absolute;
@@ -310,31 +552,34 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 6px 14px;
+            padding: 6px 16px;
             background: #0b1e33;
             color: white;
             border-radius: 40px;
             font-size: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             white-space: nowrap;
+            border: 1px solid transparent;
         }
         .file-input-container .file-input-label:hover {
             background: #1a3b6b;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(11, 30, 51, 0.15);
         }
         .file-input-container .file-input-label i {
             font-size: 0.9rem;
         }
         .file-input-container .file-name {
             font-size: 0.75rem;
-            color: #6b7b8f;
+            color: #8a9bb0;
             flex: 1;
             min-width: 60px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            transition: color 0.3s ease;
         }
         .file-input-container .file-name.has-file {
             color: #0b1e33;
@@ -352,21 +597,22 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 40px;
             font-size: 0.7rem;
             font-weight: 600;
             border: none;
-            background: rgba(42,109,244,0.08);
+            background: rgba(42, 109, 244, 0.08);
             color: #2a6df4;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             cursor: pointer;
             white-space: nowrap;
         }
         .btn-mobile-upload:hover {
             background: #2a6df4;
             color: white;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 109, 244, 0.2);
         }
         .btn-mobile-upload i {
             font-size: 0.9rem;
@@ -376,14 +622,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             font-size: 0.75rem;
             border: none;
-            background: rgba(220,53,69,0.08);
+            background: rgba(220, 53, 69, 0.08);
             color: #dc3545;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             cursor: pointer;
         }
         .btn-file-clear:hover {
@@ -392,7 +638,312 @@
             transform: scale(1.05);
         }
 
+        /* ============================================================ */
+        /* MODALES MODERNIZADOS */
+        /* ============================================================ */
+
+        .modal-modern .modal-content {
+            border-radius: 32px;
+            border: none;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 24px 28px 8px 28px;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 700;
+            color: #0b1e33;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body {
+            padding: 16px 28px 24px;
+        }
+        .modal-modern .modal-footer {
+            border-top: none;
+            padding: 8px 28px 24px;
+            gap: 10px;
+        }
+
+        /* Notification Modal */
+        .notif-icon-box {
+            width: 72px;
+            height: 72px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            margin: 0 auto 16px auto;
+            transition: all 0.4s ease;
+        }
+        .notif-icon-box.success {
+            background: #e6f7f0;
+            color: #1a8b5c;
+        }
+        .notif-icon-box.error {
+            background: #fde8e6;
+            color: #c53636;
+        }
+        .notif-icon-box.warning {
+            background: #fef3e2;
+            color: #b47a00;
+        }
+        .notif-icon-box.info {
+            background: #eef3fa;
+            color: #2a6df4;
+        }
+
+        .notif-title {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #0b1e33;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .notif-message {
+            color: #4a5b6e;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .notif-message strong {
+            color: #0b1e33;
+        }
+
+        .btn-modern-close {
+            border-radius: 60px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1.5px solid #e9edf4;
+            background: white;
+            color: #4a5b6e;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .btn-modern-close:hover {
+            background: #f5f7fa;
+            border-color: #d0d8e3;
+        }
+
+        /* Confirm Modal */
+        #confirmModal .modal-header {
+            background: linear-gradient(135deg, #fef3e2, #fde8d6);
+            border-bottom: 1px solid rgba(255, 193, 7, 0.1);
+        }
+        #confirmModal .modal-title {
+            color: #7a5a1a;
+        }
+        #confirmModal .modal-title i {
+            color: #ffc107;
+        }
+
+        /* PDF Preview Modal */
+        #pdfPreviewModal .modal-header {
+            background: #0b1e33;
+        }
+        #pdfPreviewModal .modal-title {
+            color: white;
+        }
+        #pdfPreviewModal .modal-title i {
+            color: #ef4444;
+        }
+
+        .file-preview-modal {
+            width: 100%;
+            height: 60vh;
+            border: none;
+            border-radius: 12px;
+        }
+
+        /* QR Modal */
+        #qrModal .modal-header {
+            background: #0b1e33;
+        }
+        #qrModal .modal-title {
+            color: white;
+        }
+        #qrModal .modal-title i {
+            color: #2a6df4;
+        }
+
+        #qrCodeContainer {
+            margin: 20px auto;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrCodeContainer canvas,
+        #qrCodeContainer img {
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Loading Overlay */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 30, 51, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .spinner-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .spinner-box {
+            background: white;
+            padding: 40px 48px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.85) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .spinner-box .spinner-border {
+            width: 3.5rem;
+            height: 3.5rem;
+            color: #2a6df4;
+            border-width: 4px;
+        }
+        .spinner-box h5 {
+            font-weight: 800;
+            color: #0b1e33;
+            margin-top: 16px;
+            font-size: 1.1rem;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.88rem;
+            margin-bottom: 0;
+        }
+
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
+
+        @media (max-width: 992px) {
+            .form-card {
+                max-width: 95%;
+                padding: 28px 24px 24px;
+            }
+            .btn-menu-modern {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin: 0 0 16px 0;
+                width: 100%;
+                justify-content: center;
+            }
+            body {
+                padding-top: 12px;
+            }
+        }
+
         @media (max-width: 768px) {
+            body {
+                background: #f0f4fc;
+                padding-bottom: 20px;
+            }
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .page-header {
+                padding: 18px 16px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+            }
+            .page-header h1 {
+                font-size: 1.35rem;
+                gap: 8px;
+            }
+            .page-header h1 i {
+                font-size: 1.5rem;
+            }
+            .page-header .subtitle {
+                font-size: 0.8rem;
+            }
+            .form-card {
+                padding: 20px 14px 18px;
+                border-radius: 22px;
+                box-shadow: 0 12px 32px -16px rgba(0, 20, 40, 0.12);
+            }
+            .progress-modern {
+                height: 6px;
+                margin-bottom: 20px;
+            }
+            .step-indicator-modern {
+                gap: 36px;
+                margin-bottom: 22px;
+            }
+            .step-indicator-modern::before {
+                left: 22%;
+                right: 22%;
+                top: 18px;
+            }
+            .step-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 0.85rem;
+            }
+            .step-label {
+                font-size: 0.6rem;
+            }
+            .step-title {
+                font-size: 1rem;
+                margin-bottom: 12px;
+            }
+            .form-control-modern {
+                height: 48px;
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+            .btn-group-actions {
+                flex-direction: column-reverse;
+            }
+            .btn-group-actions .left-actions,
+            .btn-group-actions .right-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+            .btn-group-actions .btn-primary-modern,
+            .btn-group-actions .btn-success-modern,
+            .btn-group-actions .btn-danger-modern,
+            .btn-group-actions .btn-outline-secondary-modern {
+                width: 100%;
+                justify-content: center;
+            }
+
             .file-input-container {
                 flex-wrap: wrap;
                 padding: 8px 12px;
@@ -413,21 +964,81 @@
             .file-actions {
                 gap: 2px;
             }
+
+            .modal-modern .modal-body {
+                padding: 12px 20px 20px;
+            }
+            .modal-modern .modal-header {
+                padding: 18px 20px 6px 20px;
+            }
+            .modal-modern .modal-footer {
+                padding: 6px 20px 20px;
+            }
+            .notif-icon-box {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+            .notif-title {
+                font-size: 1.1rem;
+            }
+            .notif-message {
+                font-size: 0.85rem;
+            }
+            .spinner-box {
+                padding: 30px 24px;
+            }
+            #qrCodeContainer canvas,
+            #qrCodeContainer img {
+                width: 180px !important;
+                height: 180px !important;
+            }
         }
 
         @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 1.1rem;
+                flex-direction: column;
+            }
+            .step-indicator-modern {
+                gap: 16px;
+                padding: 0 5px;
+            }
+            .step-indicator-modern::before {
+                left: 18%;
+                right: 18%;
+                top: 16px;
+            }
+            .step-circle {
+                width: 34px;
+                height: 34px;
+                font-size: 0.7rem;
+                border-width: 2px;
+            }
+            .step-label {
+                font-size: 0.5rem;
+                letter-spacing: 0.02em;
+            }
+            .form-card {
+                padding: 16px 12px;
+                border-radius: 18px;
+            }
+            .row.g-3 {
+                --bs-gutter-y: 0.8rem;
+            }
             .file-input-container {
                 flex-direction: row;
                 flex-wrap: wrap;
                 gap: 4px;
+                padding: 6px 10px;
             }
             .file-input-container .file-input-label {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
                 padding: 4px 10px;
             }
             .file-input-container .file-name {
-                font-size: 0.65rem;
-                max-width: 80px;
+                font-size: 0.6rem;
+                max-width: 70px;
             }
             .btn-mobile-upload {
                 font-size: 0.6rem;
@@ -439,670 +1050,1097 @@
             .btn-mobile-upload i {
                 font-size: 0.8rem;
             }
+            .btn-file-clear {
+                width: 26px;
+                height: 26px;
+                font-size: 0.65rem;
+            }
+            .btn-group-actions .btn-primary-modern,
+            .btn-group-actions .btn-success-modern,
+            .btn-group-actions .btn-danger-modern,
+            .btn-group-actions .btn-outline-secondary-modern {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
+            .modal-dialog {
+                margin: 10px;
+            }
+            #qrCodeContainer canvas,
+            #qrCodeContainer img {
+                width: 150px !important;
+                height: 150px !important;
+            }
+            .file-preview-modal {
+                height: 40vh;
+            }
         }
+
+        @media (min-width: 1200px) {
+            .form-card {
+                max-width: 980px;
+                padding: 42px 38px 34px;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Fix iOS Safari */
+        @supports (-webkit-touch-callout: none) {
+            .form-card,
+            .page-header,
+            .btn-menu-modern,
+            .modal-modern .modal-content {
+                backdrop-filter: none;
+                background: rgba(255, 255, 255, 0.95);
+            }
+        }
+
         /* ============================================================ */
-/* ANIMACIÓN DE ÉXITO MODERNA */
-/* ============================================================ */
-.success-animation {
-    margin: 20px auto;
-}
+        /* SUCCESS ANIMATION */
+        /* ============================================================ */
+        .success-animation {
+            margin: 10px auto;
+        }
+        .success-animation .checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #1a8b5c;
+            stroke-miterlimit: 10;
+            margin: 0 auto;
+            box-shadow: 0 0 0 rgba(26, 139, 92, 0.4);
+            animation: success-pulse 1.5s ease-in-out infinite;
+        }
+        .success-animation .checkmark .checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #1a8b5c;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .success-animation .checkmark .checkmark-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            stroke-width: 3;
+            stroke: #1a8b5c;
+            fill: none;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
+        }
+        .success-animation .checkmark .checkmark-bg {
+            fill: #e8f5e9;
+            animation: success-fade-in 0.6s ease forwards;
+        }
+        @keyframes stroke {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes success-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(26, 139, 92, 0.2); }
+            50% { transform: scale(1.02); box-shadow: 0 0 30px 10px rgba(26, 139, 92, 0.1); }
+        }
+        @keyframes success-fade-in {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
-.success-animation .checkmark {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    display: block;
-    stroke-width: 2;
-    stroke: #1a8b5c;
-    stroke-miterlimit: 10;
-    margin: 0 auto;
-    box-shadow: 0 0 0 rgba(26, 139, 92, 0.4);
-    animation: success-pulse 1.5s ease-in-out infinite;
-}
-
-.success-animation .checkmark .checkmark-circle {
-    stroke-dasharray: 166;
-    stroke-dashoffset: 166;
-    stroke-width: 2;
-    stroke-miterlimit: 10;
-    stroke: #1a8b5c;
-    fill: none;
-    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-}
-
-.success-animation .checkmark .checkmark-check {
-    transform-origin: 50% 50%;
-    stroke-dasharray: 48;
-    stroke-dashoffset: 48;
-    stroke-width: 3;
-    stroke: #1a8b5c;
-    fill: none;
-    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
-}
-
-.success-animation .checkmark .checkmark-bg {
-    fill: #e8f5e9;
-    animation: success-fade-in 0.6s ease forwards;
-}
-
-@keyframes stroke {
-    100% {
-        stroke-dashoffset: 0;
-    }
-}
-
-@keyframes success-pulse {
-    0%, 100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(26, 139, 92, 0.2);
-    }
-    50% {
-        transform: scale(1.02);
-        box-shadow: 0 0 30px 10px rgba(26, 139, 92, 0.1);
-    }
-}
-
-@keyframes success-fade-in {
-    0% {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.success-animation .confetti-container {
-    position: relative;
-    height: 40px;
-    overflow: hidden;
-}
-
-.success-animation .confetti {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    animation: confetti-fall 2s ease-in-out forwards;
-    opacity: 0;
-}
-
-.success-animation .confetti:nth-child(1) { left: 10%; background: #f44336; animation-delay: 0.2s; }
-.success-animation .confetti:nth-child(2) { left: 20%; background: #2196f3; animation-delay: 0.4s; }
-.success-animation .confetti:nth-child(3) { left: 30%; background: #ffeb3b; animation-delay: 0.6s; }
-.success-animation .confetti:nth-child(4) { left: 40%; background: #4caf50; animation-delay: 0.3s; }
-.success-animation .confetti:nth-child(5) { left: 50%; background: #9c27b0; animation-delay: 0.7s; }
-.success-animation .confetti:nth-child(6) { left: 60%; background: #ff9800; animation-delay: 0.5s; }
-.success-animation .confetti:nth-child(7) { left: 70%; background: #e91e63; animation-delay: 0.8s; }
-.success-animation .confetti:nth-child(8) { left: 80%; background: #00bcd4; animation-delay: 0.1s; }
-.success-animation .confetti:nth-child(9) { left: 90%; background: #8bc34a; animation-delay: 0.9s; }
-.success-animation .confetti:nth-child(10) { left: 15%; background: #ff5722; animation-delay: 0.45s; }
-.success-animation .confetti:nth-child(11) { left: 45%; background: #3f51b5; animation-delay: 0.55s; }
-.success-animation .confetti:nth-child(12) { left: 75%; background: #ffeb3b; animation-delay: 0.65s; }
-
-@keyframes confetti-fall {
-    0% {
-        opacity: 1;
-        transform: translateY(-30px) rotate(0deg) scale(1);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(60px) rotate(720deg) scale(0.5);
-    }
-}
-
-.success-animation .success-text {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1a8b5c;
-    margin-top: 16px;
-    animation: success-text-fade 0.6s ease 0.8s forwards;
-    opacity: 0;
-}
-
-@keyframes success-text-fade {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.success-animation .success-subtext {
-    color: #6b7b8f;
-    font-size: 0.9rem;
-    margin-top: 4px;
-    animation: success-text-fade 0.6s ease 1s forwards;
-    opacity: 0;
-}
-
-.success-animation .success-details {
-    background: rgba(232, 245, 233, 0.5);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-top: 16px;
-    animation: success-text-fade 0.6s ease 1.2s forwards;
-    opacity: 0;
-}
+        /* ============================================================ */
+        /* UTILITY */
+        /* ============================================================ */
+        .text-muted-small {
+            color: #8a9bb0;
+            font-size: 0.7rem;
+        }
+        .gap-1 {
+            gap: 4px;
+        }
+        .gap-2 {
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
 
-<!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
-    <i class="bi bi-arrow-left"></i> Menú Principal
-</a>
+    <!-- Botón menú -->
+    <a href="/" class="btn-menu-modern">
+        <i class="bi bi-arrow-left"></i> Menú Principal
+    </a>
 
-<div class="container">
+    <div class="container">
 
-    <!-- Header -->
-    <div class="page-header">
-        <h1>
-            <i class="bi bi-person-plus"></i> Registrar Cliente
-        </h1>
-        <div class="subtitle">
-            Ingresa los datos del nuevo cliente
-            <span><i class="bi bi-shield-check me-1"></i> Seguro</span>
-        </div>
-    </div>
-
-    <!-- Formulario -->
-    <div class="form-card">
-
-        <!-- Progress bar -->
-        <div class="progress-modern">
-            <div class="progress-bar" id="progressBar" data-label="50%" style="width:50%;"></div>
-        </div>
-
-        <!-- Step indicator -->
-        <div class="step-indicator-modern progress-step1" id="stepIndicator">
-            <div class="step-item">
-                <div class="step-circle active" id="circle1">
-                    <span class="step-number">1</span>
-                    <span class="check-icon"><i class="bi bi-check-lg"></i></span>
-                </div>
-                <div class="step-label">Datos Personales</div>
-            </div>
-            <div class="step-item">
-                <div class="step-circle" id="circle2">
-                    <span class="step-number">2</span>
-                    <span class="check-icon"><i class="bi bi-check-lg"></i></span>
-                </div>
-                <div class="step-label">Documentos</div>
+        <!-- Header -->
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-person-plus"></i> Registrar Cliente
+            </h1>
+            <div class="subtitle">
+                Ingresa los datos del nuevo cliente
+                <span><i class="bi bi-shield-check me-1"></i> Seguro</span>
             </div>
         </div>
 
-        <form id="registerForm" enctype="multipart/form-data" novalidate>
+        <!-- Formulario -->
+        <div class="form-card">
 
-            <!-- PASO 1 -->
-            <div class="step-content active" id="step1">
-                <div class="step-title"><i class="bi bi-person"></i> Datos Personales</div>
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label-modern">Nombre(s) <span class="required">*</span></label>
-                        <input type="text" name="name" id="name" class="form-control form-control-modern" required autocomplete="off" placeholder="Ej: Juan">
-                        <div class="invalid-feedback">Solo letras, sin números</div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">Apellido Paterno <span class="required">*</span></label>
-                        <input type="text" name="paterno" id="paterno" class="form-control form-control-modern" required autocomplete="off" placeholder="Ej: Pérez">
-                        <div class="invalid-feedback">Solo letras, sin números</div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">Apellido Materno (opcional)</label>
-                        <input type="text" name="materno" id="materno" class="form-control form-control-modern" autocomplete="off" placeholder="Ej: Gómez">
-                        <div class="invalid-feedback">Solo letras, sin números</div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">CURP <span class="required">*</span></label>
-                        <input type="text" name="curp" id="curp" class="form-control form-control-modern" required maxlength="18" minlength="18" style="text-transform:uppercase;" autocomplete="off" placeholder="XXXX000000XXXXXX00">
-                        <div class="invalid-feedback">El CURP debe tener exactamente 18 caracteres</div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">Teléfono <span class="required">*</span></label>
-                        <input type="tel" name="phone" id="phone" class="form-control form-control-modern" required maxlength="10" minlength="10" autocomplete="off" placeholder="0000000000">
-                        <div class="invalid-feedback">El teléfono debe tener exactamente 10 dígitos</div>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label-modern">Email (opcional)</label>
-                        <input type="email" name="email" id="email" class="form-control form-control-modern" autocomplete="off" placeholder="cliente@email.com">
-                        <div class="invalid-feedback">Ingresa un email válido</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label-modern">Domicilio <span class="required">*</span></label>
-                        <input type="text" name="address" id="address" class="form-control form-control-modern" required autocomplete="off" placeholder="Calle y número">
-                        <div class="invalid-feedback">El domicilio es obligatorio</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label-modern">Ocupación <span class="required">*</span></label>
-                        <input type="text" name="occupation" id="occupation" class="form-control form-control-modern" required autocomplete="off" placeholder="Ej: Abogado">
-                        <div class="invalid-feedback">La ocupación es obligatoria</div>
-                    </div>
-                </div>
-                <div class="btn-group-actions">
-                    <div class="left-actions">
-                        <button type="button" class="btn-danger-modern" onclick="clearForm()">
-                            <i class="bi bi-eraser"></i> Limpiar
-                        </button>
-                    </div>
-                    <div class="right-actions">
-                        <button type="button" class="btn-primary-modern" onclick="nextStep(1)">
-                            Siguiente <i class="bi bi-arrow-right"></i>
-                        </button>
-                    </div>
+            <!-- Progress bar -->
+            <div class="progress-modern">
+                <div class="progress-bar" id="progressBar" data-label="50%" style="width:50%;">
+                    <span class="progress-glow"></span>
                 </div>
             </div>
 
-            <!-- PASO 2 -->
-            <div class="step-content" id="step2">
-                <div class="step-title"><i class="bi bi-file-pdf"></i> Documentos (PDF)</div>
-                
-                <!-- CURP -->
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <div class="file-upload-group">
+            <!-- Step indicator -->
+            <div class="step-indicator-modern progress-step1" id="stepIndicator">
+                <div class="step-item">
+                    <div class="step-circle active" id="circle1">
+                        <span class="step-number">1</span>
+                        <span class="check-icon"><i class="bi bi-check-lg"></i></span>
+                    </div>
+                    <div class="step-label">Datos Personales</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle" id="circle2">
+                        <span class="step-number">2</span>
+                        <span class="check-icon"><i class="bi bi-check-lg"></i></span>
+                    </div>
+                    <div class="step-label">Documentos</div>
+                </div>
+            </div>
+
+            <form id="registerForm" enctype="multipart/form-data" novalidate>
+
+                <!-- PASO 1 -->
+                <div class="step-content active" id="step1">
+                    <div class="step-title"><i class="bi bi-person"></i> Datos Personales</div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label-modern">Nombre(s) <span class="required">*</span></label>
+                            <input type="text" name="name" id="name" class="form-control form-control-modern" required autocomplete="off" placeholder="Ej: Juan">
+                            <div class="invalid-feedback">Solo letras, sin números</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-modern">Apellido Paterno <span class="required">*</span></label>
+                            <input type="text" name="paterno" id="paterno" class="form-control form-control-modern" required autocomplete="off" placeholder="Ej: Pérez">
+                            <div class="invalid-feedback">Solo letras, sin números</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-modern">Apellido Materno (opcional)</label>
+                            <input type="text" name="materno" id="materno" class="form-control form-control-modern" autocomplete="off" placeholder="Ej: Gómez">
+                            <div class="invalid-feedback">Solo letras, sin números</div>
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label-modern">CURP <span class="required">*</span></label>
-                            <div class="file-upload-wrapper">
-                                <div class="file-input-container">
-                                    <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern file-input-hidden" required>
-                                    <label for="curp_file" class="file-input-label">
-                                        <i class="bi bi-cloud-upload"></i>
-                                        <span>Seleccionar archivo</span>
-                                    </label>
-                                    <span class="file-name" id="curp_file_name">Ningún archivo seleccionado</span>
+                            <input type="text" name="curp" id="curp" class="form-control form-control-modern" required maxlength="18" minlength="18" style="text-transform:uppercase;" autocomplete="off" placeholder="XXXX000000XXXXXX00">
+                            <div class="invalid-feedback">El CURP debe tener exactamente 18 caracteres</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-modern">Teléfono <span class="required">*</span></label>
+                            <input type="tel" name="phone" id="phone" class="form-control form-control-modern" required maxlength="10" minlength="10" autocomplete="off" placeholder="0000000000">
+                            <div class="invalid-feedback">El teléfono debe tener exactamente 10 dígitos</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-modern">Email (opcional)</label>
+                            <input type="email" name="email" id="email" class="form-control form-control-modern" autocomplete="off" placeholder="cliente@email.com">
+                            <div class="invalid-feedback">Ingresa un email válido</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-modern">Domicilio <span class="required">*</span></label>
+                            <input type="text" name="address" id="address" class="form-control form-control-modern" required autocomplete="off" placeholder="Calle y número">
+                            <div class="invalid-feedback">El domicilio es obligatorio</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-modern">Ocupación <span class="required">*</span></label>
+                            <input type="text" name="occupation" id="occupation" class="form-control form-control-modern" required autocomplete="off" placeholder="Ej: Abogado">
+                            <div class="invalid-feedback">La ocupación es obligatoria</div>
+                        </div>
+                    </div>
+                    <div class="btn-group-actions">
+                        <div class="left-actions">
+                            <button type="button" class="btn-danger-modern" onclick="clearForm()">
+                                <i class="bi bi-eraser"></i> Limpiar
+                            </button>
+                        </div>
+                        <div class="right-actions">
+                            <button type="button" class="btn-primary-modern" onclick="nextStep(1)">
+                                Siguiente <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASO 2 -->
+                <div class="step-content" id="step2">
+                    <div class="step-title"><i class="bi bi-file-pdf"></i> Documentos (PDF)</div>
+
+                    <div class="row g-3">
+                        <!-- CURP -->
+                        <div class="col-md-4">
+                            <div class="file-upload-group">
+                                <label class="form-label-modern">CURP <span class="required">*</span></label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-input-container">
+                                        <input type="file" name="curp_file" id="curp_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input-hidden" required>
+                                        <label for="curp_file" class="file-input-label">
+                                            <i class="bi bi-cloud-upload"></i>
+                                            <span>Seleccionar archivo</span>
+                                        </label>
+                                        <span class="file-name" id="curp_file_name">Ningún archivo seleccionado</span>
+                                    </div>
+                                    <div class="file-actions">
+                                        <button type="button" class="btn-mobile-upload" onclick="openQRScanner('curp_file')" title="Subir desde móvil">
+                                            <i class="bi bi-qr-code"></i> <span>Móvil</span>
+                                        </button>
+                                        <button type="button" class="btn-file-clear" onclick="clearFileInput('curp_file', 'curpStatus', 'curp')" id="curp_clear_btn" style="display:none;">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="file-actions">
-                                    <button type="button" class="btn-mobile-upload" onclick="openQRScanner('curp_file')" title="Subir desde móvil">
-                                        <i class="bi bi-qr-code"></i> Móvil
-                                    </button>
-                                    <button type="button" class="btn-file-clear" onclick="clearFileInput('curp_file', 'curpStatus', 'curp')" id="curp_clear_btn" style="display:none;">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
+                                <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
+                                <span class="file-status invalid" id="curpStatus">❌ No validado</span>
+                                <div id="curp_mobile_status" style="display:none; font-size:0.75rem; color:#2a6df4; margin-top:4px;">
+                                    <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
                                 </div>
                             </div>
-                            <div class="invalid-feedback">Sube el CURP en PDF o imagen</div>
-                            <span class="file-status invalid" id="curpStatus">❌ No validado</span>
-                            <div id="curp_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-                                <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                        </div>
+
+                        <!-- INE -->
+                        <div class="col-md-4">
+                            <div class="file-upload-group">
+                                <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-input-container">
+                                        <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input-hidden" required>
+                                        <label for="ine_file" class="file-input-label">
+                                            <i class="bi bi-cloud-upload"></i>
+                                            <span>Seleccionar archivo</span>
+                                        </label>
+                                        <span class="file-name" id="ine_file_name">Ningún archivo seleccionado</span>
+                                    </div>
+                                    <div class="file-actions">
+                                        <button type="button" class="btn-mobile-upload" onclick="openQRScanner('ine_file')" title="Subir desde móvil">
+                                            <i class="bi bi-qr-code"></i> <span>Móvil</span>
+                                        </button>
+                                        <button type="button" class="btn-file-clear" onclick="clearFileInput('ine_file', 'ineStatus', 'ine')" id="ine_clear_btn" style="display:none;">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
+                                <span class="file-status invalid" id="ineStatus">❌ No validado</span>
+                                <div id="ine_mobile_status" style="display:none; font-size:0.75rem; color:#2a6df4; margin-top:4px;">
+                                    <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DOMICILIO -->
+                        <div class="col-md-4">
+                            <div class="file-upload-group">
+                                <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-input-container">
+                                        <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input-hidden" required>
+                                        <label for="domicilio_file" class="file-input-label">
+                                            <i class="bi bi-cloud-upload"></i>
+                                            <span>Seleccionar archivo</span>
+                                        </label>
+                                        <span class="file-name" id="domicilio_file_name">Ningún archivo seleccionado</span>
+                                    </div>
+                                    <div class="file-actions">
+                                        <button type="button" class="btn-mobile-upload" onclick="openQRScanner('domicilio_file')" title="Subir desde móvil">
+                                            <i class="bi bi-qr-code"></i> <span>Móvil</span>
+                                        </button>
+                                        <button type="button" class="btn-file-clear" onclick="clearFileInput('domicilio_file', 'domicilioStatus', 'domicilio')" id="domicilio_clear_btn" style="display:none;">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
+                                <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
+                                <div id="domicilio_mobile_status" style="display:none; font-size:0.75rem; color:#2a6df4; margin-top:4px;">
+                                    <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- INE -->
-                    <div class="col-md-4">
-                        <div class="file-upload-group">
-                            <label class="form-label-modern">INE/Identificación <span class="required">*</span></label>
-                            <div class="file-upload-wrapper">
-                                <div class="file-input-container">
-                                    <input type="file" name="ine_file" id="ine_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern file-input-hidden" required>
-                                    <label for="ine_file" class="file-input-label">
-                                        <i class="bi bi-cloud-upload"></i>
-                                        <span>Seleccionar archivo</span>
-                                    </label>
-                                    <span class="file-name" id="ine_file_name">Ningún archivo seleccionado</span>
-                                </div>
-                                <div class="file-actions">
-                                    <button type="button" class="btn-mobile-upload" onclick="openQRScanner('ine_file')" title="Subir desde móvil">
-                                        <i class="bi bi-qr-code"></i> Móvil
-                                    </button>
-                                    <button type="button" class="btn-file-clear" onclick="clearFileInput('ine_file', 'ineStatus', 'ine')" id="ine_clear_btn" style="display:none;">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="invalid-feedback">Sube el INE en PDF o imagen</div>
-                            <span class="file-status invalid" id="ineStatus">❌ No validado</span>
-                            <div id="ine_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-                                <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
-                            </div>
+                    <div class="btn-group-actions">
+                        <div class="left-actions">
+                            <button type="button" class="btn-outline-secondary-modern" onclick="prevStep(2)">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </button>
+                            <button type="button" class="btn-danger-modern" onclick="clearForm()">
+                                <i class="bi bi-eraser"></i> Limpiar
+                            </button>
                         </div>
-                    </div>
-
-                    <!-- DOMICILIO -->
-                    <div class="col-md-4">
-                        <div class="file-upload-group">
-                            <label class="form-label-modern">Comprobante de Domicilio <span class="required">*</span></label>
-                            <div class="file-upload-wrapper">
-                                <div class="file-input-container">
-                                    <input type="file" name="domicilio_file" id="domicilio_file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-modern file-input-hidden" required>
-                                    <label for="domicilio_file" class="file-input-label">
-                                        <i class="bi bi-cloud-upload"></i>
-                                        <span>Seleccionar archivo</span>
-                                    </label>
-                                    <span class="file-name" id="domicilio_file_name">Ningún archivo seleccionado</span>
-                                </div>
-                                <div class="file-actions">
-                                    <button type="button" class="btn-mobile-upload" onclick="openQRScanner('domicilio_file')" title="Subir desde móvil">
-                                        <i class="bi bi-qr-code"></i> Móvil
-                                    </button>
-                                    <button type="button" class="btn-file-clear" onclick="clearFileInput('domicilio_file', 'domicilioStatus', 'domicilio')" id="domicilio_clear_btn" style="display:none;">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="invalid-feedback">Sube el comprobante en PDF o imagen</div>
-                            <span class="file-status invalid" id="domicilioStatus">❌ No validado</span>
-                            <div id="domicilio_mobile_status" style="display:none; font-size:0.8rem; color:#2a6df4; margin-top:4px;">
-                                <i class="bi bi-arrow-repeat spinner-border spinner-border-sm"></i> Esperando archivo desde móvil...
-                            </div>
+                        <div class="right-actions">
+                            <button type="submit" class="btn-success-modern" id="submitBtn">
+                                <i class="bi bi-check2"></i> Registrar Cliente
+                            </button>
                         </div>
                     </div>
                 </div>
-                
-                <div class="btn-group-actions">
-                    <div class="left-actions">
-                        <button type="button" class="btn-outline-secondary-modern" onclick="prevStep(2)">
-                            <i class="bi bi-arrow-left"></i> Volver
-                        </button>
-                        <button type="button" class="btn-danger-modern" onclick="clearForm()">
-                            <i class="bi bi-eraser"></i> Limpiar
-                        </button>
-                    </div>
-                    <div class="right-actions">
-                        <button type="submit" class="btn-success-modern" id="submitBtn">
-                            <i class="bi bi-check2"></i> Registrar Cliente
-                        </button>
-                    </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL NOTIFICACIONES -->
+    <!-- ============================================================ -->
+    <div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+            <div class="modal-content">
+                <div class="modal-body text-center" id="notificationBody" style="padding:32px 28px 24px;">
+                    <!-- Contenido dinámico -->
+                </div>
+                <div class="modal-footer justify-content-center" id="notificationFooter" style="border:none; padding:0 28px 28px;">
+                    <button type="button" class="btn-modern-close" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="#" id="downloadLink" class="btn btn-primary-modern" style="display:none;">
+                        <i class="bi bi-file-pdf"></i> Descargar Constancia
+                    </a>
                 </div>
             </div>
-
-        </form>
+        </div>
     </div>
 
-</div>
-
-<!-- MODAL NOTIFICACIONES - MODERNIZADO SIN DOBLE MENSAJE -->
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
-        <div class="modal-content" style="border-radius:32px;">
-            <div class="modal-body text-center" id="notificationBody" style="padding:32px 28px 24px;">
-                <!-- Contenido dinámico -->
-            </div>
-            <div class="modal-footer justify-content-center" id="notificationFooter" style="border:none; padding:0 28px 28px;">
-                <button type="button" class="btn-modern-close" data-bs-dismiss="modal">Cerrar</button>
-                <a href="#" id="downloadLink" class="btn btn-primary-modern" style="display:none;">
-                    <i class="bi bi-file-pdf"></i> Descargar Constancia
-                </a>
+    <!-- ============================================================ -->
+    <!-- MODAL CONFIRMACIÓN -->
+    <!-- ============================================================ -->
+    <div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirmBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern-close" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-success-modern" id="confirmBtn">Confirmar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ================================================== -->
-<!-- MODAL CONFIRMACIÓN -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="confirmBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
+    <!-- ============================================================ -->
+    <!-- MODAL VISTA PREVIA PDF -->
+    <!-- ============================================================ -->
+    <div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-file-pdf me-2"></i>Vista Previa</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="pdfPreviewFrame" class="file-preview-modal"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern-close" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-success-modern" id="acceptFileBtn">
+                        <i class="bi bi-check2"></i> Confirmar Archivo
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ================================================== -->
-<!-- MODAL VISTA PREVIA PDF -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Vista Previa del PDF</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-0">
-                <iframe id="pdfPreviewFrame" class="file-preview-modal"></iframe>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="acceptFileBtn">
-                    <i class="bi bi-check2"></i> Confirmar Archivo
-                </button>
-            </div>
+    <!-- ============================================================ -->
+    <!-- LOADING OVERLAY -->
+    <!-- ============================================================ -->
+    <div id="loadingOverlay" class="spinner-overlay">
+        <div class="spinner-box">
+            <div class="spinner-border" role="status"></div>
+            <h5>Registrando cliente</h5>
+            <p>Por favor espera, esto puede tomar unos segundos.</p>
         </div>
     </div>
-</div>
 
-<!-- ================================================== -->
-<!-- LOADING OVERLAY -->
-<!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay">
-    <div class="spinner-box">
-        <div class="spinner-border" role="status"></div>
-        <h5>Registrando cliente</h5>
-        <p>Por favor espera, esto puede tomar unos segundos.</p>
-    </div>
-</div>
-
-<!-- ================================================== -->
-<!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-qr-code me-2"></i>Subir desde móvil</h5>
-                <button type="button" class="btn-close btn-close-white" id="closeQRModalBtn" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p id="qrModalTitle">Escanea este QR con tu teléfono para subir el documento:</p>
-                <div id="qrCodeContainer" style="margin: 20px auto; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Cargando...</span>
+    <!-- ============================================================ -->
+    <!-- MODAL QR PARA SUBIR DESDE MÓVIL -->
+    <!-- ============================================================ -->
+    <div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-qr-code me-2"></i>Subir desde móvil</h5>
+                    <button type="button" class="btn-close btn-close-white" id="closeQRModalBtn" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p id="qrModalTitle">Escanea este QR con tu teléfono para subir el documento:</p>
+                    <div id="qrCodeContainer" style="margin: 20px auto; min-height: 250px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Cargando...</span>
+                        </div>
+                        <p class="text-muted small mt-2">Generando código QR...</p>
                     </div>
-                    <p class="text-muted small mt-2">Generando código QR...</p>
+                    <p class="text-muted small">
+                        <i class="bi bi-phone me-1"></i> Abre la cámara de tu teléfono y escanea el código.<br>
+                        Selecciona la foto o archivo y se subirá automáticamente.
+                    </p>
+                    <div id="mobileUploadStatus" style="display:none;" class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> Archivo recibido correctamente.<br>
+                        <small>Cerrando automáticamente...</small>
+                    </div>
                 </div>
-                <p class="text-muted small">
-                    <i class="bi bi-phone me-1"></i> Abre la cámara de tu teléfono y escanea el código.<br>
-                    Selecciona la foto o archivo y se subirá automáticamente.
-                </p>
-                <div id="mobileUploadStatus" style="display:none;" class="alert alert-success">
-                    <i class="bi bi-check-circle"></i> Archivo recibido correctamente.<br>
-                    <small>Cerrando automáticamente...</small>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modern-close" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn-primary-modern" onclick="openQRScanner(currentMobileField)">
+                        <i class="bi bi-arrow-repeat"></i> Reintentar
+                    </button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" onclick="openQRScanner(currentMobileField)">
-                    <i class="bi bi-arrow-repeat"></i> Reintentar
-                </button>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ============================================================
+        // LIMPIAR MODALES
+        // ============================================================
+        function cleanupModals() {
+            const activeModals = document.querySelectorAll('.modal.show');
+            if (activeModals.length > 0) {
+                return;
+            }
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.querySelectorAll('.modal').forEach(el => {
+                el.classList.remove('show');
+                el.style.display = '';
+            });
+        }
 
-// ============================================================
-// LIMPIAR MODALES (EVITA PANTALLA GRIS) - VERSIÓN MEJORADA
-// ============================================================
-function cleanupModals() {
-    const activeModals = document.querySelectorAll('.modal.show');
-    if (activeModals.length > 0) {
-        return;
-    }
-    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-    document.body.classList.remove('modal-open');
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
-    document.querySelectorAll('.modal').forEach(el => {
-        el.classList.remove('show');
-        el.style.display = '';
-    });
-}
+        // ============================================================
+        // FUNCIONES ORIGINALES
+        // ============================================================
 
-// ============================================================
-// FUNCIONES ORIGINALES
-// ============================================================
+        let currentStep = 1;
+        let filesValidated = { curp: false, ine: false, domicilio: false };
+        let pendingFileInput = null;
 
-let currentStep = 1;
-let filesValidated = { curp: false, ine: false, domicilio: false };
-let pendingFileInput = null;
+        // ANTI-DOBLE-MENSAJE
+        let lastNotification = { hash: '', time: 0 };
 
-// ANTI-DOBLE-MENSAJE: controla ultima notificación
-let lastNotification = { hash: '', time: 0 };
+        function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
+            const hash = title + '|' + bodyHTML + '|' + type;
+            const now = Date.now();
+            if (lastNotification.hash === hash && (now - lastNotification.time) < 800) {
+                return;
+            }
+            lastNotification = { hash, time: now };
 
-function showNotification(title, bodyHTML, type = 'info', downloadUrl = null) {
-    // Evita doble disparo por eventos burbujeados
-    const hash = title + '|' + bodyHTML + '|' + type;
-    const now = Date.now();
-    if (lastNotification.hash === hash && (now - lastNotification.time) < 800) {
-        return;
-    }
-    lastNotification = { hash, time: now };
+            const activeModals = document.querySelectorAll('.modal.show');
+            if (activeModals.length > 0) {
+                activeModals.forEach(modalEl => {
+                    const bsModal = bootstrap.Modal.getInstance(modalEl);
+                    if (bsModal) bsModal.hide();
+                });
+                setTimeout(() => showNotification(title, bodyHTML, type, downloadUrl), 350);
+                return;
+            }
+            cleanupModals();
 
-    const activeModals = document.querySelectorAll('.modal.show');
-    if (activeModals.length > 0) {
-        activeModals.forEach(modalEl => {
-            const bsModal = bootstrap.Modal.getInstance(modalEl);
-            if (bsModal) bsModal.hide();
+            const bodyEl = document.getElementById('notificationBody');
+            const downloadLink = document.getElementById('downloadLink');
+
+            const cleanTitle = title.replace(/^[✅❌⚠ℹ️]+\s*/, '').trim();
+
+            let icon = '',
+                iconClass = type;
+            if (type === 'success') icon = '<i class="bi bi-check-lg"></i>';
+            else if (type === 'error') icon = '<i class="bi bi-x-lg"></i>';
+            else if (type === 'warning') icon = '<i class="bi bi-exclamation-triangle"></i>';
+            else icon = '<i class="bi bi-info-lg"></i>';
+
+            bodyEl.innerHTML = `
+                <div class="notif-icon-box ${iconClass}">${icon}</div>
+                <div class="notif-title">${cleanTitle}</div>
+                <div class="notif-message">${bodyHTML}</div>
+            `;
+
+            if (downloadUrl) {
+                downloadLink.href = downloadUrl;
+                downloadLink.style.display = 'inline-flex';
+            } else {
+                downloadLink.style.display = 'none';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('notificationModal'), { backdrop: true });
+            modal.show();
+        }
+
+        function showConfirm(title, bodyHTML, onConfirm) {
+            const activeModals = document.querySelectorAll('.modal.show');
+            if (activeModals.length > 0) {
+                activeModals.forEach(modal => {
+                    const bsModal = bootstrap.Modal.getInstance(modal);
+                    if (bsModal) {
+                        bsModal.hide();
+                    }
+                });
+                setTimeout(() => {
+                    showConfirm(title, bodyHTML, onConfirm);
+                }, 300);
+                return;
+            }
+            cleanupModals();
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'), {
+                backdrop: 'static'
+            });
+            document.getElementById('confirmBody').innerHTML = bodyHTML;
+            document.getElementById('confirmBtn').onclick = function() {
+                modal.hide();
+                setTimeout(() => {
+                    cleanupModals();
+                    onConfirm();
+                }, 300);
+            };
+            modal.show();
+        }
+
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+
+        function updateProgress() {
+            const percent = (currentStep / 2) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percent + '%';
+            progressBar.setAttribute('data-label', Math.round(percent) + '%');
+            const indicator = document.getElementById('stepIndicator');
+            indicator.className = 'step-indicator-modern progress-step' + currentStep;
+            for (let i = 1; i <= 2; i++) {
+                const circle = document.getElementById('circle' + i);
+                circle.classList.remove('active', 'completed');
+                if (i < currentStep) circle.classList.add('completed');
+                if (i === currentStep) circle.classList.add('active');
+            }
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function validateStep(step) {
+            let valid = true;
+            const fields = document.querySelectorAll('#step' + step + ' [required]');
+            fields.forEach(field => {
+                if (!field.value || (field.type === 'file' && !field.files.length)) {
+                    field.classList.add('is-invalid');
+                    valid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            const curp = document.getElementById('curp');
+            if (curp && curp.value.length !== 18) {
+                curp.classList.add('is-invalid');
+                valid = false;
+            }
+            const phone = document.getElementById('phone');
+            if (phone && phone.value.length !== 10) {
+                phone.classList.add('is-invalid');
+                valid = false;
+            }
+            const email = document.getElementById('email');
+            if (email.value && !email.checkValidity()) {
+                email.classList.add('is-invalid');
+                valid = false;
+            } else if (email.value) {
+                email.classList.remove('is-invalid');
+            }
+            return valid;
+        }
+
+        function clearFileInput(inputId, statusId, fileKey) {
+            showConfirm(
+                'Eliminar archivo',
+                '<p>¿Estás seguro de que deseas eliminar este archivo adjunto?</p>',
+                function() {
+                    const fileInput = document.getElementById(inputId);
+                    if (fileInput) {
+                        fileInput.value = '';
+                        const dataTransfer = new DataTransfer();
+                        fileInput.files = dataTransfer.files;
+                        fileInput.dispatchEvent(new Event('change'));
+                    }
+                    filesValidated[fileKey] = false;
+                    const statusEl = document.getElementById(statusId);
+                    if (statusEl) {
+                        statusEl.textContent = '❌ No validado';
+                        statusEl.className = 'file-status invalid';
+                    }
+                    const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
+                    if (clearBtn) {
+                        clearBtn.style.display = 'none';
+                    }
+                    const mobileStatus = document.getElementById(inputId.replace('_file', '_mobile_status'));
+                    if (mobileStatus) {
+                        mobileStatus.style.display = 'none';
+                        mobileStatus.textContent = '';
+                    }
+                    const previewFrame = document.getElementById('pdfPreviewFrame');
+                    if (previewFrame) {
+                        previewFrame.src = '';
+                    }
+                    const fileNameEl = document.getElementById(inputId.replace('_file', '_file_name'));
+                    if (fileNameEl) {
+                        fileNameEl.textContent = 'Ningún archivo seleccionado';
+                        fileNameEl.className = 'file-name';
+                    }
+                    showNotification('Archivo eliminado', '<p>El archivo ha sido eliminado correctamente.</p>', 'info');
+                }
+            );
+        }
+
+        function nextStep(step) {
+            if (validateStep(step)) {
+                showStep(step + 1);
+            } else {
+                showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios antes de continuar.</p>', 'warning');
+            }
+        }
+
+        function prevStep(step) {
+            showStep(step - 1);
+        }
+
+        function clearForm() {
+            showConfirm(
+                'Limpiar formulario',
+                '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>',
+                function() {
+                    document.getElementById('registerForm').reset();
+                    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                    filesValidated = { curp: false, ine: false, domicilio: false };
+                    document.querySelectorAll('.file-status').forEach(el => {
+                        el.textContent = '❌ No validado';
+                        el.className = 'file-status invalid';
+                    });
+                    document.querySelectorAll('.file-name').forEach(el => {
+                        el.textContent = 'Ningún archivo seleccionado';
+                        el.className = 'file-name';
+                    });
+                    document.querySelectorAll('[id$="_clear_btn"]').forEach(b => b.style.display = 'none');
+                    document.querySelectorAll('[id$="_mobile_status"]').forEach(el => {
+                        el.style.display = 'none';
+                        el.textContent = '';
+                    });
+                    showStep(1);
+                    showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados correctamente.</p>', 'info');
+                }
+            );
+        }
+
+        // --- VALIDACIONES ---
+
+        function soloLetras(event) {
+            const char = String.fromCharCode(event.which);
+            if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(char)) {
+                event.preventDefault();
+            }
+        }
+
+        function soloNumeros(event) {
+            const char = String.fromCharCode(event.which);
+            if (!/[0-9]/.test(char)) {
+                event.preventDefault();
+            }
+        }
+
+        function enterParaSiguiente(event, nextFieldId) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (nextFieldId) {
+                    document.getElementById(nextFieldId).focus();
+                }
+            }
+        }
+
+        ['name', 'paterno', 'materno'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', soloLetras);
+            document.getElementById(id).addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
         });
-        setTimeout(() => showNotification(title, bodyHTML, type, downloadUrl), 350);
-        return;
-    }
-    cleanupModals();
 
-    const bodyEl = document.getElementById('notificationBody');
-    const downloadLink = document.getElementById('downloadLink');
+        document.getElementById('name').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'paterno'); });
+        document.getElementById('paterno').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'materno'); });
 
-    // Limpia titulo de emojis previos
-    const cleanTitle = title.replace(/^[✅❌⚠ℹ️]+\s*/, '').trim();
+        document.getElementById('curp').addEventListener('input', function() {
+            this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (this.value.length > 18) this.value = this.value.slice(0, 18);
+        });
+        document.getElementById('curp').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'phone'); });
 
-    let icon = '', iconClass = type;
-    if (type === 'success') icon = '<i class="bi bi-check-lg"></i>';
-    else if (type === 'error') icon = '<i class="bi bi-x-lg"></i>';
-    else if (type === 'warning') icon = '<i class="bi bi-exclamation-triangle"></i>';
-    else icon = '<i class="bi bi-info-lg"></i>';
+        document.getElementById('phone').addEventListener('keypress', soloNumeros);
+        document.getElementById('phone').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length > 10) this.value = this.value.slice(0, 10);
+        });
+        document.getElementById('phone').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'email'); });
 
-    // SOLO UN MENSAJE - bodyHTML ya es suficiente, no se duplica
-    bodyEl.innerHTML = `
-        <div class="notif-icon-box ${iconClass}">${icon}</div>
-        <div class="notif-title">${cleanTitle}</div>
-        <div class="notif-message">${bodyHTML}</div>
-    `;
+        document.getElementById('email').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'address'); });
 
-    if (downloadUrl) {
-        downloadLink.href = downloadUrl;
-        downloadLink.style.display = 'inline-flex';
-    } else {
-        downloadLink.style.display = 'none';
-    }
+        document.getElementById('address').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+        document.getElementById('address').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'occupation'); });
 
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'), { backdrop: true });
-    modal.show();
-}
+        document.getElementById('occupation').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
 
-function showConfirm(title, bodyHTML, onConfirm) {
-    const activeModals = document.querySelectorAll('.modal.show');
-    if (activeModals.length > 0) {
-        activeModals.forEach(modal => {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) {
-                bsModal.hide();
+        // ============================================================
+        // CIERRE DE MODALES
+        // ============================================================
+        document.addEventListener('hidden.bs.modal', function(event) {
+            setTimeout(() => {
+                const activeModals = document.querySelectorAll('.modal.show');
+                if (activeModals.length === 0) {
+                    cleanupModals();
+                }
+            }, 300);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('modal-backdrop')) {
+                cleanupModals();
             }
         });
-        setTimeout(() => {
-            showConfirm(title, bodyHTML, onConfirm);
-        }, 300);
-        return;
-    }
-    cleanupModals();
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'), {
-        backdrop: 'static'
-    });
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() {
-        modal.hide();
-        setTimeout(() => {
-            cleanupModals();
-            onConfirm();
-        }, 300);
-    };
-    modal.show();
-}
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-}
+        // ============================================================
+        // VISTA PREVIA DE PDFs
+        // ============================================================
+        function handleFilePreview(inputId, statusId, fileKey) {
+            document.getElementById(inputId).addEventListener('change', function(e) {
+                const file = this.files[0];
+                const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
+                const fileNameEl = document.getElementById(inputId.replace('_file', '_file_name'));
 
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
+                if (!file) {
+                    if (clearBtn) {
+                        clearBtn.style.display = 'none';
+                    }
+                    if (fileNameEl) {
+                        fileNameEl.textContent = 'Ningún archivo seleccionado';
+                        fileNameEl.className = 'file-name';
+                    }
+                    return;
+                }
 
-function updateProgress() {
-    const percent = (currentStep / 2) * 100;
-    const progressBar = document.getElementById('progressBar');
-    progressBar.style.width = percent + '%';
-    progressBar.setAttribute('data-label', Math.round(percent) + '%');
-    const indicator = document.getElementById('stepIndicator');
-    indicator.className = 'step-indicator-modern progress-step' + currentStep;
-    for (let i = 1; i <= 2; i++) {
-        const circle = document.getElementById('circle' + i);
-        circle.classList.remove('active', 'completed');
-        if (i < currentStep) circle.classList.add('completed');
-        if (i === currentStep) circle.classList.add('active');
-    }
-}
+                if (fileNameEl) {
+                    const maxLen = 30;
+                    let displayName = file.name;
+                    if (displayName.length > maxLen) {
+                        displayName = displayName.substring(0, maxLen - 3) + '...';
+                    }
+                    fileNameEl.textContent = displayName;
+                    fileNameEl.className = 'file-name has-file';
+                }
 
-function showStep(step) {
-    document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
-    document.getElementById('step' + step).classList.add('active');
-    currentStep = step;
-    updateProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+                if (file.type !== 'application/pdf' &&
+                    file.type !== 'image/jpeg' &&
+                    file.type !== 'image/png') {
+                    showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF o imagen (JPG, PNG).</p>', 'error');
+                    this.value = '';
+                    filesValidated[fileKey] = false;
+                    document.getElementById(statusId).textContent = '❌ No validado';
+                    document.getElementById(statusId).className = 'file-status invalid';
+                    if (clearBtn) {
+                        clearBtn.style.display = 'none';
+                    }
+                    if (fileNameEl) {
+                        fileNameEl.textContent = 'Ningún archivo seleccionado';
+                        fileNameEl.className = 'file-name';
+                    }
+                    return;
+                }
 
-function validateStep(step) {
-    let valid = true;
-    const fields = document.querySelectorAll('#step' + step + ' [required]');
-    fields.forEach(field => {
-        if (!field.value || (field.type === 'file' && !field.files.length)) {
-            field.classList.add('is-invalid');
-            valid = false;
-        } else {
-            field.classList.remove('is-invalid');
+                if (clearBtn) {
+                    clearBtn.style.display = 'inline-flex';
+                }
+
+                const currentFile = file;
+                const currentFileKey = fileKey;
+                const currentStatusId = statusId;
+                const fileURL = URL.createObjectURL(file);
+                const previewFrame = document.getElementById('pdfPreviewFrame');
+                if (previewFrame) {
+                    previewFrame.src = fileURL;
+                }
+                const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+                previewModal.show();
+
+                const oldBtn = document.getElementById('acceptFileBtn');
+                const newBtn = oldBtn.cloneNode(true);
+                oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+                newBtn.onclick = function() {
+                    filesValidated[currentFileKey] = true;
+                    previewModal.hide();
+                    const statusEl = document.getElementById(currentStatusId);
+                    if (statusEl) {
+                        statusEl.textContent = '✅ ' + currentFile.name;
+                        statusEl.className = 'file-status valid';
+                    }
+                    showNotification('Archivo aceptado', `Se validó <strong>${currentFile.name}</strong> correctamente.`, 'success');
+                    setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
+                };
+            });
         }
-    });
-    const curp = document.getElementById('curp');
-    if (curp && curp.value.length !== 18) {
-        curp.classList.add('is-invalid');
-        valid = false;
-    }
-    const phone = document.getElementById('phone');
-    if (phone && phone.value.length !== 10) {
-        phone.classList.add('is-invalid');
-        valid = false;
-    }
-    const email = document.getElementById('email');
-    if (email.value && !email.checkValidity()) {
-        email.classList.add('is-invalid');
-        valid = false;
-    } else if (email.value) {
-        email.classList.remove('is-invalid');
-    }
-    return valid;
-}
 
-// ============================================================
-// ELIMINAR ARCHIVO ADJUNTO
-// ============================================================
-function clearFileInput(inputId, statusId, fileKey) {
-    showConfirm(
-        'Eliminar archivo',
-        '<p>¿Estás seguro de que deseas eliminar este archivo adjunto?</p>',
-        function() {
+        handleFilePreview('curp_file', 'curpStatus', 'curp');
+        handleFilePreview('ine_file', 'ineStatus', 'ine');
+        handleFilePreview('domicilio_file', 'domicilioStatus', 'domicilio');
+
+        // ============================================================
+        // SUBMIT
+        // ============================================================
+        let isSubmitting = false;
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (isSubmitting) return;
+
+            if (!filesValidated.curp || !filesValidated.ine || !filesValidated.domicilio) {
+                showNotification('Archivos no validados', 'Por favor adjunta y valida los 3 documentos antes de registrar.', 'warning');
+                return;
+            }
+
+            for (const id of ['curp_file', 'ine_file', 'domicilio_file']) {
+                const f = document.getElementById(id).files[0];
+                if (!f || f.size < 1024) {
+                    showNotification('Archivo corrupto', `El archivo <strong>${id.replace('_file', '').toUpperCase()}</strong> está vacío o corrupto. Súbelo de nuevo.`, 'error');
+                    return;
+                }
+            }
+
+            if (!validateStep(2)) {
+                showStep(2);
+                return;
+            }
+
+            showConfirm('Confirmar registro', '<p>¿Estás seguro de que deseas registrar este cliente?</p>', async function() {
+                isSubmitting = true;
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Registrando...';
+                showLoading();
+
+                const formData = new FormData(document.getElementById('registerForm'));
+                try {
+                    const response = await fetch('/api/clients/register', { method: 'POST', body: formData });
+                    const contentType = response.headers.get('content-type') || '';
+
+                    if (response.ok && contentType.includes('application/pdf')) {
+                        const blob = await response.blob();
+                        if (blob.size < 1024) throw new Error('PDF vacío recibido del servidor');
+
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `constancia_${Date.now()}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+                        showNotification('Cliente registrado',
+                            `La constancia se descargó automáticamente.<br><span class="text-muted-small">Guarda el PDF.</span>`,
+                            'success');
+                        document.getElementById('registerForm').reset();
+                        document.querySelectorAll('.file-name').forEach(el => {
+                            el.textContent = 'Ningún archivo seleccionado';
+                            el.className = 'file-name';
+                        });
+                        document.querySelectorAll('.file-status').forEach(el => {
+                            el.textContent = '❌ No validado';
+                            el.className = 'file-status invalid';
+                        });
+                        document.querySelectorAll('[id$="_clear_btn"]').forEach(b => b.style.display = 'none');
+                        filesValidated = { curp: false, ine: false, domicilio: false };
+                        showStep(1);
+                    } else {
+                        let result;
+                        try { result = await response.json(); } catch {
+                            const text = await response.text();
+                            result = { detail: text || 'Error del servidor al generar constancia' };
+                        }
+                        if (result.existing_client) {
+                            showNotification('Cliente ya registrado',
+                                `<strong>Folio:</strong> ${result.existing_client.folio_registro}<br><strong>Expediente:</strong> ${result.existing_client.expediente_interno}<br><strong>Nombre:</strong> ${result.existing_client.nombre_completo}`,
+                                'warning');
+                        } else {
+                            showNotification('Error al registrar', result.detail || result.message ||
+                                'No se pudo completar. Revisa los archivos.', 'error');
+                        }
+                    }
+                } catch (error) {
+                    console.error(error);
+                    showNotification('Error de conexión', `No se pudo registrar: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                    isSubmitting = false;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="bi bi-check2"></i> Registrar Cliente';
+                }
+            });
+        });
+
+        // ============================================================
+        // QR Y CARGA DESDE MÓVIL
+        // ============================================================
+
+        let currentMobileField = null;
+        let currentDocType = null;
+        let tempIds = {
+            curp: null,
+            ine: null,
+            domicilio: null
+        };
+        let isProcessingQR = false;
+
+        function generateTempId(docType) {
+            if (!tempIds[docType]) {
+                tempIds[docType] = 'temp_' + docType + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+            return tempIds[docType];
+        }
+
+        function openQRScanner(inputId) {
+            const fileInput = document.getElementById(inputId);
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                const fileName = fileInput.files[0].name;
+                showConfirm(
+                    'Archivo existente',
+                    `<p>Ya tienes un archivo adjunto: <strong>${fileName}</strong></p>
+                     <p>¿Deseas reemplazarlo con uno nuevo desde el móvil?</p>`,
+                    function() {
+                        clearFileInputDirect(inputId);
+                        setTimeout(() => {
+                            openQRScannerDirect(inputId);
+                        }, 300);
+                    }
+                );
+                return;
+            }
+            openQRScannerDirect(inputId);
+        }
+
+        function openQRScannerDirect(inputId) {
+            if (isProcessingQR) {
+                return;
+            }
+
+            cleanupModals();
+
+            console.log('🔍 Abriendo QR para:', inputId);
+
+            currentMobileField = inputId;
+            isProcessingQR = true;
+
+            let docTypeKey;
+            if (inputId === 'curp_file') {
+                currentDocType = 'CURP';
+                docTypeKey = 'curp';
+            } else if (inputId === 'ine_file') {
+                currentDocType = 'INE';
+                docTypeKey = 'ine';
+            } else if (inputId === 'domicilio_file') {
+                currentDocType = 'DOMICILIO';
+                docTypeKey = 'domicilio';
+            }
+
+            let baseUrl = window.location.origin;
+            let tempId = generateTempId(docTypeKey);
+            let uploadUrl =
+                `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
+
+            fetch(`/api/clients/check-qr-status/${tempId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.used) {
+                        console.warn('⚠️ QR ya usado, generando nuevo...');
+                        tempIds[docTypeKey] = null;
+                        tempId = generateTempId(docTypeKey);
+                        uploadUrl =
+                            `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
+                        console.log('📱 Nuevo QR generado:', uploadUrl);
+                        generateQRCodeDisplay(uploadUrl);
+                    } else {
+                        generateQRCodeDisplay(uploadUrl);
+                    }
+                })
+                .catch(error => {
+                    console.log('⚠️ Error verificando QR, generando de todos modos:', error);
+                    generateQRCodeDisplay(uploadUrl);
+                });
+
+            function generateQRCodeDisplay(uploadUrl) {
+                const container = document.getElementById('qrCodeContainer');
+                container.innerHTML = '';
+                document.getElementById('qrModalTitle').textContent =
+                    'Escanea este QR con tu teléfono para subir: ' + currentDocType;
+
+                if (typeof QRCode === 'undefined') {
+                    console.warn('⚠️ QRCode no está disponible, usando fallback');
+                    showMobileUrlFallback(uploadUrl);
+                    document.getElementById('mobileUploadStatus').style.display = 'none';
+                    const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
+                        backdrop: 'static'
+                    });
+                    qrModal.show();
+                    startPollingForUpload(tempId, docTypeKey);
+                    return;
+                }
+
+                setTimeout(() => {
+                    try {
+                        const qr = new QRCode(container, {
+                            text: uploadUrl,
+                            width: 220,
+                            height: 220,
+                            colorDark: '#0b1e33',
+                            colorLight: '#ffffff',
+                            correctLevel: QRCode.CorrectLevel.H
+                        });
+                        console.log('✅ QR generado correctamente para', currentDocType);
+                        const linkEl = document.createElement('p');
+                        linkEl.className = 'text-muted small mt-2';
+                        linkEl.style.wordBreak = 'break-all';
+                        linkEl.style.fontSize = '0.65rem';
+                        linkEl.textContent = uploadUrl;
+                        container.appendChild(linkEl);
+                    } catch (error) {
+                        console.error('❌ Error al generar QR:', error);
+                        showMobileUrlFallback(uploadUrl);
+                    }
+                }, 300);
+
+                document.getElementById('mobileUploadStatus').style.display = 'none';
+                const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
+                    backdrop: 'static'
+                });
+                qrModal.show();
+                startPollingForUpload(tempId, docTypeKey);
+            }
+        }
+
+        function clearFileInputDirect(inputId) {
             const fileInput = document.getElementById(inputId);
             if (fileInput) {
                 fileInput.value = '';
@@ -1110,7 +2148,12 @@ function clearFileInput(inputId, statusId, fileKey) {
                 fileInput.files = dataTransfer.files;
                 fileInput.dispatchEvent(new Event('change'));
             }
+            const fileKey = inputId.replace('_file', '');
             filesValidated[fileKey] = false;
+            if (fileKey === 'curp') tempIds.curp = null;
+            else if (fileKey === 'ine') tempIds.ine = null;
+            else if (fileKey === 'domicilio') tempIds.domicilio = null;
+            const statusId = fileKey + 'Status';
             const statusEl = document.getElementById(statusId);
             if (statusEl) {
                 statusEl.textContent = '❌ No validado';
@@ -1125,663 +2168,200 @@ function clearFileInput(inputId, statusId, fileKey) {
                 mobileStatus.style.display = 'none';
                 mobileStatus.textContent = '';
             }
-            const previewFrame = document.getElementById('pdfPreviewFrame');
-            if (previewFrame) {
-                previewFrame.src = '';
-            }
-            showNotification('Archivo eliminado', '<p>El archivo ha sido eliminado correctamente.</p>', 'info');
-        }
-    );
-}
-
-function nextStep(step) {
-    if (validateStep(step)) {
-        showStep(step + 1);
-    } else {
-        showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios antes de continuar.</p>', 'warning');
-    }
-}
-
-function prevStep(step) {
-    showStep(step - 1);
-}
-
-function clearForm() {
-    showConfirm(
-        'Limpiar formulario',
-        '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>',
-        function() {
-            document.getElementById('registerForm').reset();
-            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-            filesValidated = { curp: false, ine: false, domicilio: false };
-            document.getElementById('curpStatus').textContent = '❌ No validado';
-            document.getElementById('curpStatus').className = 'file-status invalid';
-            document.getElementById('ineStatus').textContent = '❌ No validado';
-            document.getElementById('ineStatus').className = 'file-status invalid';
-            document.getElementById('domicilioStatus').textContent = '❌ No validado';
-            document.getElementById('domicilioStatus').className = 'file-status invalid';
-            showStep(1);
-            showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados correctamente.</p>', 'info');
-        }
-    );
-}
-
-// --- VALIDACIONES ---
-
-function soloLetras(event) {
-    const char = String.fromCharCode(event.which);
-    if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/.test(char)) {
-        event.preventDefault();
-    }
-}
-
-function soloNumeros(event) {
-    const char = String.fromCharCode(event.which);
-    if (!/[0-9]/.test(char)) {
-        event.preventDefault();
-    }
-}
-
-function enterParaSiguiente(event, nextFieldId) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        if (nextFieldId) {
-            document.getElementById(nextFieldId).focus();
-        }
-    }
-}
-
-['name', 'paterno', 'materno'].forEach(id => {
-    document.getElementById(id).addEventListener('keypress', soloLetras);
-    document.getElementById(id).addEventListener('input', function() {
-        this.value = this.value.toUpperCase();
-    });
-});
-
-document.getElementById('name').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'paterno'); });
-document.getElementById('paterno').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'materno'); });
-
-document.getElementById('curp').addEventListener('input', function() {
-    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (this.value.length > 18) this.value = this.value.slice(0, 18);
-});
-document.getElementById('curp').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'phone'); });
-
-document.getElementById('phone').addEventListener('keypress', soloNumeros);
-document.getElementById('phone').addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9]/g, '');
-    if (this.value.length > 10) this.value = this.value.slice(0, 10);
-});
-document.getElementById('phone').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'email'); });
-
-document.getElementById('email').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'address'); });
-
-document.getElementById('address').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-document.getElementById('address').addEventListener('keydown', function(e) { enterParaSiguiente(e, 'occupation'); });
-
-document.getElementById('occupation').addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-
-// ============================================================
-// CUANDO SE CIERRA UN MODAL
-// ============================================================
-document.addEventListener('hidden.bs.modal', function (event) {
-    setTimeout(() => {
-        const activeModals = document.querySelectorAll('.modal.show');
-        if (activeModals.length === 0) {
-            cleanupModals();
-        }
-    }, 300);
-});
-
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('modal-backdrop')) {
-        cleanupModals();
-    }
-});
-
-// ============================================================
-// VISTA PREVIA DE PDFs (CON NOMBRE DE ARCHIVO)
-// ============================================================
-function handleFilePreview(inputId, statusId, fileKey) {
-    document.getElementById(inputId).addEventListener('change', function(e) {
-        const file = this.files[0];
-        const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
-        const fileNameEl = document.getElementById(inputId.replace('_file', '_file_name'));
-        
-        if (!file) {
-            if (clearBtn) {
-                clearBtn.style.display = 'none';
-            }
+            const fileNameEl = document.getElementById(inputId.replace('_file', '_file_name'));
             if (fileNameEl) {
                 fileNameEl.textContent = 'Ningún archivo seleccionado';
                 fileNameEl.className = 'file-name';
             }
-            return;
         }
-        
-        // Mostrar nombre del archivo
-        if (fileNameEl) {
-            const maxLen = 30;
-            let displayName = file.name;
-            if (displayName.length > maxLen) {
-                displayName = displayName.substring(0, maxLen - 3) + '...';
-            }
-            fileNameEl.textContent = displayName;
-            fileNameEl.className = 'file-name has-file';
+
+        function showMobileUrlFallback(uploadUrl) {
+            const container = document.getElementById('qrCodeContainer');
+            container.innerHTML = `
+                <div class="alert alert-info" style="width:100%;">
+                    <i class="bi bi-info-circle"></i>
+                    <p><strong>Escanea o abre este enlace en tu teléfono:</strong></p>
+                    <p style="word-break:break-all; font-size:0.8rem; background:#f0f4fa; padding:10px; border-radius:8px;">
+                        ${uploadUrl}
+                    </p>
+                    <button class="btn btn-primary-modern btn-sm mt-2" onclick="copyMobileUrl()">
+                        <i class="bi bi-copy"></i> Copiar enlace
+                    </button>
+                </div>
+            `;
         }
-        
-        if (file.type !== 'application/pdf' && 
-            file.type !== 'image/jpeg' && 
-            file.type !== 'image/png') {
-            showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF o imagen (JPG, PNG).</p>', 'error');
-            this.value = '';
-            filesValidated[fileKey] = false;
-            document.getElementById(statusId).textContent = '❌ No validado';
-            document.getElementById(statusId).className = 'file-status invalid';
-            if (clearBtn) {
-                clearBtn.style.display = 'none';
-            }
-            if (fileNameEl) {
-                fileNameEl.textContent = 'Ningún archivo seleccionado';
-                fileNameEl.className = 'file-name';
-            }
-            return;
-        }
-        
-        if (clearBtn) {
-            clearBtn.style.display = 'inline-flex';
-        }
-        
-        const currentFile = file;
-        const currentFileKey = fileKey;
-        const currentStatusId = statusId;
-        const fileURL = URL.createObjectURL(file);
-        const previewFrame = document.getElementById('pdfPreviewFrame');
-        if (previewFrame) {
-            previewFrame.src = fileURL;
-        }
-        const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
-        previewModal.show();
-        // Clona el botón para eliminar listeners viejos y evitar doble notificación
-        const oldBtn = document.getElementById('acceptFileBtn');
-        const newBtn = oldBtn.cloneNode(true);
-        oldBtn.parentNode.replaceChild(newBtn, oldBtn);
 
-        newBtn.onclick = function() {
-            filesValidated[currentFileKey] = true;
-            previewModal.hide();
-            const statusEl = document.getElementById(currentStatusId);
-            if (statusEl) {
-                statusEl.textContent = '✅ ' + currentFile.name;
-                statusEl.className = 'file-status valid';
-            }
-            showNotification('Archivo aceptado', `Se validó <strong>${currentFile.name}</strong> correctamente.`, 'success');
-            setTimeout(() => URL.revokeObjectURL(fileURL), 1000);
-        };
-    });
-}
-
-handleFilePreview('curp_file', 'curpStatus', 'curp');
-handleFilePreview('ine_file', 'ineStatus', 'ine');
-handleFilePreview('domicilio_file', 'domicilioStatus', 'domicilio');
-
-// ============================================================
-// SUBMIT - CORREGIDO ANTI FALSO POSITIVO
-// ============================================================
-let isSubmitting = false;
-
-document.getElementById('registerForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    if (isSubmitting) return; // evita doble click
-
-    if (!filesValidated.curp ||!filesValidated.ine ||!filesValidated.domicilio) {
-        showNotification('Archivos no validados', 'Por favor adjunta y valida los 3 documentos antes de registrar.', 'warning');
-        return;
-    }
-    // Valida que los archivos no estén vacíos (bug del QR)
-    for (const id of ['curp_file', 'ine_file', 'domicilio_file']) {
-        const f = document.getElementById(id).files[0];
-        if (!f || f.size < 1024) { // menos de 1KB = archivo vacío/corrupto
-            showNotification('Archivo corrupto', `El archivo <strong>${id.replace('_file','').toUpperCase()}</strong> está vacío o corrupto. Súbelo de nuevo.`, 'error');
-            return;
-        }
-    }
-
-    if (!validateStep(2)) {
-        showStep(2);
-        return;
-    }
-
-    showConfirm('Confirmar registro', '<p>¿Estás seguro de que deseas registrar este cliente?</p>', async function() {
-        isSubmitting = true;
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Registrando...';
-        showLoading();
-
-        const formData = new FormData(document.getElementById('registerForm'));
-        try {
-            const response = await fetch('/api/clients/register', { method: 'POST', body: formData });
-            const contentType = response.headers.get('content-type') || '';
-
-            if (response.ok && contentType.includes('application/pdf')) {
-                const blob = await response.blob();
-                if (blob.size < 1024) throw new Error('PDF vacío recibido del servidor');
-
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `constancia_${Date.now()}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                setTimeout(() => URL.revokeObjectURL(url), 2000);
-
-                showNotification('Cliente registrado', `La constancia se descargó automáticamente.<br><span class="text-muted small">Guarda el PDF.</span>`, 'success');
-                document.getElementById('registerForm').reset();
-                document.querySelectorAll('.file-name').forEach(el => { el.textContent = 'Ningún archivo seleccionado'; el.className = 'file-name'; });
-                document.querySelectorAll('.file-status').forEach(el => { el.textContent = '❌ No validado'; el.className = 'file-status invalid'; });
-                document.querySelectorAll('[id$="_clear_btn"]').forEach(b => b.style.display = 'none');
-                filesValidated = { curp: false, ine: false, domicilio: false };
-                showStep(1);
-            } else {
-                // Es error aunque venga con 200
-                let result;
-                try { result = await response.json(); } catch {
-                    const text = await response.text();
-                    result = { detail: text || 'Error del servidor al generar constancia' };
-                }
-                if (result.existing_client) {
-                    showNotification('Cliente ya registrado', `<strong>Folio:</strong> ${result.existing_client.folio_registro}<br><strong>Expediente:</strong> ${result.existing_client.expediente_interno}<br><strong>Nombre:</strong> ${result.existing_client.nombre_completo}`, 'warning');
-                } else {
-                    showNotification('Error al registrar', result.detail || result.message || 'No se pudo completar. Revisa los archivos.', 'error');
-                }
-            }
-        } catch (error) {
-            console.error(error);
-            showNotification('Error de conexión', `No se pudo registrar: ${error.message}`, 'error');
-        } finally {
-            hideLoading();
-            isSubmitting = false;
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="bi bi-check2"></i> Registrar Cliente';
-        }
-    });
-});
-
-// ============================================================
-// QR Y CARGA DESDE MÓVIL (VERSIÓN DEFINITIVA)
-// ============================================================
-
-let currentMobileField = null;
-let currentDocType = null;
-let tempIds = {
-    curp: null,
-    ine: null,
-    domicilio: null
-};
-let isProcessingQR = false;
-
-function generateTempId(docType) {
-    if (!tempIds[docType]) {
-        tempIds[docType] = 'temp_' + docType + '_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    }
-    return tempIds[docType];
-}
-
-// ============================================================
-// ABRIR ESCÁNER QR (CON VERIFICACIÓN DE ARCHIVO EXISTENTE)
-// ============================================================
-function openQRScanner(inputId) {
-    const fileInput = document.getElementById(inputId);
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-        const fileName = fileInput.files[0].name;
-        showConfirm(
-            'Archivo existente',
-            `<p>Ya tienes un archivo adjunto: <strong>${fileName}</strong></p>
-             <p>¿Deseas reemplazarlo con uno nuevo desde el móvil?</p>`,
-            function() {
-                clearFileInputDirect(inputId);
-                setTimeout(() => {
-                    openQRScannerDirect(inputId);
-                }, 300);
-            }
-        );
-        return;
-    }
-    openQRScannerDirect(inputId);
-}
-
-// ============================================================
-// ABRIR ESCÁNER QR DIRECTAMENTE (SIN VERIFICACIÓN)
-// ============================================================
-function openQRScannerDirect(inputId) {
-    if (isProcessingQR) {
-        return;
-    }
-    
-    cleanupModals();
-    
-    console.log('🔍 Abriendo QR para:', inputId);
-    
-    currentMobileField = inputId;
-    isProcessingQR = true;
-    
-    let docTypeKey;
-    if (inputId === 'curp_file') {
-        currentDocType = 'CURP';
-        docTypeKey = 'curp';
-    } else if (inputId === 'ine_file') {
-        currentDocType = 'INE';
-        docTypeKey = 'ine';
-    } else if (inputId === 'domicilio_file') {
-        currentDocType = 'DOMICILIO';
-        docTypeKey = 'domicilio';
-    }
-    
-    let baseUrl;
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        baseUrl = window.location.origin;
-    } else {
-        baseUrl = window.location.origin;
-    }
-    
-    let tempId = generateTempId(docTypeKey);
-    let uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
-    
-    // VERIFICAR SI EL QR YA FUE USADO
-    fetch(`/api/clients/check-qr-status/${tempId}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.used) {
-                console.warn('⚠️ QR ya usado, generando nuevo...');
-                tempIds[docTypeKey] = null;
-                tempId = generateTempId(docTypeKey);
-                uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${tempId}&doc_type=${currentDocType}`;
-                console.log('📱 Nuevo QR generado:', uploadUrl);
-                generateQRCodeDisplay(uploadUrl);
-            } else {
-                generateQRCodeDisplay(uploadUrl);
-            }
-        })
-        .catch(error => {
-            console.log('⚠️ Error verificando QR, generando de todos modos:', error);
-            generateQRCodeDisplay(uploadUrl);
-        });
-    
-    function generateQRCodeDisplay(uploadUrl) {
-        const container = document.getElementById('qrCodeContainer');
-        container.innerHTML = '';
-        document.getElementById('qrModalTitle').textContent = 
-            'Escanea este QR con tu teléfono para subir: ' + currentDocType;
-        
-        if (typeof QRCode === 'undefined') {
-            console.warn('⚠️ QRCode no está disponible, usando fallback');
-            showMobileUrlFallback(uploadUrl);
-            document.getElementById('mobileUploadStatus').style.display = 'none';
-            const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
-                backdrop: 'static'
-            });
-            qrModal.show();
-            startPollingForUpload(tempId, docTypeKey);
-            return;
-        }
-        
-        setTimeout(() => {
-            try {
-                const qr = new QRCode(container, {
-                    text: uploadUrl,
-                    width: 220,
-                    height: 220,
-                    colorDark: '#0b1e33',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
+        function copyMobileUrl() {
+            const urlElement = document.querySelector('#qrCodeContainer .alert-info p:last-child');
+            if (urlElement) {
+                const url = urlElement.textContent.trim();
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles. Envíalo a tu teléfono.</p>', 'success');
+                }).catch(() => {
+                    const range = document.createRange();
+                    range.selectNode(urlElement);
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
+                    document.execCommand('copy');
+                    showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
                 });
-                console.log('✅ QR generado correctamente para', currentDocType);
-                const linkEl = document.createElement('p');
-                linkEl.className = 'text-muted small mt-2';
-                linkEl.style.wordBreak = 'break-all';
-                linkEl.style.fontSize = '0.65rem';
-                linkEl.textContent = uploadUrl;
-                container.appendChild(linkEl);
-            } catch (error) {
-                console.error('❌ Error al generar QR:', error);
-                showMobileUrlFallback(uploadUrl);
             }
-        }, 300);
-        
-        document.getElementById('mobileUploadStatus').style.display = 'none';
-        const qrModal = new bootstrap.Modal(document.getElementById('qrModal'), {
-            backdrop: 'static'
-        });
-        qrModal.show();
-        startPollingForUpload(tempId, docTypeKey);
-    }
-}
-
-// ============================================================
-// ELIMINAR ARCHIVO DIRECTAMENTE (SIN CONFIRMACIÓN)
-// ============================================================
-function clearFileInputDirect(inputId) {
-    const fileInput = document.getElementById(inputId);
-    if (fileInput) {
-        fileInput.value = '';
-        const dataTransfer = new DataTransfer();
-        fileInput.files = dataTransfer.files;
-        fileInput.dispatchEvent(new Event('change'));
-    }
-    const fileKey = inputId.replace('_file', '');
-    filesValidated[fileKey] = false;
-    if (fileKey === 'curp') tempIds.curp = null;
-    else if (fileKey === 'ine') tempIds.ine = null;
-    else if (fileKey === 'domicilio') tempIds.domicilio = null;
-    const statusId = fileKey + 'Status';
-    const statusEl = document.getElementById(statusId);
-    if (statusEl) {
-        statusEl.textContent = '❌ No validado';
-        statusEl.className = 'file-status invalid';
-    }
-    const clearBtn = document.getElementById(inputId.replace('_file', '_clear_btn'));
-    if (clearBtn) {
-        clearBtn.style.display = 'none';
-    }
-    const mobileStatus = document.getElementById(inputId.replace('_file', '_mobile_status'));
-    if (mobileStatus) {
-        mobileStatus.style.display = 'none';
-        mobileStatus.textContent = '';
-    }
-}
-
-// ============================================================
-// SOLUCIÓN DE RESPALDO
-// ============================================================
-function showMobileUrlFallback(uploadUrl) {
-    const container = document.getElementById('qrCodeContainer');
-    container.innerHTML = `
-        <div class="alert alert-info" style="width:100%;">
-            <i class="bi bi-info-circle"></i>
-            <p><strong>Escanea o abre este enlace en tu teléfono:</strong></p>
-            <p style="word-break:break-all; font-size:0.8rem; background:#f0f4fa; padding:10px; border-radius:8px;">
-                ${uploadUrl}
-            </p>
-            <button class="btn btn-primary btn-sm mt-2" onclick="copyMobileUrl()">
-                <i class="bi bi-copy"></i> Copiar enlace
-            </button>
-        </div>
-    `;
-}
-
-function copyMobileUrl() {
-    const urlElement = document.querySelector('#qrCodeContainer .alert-info p:last-child');
-    if (urlElement) {
-        const url = urlElement.textContent.trim();
-        navigator.clipboard.writeText(url).then(() => {
-            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles. Envíalo a tu teléfono.</p>', 'success');
-        }).catch(() => {
-            const range = document.createRange();
-            range.selectNode(urlElement);
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-            showNotification('Enlace copiado', '<p>El enlace se copió al portapapeles.</p>', 'success');
-        });
-    }
-}
-
-// ============================================================
-// POLLING PARA VERIFICAR SUBIDA (SIN MENSAJE DE QR USADO EN PC)
-// ============================================================
-function startPollingForUpload(tempId, docTypeKey) {
-    if (currentMobileField) {
-        const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
-        if (statusEl) {
-            statusEl.style.display = 'block';
-            statusEl.textContent = '📱 Escanea el QR desde tu teléfono...';
-            statusEl.style.color = '#2a6df4';
         }
-    }
-    let attempts = 0;
-    const maxAttempts = 60;
-    let fileReceived = false;
-    const checkInterval = setInterval(async () => {
-        attempts++;
-        try {
-            const response = await fetch(`/api/clients/check-upload/${tempId}`);
-            const data = await response.json();
-            if (data.success && data.file_url && !fileReceived) {
-                fileReceived = true;
-                clearInterval(checkInterval);
-                if (docTypeKey) {
-                    tempIds[docTypeKey] = null;
-                }
-                const currentField = currentMobileField;
-                const currentDoc = currentDocType;
-                const fileInput = document.getElementById(currentField);
-                if (fileInput) {
-                    try {
-                        const fileResponse = await fetch(data.file_url);
-                        const blob = await fileResponse.blob();
-                        const file = new File([blob], data.filename, { type: 'application/pdf' });
-                        const dataTransfer = new DataTransfer();
-                        dataTransfer.items.add(file);
-                        fileInput.files = dataTransfer.files;
-                        const event = new Event('change', { bubbles: true });
-                        fileInput.dispatchEvent(event);
-                        setTimeout(() => {
-                            forcePdfPreview(currentField);
-                        }, 500);
-                    } catch (err) {
-                        console.error('❌ Error al reconstruir archivo:', err);
-                        showNotification('Error de archivo móvil', 'El archivo llegó dañado desde el móvil. Intenta subirlo directo desde PC.', 'error');
-                        filesValidated[currentField.replace('_file', '')] = false;
-                        return;
-                    }
-                }
-                const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
-                if (statusEl) {
-                    statusEl.textContent = '✅ Archivo subido desde móvil';
-                    statusEl.style.color = '#1a8b5c';
-                }
-                document.getElementById('mobileUploadStatus').style.display = 'block';
-                document.getElementById('mobileUploadStatus').className = 'alert alert-success';
-                document.getElementById('mobileUploadStatus').innerHTML = `
-                    <i class="bi bi-check-circle"></i> 
-                    ${currentDoc} subido correctamente.<br>
-                    <small>Cerrando automáticamente...</small>
-                `;
-                filesValidated[currentField.replace('_file', '')] = true;
-                const statusId = currentField.replace('_file', '') + 'Status';
-                document.getElementById(statusId).textContent = '✅ Validado desde móvil';
-                document.getElementById(statusId).className = 'file-status valid';
-                const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
-                if (clearBtn) {
-                    clearBtn.style.display = 'inline-block';
-                }
-                setTimeout(() => {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
-                    if (modal) {
-                        modal.hide();
-                    }
-                    isProcessingQR = false;
-                }, 2000);
-            }
-            if (attempts >= maxAttempts && !fileReceived) {
-                clearInterval(checkInterval);
+
+        function startPollingForUpload(tempId, docTypeKey) {
+            if (currentMobileField) {
                 const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
                 if (statusEl) {
-                    statusEl.textContent = '⏰ Tiempo agotado. Intenta de nuevo.';
-                    statusEl.style.color = '#dc3545';
+                    statusEl.style.display = 'block';
+                    statusEl.textContent = '📱 Escanea el QR desde tu teléfono...';
+                    statusEl.style.color = '#2a6df4';
                 }
+            }
+            let attempts = 0;
+            const maxAttempts = 60;
+            let fileReceived = false;
+            const checkInterval = setInterval(async () => {
+                attempts++;
+                try {
+                    const response = await fetch(`/api/clients/check-upload/${tempId}`);
+                    const data = await response.json();
+                    if (data.success && data.file_url && !fileReceived) {
+                        fileReceived = true;
+                        clearInterval(checkInterval);
+                        if (docTypeKey) {
+                            tempIds[docTypeKey] = null;
+                        }
+                        const currentField = currentMobileField;
+                        const currentDoc = currentDocType;
+                        const fileInput = document.getElementById(currentField);
+                        if (fileInput) {
+                            try {
+                                const fileResponse = await fetch(data.file_url);
+                                const blob = await fileResponse.blob();
+                                const file = new File([blob], data.filename, { type: 'application/pdf' });
+                                const dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(file);
+                                fileInput.files = dataTransfer.files;
+                                const event = new Event('change', { bubbles: true });
+                                fileInput.dispatchEvent(event);
+                                setTimeout(() => {
+                                    forcePdfPreview(currentField);
+                                }, 500);
+                            } catch (err) {
+                                console.error('❌ Error al reconstruir archivo:', err);
+                                showNotification('Error de archivo móvil',
+                                    'El archivo llegó dañado desde el móvil. Intenta subirlo directo desde PC.',
+                                    'error');
+                                filesValidated[currentField.replace('_file', '')] = false;
+                                return;
+                            }
+                        }
+                        const statusEl = document.getElementById(currentField.replace('_file', '_mobile_status'));
+                        if (statusEl) {
+                            statusEl.textContent = '✅ Archivo subido desde móvil';
+                            statusEl.style.color = '#1a8b5c';
+                        }
+                        document.getElementById('mobileUploadStatus').style.display = 'block';
+                        document.getElementById('mobileUploadStatus').className = 'alert alert-success';
+                        document.getElementById('mobileUploadStatus').innerHTML = `
+                            <i class="bi bi-check-circle"></i> 
+                            ${currentDoc} subido correctamente.<br>
+                            <small>Cerrando automáticamente...</small>
+                        `;
+                        filesValidated[currentField.replace('_file', '')] = true;
+                        const statusId = currentField.replace('_file', '') + 'Status';
+                        document.getElementById(statusId).textContent = '✅ Validado desde móvil';
+                        document.getElementById(statusId).className = 'file-status valid';
+                        const clearBtn = document.getElementById(currentField.replace('_file', '_clear_btn'));
+                        if (clearBtn) {
+                            clearBtn.style.display = 'inline-block';
+                        }
+                        const fileNameEl = document.getElementById(currentField.replace('_file', '_file_name'));
+                        if (fileNameEl) {
+                            const maxLen = 30;
+                            let displayName = data.filename || 'archivo_subido.pdf';
+                            if (displayName.length > maxLen) {
+                                displayName = displayName.substring(0, maxLen - 3) + '...';
+                            }
+                            fileNameEl.textContent = displayName;
+                            fileNameEl.className = 'file-name has-file';
+                        }
+                        setTimeout(() => {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+                            if (modal) {
+                                modal.hide();
+                            }
+                            isProcessingQR = false;
+                        }, 2000);
+                    }
+                    if (attempts >= maxAttempts && !fileReceived) {
+                        clearInterval(checkInterval);
+                        const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+                        if (statusEl) {
+                            statusEl.textContent = '⏰ Tiempo agotado. Intenta de nuevo.';
+                            statusEl.style.color = '#dc3545';
+                        }
+                        isProcessingQR = false;
+                    }
+                } catch (error) {
+                    console.log('⏳ Esperando... intento', attempts);
+                }
+            }, 1000);
+        }
+
+        function forcePdfPreview(fileInputId) {
+            const fileInput = document.getElementById(fileInputId);
+            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                console.log('⚠️ No hay archivo para previsualizar');
+                return;
+            }
+            const activeModals = document.querySelectorAll('.modal.show');
+            if (activeModals.length > 0) {
+                activeModals.forEach(modal => {
+                    const bsModal = bootstrap.Modal.getInstance(modal);
+                    if (bsModal) {
+                        bsModal.hide();
+                    }
+                });
+                setTimeout(() => {
+                    forcePdfPreview(fileInputId);
+                }, 300);
+                return;
+            }
+            cleanupModals();
+            const file = fileInput.files[0];
+            const fileURL = URL.createObjectURL(file);
+            const previewFrame = document.getElementById('pdfPreviewFrame');
+            if (previewFrame) {
+                previewFrame.src = fileURL;
+                console.log('✅ Vista previa forzada para:', file.name);
+                const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'), {
+                    backdrop: 'static'
+                });
+                previewModal.show();
+            }
+        }
+
+        document.getElementById('qrModal').addEventListener('hidden.bs.modal', function() {
+            if (currentMobileField) {
+                const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
+                if (statusEl) {
+                    statusEl.style.display = 'none';
+                }
+            }
+            isProcessingQR = false;
+        });
+
+        document.getElementById('closeQRModalBtn').addEventListener('click', function() {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+            if (modal) {
+                modal.hide();
+            }
+            setTimeout(() => {
+                cleanupModals();
                 isProcessingQR = false;
-            }
-        } catch (error) {
-            console.log('⏳ Esperando... intento', attempts);
-        }
-    }, 1000);
-}
-
-// ============================================================
-// FORZAR VISTA PREVIA DEL PDF SUBIDO
-// ============================================================
-function forcePdfPreview(fileInputId) {
-    const fileInput = document.getElementById(fileInputId);
-    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-        console.log('⚠️ No hay archivo para previsualizar');
-        return;
-    }
-    const activeModals = document.querySelectorAll('.modal.show');
-    if (activeModals.length > 0) {
-        activeModals.forEach(modal => {
-            const bsModal = bootstrap.Modal.getInstance(modal);
-            if (bsModal) {
-                bsModal.hide();
-            }
+            }, 300);
         });
-        setTimeout(() => {
-            forcePdfPreview(fileInputId);
-        }, 300);
-        return;
-    }
-    cleanupModals();
-    const file = fileInput.files[0];
-    const fileURL = URL.createObjectURL(file);
-    const previewFrame = document.getElementById('pdfPreviewFrame');
-    if (previewFrame) {
-        previewFrame.src = fileURL;
-        console.log('✅ Vista previa forzada para:', file.name);
-        const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'), {
-            backdrop: 'static'
-        });
-        previewModal.show();
-    }
-}
-
-// ============================================================
-// CUANDO SE CIERRA EL MODAL QR
-// ============================================================
-document.getElementById('qrModal').addEventListener('hidden.bs.modal', function () {
-    if (currentMobileField) {
-        const statusEl = document.getElementById(currentMobileField.replace('_file', '_mobile_status'));
-        if (statusEl) {
-            statusEl.style.display = 'none';
-        }
-    }
-    isProcessingQR = false;
-});
-
-// ============================================================
-// BOTÓN CERRAR DEL MODAL QR
-// ============================================================
-document.getElementById('closeQRModalBtn').addEventListener('click', function() {
-    const modal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
-    if (modal) {
-        modal.hide();
-    }
-    setTimeout(() => {
-        cleanupModals();
-        isProcessingQR = false;
-    }, 300);
-});
-</script>
+    </script>
 </body>
 </html>

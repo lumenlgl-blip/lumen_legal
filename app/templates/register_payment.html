@@ -305,14 +305,19 @@
 
         .spinner-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(11,30,51,0.4);
             backdrop-filter: blur(8px);
             z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
+        }
+        .spinner-overlay.active {
+            display: flex;
         }
         .spinner-box {
             background: white;
@@ -321,9 +326,20 @@
             text-align: center;
             box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
         }
-        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: #f5b342; }
-        .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
-        .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
 
         .empty-state { text-align: center; padding: 30px 20px; }
         .empty-state i { font-size: 2.5rem; color: #d0d8e3; margin-bottom: 8px; }
@@ -377,6 +393,45 @@
             #resultsContainer,#paymentFormContainer{margin-left:10px; margin-right:10px; padding:0;}
             .badge-custom{font-size:0.6rem; padding:3px 8px;}
             .saldo-info{font-size:0.75rem;}
+        }
+                /* ============================================================ */
+        /* MINI EXPEDIENTE EN CONTRATO CON DEUDA                        */
+        /* ============================================================ */
+        .expediente-mini {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left: 3px solid #2a6df4;
+            border-radius: 8px;
+        }
+
+        .expediente-mini-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #1e40af;
+        }
+
+        .expediente-mini-item i {
+            color: #2a6df4;
+            font-size: 0.85rem;
+        }
+
+        .expediente-mini-item strong {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+
+        @media (max-width: 768px) {
+            .expediente-mini {
+                flex-direction: column;
+                gap: 4px;
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
@@ -518,11 +573,14 @@
     </div>
 </div>
 
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
-        <h5>Procesando pago</h5>
-        <p>Generando recibo, por favor espera.</p>
+        <h5 id="loadingTitle">Procesando pago</h5>
+        <p id="loadingText">Generando recibo, por favor espera.</p>
     </div>
 </div>
 
@@ -558,12 +616,14 @@ function showConfirm(title, bodyHTML, onConfirm) {
     modal.show();
 }
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+function showLoading(title = 'Procesando pago', text = 'Generando recibo, por favor espera.') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
 }
 
 function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('loadingOverlay').classList.remove('active');
 }
 
 function formatMoney(value) {
@@ -637,12 +697,15 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
     const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
     if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
     
+    showLoading('Buscando clientes...', 'Por favor espera, estamos consultando la base de datos.');
+    
     try {
         const formData = new FormData();
         formData.append('search_term', searchTerm);
         const response = await fetch('/api/payments/search-client', { method: 'POST', body: formData });
         
         if (!response.ok) {
+            hideLoading();
             const error = await response.json();
             showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
             document.getElementById('resultsContainer').innerHTML = '';
@@ -650,6 +713,7 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         }
         
         clientsData = await response.json();
+        hideLoading();
         const container = document.getElementById('resultsContainer');
         
         if (clientsData.length === 0) {
@@ -685,10 +749,10 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         });
         
     } catch (error) {
+        hideLoading();
         showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
     }
 });
-
 function loadClientFromData(clientId) {
     const client = clientsData.find(c => c.id === clientId);
     
@@ -723,6 +787,18 @@ function loadClientFromData(clientId) {
                     <div class="contract-service">${contract.servicio}</div>
                     ${contract.detalle ? `<div class="contract-detail">${contract.detalle}</div>` : ''}
                     ${contract.tipo_juicio ? `<div class="contract-detail">${contract.tipo_juicio}</div>` : ''}
+                    ${contract.court_case ? `
+                    <div class="expediente-mini">
+                        <span class="expediente-mini-item">
+                            <i class="bi bi-folder2-open"></i>
+                            <strong>Exp:</strong> ${contract.court_case.num_exp_tribunal}
+                        </span>
+                        <span class="expediente-mini-item">
+                            <i class="bi bi-bank"></i>
+                            ${contract.court_case.tribunal}
+                        </span>
+                    </div>
+                    ` : ''}
                 </div>
                 <div class="text-end">
                     <div class="contract-paid">Pagado: $${contract.pagado.toLocaleString()}</div>
@@ -800,7 +876,7 @@ document.getElementById('paymentForm').addEventListener('submit', async (e) => {
         : `<p>¿Registrar abono de <strong>$${amount.toFixed(2)}</strong>?</p><p class="text-warning"><strong>Quedará pendiente de liquidar: $${(currentSaldo - amount).toFixed(2)}</strong></p>`;
     
     showConfirm('Confirmar abono', confirmMessage, async function() {
-        showLoading();
+        showLoading('Registrando pago...', 'Generando recibo, por favor espera.');
         
         const formData = new FormData(e.target);
         formData.set('amount', amount);

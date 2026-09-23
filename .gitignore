@@ -1,14 +1,79 @@
-﻿venv/
+﻿# ============================================================
+# Entornos virtuales
+# ============================================================
+venv/
+.venv/
+env/
+ENV/
+
+# ============================================================
+# Python
+# ============================================================
 __pycache__/
-*.pyc
-*.db
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# ============================================================
+# Variables de entorno (NUNCA subir)
+# ============================================================
 .env
-.DS_Store
+.env.*
+!.env.example
+
+# ============================================================
+# Archivos temporales locales (los persistentes están en R2)
+# ============================================================
+temp/
+tmp/
 uploads/
-1/
-create_admin.py
-test_pdf.py
-test_logo.pdf
-test_template.pdf
-test_template.html
+*.log
+
+# ============================================================
+# Bases de datos locales (ya migramos a Supabase)
+# ============================================================
+*.db
+*.sqlite
+*.sqlite3
+
+# ============================================================
+# PDFs e imágenes generadas (los archivos viven en R2)
+# ============================================================
 *.pdf
+*.jpg
+*.jpeg
+*.png
+
+# ⚠️ EXCEPCIÓN: NO ignorar el logo ni imágenes estáticas del sistema
+!app/static/img/
+!app/static/img/**
+
+# ============================================================
+# Sistema operativo
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Editores
+# ============================================================
+.vscode/
+.idea/
+*.swp
+
+# ============================================================
+# Archivos de prueba (borrables)
+# ============================================================
+create_admin.py
+test_*.py
+test_*.pdf
+test_*.html
+.env
+.env.*
+!.env.example

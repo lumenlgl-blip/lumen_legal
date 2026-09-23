@@ -752,8 +752,7 @@
         
         document.querySelectorAll('.preview-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                let url = this.dataset.url;
-                if (url && !url.startsWith('/')) url = '/' + url;
+                const url = this.dataset.url;
                 document.getElementById('pdfPreview').src = url;
                 document.getElementById('downloadPdfLink').href = url;
                 document.getElementById('downloadPdfLink').download = this.dataset.filename;

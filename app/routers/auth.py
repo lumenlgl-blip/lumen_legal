@@ -15,7 +15,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 SECRET_KEY = os.getenv("JWT_SECRET", "MI_CLAVE_SUPER_SECRETA_CAMBIAR_EN_PRODUCCION_123456789")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
+# Duración de la sesión: 8 horas (480 minutos)
+ACCESS_TOKEN_EXPIRE_MINUTES = 480
+
+# Cookies seguras (True en producción con HTTPS, False en local)
+SECURE_COOKIES = os.getenv("SECURE_COOKIES", "false").lower() == "true"
 
 def get_password_hash(password):
     if len(password.encode('utf-8')) > 72:
@@ -66,6 +70,8 @@ def get_current_user(request: Request, db: Session = None):
 # --- LOGIN ---
 @router.get("/login", response_class=HTMLResponse)
 @router.head("/login", response_class=HTMLResponse)
+@router.put("/login", response_class=HTMLResponse)
+@router.delete("/login", response_class=HTMLResponse)
 async def login_form(request: Request):
     user = get_current_user(request)
     if user:
@@ -140,7 +146,7 @@ async def login(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=SECURE_COOKIES,
         samesite="lax",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/"
@@ -440,8 +446,10 @@ async def refresh_permissions(
         key="access_token",
         value=access_token,
         httponly=True,
-        secure=False,
+        secure=SECURE_COOKIES,
+        samesite="lax",
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        expires=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/"
     )
     return response

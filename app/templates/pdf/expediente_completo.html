@@ -91,6 +91,21 @@
             font-weight: bold;
             color: #1a3b6b;
         }
+
+                .actuacion-item-pdf .act-num {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            border-radius: 50%;
+            background: #2a6df4;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
         .actuacion-item-pdf .act-fecha {
             font-size: 10px;
             color: #6b7b8f;
@@ -136,14 +151,20 @@
     </div>
     
     <div class="pdf-section">
-        <div class="pdf-section-title">ACTUACIONES ({{ total_actuaciones }})</div>
+        <div class="pdf-section-title">ÍNDICE DE ACTUACIONES ({{ total_actuaciones }}) — Orden cronológico</div>
         {% if actuaciones %}
             {% for act in actuaciones %}
             <div class="actuacion-item-pdf">
-                <div class="act-titulo">📄 {{ act.tipo }}</div>
+                <div class="act-titulo">
+                    <span class="act-num">{{ act.num }}</span>
+                    📄 {{ act.tipo }}
+                </div>
                 <div class="act-fecha">📅 {{ act.fecha }}</div>
                 {% if act.descripcion %}
                 <div class="act-fecha">📝 {{ act.descripcion }}</div>
+                {% endif %}
+                {% if act.subido_en %}
+                <div class="act-fecha" style="opacity:0.6;">🕒 Registrado: {{ act.subido_en }}</div>
                 {% endif %}
             </div>
             {% endfor %}

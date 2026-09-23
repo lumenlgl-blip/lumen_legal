@@ -811,9 +811,36 @@ document.getElementById('contractForm').addEventListener('submit', async (e) => 
         formData.set('total_cost', totalCost);
         formData.set('payment_amount', paymentAmount);
         try {
-            const response = await fetch(`/api/contracts/register/${clientId}`, { method: 'POST', body: formData });
+            const response = await fetch(`/api/contracts/register/${clientId}`, {
+                method: 'POST',
+                body: formData,
+                redirect: 'manual'  // ⬅️ CRÍTICO: no seguir redirects a login
+            });
+
+            // Si el middleware redirigió a login (302), detectarlo
+            if (response.type === 'opaqueredirect' || response.status === 302) {
+                hideLoading();
+                showNotification('Sesión expirada', '<p>Tu sesión se cerró. Recarga la página e inicia sesión de nuevo.</p>', 'error');
+                setTimeout(() => window.location.href = '/auth/login', 2000);
+                return;
+            }
+
             hideLoading();
-            if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al registrar la contratación'}</p>`, 'error'); return; }
+
+            // Validar que el response sea PDF real
+            const contentType = response.headers.get('content-type') || '';
+            if (!response.ok || !contentType.includes('application/pdf')) {
+                let errorMsg = 'Error al registrar la contratación';
+                try {
+                    const errJson = await response.json();
+                    errorMsg = errJson.detail || errorMsg;
+                } catch (_) {
+                    errorMsg = `Respuesta inesperada del servidor (${response.status})`;
+                }
+                showNotification('Error', `<p>${errorMsg}</p>`, 'error');
+                return;
+            }
+
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');

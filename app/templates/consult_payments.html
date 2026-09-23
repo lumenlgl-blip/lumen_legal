@@ -467,6 +467,45 @@
             .payment-item .row{--bs-gutter-y:6px;}
             .modal-pdf{height:60vh;}
         }
+                /* ============================================================ */
+        /* MINI EXPEDIENTE EN CONTRATO (nuevo)                          */
+        /* ============================================================ */
+        .expediente-mini {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-left: 3px solid #2a6df4;
+            border-radius: 8px;
+        }
+
+        .expediente-mini-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #1e40af;
+        }
+
+        .expediente-mini-item i {
+            color: #2a6df4;
+            font-size: 0.85rem;
+        }
+
+        .expediente-mini-item strong {
+            font-weight: 700;
+            color: #0b1e33;
+        }
+
+        @media (max-width: 768px) {
+            .expediente-mini {
+                flex-direction: column;
+                gap: 4px;
+                font-size: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -734,6 +773,18 @@ async function loadClientDetail(clientId) {
                             <span class="ms-2"><strong>Pagado:</strong> $${contract.pagado.toLocaleString()}</span>
                             <span class="ms-2"><strong>Saldo:</strong> $${contract.saldo.toLocaleString()}</span>
                         </div>
+                        ${contract.court_case ? `
+                        <div class="expediente-mini">
+                            <span class="expediente-mini-item">
+                                <i class="bi bi-folder2-open"></i>
+                                <strong>Exp:</strong> ${contract.court_case.num_exp_tribunal}
+                            </span>
+                            <span class="expediente-mini-item">
+                                <i class="bi bi-bank"></i>
+                                ${contract.court_case.tribunal}
+                            </span>
+                        </div>
+                        ` : ''}
                     </div>
                     <div class="col-md-4 text-end">
                         <button class="btn-toggle-payments toggle-payments" data-contract="${contract.id}">

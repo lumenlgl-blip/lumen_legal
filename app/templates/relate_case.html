@@ -373,6 +373,47 @@
             .badge-custom { font-size: 0.6rem; padding: 3px 8px; }
             .contract-tags { gap: 3px; }
         }
+
+                /* ============================================================ */
+        /* LOADING OVERLAY                                              */
+        /* ============================================================ */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11,30,51,0.4);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner-overlay.active {
+            display: flex;
+        }
+        .spinner-box {
+            background: white;
+            padding: 36px 48px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #2a6df4;
+        }
+        .spinner-box h5 {
+            font-weight: 700;
+            color: #0b1e33;
+            margin-top: 12px;
+        }
+        .spinner-box p {
+            color: #6b7b8f;
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -459,14 +500,18 @@
                             <input type="date" name="fecha_presentacion" id="fecha_presentacion" class="form-control" required>
                             <div class="invalid-feedback">La fecha es obligatoria</div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="demandadoWrapper">
                             <label class="form-label">Nombre del Demandado(a)</label>
                             <input type="text" name="demandado_nombre" id="demandado_nombre" class="form-control" autocomplete="off">
                         </div>
                     </div>
                     <div class="mt-3">
-                        <label class="form-label">Nombre del Actor(a)</label>
+                        <label class="form-label" id="actorLabel">Nombre del Actor(a)</label>
                         <input type="text" name="actor_nombre" id="actor_nombre" class="form-control" autocomplete="off">
+                    </div>
+                    <div class="mt-3" id="actor2Wrapper" style="display:none;">
+                        <label class="form-label">Nombre del Segundo Actor(a)</label>
+                        <input type="text" name="actor2_nombre" id="actor2_nombre" class="form-control" autocomplete="off">
                     </div>
                 </div>
 
@@ -539,6 +584,17 @@
     </div>
 </div>
 
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5 id="loadingTitle">Procesando</h5>
+        <p id="loadingText">Por favor espera.</p>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // ============================================================
@@ -579,8 +635,9 @@ function soloNumerosYDiagonal(event) {
     if (!/[0-9/]/.test(char)) event.preventDefault();
 }
 
-['tribunal', 'secretaria', 'folio_tribunal', 'demandado_nombre', 'actor_nombre'].forEach(id => {
+['tribunal', 'secretaria', 'folio_tribunal', 'demandado_nombre', 'actor_nombre', 'actor2_nombre'].forEach(id => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
     el.addEventListener('keypress', soloMayusculas);
 });
@@ -598,12 +655,14 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
 document.getElementById('searchBtn').addEventListener('click', async () => {
     const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
     if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+    showLoading('Buscando clientes...', 'Consultando la base de datos.');
     try {
         const formData = new FormData();
         formData.append('search_term', searchTerm);
         const response = await fetch('/api/cases/search-client', { method: 'POST', body: formData });
-        if (!response.ok) { const error = await response.json(); showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning'); return; }
+        if (!response.ok) { hideLoading(); const error = await response.json(); showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning'); return; }
         const clients = await response.json();
+        hideLoading();
         const container = document.getElementById('resultsContainer');
         if (clients.length === 0) {
             container.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><h5>No se encontraron clientes</h5><p>Intenta con otro término de búsqueda.</p></div>';
@@ -638,13 +697,15 @@ document.getElementById('searchBtn').addEventListener('click', async () => {
         document.querySelectorAll('.select-client').forEach(btn => {
             btn.addEventListener('click', async () => { await loadClientContracts(btn.dataset.id); });
         });
-    } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+    } catch (error) { hideLoading(); showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
 });
 
 async function loadClientContracts(clientId) {
+    showLoading('Cargando contratos...', 'Por favor espera.');
     try {
         const response = await fetch(`/api/cases/client/${clientId}`);
         const client = await response.json();
+        hideLoading();
         document.getElementById('resultsContainer').innerHTML = '';
         document.getElementById('contractsContainer').style.display = 'block';
         document.getElementById('clientNameDisplay').innerHTML = '<i class="bi bi-person-circle text-primary me-2"></i>' + client.nombre_completo;
@@ -677,6 +738,30 @@ async function loadClientContracts(clientId) {
                 this.classList.add('selected');
                 selectedContractId = contract.id;
                 document.getElementById('contractId').value = contract.id;
+
+                // Detectar si es Divorcio Bilateral
+                const esBilateral = (contract.tipo_juicio || '').toLowerCase().includes('bilateral');
+
+                const demandadoWrapper = document.getElementById('demandadoWrapper');
+                const actor2Wrapper = document.getElementById('actor2Wrapper');
+                const actorLabel = document.getElementById('actorLabel');
+                const demandadoInput = document.getElementById('demandado_nombre');
+                const actor2Input = document.getElementById('actor2_nombre');
+
+                if (esBilateral) {
+                    // Sin demandado, con dos actores
+                    demandadoWrapper.style.display = 'none';
+                    demandadoInput.value = '';
+                    actorLabel.textContent = 'Nombre del Primer Actor(a)';
+                    actor2Wrapper.style.display = 'block';
+                } else {
+                    // Comportamiento normal
+                    demandadoWrapper.style.display = 'block';
+                    actorLabel.textContent = 'Nombre del Actor(a)';
+                    actor2Wrapper.style.display = 'none';
+                    actor2Input.value = '';
+                }
+
                 document.getElementById('relateFormContainer').style.display = 'block';
                 document.getElementById('relateFormContainer').scrollIntoView({ behavior: 'smooth' });
             };
@@ -684,7 +769,7 @@ async function loadClientContracts(clientId) {
         });
 
         document.getElementById('contractsContainer').scrollIntoView({ behavior: 'smooth' });
-    } catch (error) { showNotification('Error', `<p>Error al cargar contratos: ${error.message}</p>`, 'error'); }
+    } catch (error) { hideLoading(); showNotification('Error', `<p>Error al cargar contratos: ${error.message}</p>`, 'error'); }
 }
 
 document.getElementById('acuse_file').addEventListener('change', function(e) {
@@ -725,10 +810,12 @@ document.getElementById('relateForm').addEventListener('submit', async (e) => {
     if (!fileAccepted) { showNotification('Archivo no validado', '<p>Por favor adjunta y valida el acuse de recibo en PDF.</p>', 'warning'); return; }
 
     showConfirm('Confirmar guardado', '<p>¿Estás seguro de que deseas relacionar este expediente?</p>', async function() {
+        showLoading('Relacionando expediente...', 'Subiendo acuse y guardando datos.');
         const formData = new FormData(e.target);
         try {
             const response = await fetch(`/api/cases/relate/${selectedContractId}`, { method: 'POST', body: formData });
-            if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al relacionar el expediente'}</p>`, 'error'); return; }
+            if (!response.ok) { hideLoading(); const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al relacionar el expediente'}</p>`, 'error'); return; }
+            hideLoading();
             const result = await response.json();
             showNotification('Expediente Relacionado', `
                 <div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div>
@@ -736,9 +823,18 @@ document.getElementById('relateForm').addEventListener('submit', async (e) => {
                 <p><strong>Cliente:</strong> ${result.cliente}</p>
             `, 'success');
             setTimeout(() => location.reload(), 2000);
-        } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+        } catch (error) { hideLoading(); showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
     });
 });
+function showLoading(title = 'Procesando', text = 'Por favor espera.') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
 </script>
 </body>
 </html>
