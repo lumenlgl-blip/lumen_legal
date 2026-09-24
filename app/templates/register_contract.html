@@ -1,426 +1,960 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Registrar Contratación · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-
-        body {
-            background: #f2f5fb;
-            padding: 20px 0 40px 0;
-            min-height: 100vh;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #dbe4ef;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Botón menú flotante */
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+           THEME TOGGLE + MENÚ
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+
         .btn-menu {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 12px 24px;
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            transition: all 0.2s;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
         }
         .btn-menu:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-primary);
         }
 
-        /* Encabezado */
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1100px; }
+
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 20px 28px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
+        .page-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .page-header .badge-header {
-            background: #0b1e33;
+            background: var(--accent-dark);
             color: white;
             font-weight: 600;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .page-header .badge-header i { margin-right: 6px; color: #7aa9ff; }
+        .page-header .badge-header i { color: var(--accent-light); }
 
-        /* Tarjetas con efecto vidrio */
+        /* ============================================================
+           CARDS GLASS
+           ============================================================ */
         .card-glass {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 24px 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: box-shadow 0.2s;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-normal);
+            animation: fadeInUp 0.4s ease-out;
         }
-        .card-glass:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-glass:hover { box-shadow: var(--shadow-md); }
 
-        /* Buscador */
+        /* ============================================================
+           BÚSQUEDA
+           ============================================================ */
         .search-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .search-title i { color: #2a6df4; margin-right: 8px; }
+        .search-title i { color: var(--accent-primary); }
 
-        .search-card .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
+        .form-control, .form-select {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
             padding: 14px 18px;
             font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 56px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 56px;
         }
-        .search-card .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger);
+            background-image: none;
+        }
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 4px rgba(220,53,69,0.12);
         }
 
         .btn-search {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 60px;
             padding: 14px 24px;
             font-weight: 700;
             color: white;
-            transition: all 0.25s;
-            display: flex;
+            transition: all var(--transition-normal);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             width: 100%;
             height: 56px;
+            min-height: 56px;
         }
-        .btn-search:hover {
-            background: #1a3b6b;
+        .btn-search:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
+        .btn-search:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* Tarjetas de clientes */
+        /* ============================================================
+           CLIENT CARDS
+           ============================================================ */
         .client-card {
-            background: white;
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .client-card:hover {
-            border-color: #cbd9ed;
+            border-color: var(--accent-primary);
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
         }
-        .client-name { font-weight: 700; color: #0b1e33; font-size: 0.95rem; }
-        .client-curp { color: #6b7b8f; font-size: 0.8rem; }
+        .client-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        .client-curp {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-family: 'SF Mono', monospace;
+        }
 
         .badge-custom {
             font-weight: 600;
-            font-size: 0.65rem;
-            padding: 4px 12px;
+            font-size: 0.68rem;
+            padding: 5px 12px;
             border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .badge-folio { background: #eef3fa; color: #4a5b6e; }
-        .badge-interno { background: #e2edff; color: #1f4f9e; }
+        .badge-folio { background: rgba(42,109,244,0.08); color: var(--accent-primary); }
+        .badge-interno { background: rgba(42,109,244,0.15); color: var(--accent-primary); }
+
+        [data-theme="dark"] .badge-folio { background: rgba(91,147,255,0.15); }
+        [data-theme="dark"] .badge-interno { background: rgba(91,147,255,0.2); }
 
         .btn-select-client {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 40px;
-            padding: 6px 18px;
+            padding: 8px 20px;
             color: white;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
-        .btn-select-client:hover { background: #2a6df4; transform: scale(1.02); }
+        .btn-select-client:hover {
+            background: var(--accent-primary);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
+        }
 
-        /* Formulario de contratación */
-        .contract-form-container {
-            display: none;
-            margin-top: 24px;
-        }
-        .client-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        .client-header h5 { font-weight: 700; color: #0b1e33; margin: 0; }
-        .client-meta { color: #6b7b8f; font-size: 0.85rem; }
-
+        /* ============================================================
+           FORMULARIO - LABELS ARRIBA
+           ============================================================ */
         .form-section {
-            background: rgba(255,255,255,0.4);
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 16px;
-            border: 1px solid #edf2f9;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 22px 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-soft);
+            transition: border-color var(--transition-fast);
         }
+        .form-section:focus-within {
+            border-color: rgba(42,109,244,0.3);
+        }
+
         .form-section .form-label {
             font-weight: 600;
-            font-size: 0.8rem;
-            color: #4a5b6e;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .form-section .form-control,
-        .form-section .form-select {
-            border-radius: 14px;
-            border: 1.5px solid #e9edf4;
+        .form-section .form-label .required {
+            color: var(--danger);
+        }
+
+        /* Separación entre filas del form */
+        .form-section .row {
+            --bs-gutter-x: 1rem;
+            --bs-gutter-y: 1.25rem;
+        }
+
+        /* ============================================================
+           AVISO DE PAGO MÍNIMO (50%)
+           ============================================================ */
+        .payment-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
             padding: 12px 16px;
-            font-size: 0.9rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 12px;
+            animation: fadeInUp 0.3s ease-out;
+            line-height: 1.5;
         }
-        .form-section .form-control:focus,
-        .form-section .form-select:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
-        }
-        .form-section .form-control.is-invalid,
-        .form-section .form-select.is-invalid { border-color: #dc3545; }
-
-        .money-display {
-            font-weight: 700;
-            color: #1a8b5c;
+        .payment-notice i {
             font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
         }
+        .payment-notice.info {
+            background: var(--info-soft);
+            color: var(--info);
+            border-left: 4px solid var(--info);
+        }
+        .payment-notice.success {
+            background: var(--success-soft);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+        .payment-notice.warning {
+            background: var(--warning-soft);
+            color: #8a6d00;
+            border-left: 4px solid var(--warning);
+        }
+        [data-theme="dark"] .payment-notice.warning { color: var(--warning); }
+        .payment-notice.danger {
+            background: var(--danger-soft);
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+        .payment-notice strong { font-weight: 700; }
 
+        /* Preview de restante */
         .remaining-alert {
-            border-radius: 16px;
-            padding: 12px 18px;
-            background: rgba(255,193,7,0.12);
-            border: 1px solid rgba(255,193,7,0.2);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(245,179,66,0.15), rgba(245,179,66,0.08));
+            border: 1px solid rgba(245,179,66,0.3);
             color: #8a6d00;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+            animation: fadeInUp 0.35s ease-out;
         }
-        .remaining-alert strong { color: #6b5200; }
+        [data-theme="dark"] .remaining-alert {
+            background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));
+            border-color: rgba(251,191,36,0.3);
+            color: var(--warning);
+        }
+        .remaining-alert .remaining-amount {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #6b5200;
+            font-variant-numeric: tabular-nums;
+        }
+        [data-theme="dark"] .remaining-alert .remaining-amount { color: var(--warning); }
 
-        .btn-submit {
-            background: #1a8b5c;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 28px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.25s;
+        /* ============================================================
+           UPLOAD RECEIPT
+           ============================================================ */
+        .upload-receipt-btn {
+            width: 100%;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-soft);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            text-align: left;
+        }
+        .upload-receipt-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .upload-receipt-btn.has-file {
+            border-style: solid;
+            border-color: var(--success);
+            background: var(--success-soft);
+            color: var(--success);
+        }
+        [data-theme="dark"] .upload-receipt-btn.has-file {
+            background: rgba(52,211,153,0.15);
+        }
+        .upload-receipt-btn .upload-icon { font-size: 1.8rem; }
+        .upload-receipt-btn .upload-label {
+            display: flex;
+            flex-direction: column;
+        }
+        .upload-receipt-btn .upload-label small {
+            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        .qr-mobile-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            padding: 12px 22px;
+            border-radius: 60px;
+            background: rgba(42,109,244,0.1);
+            color: var(--accent-primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            min-height: 44px;
+            margin-top: 12px;
         }
-        .btn-submit:hover {
-            background: #0e6b46;
+        .qr-mobile-btn:hover {
+            background: var(--accent-primary);
+            color: white;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(26,139,92,0.3);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
         }
+
+        /* ============================================================
+           BOTONES PRINCIPALES
+           ============================================================ */
+        .btn-submit {
+            background: var(--success);
+            border: none;
+            border-radius: 60px;
+            padding: 14px 32px;
+            font-weight: 700;
+            color: white;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--success-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(26,139,92,0.5);
+        }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .btn-clear {
             border-radius: 60px;
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-weight: 600;
-            border: 1.5px solid #dc3545;
-            color: #dc3545;
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
             background: transparent;
-            transition: all 0.2s;
+            transition: all var(--transition-normal);
+            min-height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
-        .btn-clear:hover { background: #dc3545; color: white; }
+        .btn-clear:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(220,53,69,0.4);
+        }
 
-        /* Modales modernos */
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
         .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
             overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
         }
         .modal-modern .modal-header {
             border-bottom: none;
-            padding: 20px 28px 8px 28px;
+            padding: 22px 28px 8px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
-        .modal-modern .modal-body { padding: 16px 28px 24px; }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
         .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .file-preview-modal {
             width: 100%;
-            height: 60vh;
+            height: 65vh;
             border: none;
-            border-radius: 12px;
+            background: var(--bg-tertiary);
         }
 
-        .empty-state { text-align: center; padding: 30px 20px; }
-        .empty-state i { font-size: 2.5rem; color: #d0d8e3; margin-bottom: 8px; }
-        .empty-state h5 { color: #0b1e33; font-weight: 600; }
-        .empty-state p { color: #8a9bb0; font-size: 0.9rem; }
-
-        @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .card-glass { padding: 16px 18px; }
-            .btn-menu { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .client-header { flex-direction: column; }
-        }
-        @media (max-width: 480px) {
-            .client-card { flex-direction: column; align-items: stretch; }
-            .form-section { padding: 14px 16px; }
-        }
-                /* Loading overlay */
+        /* ============================================================
+           SPINNER OVERLAY
+           ============================================================ */
         .spinner-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
         }
         .spinner-box .spinner-border {
             width: 3rem;
             height: 3rem;
-            color: #2a6df4;
+            color: var(--accent-primary);
+            border-width: 3px;
         }
         .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
         }
         .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
         }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.card-glass,#resultsContainer,#contractFormContainer{margin-left:16px; margin-right:16px;}
+
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
         }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:16px 18px; border-radius:20px; margin-bottom:16px;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .card-glass{padding:16px 14px; border-radius:18px;}
-            .search-card .form-control,.btn-search{height:48px; font-size:16px;}
-            .client-card{flex-direction:column; align-items:flex-start;}
-            .client-card > div:last-child{width:100%; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between;}
-            .form-section{padding:14px 16px;}
-            .form-section .form-control,.form-section .form-select{font-size:16px;}
-            .d-flex.justify-content-between{flex-direction:column-reverse; gap:10px;}
-            .btn-submit,.btn-clear{width:100%; justify-content:center;}
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
         }
-        @media (max-width: 480px){
-            .btn-menu{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px; flex-direction:column; align-items:flex-start;}
-            .page-header .badge-header{width:100%; text-align:center; justify-content:center; display:flex;}
-            .card-glass{margin:0 10px;}
-            #resultsContainer,#contractFormContainer{margin-left:10px; margin-right:10px; padding:0;}
-            .badge-custom{font-size:0.6rem; padding:3px 8px;}
-            .remaining-alert{font-size:0.8rem;}
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
         }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 40px 20px; }
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            display: block;
+        }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* ============================================================
+           QR MODAL
+           ============================================================ */
+        #qrCodeContainer {
+            margin: 20px auto;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrCodeContainer img, #qrCodeContainer canvas {
+            border-radius: var(--radius-md);
+            padding: 12px;
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .card-glass, #resultsContainer, #contractFormContainer {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+            }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .card-glass { padding: 18px 16px; border-radius: 18px; }
+            .search-card .form-control, .btn-search { height: 52px; min-height: 52px; font-size: 16px; }
+            .client-card { flex-direction: column; align-items: stretch; gap: 12px; }
+            .client-card > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .btn-select-client { width: 100%; justify-content: center; }
+            .form-section { padding: 18px 16px; }
+            .form-section .form-control, .form-section .form-select { font-size: 16px; }
+            .d-flex.justify-content-between { flex-direction: column-reverse; gap: 10px; }
+            .btn-submit, .btn-clear { width: 100%; justify-content: center; }
+            .modal-modern .modal-header { padding: 18px 20px 6px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header .badge-header {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .card-glass { margin: 0 12px; padding: 16px 14px; }
+            #resultsContainer, #contractFormContainer { margin-left: 12px; margin-right: 12px; padding: 0; }
+            .badge-custom { font-size: 0.62rem; padding: 3px 10px; }
+            .spinner-box { padding: 30px 28px; }
+            .remaining-alert { font-size: 0.85rem; }
+            .remaining-alert .remaining-amount { font-size: 1.1rem; }
+        }
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
     </style>
 </head>
 <body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
 
 <a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
-    <!-- Encabezado -->
+    <!-- ENCABEZADO -->
     <div class="page-header">
         <h1><i class="bi bi-file-earmark-text"></i> Registrar Contratación</h1>
         <span class="badge-header"><i class="bi bi-plus-circle"></i> Nuevo contrato</span>
     </div>
 
-    <!-- Buscador -->
+    <!-- BUSCADOR -->
     <div class="card-glass search-card">
         <div class="search-title"><i class="bi bi-search"></i> Buscar Cliente</div>
         <div class="row g-3">
             <div class="col-md-8">
                 <input type="text" id="searchInput" class="form-control"
                        placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..."
-                       autocomplete="off">
+                       autocomplete="off" maxlength="100" aria-label="Buscar cliente">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn-search"><i class="bi bi-search"></i> Buscar</button>
+                <button id="searchBtn" class="btn-search" type="button">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Resultados -->
+    <!-- RESULTADOS -->
     <div id="resultsContainer"></div>
 
-    <!-- Formulario de contratación -->
-    <div id="contractFormContainer" class="contract-form-container">
+    <!-- FORMULARIO DE CONTRATACIÓN -->
+    <div id="contractFormContainer" class="contract-form-container" style="display:none;margin-top:1.5rem;">
         <div class="card-glass">
-            <div class="client-header">
+            <div class="client-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
                 <div>
-                    <h5 id="clientNameDisplay"><i class="bi bi-person-circle text-primary me-2"></i></h5>
-                    <div class="client-meta" id="clientInfoDisplay"></div>
+                    <h5 id="clientNameDisplay" class="fw-bold mb-1"></h5>
+                    <div class="client-meta text-muted small" id="clientInfoDisplay"></div>
                 </div>
             </div>
             <hr>
+
             <form id="contractForm" enctype="multipart/form-data" novalidate>
                 <input type="hidden" id="clientId" name="client_id">
 
-                <!-- Servicio -->
+                <!-- SECCIÓN 1: TIPO DE SERVICIO -->
                 <div class="form-section">
-                    <div class="row g-3">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                        <i class="bi bi-briefcase text-primary"></i> Detalles del Servicio
+                    </h6>
+
+                    <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label">Tipo de Servicio <span class="text-danger">*</span></label>
+                            <label class="form-label" for="service_type">
+                                Tipo de Servicio <span class="required">*</span>
+                            </label>
                             <select name="service_type" id="service_type" class="form-select" required>
                                 <option value="">Selecciona...</option>
                                 <option value="asesoria">Asesoría Jurídica</option>
@@ -431,8 +965,11 @@
                             </select>
                             <div class="invalid-feedback">Selecciona el tipo de servicio</div>
                         </div>
+
                         <div class="col-md-6" id="juicioContainer" style="display:none;">
-                            <label class="form-label">Tipo de Juicio <span class="text-danger">*</span></label>
+                            <label class="form-label" for="tipo_juicio">
+                                Tipo de Juicio <span class="required">*</span>
+                            </label>
                             <select name="tipo_juicio" id="tipo_juicio" class="form-select">
                                 <option value="">Selecciona...</option>
                                 <option value="Divorcio Bilateral">Divorcio Bilateral</option>
@@ -448,68 +985,139 @@
                             </select>
                             <div class="invalid-feedback">Selecciona el tipo de juicio</div>
                         </div>
-                    </div>
-                    <div class="mt-3" id="juicioOtroContainer" style="display:none;">
-                        <label class="form-label">Especificar Tipo de Juicio <span class="text-danger">*</span></label>
-                        <input type="text" name="tipo_juicio_otro" id="tipo_juicio_otro" class="form-control" autocomplete="off">
-                        <div class="invalid-feedback">Especifica el tipo de juicio</div>
-                    </div>
-                    <div class="mt-3">
-                        <label class="form-label">Detalle del Servicio</label>
-                        <input type="text" name="specific_detail" id="specific_detail" class="form-control" autocomplete="off" placeholder="Ej: Divorcio Unilateral, Convenio de custodia compartida, etc.">
+
+                        <div class="col-12" id="juicioOtroContainer" style="display:none;">
+                            <label class="form-label" for="tipo_juicio_otro">
+                                Especificar Tipo de Juicio <span class="required">*</span>
+                            </label>
+                            <input type="text" name="tipo_juicio_otro" id="tipo_juicio_otro"
+                                   class="form-control" autocomplete="off"
+                                   placeholder="Ej: Juicio de amparo indirecto" maxlength="120">
+                            <div class="invalid-feedback">Especifica el tipo de juicio</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="specific_detail">
+                                Detalle del Servicio
+                            </label>
+                            <input type="text" name="specific_detail" id="specific_detail"
+                                   class="form-control" autocomplete="off"
+                                   placeholder="Ej: Divorcio Unilateral, Convenio de custodia compartida, etc."
+                                   maxlength="200">
+                        </div>
                     </div>
                 </div>
 
-                <!-- Costo y pago -->
+                <!-- SECCIÓN 2: COSTO Y PAGO -->
                 <div class="form-section">
-                    <div class="row g-3">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                        <i class="bi bi-cash-coin text-success"></i> Costo y Anticipo
+                    </h6>
+
+                    <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label">Costo Total <span class="text-danger">*</span></label>
-                            <input type="text" name="total_cost" id="total_cost" class="form-control" required autocomplete="off" placeholder="$0.00">
+                            <label class="form-label" for="total_cost">
+                                Costo Total <span class="required">*</span>
+                            </label>
+                            <input type="text" name="total_cost" id="total_cost"
+                                   class="form-control form-control-lg"
+                                   required autocomplete="off" placeholder="$0.00"
+                                   inputmode="decimal" maxlength="14"
+                                   style="font-size:1.2rem; font-weight:700; text-align:right;">
                             <div class="invalid-feedback">El costo total es obligatorio</div>
                         </div>
+
                         <div class="col-md-6">
-                            <label class="form-label">Monto a Pagar</label>
-                            <input type="text" name="payment_amount" id="payment_amount" class="form-control" autocomplete="off" placeholder="$0.00" value="0">
+                            <label class="form-label" for="payment_amount">
+                                Monto a Pagar (Anticipo) <span class="required">*</span>
+                            </label>
+                            <input type="text" name="payment_amount" id="payment_amount"
+                                   class="form-control form-control-lg"
+                                   autocomplete="off" placeholder="$0.00" value=""
+                                   inputmode="decimal" maxlength="14"
+                                   style="font-size:1.2rem; font-weight:700; text-align:right;">
+                            <div class="invalid-feedback">El anticipo es obligatorio</div>
                         </div>
                     </div>
-                    <div class="mt-3 remaining-alert" id="remainingDisplay" style="display:none;">
-                        <i class="bi bi-info-circle me-2"></i>
-                        <strong>Restante por pagar:</strong> <span id="remainingAmount">$0.00</span>
+
+                    <!-- Aviso de pago mínimo -->
+                    <div class="payment-notice info" id="paymentNotice" style="display:none;">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <div>
+                            El anticipo mínimo es del <strong>50%</strong> del costo total: <strong id="minPaymentAmount">$0.00</strong>
+                        </div>
+                    </div>
+
+                    <!-- Restante -->
+                    <div class="remaining-alert" id="remainingDisplay" style="display:none;">
+                        <span><i class="bi bi-wallet2 me-2"></i><strong>Restante por pagar:</strong></span>
+                        <span class="remaining-amount" id="remainingAmount">$0.00</span>
                     </div>
                 </div>
 
-                <!-- Pago -->
+                <!-- SECCIÓN 3: FORMA DE PAGO -->
                 <div class="form-section">
-                    <div class="row g-3">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                        <i class="bi bi-credit-card text-warning"></i> Forma de Pago
+                    </h6>
+
+                    <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label">Forma de Pago <span class="text-danger">*</span></label>
+                            <label class="form-label" for="payment_method">
+                                Forma de Pago <span class="required">*</span>
+                            </label>
                             <select name="payment_method" id="payment_method" class="form-select" required>
                                 <option value="">Selecciona...</option>
-                                <option value="efectivo">Efectivo</option>
-                                <option value="deposito">Depósito</option>
-                                <option value="transferencia">Transferencia</option>
+                                <option value="efectivo">💵 Efectivo</option>
+                                <option value="deposito">🏦 Depósito</option>
+                                <option value="transferencia">💳 Transferencia</option>
                                 <option value="ninguno">Sin pago por ahora</option>
                             </select>
                             <div class="invalid-feedback">Selecciona la forma de pago</div>
                         </div>
+
                         <div class="col-md-6" id="receiverContainer" style="display:none;">
-                            <label class="form-label">Recibió (efectivo) <span class="text-danger">*</span></label>
-                            <input type="text" name="receiver_name" id="receiver_name" class="form-control" autocomplete="off">
+                            <label class="form-label" for="receiver_name">
+                                Recibió (efectivo) <span class="required">*</span>
+                            </label>
+                            <input type="text" name="receiver_name" id="receiver_name"
+                                   class="form-control" autocomplete="off"
+                                   placeholder="Nombre de quien recibe" maxlength="100">
                             <div class="invalid-feedback">Indica quién recibió</div>
                         </div>
                     </div>
-                    <div class="mt-3" id="receiptContainer" style="display:none;">
-                        <label class="form-label">Comprobante de Pago (PDF) <span class="text-danger">*</span></label>
-                        <input type="file" name="receipt_file" id="receipt_file" accept=".pdf" class="form-control">
-                        <div class="invalid-feedback">Adjunta el comprobante</div>
+
+                    <!-- Comprobante -->
+                    <div class="col-12 mt-4" id="receiptContainer" style="display:none;">
+                        <label class="form-label mb-3">
+                            <i class="bi bi-paperclip"></i> Comprobante de Pago
+                            <span class="required">*</span>
+                        </label>
+
+                        <button type="button" class="upload-receipt-btn" id="uploadReceiptBtn">
+                            <span class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                            <span class="upload-label">
+                                <span id="uploadReceiptText">Subir comprobante</span>
+                                <small id="uploadReceiptSub">PDF, JPG o PNG · máx. 25 MB</small>
+                            </span>
+                        </button>
+
+                        <input type="file" name="receipt_file" id="receipt_file"
+                               accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+                        <div class="invalid-feedback d-block" id="receiptFeedback" style="display:none !important;">
+                            Adjunta el comprobante
+                        </div>
                     </div>
                 </div>
 
-                <!-- Botones -->
-                <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
-                    <button type="button" class="btn-clear" onclick="limpiarFormulario()"><i class="bi bi-eraser"></i> Limpiar</button>
-                    <button type="submit" class="btn-submit"><i class="bi bi-check2"></i> Registrar Contratación</button>
+                <!-- ACCIONES -->
+                <div class="d-flex justify-content-between align-items-center mt-4 gap-3 flex-wrap">
+                    <button type="button" class="btn-clear" onclick="limpiarFormulario()">
+                        <i class="bi bi-eraser"></i> Limpiar
+                    </button>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="bi bi-check2"></i> <span>Registrar Contratación</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -518,340 +1126,1111 @@
 </div>
 
 <!-- ================================================== -->
-<!-- MODALES -->
+<!-- MODAL NOTIFICACIÓN -->
 <!-- ================================================== -->
-
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title" id="confirmTitle"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+<!-- MODAL OPCIONES DE SUBIDA -->
+<div class="modal fade modal-modern" id="uploadOptionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Vista Previa del PDF</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-cloud-arrow-up"></i> Subir Comprobante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body p-0">
-                <iframe id="pdfPreviewFrame" class="file-preview-modal"></iframe>
+            <div class="modal-body">
+                <p class="text-muted small mb-3">Elige cómo quieres subir el comprobante:</p>
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-outline-primary btn-lg" id="chooseFileBtn"
+                            style="border-radius:16px; padding:20px; text-align:left;">
+                        <i class="bi bi-folder2-open me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi dispositivo</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Selecciona un PDF o imagen</small>
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-lg" id="chooseQRBtn"
+                            style="border-radius:16px; padding:20px; text-align:left; display:none;">
+                        <i class="bi bi-phone me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi celular (QR)</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Escanea con la cámara de tu teléfono</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--success),var(--success-hover));">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-qr-code"></i> Subir desde el móvil
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Escanea este código con tu teléfono:</p>
+                <div id="qrCodeContainer">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p class="text-muted small mt-2 mb-0">Generando código QR...</p>
+                </div>
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-phone me-1"></i> Abre la cámara, escanea y elige el archivo.
+                </p>
+                <div id="qrWaitingStatus" class="alert alert-info mt-3 mb-0 py-2 d-flex align-items-center gap-2 justify-content-center"
+                     style="display:none;">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Esperando archivo desde el móvil...
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="acceptFileBtn"><i class="bi bi-check2"></i> Confirmar Archivo</button>
+                <button type="button" class="btn btn-success" id="regenerateQRBtn">
+                    <i class="bi bi-arrow-repeat"></i> Regenerar QR
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
+<!-- MODAL PREVIEW PDF -->
+<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-earmark-check"></i> Confirmar Comprobante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0" style="background:var(--bg-tertiary);">
+                <iframe id="pdfPreviewFrame" class="file-preview-modal" title="Vista previa del comprobante"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="rejectFileBtn">
+                    <i class="bi bi-x-circle"></i> Rechazar
+                </button>
+                <button type="button" class="btn btn-success btn-lg" id="acceptFileBtn">
+                    <i class="bi bi-check-circle"></i> Sí, usar este comprobante
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- LOADING OVERLAY -->
-<!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
-        <h5>Registrando contratación</h5>
-        <p>Por favor espera, esto puede tomar unos segundos.</p>
+        <h5 id="loadingTitle">Procesando...</h5>
+        <p id="loadingText">Por favor espera, esto puede tomar unos segundos.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// CÓDIGO ORIGINAL COMPLETO - SIN MODIFICAR NINGUNA FUNCIÓN
-// ============================================================
+'use strict';
 
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
 let fileAccepted = false;
+let selectedClientId = null;
+let isSubmitting = false;
+let currentPreviewURL = null;
+let qrPollingInterval = null;
+let currentTempId = null;
+let searchDebounceTimer = null;
 
-function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-    const header = document.getElementById('notificationHeader');
-    const titleEl = document.getElementById('notificationTitle');
-    const bodyEl = document.getElementById('notificationBody');
-    header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
-    modal.show();
+/* ============================================================
+   DETECCIÓN DE DISPOSITIVO MÓVIL
+   ============================================================ */
+const isMobileDevice = (() => {
+    // Detección por User Agent + tamaño de pantalla
+    const ua = navigator.userAgent || '';
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+    return isMobileUA && isSmallScreen;
+})();
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
-function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    document.getElementById('confirmTitle').textContent = '⚠️ ' + title;
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
-    modal.show();
+function safeNumber(v, fallback = 0) {
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
 }
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+function formatMoney(v) {
+    const n = safeNumber(v, 0);
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatMoneyNumber(v) {
+    return safeNumber(v, 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* ============================================================
+   TEMA
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading(title = 'Procesando...', text = 'Por favor espera.') {
+    const overlay = document.getElementById('loadingOverlay');
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    overlay.classList.add('active');
 }
 
 function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('loadingOverlay').classList.remove('active');
 }
 
-function formatMoney(value) {
-    if (!value) return '$0.00';
-    const num = parseFloat(value);
-    if (isNaN(num)) return '$0.00';
-    return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function showNotification(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
+    modal.show();
 }
 
-function soloNumerosDecimales(event) {
-    const char = String.fromCharCode(event.which);
-    if (!/[0-9.]/.test(char)) event.preventDefault();
+/* ============================================================
+   MODAL CONFIRMACIÓN
+   ============================================================ */
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        onConfirm();
+    });
+    modal.show();
 }
 
-// Formateo de dinero
-document.getElementById('total_cost').addEventListener('keypress', soloNumerosDecimales);
-document.getElementById('total_cost').addEventListener('blur', function() { this.value = formatMoney(this.value); updateRemaining(); });
-document.getElementById('payment_amount').addEventListener('keypress', soloNumerosDecimales);
-document.getElementById('payment_amount').addEventListener('blur', function() { this.value = formatMoney(this.value); updateRemaining(); });
+/* ============================================================
+   VALIDACIÓN DE MONTOS - REGLA 50%
+   ============================================================ */
+const totalCostInput = document.getElementById('total_cost');
+const paymentAmountInput = document.getElementById('payment_amount');
+const paymentNotice = document.getElementById('paymentNotice');
+const minPaymentAmountEl = document.getElementById('minPaymentAmount');
+const remainingDisplay = document.getElementById('remainingDisplay');
+const remainingAmountEl = document.getElementById('remainingAmount');
 
-// Enter cambia de campo
-document.getElementById('total_cost').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.blur(); document.getElementById('payment_amount').focus(); } });
-document.getElementById('payment_amount').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); this.blur(); document.getElementById('payment_method').focus(); } });
+// Solo números y punto
+function onlyDecimalChars(e) {
+    const char = String.fromCharCode(e.which);
+    if (!/[0-9.]/.test(char)) {
+        e.preventDefault();
+        return;
+    }
+    if (char === '.' && e.target.value.includes('.')) {
+        e.preventDefault();
+    }
+}
 
-// MOSTRAR/OCULTAR TIPO DE JUICIO
-document.getElementById('service_type').addEventListener('change', function() {
+totalCostInput.addEventListener('keypress', onlyDecimalChars);
+paymentAmountInput.addEventListener('keypress', onlyDecimalChars);
+
+// Al escribir en costo total → sugerir mitad automáticamente
+totalCostInput.addEventListener('input', function () {
+    let value = this.value.replace(/[^0-9.]/g, '');
+    const parts = value.split('.');
+    if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
+    if (parts[1] && parts[1].length > 2) value = parts[0] + '.' + parts[1].slice(0, 2);
+    this.value = value;
+
+    const total = safeNumber(value);
+
+    if (total > 0) {
+        const half = Math.round((total / 2) * 100) / 100;
+        // Autocompletar el anticipo con la mitad SOLO si está vacío o menor a la mitad
+        const currentPayment = safeNumber(paymentAmountInput.value.replace(/[^0-9.]/g, ''));
+        if (paymentAmountInput.value === '' || currentPayment < half) {
+            paymentAmountInput.value = half.toFixed(2);
+        }
+        paymentNotice.style.display = 'flex';
+        minPaymentAmountEl.textContent = formatMoney(half);
+    } else {
+        paymentNotice.style.display = 'none';
+    }
+    updateRemaining();
+});
+
+// Al escribir en anticipo → validar que no sea menor a la mitad
+paymentAmountInput.addEventListener('input', function () {
+    let value = this.value.replace(/[^0-9.]/g, '');
+    const parts = value.split('.');
+    if (parts.length > 2) value = parts[0] + '.' + parts.slice(1).join('');
+    if (parts[1] && parts[1].length > 2) value = parts[0] + '.' + parts[1].slice(0, 2);
+    this.value = value;
+
+    const total = safeNumber(totalCostInput.value.replace(/[^0-9.]/g, ''));
+    const payment = safeNumber(value);
+    const minPayment = total / 2;
+
+    // Validación en vivo
+    if (total > 0 && payment > 0 && payment < minPayment) {
+        this.classList.add('is-invalid');
+    } else if (total > 0 && payment > total) {
+        this.classList.add('is-invalid');
+    } else {
+        this.classList.remove('is-invalid');
+    }
+
+    updateRemaining();
+});
+
+// Formateo al perder el foco
+totalCostInput.addEventListener('blur', function () {
+    const n = safeNumber(this.value.replace(/[^0-9.]/g, ''));
+    if (n > 0) this.value = formatMoney(n);
+    updateRemaining();
+});
+paymentAmountInput.addEventListener('blur', function () {
+    const n = safeNumber(this.value.replace(/[^0-9.]/g, ''));
+    if (n > 0) this.value = formatMoney(n);
+    updateRemaining();
+});
+
+totalCostInput.addEventListener('focus', function () {
+    this.value = this.value.replace(/[^0-9.]/g, '');
+});
+paymentAmountInput.addEventListener('focus', function () {
+    this.value = this.value.replace(/[^0-9.]/g, '');
+});
+
+// Enter para avanzar
+totalCostInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        this.blur();
+        paymentAmountInput.focus();
+    }
+});
+
+/* ============================================================
+   CALCULAR RESTANTE
+   ============================================================ */
+function updateRemaining() {
+    const total = safeNumber(totalCostInput.value.replace(/[^0-9.]/g, ''));
+    const payment = safeNumber(paymentAmountInput.value.replace(/[^0-9.]/g, ''));
+    const remaining = total - payment;
+
+    if (total > 0) {
+        remainingDisplay.style.display = 'flex';
+        remainingAmountEl.textContent = formatMoney(remaining);
+    } else {
+        remainingDisplay.style.display = 'none';
+    }
+}
+
+/* ============================================================
+   MOSTRAR/OCULTAR TIPO DE JUICIO
+   ============================================================ */
+document.getElementById('service_type').addEventListener('change', function () {
     const serviceType = this.value;
     const juicioContainer = document.getElementById('juicioContainer');
     const juicioOtroContainer = document.getElementById('juicioOtroContainer');
     const tipoJuicio = document.getElementById('tipo_juicio');
-    
+
     juicioContainer.style.display = 'none';
     juicioOtroContainer.style.display = 'none';
     tipoJuicio.required = false;
     document.getElementById('tipo_juicio_otro').required = false;
-    
+
     if (serviceType === 'juicio' || serviceType === 'contestacion') {
         juicioContainer.style.display = 'block';
         tipoJuicio.required = true;
     }
 });
 
-// MOSTRAR CAMPO "OTRO" O "CONVENIO"
-document.getElementById('tipo_juicio').addEventListener('change', function() {
+document.getElementById('tipo_juicio').addEventListener('change', function () {
     const juicioOtroContainer = document.getElementById('juicioOtroContainer');
     const tipoJuicioOtro = document.getElementById('tipo_juicio_otro');
-    
+
     juicioOtroContainer.style.display = 'none';
     tipoJuicioOtro.required = false;
-    
+
     if (this.value === 'Convenio' || this.value === 'Otro') {
         juicioOtroContainer.style.display = 'block';
         tipoJuicioOtro.required = true;
     }
 });
 
-// MOSTRAR/OCULTAR CAMPOS DE PAGO
-document.getElementById('payment_method').addEventListener('change', function() {
+/* ============================================================
+   MOSTRAR/OCULTAR CAMPOS DE PAGO
+   ============================================================ */
+document.getElementById('payment_method').addEventListener('change', function () {
     const method = this.value;
     const receiverContainer = document.getElementById('receiverContainer');
     const receiptContainer = document.getElementById('receiptContainer');
     const receiverName = document.getElementById('receiver_name');
     const receiptFile = document.getElementById('receipt_file');
-    
+
     receiverContainer.style.display = 'none';
     receiptContainer.style.display = 'none';
     receiverName.required = false;
     receiptFile.required = false;
-    
-    if (method === 'efectivo') { receiverContainer.style.display = 'block'; receiverName.required = true; }
-    else if (method === 'deposito' || method === 'transferencia') { receiptContainer.style.display = 'block'; receiptFile.required = true; }
+
+    if (method === 'efectivo') {
+        receiverContainer.style.display = 'block';
+        receiverName.required = true;
+        resetFile();
+    } else if (method === 'deposito' || method === 'transferencia') {
+        receiptContainer.style.display = 'block';
+        receiptFile.required = true;
+    }
 });
 
-// VISTA PREVIA PDF
-document.getElementById('receipt_file').addEventListener('change', function(e) {
-    const file = this.files[0];
-    if (!file) return;
-    if (file.type !== 'application/pdf') { showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); this.value = ''; return; }
-    fileAccepted = false;
-    const fileURL = URL.createObjectURL(file);
-    document.getElementById('pdfPreviewFrame').src = fileURL;
-    const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
-    previewModal.show();
-    document.getElementById('acceptFileBtn').onclick = function() { fileAccepted = true; previewModal.hide(); showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success'); };
+/* ============================================================
+   SUBIDA DE COMPROBANTE
+   ============================================================ */
+document.getElementById('uploadReceiptBtn').addEventListener('click', () => {
+    // Si es móvil, abre directo el explorador
+    if (isMobileDevice) {
+        document.getElementById('receipt_file').click();
+        return;
+    }
+    // Desktop/tablet: mostrar opciones
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadOptionsModal')).show();
 });
 
-// CALCULAR RESTANTE
-function updateRemaining() {
-    const totalStr = document.getElementById('total_cost').value.replace(/[^0-9.]/g, '');
-    const paymentStr = document.getElementById('payment_amount').value.replace(/[^0-9.]/g, '');
-    const total = parseFloat(totalStr) || 0;
-    const payment = parseFloat(paymentStr) || 0;
-    const remaining = total - payment;
-    if (total > 0) { document.getElementById('remainingDisplay').style.display = 'block'; document.getElementById('remainingAmount').textContent = formatMoney(remaining); }
+// Mostrar opción QR en el modal SOLO si NO es móvil
+if (!isMobileDevice) {
+    const chooseQRBtn = document.getElementById('chooseQRBtn');
+    if (chooseQRBtn) chooseQRBtn.style.display = 'block';
 }
 
-// BUSQUEDA
-document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } });
-
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
-    try {
-        const formData = new FormData();
-        formData.append('search_term', searchTerm);
-        const response = await fetch('/api/contracts/search-client', { method: 'POST', body: formData });
-        if (!response.ok) { const error = await response.json(); showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning'); return; }
-        const clients = await response.json();
-        const container = document.getElementById('resultsContainer');
-        if (clients.length === 0) { container.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><h5>No se encontraron clientes</h5><p>Intenta con otro término de búsqueda.</p></div>'; return; }
-        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes encontrados</h5>';
-        clients.forEach(client => {
-            const card = document.createElement('div');
-            card.className = 'client-card d-flex align-items-center justify-content-between flex-wrap gap-2';
-            card.innerHTML = `
-                <div>
-                    <div class="client-name">${client.nombre_completo}</div>
-                    <div class="client-curp">${client.curp}</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
-                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
-                    <button class="btn-select-client select-client" data-id="${client.id}"><i class="bi bi-person-check me-1"></i>Seleccionar</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-        document.querySelectorAll('.select-client').forEach(btn => {
-            btn.addEventListener('click', async () => { await loadClientDetails(btn.dataset.id); });
-        });
-    } catch (error) { showNotification('Error de conexión', `<p>${error.message}</p>`, 'error'); }
+document.getElementById('chooseFileBtn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+    setTimeout(() => document.getElementById('receipt_file').click(), 300);
 });
 
-// CARGAR CLIENTE
-async function loadClientDetails(clientId) {
-    showLoading();
+document.getElementById('chooseQRBtn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+    setTimeout(abrirQR, 300);
+});
+
+
+
+/* ============================================================
+   ARCHIVO LOCAL - VALIDACIÓN Y PREVIEW
+   ============================================================ */
+document.getElementById('receipt_file').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    const validExts = /\.(pdf|jpe?g|png)$/i;
+    const fileName = file.name || '';
+
+    if (!validTypes.includes(file.type) && !validExts.test(fileName)) {
+        showNotification('Formato no válido',
+            '<p>Solo se aceptan archivos <strong>PDF, JPG o PNG</strong>.</p>', 'error');
+        this.value = '';
+        return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+        showNotification('Archivo muy grande',
+            `<p>El archivo pesa <strong>${(file.size / 1024 / 1024).toFixed(1)} MB</strong>.<br>El límite es 25 MB.</p>`, 'error');
+        this.value = '';
+        return;
+    }
+    if (file.size === 0) {
+        showNotification('Archivo vacío',
+            '<p>El archivo seleccionado está vacío.</p>', 'error');
+        this.value = '';
+        return;
+    }
+
+    this.classList.remove('is-invalid');
+    const url = URL.createObjectURL(file);
+    mostrarPreviewFile(url, file.name);
+});
+
+/* ============================================================
+   PREVIEW COMPROBANTE
+   ============================================================ */
+function mostrarPreviewFile(url, filename) {
+    if (currentPreviewURL && currentPreviewURL !== url) {
+        try { URL.revokeObjectURL(currentPreviewURL); } catch (e) {}
+    }
+    currentPreviewURL = url;
+
+    const frame = document.getElementById('pdfPreviewFrame');
+    frame.src = url;
+
+    const modalEl = document.getElementById('pdfPreviewModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+    const acceptBtn = document.getElementById('acceptFileBtn');
+    const newAccept = acceptBtn.cloneNode(true);
+    acceptBtn.parentNode.replaceChild(newAccept, acceptBtn);
+    newAccept.addEventListener('click', () => {
+        fileAccepted = true;
+        modal.hide();
+        const btn = document.getElementById('uploadReceiptBtn');
+        btn.classList.add('has-file');
+        document.getElementById('uploadReceiptText').textContent = '✓ Comprobante adjuntado';
+        document.getElementById('uploadReceiptSub').textContent = filename;
+        document.getElementById('receipt_file').classList.remove('is-invalid');
+
+        showNotification('Comprobante confirmado',
+            `<p>El archivo <strong>${escapeHTML(filename)}</strong> se adjuntará al registrar.</p>`, 'success');
+    });
+
+    const rejectBtn = document.getElementById('rejectFileBtn');
+    const newReject = rejectBtn.cloneNode(true);
+    rejectBtn.parentNode.replaceChild(newReject, rejectBtn);
+    newReject.addEventListener('click', () => {
+        fileAccepted = false;
+        modal.hide();
+        document.getElementById('receipt_file').value = '';
+        resetFile();
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+        frame.src = '';
+        if (!fileAccepted) {
+            document.getElementById('receipt_file').value = '';
+            resetFile();
+        }
+        modalEl.removeEventListener('hidden.bs.modal', onHidden);
+    });
+}
+
+function resetFile() {
+    fileAccepted = false;
+    const fileInput = document.getElementById('receipt_file');
+    if (fileInput) fileInput.value = '';
+    const btn = document.getElementById('uploadReceiptBtn');
+    if (btn) {
+        btn.classList.remove('has-file');
+        document.getElementById('uploadReceiptText').textContent = 'Subir comprobante';
+        document.getElementById('uploadReceiptSub').textContent = 'PDF, JPG o PNG · máx. 25 MB';
+    }
+}
+
+/* ============================================================
+   QR
+   ============================================================ */
+function abrirQR() {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+
+    currentTempId = 'contrato_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
+    const baseUrl = window.location.origin;
+    const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${encodeURIComponent(currentTempId)}&doc_type=COMPROBANTE_CONTRATO`;
+
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '<div class="spinner-border text-success" role="status"></div><p class="text-muted small mt-2 mb-0">Generando código QR...</p>';
+    document.getElementById('qrWaitingStatus').style.display = 'none';
+
+    setTimeout(() => {
+        container.innerHTML = '';
+        if (typeof QRCode === 'undefined') {
+            container.innerHTML = `
+                <div class="alert alert-warning small">
+                    <p class="mb-2"><strong>Abre este enlace en tu teléfono:</strong></p>
+                    <p style="word-break:break-all; font-size:0.75rem; background:var(--bg-tertiary); padding:8px; border-radius:6px;">${escapeHTML(uploadUrl)}</p>
+                </div>`;
+        } else {
+            new QRCode(container, {
+                text: uploadUrl,
+                width: 220,
+                height: 220,
+                colorDark: '#1a8b5c',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    }, 300);
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('qrModal')).show();
+    iniciarPollingQR();
+}
+
+function iniciarPollingQR() {
+    let attempts = 0;
+    const maxAttempts = 90;
+
+    qrPollingInterval = setInterval(async () => {
+        attempts++;
+        if (attempts > maxAttempts) {
+            clearInterval(qrPollingInterval);
+            qrPollingInterval = null;
+            return;
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const res = await fetch(`/api/clients/check-upload/${encodeURIComponent(currentTempId)}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            if (data.success && data.file_url) {
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+                await recibirArchivoDesdeQR(data.file_url, data.filename);
+            }
+        } catch (e) {}
+    }, 1000);
+
+    setTimeout(() => {
+        if (qrPollingInterval) {
+            document.getElementById('qrWaitingStatus').style.display = 'flex';
+        }
+    }, 3000);
+}
+
+async function recibirArchivoDesdeQR(fileUrl, filename) {
     try {
-        const response = await fetch(`/api/contracts/client/${clientId}`);
-        const client = await response.json();
+        showLoading('Recibiendo archivo...', 'Descargando el comprobante desde tu móvil.');
+
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error('No se pudo descargar');
+        const blob = await response.blob();
+
+        if (blob.size > 25 * 1024 * 1024) {
+            hideLoading();
+            showNotification('Archivo muy grande',
+                '<p>El archivo excede los 25 MB permitidos.</p>', 'error');
+            return;
+        }
+
+        const safeName = (filename || 'comprobante').replace(/[^\w.\-]/g, '_');
+        const file = new File([blob], safeName, { type: blob.type || 'application/pdf' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('receipt_file').files = dt.files;
+
+        bootstrap.Modal.getInstance(document.getElementById('qrModal'))?.hide();
+        document.getElementById('qrWaitingStatus').style.display = 'none';
+
         hideLoading();
+        mostrarPreviewFile(fileUrl, safeName);
+
+        showNotification('¡Recibido!',
+            '<p>El archivo llegó desde tu celular. <strong>Confírmalo</strong>.</p>', 'success');
+    } catch (err) {
+        hideLoading();
+        showNotification('Error',
+            '<p>No se pudo recibir el archivo. Intenta de nuevo.</p>', 'error');
+    }
+}
+
+document.getElementById('regenerateQRBtn').addEventListener('click', () => {
+    if (qrPollingInterval) clearInterval(qrPollingInterval);
+    abrirQR();
+});
+
+document.getElementById('qrModal').addEventListener('hidden.bs.modal', () => {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+});
+
+/* ============================================================
+   BÚSQUEDA
+   ============================================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); realizarBusqueda(); }
+});
+
+searchBtn.addEventListener('click', realizarBusqueda);
+
+function mostrarSkeleton() {
+    const c = document.getElementById('resultsContainer');
+    let html = '<h5 class="mb-3 fw-bold d-flex align-items-center gap-2 mt-5"><i class="bi bi-people" style="color:var(--accent-primary);"></i>Buscando...</h5>';
+    for (let i = 0; i < 3; i++) {
+        html += `<div class="skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line"></div>
+        </div>`;
+    }
+    c.innerHTML = html;
+}
+
+async function realizarBusqueda() {
+    const term = searchInput.value.trim().toUpperCase();
+
+    if (!term) {
+        showNotification('Búsqueda vacía', '<p>Ingresa un término de búsqueda.</p>', 'warning');
+        searchInput.focus();
+        return;
+    }
+    if (term.length < 2) {
+        showNotification('Búsqueda muy corta', '<p>Ingresa al menos 2 caracteres.</p>', 'warning');
+        return;
+    }
+
+    searchBtn.disabled = true;
+    const originalHTML = searchBtn.innerHTML;
+    searchBtn.innerHTML = '<span class="btn-spinner"></span> <span>Buscando...</span>';
+
+    mostrarSkeleton();
+
+    try {
+        const formData = new FormData();
+        formData.append('search_term', term);
+
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
+
+        const res = await fetch('/api/contracts/search-client', {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal
+        });
+        clearTimeout(tId);
+
+        const container = document.getElementById('resultsContainer');
+
+        if (!res.ok) {
+            let errorMsg = 'No se encontraron clientes.';
+            try { const e = await res.json(); if (e.detail) errorMsg = e.detail; } catch (_) {}
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-search"></i><h5>Sin resultados</h5><p>${escapeHTML(errorMsg)}</p></div>`;
+            return;
+        }
+
+        const clients = await res.json();
+
+        if (!Array.isArray(clients) || clients.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-inbox"></i><h5>No se encontraron clientes</h5><p>Intenta con otro término.</p></div>`;
+            return;
+        }
+
+        renderizarClientes(clients);
+    } catch (error) {
+        let msg = 'Error de conexión. Verifica tu red.';
+        if (error.name === 'AbortError') msg = 'La búsqueda tardó demasiado.';
+        document.getElementById('resultsContainer').innerHTML =
+            `<div class="empty-state"><i class="bi bi-wifi-off" style="color:var(--danger);"></i><h5>Error de conexión</h5><p>${escapeHTML(msg)}</p></div>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = originalHTML;
+    }
+}
+
+function renderizarClientes(clients) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mt-5 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-people" style="color:var(--accent-primary);"></i>
+        Clientes encontrados <span class="badge-custom badge-interno ms-2">${clients.length}</span>
+    </h5>`;
+
+    clients.forEach((client, idx) => {
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const clientId = safeNumber(client.id);
+
+        html += `
+            <div class="client-card d-flex align-items-center justify-content-between flex-wrap gap-2" style="animation-delay:${idx * 0.05}s;">
+                <div>
+                    <div class="client-name">${nombre}</div>
+                    <div class="client-curp">CURP: ${curp}</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag"></i>${folio}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder"></i>Exp. ${exp}</span>
+                    <button class="btn-select-client select-client" data-id="${clientId}" type="button">
+                        <i class="bi bi-person-check"></i>Seleccionar
+                    </button>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.select-client').forEach(btn => {
+        btn.addEventListener('click', function () {
+            loadClientDetails(this.dataset.id);
+        });
+    });
+}
+
+/* ============================================================
+   CARGAR CLIENTE
+   ============================================================ */
+async function loadClientDetails(clientId) {
+    showLoading('Cargando cliente...', 'Consultando información del cliente.');
+
+    try {
+        const res = await fetch(`/api/contracts/client/${clientId}`);
+        if (!res.ok) throw new Error('Error al cargar el cliente');
+        const client = await res.json();
+
+        hideLoading();
+
         document.getElementById('resultsContainer').innerHTML = '';
         document.getElementById('contractFormContainer').style.display = 'block';
-        document.getElementById('clientNameDisplay').innerHTML = '<i class="bi bi-person-circle text-primary me-2"></i>' + client.nombre_completo;
-        document.getElementById('clientInfoDisplay').textContent = `CURP: ${client.curp} | Teléfono: ${client.telefono} | Exp. Interno: ${client.expediente_interno} | Folio: ${client.folio_registro}`;
+
+        document.getElementById('clientNameDisplay').innerHTML =
+            `<i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${escapeHTML(client.nombre_completo)}`;
+        document.getElementById('clientInfoDisplay').innerHTML = `
+            <strong>CURP:</strong> ${escapeHTML(client.curp || '—')} ·
+            <strong>Tel:</strong> ${escapeHTML(client.telefono || '—')} ·
+            <strong>Exp:</strong> ${escapeHTML(client.expediente_interno || '—')} ·
+            <strong>Folio:</strong> ${escapeHTML(client.folio_registro || '—')}
+        `;
         document.getElementById('clientId').value = client.id;
+        selectedClientId = client.id;
+
         document.getElementById('contractFormContainer').scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
         hideLoading();
-        showNotification('Error', `<p>Error al cargar el cliente: ${error.message}</p>`, 'error');
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
     }
 }
 
-// LIMPIAR
+/* ============================================================
+   LIMPIAR
+   ============================================================ */
 function limpiarFormulario() {
-    showConfirm('Limpiar formulario', '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>', function() {
-        document.getElementById('contractForm').reset();
-        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        document.getElementById('contractFormContainer').style.display = 'none';
-        document.getElementById('resultsContainer').innerHTML = '';
-        document.getElementById('remainingDisplay').style.display = 'none';
-        document.getElementById('receiverContainer').style.display = 'none';
-        document.getElementById('receiptContainer').style.display = 'none';
-        document.getElementById('juicioContainer').style.display = 'none';
-        document.getElementById('juicioOtroContainer').style.display = 'none';
-        fileAccepted = false;
-        showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
-    });
+    showConfirm('Limpiar formulario',
+        `<p>¿Deseas limpiar todos los campos?</p><p class="text-muted small mb-0">Se perderán los datos no guardados.</p>`,
+        function () {
+            document.getElementById('contractForm').reset();
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+            document.getElementById('contractFormContainer').style.display = 'none';
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('remainingDisplay').style.display = 'none';
+            document.getElementById('paymentNotice').style.display = 'none';
+            document.getElementById('receiverContainer').style.display = 'none';
+            document.getElementById('receiptContainer').style.display = 'none';
+            document.getElementById('juicioContainer').style.display = 'none';
+            document.getElementById('juicioOtroContainer').style.display = 'none';
+
+            resetFile();
+            selectedClientId = null;
+
+            showNotification('Formulario limpiado', '<p>Todos los campos han sido reiniciados.</p>', 'info');
+        });
 }
 
-// ENVIAR
-// ENVIAR
+/* ============================================================
+   SUBMIT
+   ============================================================ */
 document.getElementById('contractForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    // Validación de campos requeridos
     let valid = true;
     const fields = document.querySelectorAll('#contractForm [required]');
     fields.forEach(field => {
-        if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
-        else { field.classList.remove('is-invalid'); }
-    });
-    const paymentMethod = document.getElementById('payment_method').value;
-    if (paymentMethod === 'deposito' || paymentMethod === 'transferencia') {
-        if (!fileAccepted) { showNotification('Comprobante no validado', '<p>Por favor adjunta y valida el comprobante de pago en PDF.</p>', 'warning'); return; }
-    }
-    if (!valid) { showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning'); return; }
-    
-    showConfirm('Confirmar guardado', '<p>¿Estás seguro de que deseas registrar esta contratación?</p>', async function() {
-        showLoading();
-        const clientId = document.getElementById('clientId').value;
-        const formData = new FormData(e.target);
-        const totalCost = document.getElementById('total_cost').value.replace(/[^0-9.]/g, '');
-        const paymentAmount = document.getElementById('payment_amount').value.replace(/[^0-9.]/g, '');
-        formData.set('total_cost', totalCost);
-        formData.set('payment_amount', paymentAmount);
-        try {
-            const response = await fetch(`/api/contracts/register/${clientId}`, {
-                method: 'POST',
-                body: formData,
-                redirect: 'manual'  // ⬅️ CRÍTICO: no seguir redirects a login
-            });
-
-            // Si el middleware redirigió a login (302), detectarlo
-            if (response.type === 'opaqueredirect' || response.status === 302) {
-                hideLoading();
-                showNotification('Sesión expirada', '<p>Tu sesión se cerró. Recarga la página e inicia sesión de nuevo.</p>', 'error');
-                setTimeout(() => window.location.href = '/auth/login', 2000);
-                return;
-            }
-
-            hideLoading();
-
-            // Validar que el response sea PDF real
-            const contentType = response.headers.get('content-type') || '';
-            if (!response.ok || !contentType.includes('application/pdf')) {
-                let errorMsg = 'Error al registrar la contratación';
-                try {
-                    const errJson = await response.json();
-                    errorMsg = errJson.detail || errorMsg;
-                } catch (_) {
-                    errorMsg = `Respuesta inesperada del servidor (${response.status})`;
-                }
-                showNotification('Error', `<p>${errorMsg}</p>`, 'error');
-                return;
-            }
-
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `contrato_${Date.now()}.pdf`; a.click();
-            showNotification('Contratación Registrada', '<p>La contratación se registró exitosamente. El PDF se ha descargado.</p>', 'success');
-            setTimeout(() => location.reload(), 2000);
-        } catch (error) {
-            hideLoading();
-            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+        const isEmpty = field.type === 'file'
+            ? (!field.files || !field.files.length)
+            : (!field.value || !field.value.trim());
+        if (isEmpty) {
+            field.classList.add('is-invalid');
+            valid = false;
+        } else {
+            field.classList.remove('is-invalid');
         }
     });
+
+    if (!valid) {
+        showNotification('Campos incompletos',
+            '<p>Completa todos los campos obligatorios marcados en rojo.</p>', 'warning');
+        const firstInvalid = document.querySelector('#contractForm .is-invalid');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => firstInvalid.focus?.(), 300);
+        }
+        return;
+    }
+
+    // Validar montos
+    const total = safeNumber(totalCostInput.value.replace(/[^0-9.]/g, ''));
+    const payment = safeNumber(paymentAmountInput.value.replace(/[^0-9.]/g, ''));
+    const minPayment = total / 2;
+
+    if (total <= 0) {
+        totalCostInput.classList.add('is-invalid');
+        showNotification('Costo inválido', '<p>El costo total debe ser mayor a cero.</p>', 'warning');
+        totalCostInput.focus();
+        return;
+    }
+
+    if (payment < minPayment) {
+        paymentAmountInput.classList.add('is-invalid');
+        showNotification('Anticipo insuficiente',
+            `<p>El anticipo mínimo es del <strong>50%</strong> del costo total.</p>
+             <p class="text-center mt-2"><strong style="color:var(--danger); font-size:1.15rem;">Mínimo: ${formatMoney(minPayment)}</strong></p>`,
+            'warning');
+        paymentAmountInput.focus();
+        return;
+    }
+
+    if (payment > total) {
+        paymentAmountInput.classList.add('is-invalid');
+        showNotification('Anticipo excedido',
+            `<p>El anticipo no puede ser mayor al costo total (<strong>${formatMoney(total)}</strong>).</p>`,
+            'warning');
+        paymentAmountInput.focus();
+        return;
+    }
+
+    const method = document.getElementById('payment_method').value;
+    if ((method === 'deposito' || method === 'transferencia') && !fileAccepted) {
+        showNotification('Comprobante no confirmado',
+            '<p>Adjunta y confirma el comprobante antes de continuar.</p>', 'warning');
+        return;
+    }
+
+    // Confirmación
+    const clientName = document.getElementById('clientNameDisplay').textContent.trim();
+    showConfirm('Confirmar contratación',
+        `<p>¿Registrar la contratación para <strong>${escapeHTML(clientName)}</strong>?</p>
+         <div class="alert alert-info mt-2 mb-0 small">
+            <div class="d-flex justify-content-between"><span>Costo total:</span><strong>${formatMoney(total)}</strong></div>
+            <div class="d-flex justify-content-between"><span>Anticipo:</span><strong style="color:var(--success);">${formatMoney(payment)}</strong></div>
+            <div class="d-flex justify-content-between"><span>Saldo pendiente:</span><strong style="color:var(--warning);">${formatMoney(total - payment)}</strong></div>
+         </div>`,
+        async function () {
+            if (isSubmitting) return;
+            isSubmitting = true;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-spinner"></span> <span>Registrando...</span>';
+
+            showLoading('Registrando contratación...', 'Generando PDF, por favor espera.');
+
+            const formData = new FormData(e.target);
+            formData.set('total_cost', total.toFixed(2));
+            formData.set('payment_amount', payment.toFixed(2));
+
+            try {
+                const controller = new AbortController();
+                const tId = setTimeout(() => controller.abort(), 60000);
+
+                const response = await fetch(`/api/contracts/register/${selectedClientId}`, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal,
+                    redirect: 'manual'
+                });
+                clearTimeout(tId);
+
+                if (response.type === 'opaqueredirect' || response.status === 302) {
+                    hideLoading();
+                    showNotification('Sesión expirada',
+                        '<p>Tu sesión se cerró. Serás redirigido al login.</p>', 'error');
+                    setTimeout(() => window.location.href = '/auth/login', 2000);
+                    return;
+                }
+
+                hideLoading();
+                const contentType = response.headers.get('content-type') || '';
+
+                if (!response.ok || !contentType.includes('application/pdf')) {
+                    let errorMsg = 'Error al registrar la contratación.';
+                    try {
+                        const errJson = await response.json();
+                        if (errJson.detail) errorMsg = errJson.detail;
+                    } catch (_) {
+                        errorMsg = `Respuesta inesperada (${response.status}).`;
+                    }
+                    showNotification('Error', `<p>${escapeHTML(errorMsg)}</p>`, 'error');
+                    return;
+                }
+
+                const blob = await response.blob();
+                if (blob.size === 0) throw new Error('El PDF generado está vacío.');
+
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `contrato_${Date.now()}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+                showNotification('¡Contratación Registrada!',
+                    `<div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between border-bottom pb-2">
+                            <span class="text-muted">Costo total:</span>
+                            <strong>${formatMoney(total)}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom pb-2">
+                            <span class="text-muted">Anticipo registrado:</span>
+                            <strong style="color:var(--success);">${formatMoney(payment)}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Saldo pendiente:</span>
+                            <strong style="color:var(--warning);">${formatMoney(total - payment)}</strong>
+                        </div>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-download me-1"></i> El PDF se descargó automáticamente.
+                        </p>
+                    </div>`, 'success');
+
+                setTimeout(() => window.location.reload(), 3500);
+            } catch (error) {
+                hideLoading();
+                let msg = error.message || 'Error desconocido';
+                if (error.name === 'AbortError') msg = 'La operación tardó demasiado. Verifica tu conexión.';
+                showNotification('Error', `<p>${escapeHTML(msg)}</p>`, 'error');
+            } finally {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
+        }
+    );
+});
+
+/* ============================================================
+   ESC cierra modales
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst && m.id !== 'qrModal') inst.hide();
+        });
+    }
+    // Atajo "T" para tema
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    searchBtn.disabled = false;
+    setTimeout(() => searchInput?.focus(), 400);
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (isSubmitting) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
 });
 </script>
 </body>

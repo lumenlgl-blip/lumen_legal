@@ -1,123 +1,720 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Lumen Legal · Inicio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: #f2f5fb; min-height: 100vh; padding-bottom: 40px; overflow-x: hidden; }
+        /* ============================================================
+           VARIABLES DE TEMA (CLARO + OSCURO)
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --surface-card: #ffffff;
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #edf2f9;
+            --border-strong: #dbe4ef;
 
-        /* Navbar */
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+
+            --success: #1a8b5c;
+            --success-soft: #e3f5ee;
+            --warning: #f5b342;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-soft: #fde8e6;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --secondary-soft: #f0f2f5;
+
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 12px 32px -8px rgba(42,109,244,0.08);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.1);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --surface-card: #16243a;
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+
+            --success: #34d399;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --secondary-soft: rgba(255,255,255,0.05);
+
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 12px 32px -8px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.7);
+        }
+
+        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            min-height: 100vh;
+            padding-bottom: 40px;
+            overflow-x: hidden;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+           NAVBAR
+           ============================================================ */
         .navbar-custom {
-            background: #0b1e33 !important;
+            background: var(--accent-dark) !important;
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 0 0 24px 24px;
             padding: 14px 0;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-md);
+            transition: padding var(--transition-normal), box-shadow var(--transition-normal);
         }
-        .navbar-custom .navbar-brand { font-weight: 700; font-size: 1.4rem; color: white; }
-        .navbar-custom .navbar-brand i { color: #7aa9ff; margin-right: 8px; }
-        .navbar-toggler { border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; }
+        .navbar-custom.scrolled {
+            padding: 8px 0;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .navbar-custom .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.02em;
+            transition: transform var(--transition-fast);
+        }
+        .navbar-custom .navbar-brand:hover { transform: scale(1.02); }
+        .navbar-custom .navbar-brand i {
+            color: var(--accent-light);
+            filter: drop-shadow(0 0 8px rgba(122,169,255,0.4));
+        }
+
+        .navbar-toggler {
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 8px 10px;
+            transition: all var(--transition-fast);
+        }
+        .navbar-toggler:hover { background: rgba(255,255,255,0.1); }
+        .navbar-toggler:focus { box-shadow: 0 0 0 3px rgba(122,169,255,0.3); }
         .navbar-toggler-icon { filter: invert(1); }
+
         .user-badge {
-            background: rgba(255,255,255,0.12); border-radius: 40px; padding: 6px 16px 6px 12px;
-            color: white; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 8px;
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.12);
+            border-radius: 40px;
+            padding: 6px 16px 6px 12px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all var(--transition-fast);
         }
-        .user-badge i { font-size: 1.2rem; color: #7aa9ff; }
-        .user-badge .role-tag { background: #2a6df4; color: white; font-size: 0.6rem; font-weight: 600; padding: 2px 10px; border-radius: 40px; text-transform: uppercase; }
-        .btn-outline-light-custom { border-color: rgba(255,255,255,0.25); color: white; border-radius: 40px; padding: 6px 20px; font-weight: 500; }
-        .btn-outline-light-custom:hover { background: white; color: #0b1e33; }
+        .user-badge:hover { background: rgba(255,255,255,0.18); }
+        .user-badge i { font-size: 1.2rem; color: var(--accent-light); }
+        .user-badge .role-tag {
+            background: var(--accent-primary);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
 
-        /* Hero */
+        .btn-outline-light-custom {
+            border: 1.5px solid rgba(255,255,255,0.25);
+            color: white;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 40px;
+        }
+        .btn-outline-light-custom:hover {
+            background: white;
+            color: var(--accent-dark);
+            border-color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(255,255,255,0.4);
+        }
+
+        /* Toggle de tema */
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            margin-right: 8px;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.22);
+            transform: rotate(20deg) scale(1.08);
+            color: var(--accent-light);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           HERO
+           ============================================================ */
         .hero-modern {
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(4px); border-radius: 32px;
-            padding: 32px 24px 28px; margin-top: 24px;
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.08); border: 1px solid rgba(255,255,255,0.5); text-align: center;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 32px 24px 28px;
+            margin-top: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-subtle);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: heroFadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .hero-modern .logo-img { max-width: 280px; width: 100%; height: auto; margin-bottom: 4px; border-radius: 16px; }
-        .hero-modern h1 { font-weight: 700; font-size: 2.2rem; color: #0b1e33; }
-        .hero-modern h1 i { color: #2a6df4; }
-        .hero-modern .subtitle { color: #4a5b6e; font-size: 1.05rem; font-weight: 500; }
-        .hero-modern .badge-despacho { background: #eef3fa; color: #2a4a7a; font-weight: 600; padding: 4px 16px; border-radius: 40px; font-size: 0.8rem; }
-        .hero-divider { width: 80px; height: 3px; background: linear-gradient(90deg, #2a6df4, #7aa9ff); border-radius: 4px; margin: 12px auto 0; }
+        @keyframes heroFadeIn {
+            from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .hero-modern::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(42,109,244,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-modern::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(26,139,92,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
 
-        /* Admin */
-        .admin-section-modern { background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); border-radius: 28px; padding: 24px 28px; margin-top: 28px; border: 1px solid rgba(42,109,244,0.15); box-shadow: 0 12px 32px -8px rgba(42,109,244,0.06); }
-        .admin-section-modern .admin-title { font-weight: 700; font-size: 1.1rem; color: #0b1e33; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #eef3fa; padding-bottom: 14px; margin-bottom: 18px; }
-        .admin-section-modern .admin-title i { color: #2a6df4; font-size: 1.3rem; }
-        .admin-section-modern .admin-title .badge-admin { background: #dc3545; color: white; font-size: 0.6rem; font-weight: 700; padding: 2px 12px; border-radius: 40px; }
+        .hero-modern .logo-img {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 4px;
+            border-radius: var(--radius-md);
+            transition: transform var(--transition-slow);
+            position: relative;
+            z-index: 1;
+        }
+        .hero-modern .logo-img:hover { transform: scale(1.03); }
 
-        /* Cards */
+        .hero-modern h1 {
+            font-weight: 800;
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero-modern h1 i {
+            color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-modern .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-modern .badge-despacho {
+            background: var(--info-soft);
+            color: var(--info);
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+        }
+        .hero-modern .badge-despacho:hover {
+            transform: translateY(-2px);
+            border-color: var(--info);
+            box-shadow: 0 6px 16px -4px rgba(31,111,158,0.3);
+        }
+
+        .hero-divider {
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-light));
+            border-radius: 4px;
+            margin: 16px auto 0;
+            position: relative;
+            z-index: 1;
+            animation: dividerPulse 3s ease-in-out infinite;
+        }
+        @keyframes dividerPulse {
+            0%, 100% { opacity: 1; transform: scaleX(1); }
+            50% { opacity: 0.7; transform: scaleX(0.85); }
+        }
+
+        /* ============================================================
+           ADMIN SECTION
+           ============================================================ */
+        .admin-section-modern {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 28px;
+            margin-top: 28px;
+            border: 1px solid rgba(220,53,69,0.15);
+            box-shadow: var(--shadow-md);
+            animation: fadeInUp 0.5s ease-out 0.1s backwards;
+        }
+        [data-theme="dark"] .admin-section-modern {
+            border-color: rgba(248,113,113,0.2);
+        }
+
+        .admin-section-modern .admin-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--border-soft);
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+        }
+        .admin-section-modern .admin-title i {
+            color: var(--danger);
+            font-size: 1.3rem;
+        }
+        .admin-section-modern .admin-title .badge-admin {
+            background: var(--danger);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 40px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        /* ============================================================
+           FEATURE CARDS
+           ============================================================ */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .feature-card-modern {
-            background: white; border-radius: 20px; padding: 20px 16px; text-align: center;
-            border: 1px solid #edf2f9; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-decoration: none; color: inherit; cursor: pointer;
+            background: var(--surface-card);
+            border-radius: 20px;
+            padding: 22px 18px;
+            text-align: center;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.4s ease-out backwards;
         }
-        .feature-card-modern:hover { transform: translateY(-6px); border-color: #cbd9ed; box-shadow: 0 16px 36px -12px rgba(30,60,120,0.12); }
-        .feature-card-modern .icon-wrap { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: 12px; background: #f0f7ff; color: #2a6df4; }
-        .feature-card-modern .icon-wrap.text-danger { background: #fde8e6; color: #c0392b; }
-        .feature-card-modern .icon-wrap.text-success { background: #e3f5ee; color: #1a8b5c; }
-        .feature-card-modern .icon-wrap.text-warning { background: #fdf3e0; color: #b7791f; }
-        .feature-card-modern .icon-wrap.text-info { background: #e3effa; color: #1f6f9e; }
-        .feature-card-modern .icon-wrap.text-secondary { background: #f0f2f5; color: #5a6a7e; }
-        .feature-card-modern .card-title { font-weight: 600; font-size: 0.95rem; color: #0b1e33; margin-bottom: 4px; }
-        .feature-card-modern .card-desc { font-size: 0.75rem; color: #6b7b8f; margin-bottom: 8px; line-height:1.3; }
-        .feature-card-modern .badge-status { font-size: 0.55rem; font-weight: 700; padding: 3px 12px; border-radius: 40px; text-transform: uppercase; background: #e3f5ee; color: #1a8b5c; }
-        .feature-card-modern .badge-status.admin-only { background: #fde8e6; color: #c0392b; }
-        .feature-card-modern .badge-status.info-only { background: #e3effa; color: #1f6f9e; }
 
-        .footer-modern { margin-top: 48px; padding: 24px 0 12px; text-align: center; color: #6b7b8f; font-size: 0.85rem; border-top: 1px solid #e9eef4; }
-        .footer-modern .footer-brand { font-weight: 600; color: #0b1e33; }
-        .footer-modern .footer-brand i { color: #2a6df4; }
-        .notification-badge { background: #dc3545; color: white; font-size: 0.6rem; font-weight: 700; padding: 2px 8px; border-radius: 40px; margin-left: 8px; animation: pulse-badge 1.8s infinite; }
-        @keyframes pulse-badge { 0%{transform:scale(1)} 50%{transform:scale(1.08)} 100%{transform:scale(1)} }
+        .feature-card-modern::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(42,109,244,0.06), transparent);
+            transition: left 0.6s ease;
+            pointer-events: none;
+        }
+        .feature-card-modern:hover::before { left: 100%; }
 
-        .modal-modern .modal-content { border-radius: 28px; border: none; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2); overflow: hidden; }
-        .modal-modern .modal-header { border-bottom: none; padding: 20px 28px 8px 28px; background: #0b1e33 !important; }
-        .modal-modern .modal-header .modal-title { font-weight: 700; color: white; }
-        .modal-modern .modal-body { padding: 20px 28px 28px; }
-        .alert-notif { border-radius: 16px; padding: 12px 16px; margin-bottom: 8px; border: none; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
-        .alert-notif.alert-danger { background: #fde8e6; color: #7a2a2a; }
-        .alert-notif.alert-warning { background: #fdf3e0; color: #7a5a1a; }
-        .alert-notif.alert-info { background: #e3effa; color: #1f4f7a; }
-        .alert-notif.alert-primary { background: #e8effa; color: #1a3b6b; }
+        .feature-card-modern:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 16px 36px -12px rgba(42,109,244,0.25);
+        }
+        .feature-card-modern:active { transform: translateY(-2px); }
 
-        /* ===== RESPONSIVE ===== */
+        .feature-card-modern .icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 14px;
+            background: var(--info-soft);
+            color: var(--accent-primary);
+            transition: all var(--transition-normal);
+        }
+        .feature-card-modern:hover .icon-wrap {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 8px 20px -4px rgba(42,109,244,0.3);
+        }
+
+        .feature-card-modern .icon-wrap.text-danger { background: var(--danger-soft); color: var(--danger); }
+        .feature-card-modern .icon-wrap.text-success { background: var(--success-soft); color: var(--success); }
+        .feature-card-modern .icon-wrap.text-warning { background: var(--warning-soft); color: #b7791f; }
+        .feature-card-modern .icon-wrap.text-info { background: var(--info-soft); color: var(--info); }
+        .feature-card-modern .icon-wrap.text-secondary { background: var(--secondary-soft); color: var(--text-muted); }
+
+        [data-theme="dark"] .feature-card-modern .icon-wrap.text-warning { color: var(--warning); }
+
+        .feature-card-modern .card-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.01em;
+        }
+        .feature-card-modern .card-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .feature-card-modern .badge-status {
+            font-size: 0.58rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            background: var(--success-soft);
+            color: var(--success);
+            letter-spacing: 0.04em;
+        }
+        .feature-card-modern .badge-status.admin-only {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+        .feature-card-modern .badge-status.info-only {
+            background: var(--info-soft);
+            color: var(--info);
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer-modern {
+            margin-top: 48px;
+            padding: 28px 0 12px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-soft);
+            position: relative;
+        }
+        .footer-modern .footer-brand {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-modern .footer-brand i { color: var(--accent-primary); }
+
+        /* ============================================================
+           NOTIFICATION BADGE
+           ============================================================ */
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 40px;
+            margin-left: 8px;
+            animation: pulse-badge 1.8s infinite;
+            display: inline-block;
+            line-height: 1.2;
+            box-shadow: 0 0 0 0 rgba(220,53,69,0.7);
+        }
+        @keyframes pulse-badge {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
+            50% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(220,53,69,0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,53,69,0); }
+        }
+
+        /* ============================================================
+           MODALES
+           ============================================================ */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 22px 28px 12px 28px;
+            background: var(--accent-dark) !important;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-modern .modal-body { padding: 22px 28px 28px; }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 40px;
+            font-weight: 600;
+            padding: 10px 22px;
+            min-height: 44px;
+            transition: all var(--transition-normal);
+        }
+        .modal-modern .modal-footer .btn:hover { transform: translateY(-1px); }
+
+        /* Animación de modales */
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+
+        /* ============================================================
+           ALERT NOTIF (dentro del modal)
+           ============================================================ */
+        .alert-notif {
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: transform var(--transition-fast);
+            animation: fadeInUp 0.3s ease-out backwards;
+        }
+        .alert-notif:hover { transform: translateX(4px); }
+        .alert-notif i { font-size: 1.1rem; flex-shrink: 0; }
+
+        .alert-notif.alert-danger { background: var(--danger-soft); color: var(--danger); }
+        .alert-notif.alert-warning { background: var(--warning-soft); color: #7a5a1a; }
+        .alert-notif.alert-info { background: var(--info-soft); color: var(--info); }
+        .alert-notif.alert-primary { background: rgba(42,109,244,0.1); color: var(--accent-primary); }
+
+        [data-theme="dark"] .alert-notif.alert-warning { color: var(--warning); }
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-strong);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 992px) {
             .hero-modern { border-radius: 24px; padding: 24px 18px; }
-            .feature-card-modern { padding: 18px 12px; }
+            .feature-card-modern { padding: 18px 14px; }
         }
+
         @media (max-width: 768px) {
             .navbar-custom { border-radius: 0 0 18px 18px; padding: 10px 0; }
             .navbar-custom .container { flex-wrap: wrap; }
-            .navbar-collapse { margin-top: 12px; background: rgba(0,0,0,0.15); border-radius: 16px; padding: 12px; }
-            .user-badge { width: 100%; justify-content: space-between; margin-bottom: 8px; font-size: 0.8rem; }
-            .hero-modern { margin-top: 16px; padding: 20px 14px; border-radius: 20px; }
-            .hero-modern h1 { font-size: 1.5rem; }
+            .navbar-collapse {
+                margin-top: 12px;
+                background: rgba(0,0,0,0.15);
+                border-radius: var(--radius-md);
+                padding: 14px;
+            }
+            .user-badge {
+                width: 100%;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                font-size: 0.82rem;
+            }
+            .theme-toggle {
+                width: 100%;
+                border-radius: 40px;
+                margin: 0 0 8px 0;
+                height: 42px;
+            }
+
+            .hero-modern { margin-top: 16px; padding: 22px 16px; border-radius: 20px; }
+            .hero-modern h1 { font-size: 1.5rem; flex-direction: column; gap: 6px; }
             .hero-modern .logo-img { max-width: 180px; }
             .hero-modern .subtitle { font-size: 0.9rem; }
-            .admin-section-modern { padding: 16px 14px; border-radius: 20px; margin-top: 18px; }
-            .feature-card-modern .icon-wrap { width: 52px; height: 52px; font-size: 1.6rem; border-radius: 14px; }
-            .feature-card-modern .card-title { font-size: 0.85rem; }
-            .feature-card-modern .card-desc { font-size: 0.7rem; }
-            .row.g-3 { --bs-gutter-x: 0.7rem; --bs-gutter-y: 0.7rem; }
+
+            .admin-section-modern { padding: 18px 16px; border-radius: 20px; margin-top: 18px; }
+            .admin-section-modern .admin-title { font-size: 1rem; flex-wrap: wrap; }
+
+            .feature-card-modern .icon-wrap {
+                width: 54px;
+                height: 54px;
+                font-size: 1.7rem;
+                border-radius: 16px;
+            }
+            .feature-card-modern .card-title { font-size: 0.88rem; }
+            .feature-card-modern .card-desc { font-size: 0.72rem; }
+            .row.g-3 { --bs-gutter-x: 0.75rem; --bs-gutter-y: 0.75rem; }
+
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 18px 20px 22px; }
+            .modal-modern .modal-footer { padding: 14px 20px 18px; }
         }
+
         @media (max-width: 576px) {
             body { padding-bottom: 16px; }
             .container { padding-left: 10px; padding-right: 10px; }
+
             .hero-modern { border-radius: 18px; }
-            .hero-modern .badge-despacho { font-size: 0.7rem; padding: 3px 10px; }
-            /* En móvil: 2 cards por fila */
-            .row.g-3 > [class*="col-"] { width: 50%; }
-            .admin-section-modern .row.g-3 > [class*="col-"] { width: 50%; }
-            .feature-card-modern { min-height: 140px; }
+            .hero-modern .badge-despacho { font-size: 0.72rem; padding: 4px 12px; }
+            .hero-modern h1 { font-size: 1.35rem; }
+
+            /* 2 cards por fila en móvil */
+            .row.g-3 > [class*="col-"] { width: 50%; flex: 0 0 auto; }
+            .admin-section-modern .row.g-3 > [class*="col-"] { width: 50%; flex: 0 0 auto; }
+            .feature-card-modern { min-height: 150px; padding: 16px 10px; }
+
+            .feature-card-modern .card-desc { display: none; }
+            .feature-card-modern .icon-wrap { width: 48px; height: 48px; font-size: 1.5rem; margin-bottom: 10px; }
+            .feature-card-modern .card-title { font-size: 0.82rem; margin-bottom: 8px; }
+            .feature-card-modern .badge-status { font-size: 0.55rem; padding: 3px 10px; }
         }
+
         @media (min-width: 1200px) {
             .hero-modern { padding: 40px 32px 36px; }
             .hero-modern h1 { font-size: 2.5rem; }
@@ -127,17 +724,23 @@
 <body>
 
     <!-- NAVBAR RESPONSIVE -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar navbar-expand-lg navbar-custom" id="mainNavbar">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="bi bi-scale"></i> Lumen Legal
                 <span id="notificationBadgeContainer"></span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarUser"
+                    aria-controls="navbarUser" aria-expanded="false" aria-label="Menú">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarUser">
                 <div class="ms-auto d-flex flex-column flex-lg-row align-items-lg-center gap-2 gap-lg-3 mt-2 mt-lg-0">
+                    <button class="theme-toggle" id="themeToggle" type="button"
+                            aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+                        <i class="bi bi-moon-stars" id="themeIcon"></i>
+                    </button>
+
                     {% if user %}
                         <div class="user-badge">
                             <div class="d-flex align-items-center gap-2">
@@ -147,20 +750,19 @@
                             <span class="role-tag">{{ user.role }}</span>
                         </div>
                         <a href="/auth/logout" class="btn btn-outline-light-custom btn-sm w-100 w-lg-auto">
-                            <i class="bi bi-box-arrow-right me-1"></i> Salir
+                            <i class="bi bi-box-arrow-right"></i> Salir
                         </a>
                     {% else %}
                         <a href="/auth/login" class="btn btn-outline-light-custom btn-sm">
-                            <i class="bi bi-key me-1"></i> Iniciar Sesión
+                            <i class="bi bi-key"></i> Iniciar Sesión
                         </a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </nav>
-    <!-- ================================================== -->
-    <!-- HERO MODERNO -->
-    <!-- ================================================== -->
+
+    <!-- HERO -->
     <div class="container">
         <div class="hero-modern">
             <div>
@@ -168,7 +770,7 @@
             </div>
             <h1><i class="bi bi-briefcase"></i> Lumen Legal</h1>
             <p class="subtitle">Sistema de Gestión Jurídica · Despacho de Abogados</p>
-            <div class="d-flex justify-content-center gap-2 flex-wrap mt-1">
+            <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
                 <span class="badge-despacho"><i class="bi bi-shield-check me-1"></i> Seguro</span>
                 <span class="badge-despacho"><i class="bi bi-clock me-1"></i> Tiempo Real</span>
                 <span class="badge-despacho"><i class="bi bi-lock me-1"></i> Confidencial</span>
@@ -176,9 +778,7 @@
             <div class="hero-divider"></div>
         </div>
 
-        <!-- ================================================== -->
-        <!-- ADMIN SECTION (solo para admin) -->
-        <!-- ================================================== -->
+        <!-- ADMIN SECTION -->
         {% if user and user.role == "admin" %}
         <div class="admin-section-modern">
             <div class="admin-title">
@@ -214,12 +814,9 @@
         </div>
         {% endif %}
 
-        <!-- ================================================== -->
         <!-- GRID DE FUNCIONALIDADES -->
-        <!-- ================================================== -->
         <div class="row g-3 mt-3">
 
-            <!-- Dashboard -->
             {% if "dashboard" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/dashboard/" class="feature-card-modern">
@@ -231,7 +828,6 @@
             </div>
             {% endif %}
 
-            <!-- Auditoría -->
             {% if "audit" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/audit/" class="feature-card-modern">
@@ -243,7 +839,6 @@
             </div>
             {% endif %}
 
-            <!-- Registrar Cliente -->
             {% if "clients" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/clients/register" class="feature-card-modern">
@@ -255,7 +850,6 @@
             </div>
             {% endif %}
 
-            <!-- Contratación -->
             {% if "contracts" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/contracts/register" class="feature-card-modern">
@@ -267,7 +861,6 @@
             </div>
             {% endif %}
 
-            <!-- Relacionar Expediente -->
             {% if "cases" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/cases/relate" class="feature-card-modern">
@@ -279,7 +872,6 @@
             </div>
             {% endif %}
 
-            <!-- Abonos y Liquidación -->
             {% if "payments" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/payments/register" class="feature-card-modern">
@@ -291,7 +883,6 @@
             </div>
             {% endif %}
 
-            <!-- Consultar Pagos -->
             {% if "consult" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/payments/consult" class="feature-card-modern">
@@ -303,7 +894,6 @@
             </div>
             {% endif %}
 
-            <!-- Expediente Electrónico -->
             {% if "actuaciones" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/actuaciones/register" class="feature-card-modern">
@@ -315,7 +905,6 @@
             </div>
             {% endif %}
 
-            <!-- Actualizar Estatus -->
             {% if "cases" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/cases/status" class="feature-card-modern">
@@ -327,7 +916,6 @@
             </div>
             {% endif %}
 
-            <!-- Consultar Expediente -->
             {% if "consult" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/cases/consult" class="feature-card-modern">
@@ -339,7 +927,6 @@
             </div>
             {% endif %}
 
-            <!-- Consultar Cliente -->
             {% if "consult" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/clients/consult" class="feature-card-modern">
@@ -351,7 +938,6 @@
             </div>
             {% endif %}
 
-            <!-- Agenda Judicial -->
             {% if "agenda" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/agenda/" class="feature-card-modern">
@@ -363,7 +949,6 @@
             </div>
             {% endif %}
 
-            <!-- Bitácora -->
             {% if "audit" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/activity/" class="feature-card-modern">
@@ -375,7 +960,6 @@
             </div>
             {% endif %}
 
-            <!-- Backup -->
             {% if "audit" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/backup/" class="feature-card-modern">
@@ -388,17 +972,14 @@
             {% endif %}
 
         </div>
-        <!-- fin row -->
 
-        <!-- ================================================== -->
         <!-- FOOTER -->
-        <!-- ================================================== -->
         <div class="footer-modern">
-            <p>
+            <p class="mb-1">
                 <span class="footer-brand"><i class="bi bi-scale"></i> Lumen Legal</span>
                 &copy; 2026 · Despacho Jurídico
             </p>
-            <p class="small text-muted">
+            <p class="small text-muted mb-0">
                 <i class="bi bi-shield-check text-success"></i> Sistema v1.0
                 {% if user %}
                 | <i class="bi bi-person"></i> {{ user.email }}
@@ -407,87 +988,195 @@
         </div>
 
     </div>
-    <!-- fin container -->
 
-    <!-- ================================================== -->
-    <!-- MODAL DE NOTIFICACIONES (moderno) -->
-    <!-- ================================================== -->
-    <div class="modal fade modal-modern" id="eventNotificationsModal" tabindex="-1">
+    <!-- MODAL DE NOTIFICACIONES -->
+    <div class="modal fade modal-modern" id="eventNotificationsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="bi bi-bell me-2"></i>Notificaciones de Eventos</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title"><i class="bi bi-bell"></i> Notificaciones de Eventos</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body" id="notificationsContent"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x me-1"></i> Cerrar
+                        <i class="bi bi-x"></i> Cerrar
                     </button>
                     <a href="/api/agenda/" class="btn btn-primary">
-                        <i class="bi bi-calendar-event me-1"></i> Ver Agenda
+                        <i class="bi bi-calendar-event"></i> Ver Agenda
                     </a>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ================================================== -->
-    <!-- SCRIPTS -->
-    <!-- ================================================== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('/api/agenda/notifications')
-                .then(res => res.json())
-                .then(data => {
-                    const totalPending = data.total_pending || 0;
+    'use strict';
 
-                    if (totalPending > 0) {
-                        // Badge en navbar
-                        const container = document.getElementById('notificationBadgeContainer');
-                        const badge = document.createElement('span');
-                        badge.className = 'notification-badge';
-                        badge.textContent = totalPending;
-                        container.appendChild(badge);
+    /* ============================================================
+       TEMA CLARO / OSCURO
+       ============================================================ */
+    (function initTheme() {
+        const saved = localStorage.getItem('lumen-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        updateThemeIcon(theme);
+    })();
 
-                        // Contenido del modal
-                        let html = '';
-                        if (data.today && data.today.length > 0) {
-                            html += '<h6 class="text-danger fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill me-1"></i> HOY</h6>';
-                            data.today.forEach(ev => {
-                                html += `<div class="alert-notif alert-danger"><i class="bi bi-clock"></i> <strong>${ev.title}</strong> ${ev.time ? '· '+ev.time : ''}</div>`;
-                            });
-                        }
-                        if (data.deadlines && data.deadlines.length > 0) {
-                            html += '<h6 class="text-warning fw-bold mb-2 mt-2"><i class="bi bi-hourglass-split me-1"></i> Plazos por vencer</h6>';
-                            data.deadlines.forEach(ev => {
-                                html += `<div class="alert-notif alert-warning"><i class="bi bi-exclamation-circle"></i> <strong>${ev.title}</strong> · ${ev.date}</div>`;
-                            });
-                        }
-                        if (data.tomorrow && data.tomorrow.length > 0) {
-                            html += '<h6 class="text-info fw-bold mb-2 mt-2"><i class="bi bi-sunrise me-1"></i> MAÑANA</h6>';
-                            data.tomorrow.forEach(ev => {
-                                html += `<div class="alert-notif alert-info"><i class="bi bi-calendar3"></i> <strong>${ev.title}</strong> ${ev.time ? '· '+ev.time : ''}</div>`;
-                            });
-                        }
-                        if (data.upcoming && data.upcoming.length > 0) {
-                            html += '<h6 class="text-primary fw-bold mb-2 mt-2"><i class="bi bi-calendar-range me-1"></i> Próximos 7 días</h6>';
-                            data.upcoming.slice(0, 5).forEach(ev => {
-                                html += `<div class="alert-notif alert-primary"><i class="bi bi-calendar-event"></i> <strong>${ev.title}</strong> · ${ev.date} ${ev.time ? '· '+ev.time : ''}</div>`;
-                            });
-                        }
+    function updateThemeIcon(theme) {
+        const icon = document.getElementById('themeIcon');
+        if (!icon) return;
+        icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+    }
 
-                        document.getElementById('notificationsContent').innerHTML = html || '<p class="text-muted">No hay notificaciones pendientes.</p>';
+    document.getElementById('themeToggle')?.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('lumen-theme', next);
+        updateThemeIcon(next);
+    });
 
-                        // Mostrar modal después de 1s
-                        setTimeout(() => {
-                            new bootstrap.Modal(document.getElementById('eventNotificationsModal')).show();
-                        }, 1000);
-                    }
-                })
-                .catch(() => {});
+    /* ============================================================
+       NAVBAR SCROLL EFFECT
+       ============================================================ */
+    (function navbarScroll() {
+        const navbar = document.getElementById('mainNavbar');
+        if (!navbar) return;
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    if (window.scrollY > 20) navbar.classList.add('scrolled');
+                    else navbar.classList.remove('scrolled');
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    })();
+
+    /* ============================================================
+       UTILIDAD: escape HTML
+       ============================================================ */
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    /* ============================================================
+       NOTIFICACIONES DE AGENDA
+       ============================================================ */
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animación escalonada de cards
+        document.querySelectorAll('.feature-card-modern').forEach((card, i) => {
+            card.style.animationDelay = (i * 0.03) + 's';
         });
+
+        // Cargar notificaciones
+        fetch('/api/agenda/notifications', { credentials: 'same-origin' })
+            .then(res => {
+                if (!res.ok) throw new Error('Error al cargar notificaciones');
+                return res.json();
+            })
+            .then(data => {
+                const totalPending = data.total_pending || 0;
+                if (totalPending <= 0) return;
+
+                // Badge en navbar
+                const container = document.getElementById('notificationBadgeContainer');
+                if (container) {
+                    const badge = document.createElement('span');
+                    badge.className = 'notification-badge';
+                    badge.textContent = totalPending > 99 ? '99+' : totalPending;
+                    badge.setAttribute('aria-label', `${totalPending} notificaciones pendientes`);
+                    container.appendChild(badge);
+                }
+
+                // Construir contenido del modal
+                let html = '';
+
+                if (data.today && data.today.length > 0) {
+                    html += '<h6 class="text-danger fw-bold mb-2 d-flex align-items-center gap-2">' +
+                            '<i class="bi bi-exclamation-triangle-fill"></i> HOY</h6>';
+                    data.today.forEach(ev => {
+                        html += `<div class="alert-notif alert-danger">
+                            <i class="bi bi-clock-fill"></i>
+                            <span><strong>${escapeHTML(ev.title)}</strong>${ev.time ? ' · ' + escapeHTML(ev.time) : ''}</span>
+                        </div>`;
+                    });
+                }
+
+                if (data.deadlines && data.deadlines.length > 0) {
+                    html += '<h6 class="text-warning fw-bold mb-2 mt-3 d-flex align-items-center gap-2">' +
+                            '<i class="bi bi-hourglass-split"></i> Plazos por vencer</h6>';
+                    data.deadlines.forEach(ev => {
+                        html += `<div class="alert-notif alert-warning">
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                            <span><strong>${escapeHTML(ev.title)}</strong> · ${escapeHTML(ev.date)}</span>
+                        </div>`;
+                    });
+                }
+
+                if (data.tomorrow && data.tomorrow.length > 0) {
+                    html += '<h6 class="text-info fw-bold mb-2 mt-3 d-flex align-items-center gap-2">' +
+                            '<i class="bi bi-sunrise-fill"></i> MAÑANA</h6>';
+                    data.tomorrow.forEach(ev => {
+                        html += `<div class="alert-notif alert-info">
+                            <i class="bi bi-calendar3"></i>
+                            <span><strong>${escapeHTML(ev.title)}</strong>${ev.time ? ' · ' + escapeHTML(ev.time) : ''}</span>
+                        </div>`;
+                    });
+                }
+
+                if (data.upcoming && data.upcoming.length > 0) {
+                    html += '<h6 class="text-primary fw-bold mb-2 mt-3 d-flex align-items-center gap-2">' +
+                            '<i class="bi bi-calendar-range-fill"></i> Próximos 7 días</h6>';
+                    data.upcoming.slice(0, 5).forEach(ev => {
+                        html += `<div class="alert-notif alert-primary">
+                            <i class="bi bi-calendar-event"></i>
+                            <span><strong>${escapeHTML(ev.title)}</strong> · ${escapeHTML(ev.date)}${ev.time ? ' · ' + escapeHTML(ev.time) : ''}</span>
+                        </div>`;
+                    });
+                }
+
+                const content = document.getElementById('notificationsContent');
+                content.innerHTML = html || '<p class="text-muted text-center my-3">No hay notificaciones pendientes.</p>';
+
+                // Mostrar modal después de 1s
+                setTimeout(() => {
+                    const modalEl = document.getElementById('eventNotificationsModal');
+                    if (modalEl) {
+                        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                    }
+                }, 1000);
+            })
+            .catch(err => {
+                // Silencio: si falla, no rompemos la página
+                console.warn('Notificaciones no disponibles:', err.message);
+            });
+    });
+
+    /* ============================================================
+       ATAJOS DE TECLADO
+       ============================================================ */
+    document.addEventListener('keydown', (e) => {
+        // T: toggle tema (solo si no está escribiendo en input)
+        if (e.key === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            const tag = document.activeElement?.tagName;
+            if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+                document.getElementById('themeToggle')?.click();
+            }
+        }
+    });
     </script>
 </body>
 </html>
