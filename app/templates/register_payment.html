@@ -1,441 +1,1025 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Abonos y Liquidación · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-
-        body {
-            background: #f2f5fb;
-            padding: 20px 0 40px 0;
-            min-height: 100vh;
+        /* ============================================================
+           SISTEMA DE TEMAS Y VARIABLES
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            background-image: radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
         .btn-menu {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 12px 24px;
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            transition: all 0.2s;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
         }
         .btn-menu:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-primary);
         }
+        .btn-menu:active { transform: translateY(0); }
+
+        /* ============================================================
+           LAYOUT GENERAL
+           ============================================================ */
+        .container { max-width: 1100px; }
 
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 20px 28px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
+        .page-header h1 i {
+            color: var(--accent-primary);
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .page-header .badge-header {
-            background: #0b1e33;
+            background: var(--accent-dark);
             color: white;
             font-weight: 600;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .page-header .badge-header i { margin-right: 6px; color: #7aa9ff; }
+        .page-header .badge-header i { color: #7aa9ff; font-size: 0.9rem; }
 
+        /* ============================================================
+           CARDS GLASS
+           ============================================================ */
         .card-glass {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 24px 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: box-shadow 0.2s;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+            animation: fadeInUp 0.4s ease-out;
         }
-        .card-glass:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-glass:hover { box-shadow: var(--shadow-md); }
 
+        /* ============================================================
+           BÚSQUEDA
+           ============================================================ */
         .search-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
         }
-        .search-title i { color: #2a6df4; margin-right: 8px; }
+        .search-title i { color: var(--accent-primary); margin-right: 8px; }
 
-        .search-card .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
+        .form-control, .form-select {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
             padding: 14px 18px;
             font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 56px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 56px;
         }
-        .search-card .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger);
+            background-image: none;
+        }
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 4px rgba(220,53,69,0.12);
         }
 
         .btn-search {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 60px;
             padding: 14px 24px;
             font-weight: 700;
             color: white;
-            transition: all 0.25s;
-            display: flex;
+            transition: all var(--transition-normal);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             width: 100%;
             height: 56px;
+            min-height: 56px;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-search:hover {
-            background: #1a3b6b;
+        .btn-search:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
+        .btn-search:active:not(:disabled) { transform: translateY(0); }
+        .btn-search:disabled { opacity: 0.7; cursor: not-allowed; }
 
+        /* ============================================================
+           CLIENT CARDS
+           ============================================================ */
         .client-card {
-            background: white;
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .client-card:hover {
-            border-color: #cbd9ed;
+            border-color: var(--accent-primary);
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
         }
-        .client-name { font-weight: 700; color: #0b1e33; font-size: 0.95rem; }
-        .client-curp { color: #6b7b8f; font-size: 0.8rem; }
+        .client-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        .client-curp { color: var(--text-muted); font-size: 0.8rem; font-family: 'SF Mono', monospace; }
 
         .badge-custom {
             font-weight: 600;
-            font-size: 0.65rem;
-            padding: 4px 12px;
+            font-size: 0.68rem;
+            padding: 5px 12px;
             border-radius: 40px;
-        }
-        .badge-folio { background: #eef3fa; color: #4a5b6e; }
-        .badge-interno { background: #e2edff; color: #1f4f9e; }
-        .badge-debt { background: #fee9e7; color: #b12a2a; }
-
-        .btn-select-client {
-            background: #f5b342;
-            border: none;
-            border-radius: 40px;
-            padding: 6px 18px;
-            color: #0b1e33;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-        .btn-select-client:hover { background: #e6a030; transform: scale(1.02); }
-
-        .payment-form-container {
-            display: none;
-            margin-top: 24px;
-        }
-        .client-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        .client-header h5 { font-weight: 700; color: #0b1e33; margin: 0; }
-        .client-meta { color: #6b7b8f; font-size: 0.85rem; }
-
-        .contract-card {
-            background: white;
-            border-radius: 14px;
-            padding: 14px 18px;
-            margin-bottom: 6px;
-            border: 1px solid #edf2f9;
-            border-left: 4px solid #dc3545;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .contract-card:hover {
-            border-color: #cbd9ed;
-            background: #fafcff;
-            transform: translateX(3px);
-        }
-        .contract-card.selected {
-            border-left: 4px solid #2a6df4;
-            background: #e8f0fe;
-            box-shadow: 0 4px 12px rgba(42,109,244,0.08);
-        }
-        .contract-card .contract-service { font-weight: 700; color: #0b1e33; font-size: 0.9rem; }
-        .contract-card .contract-detail { color: #6b7b8f; font-size: 0.8rem; }
-        .contract-card .contract-balance { font-weight: 700; color: #dc3545; font-size: 0.95rem; }
-        .contract-card .contract-paid { color: #1a8b5c; font-size: 0.85rem; }
-
-        .form-section {
-            background: rgba(255,255,255,0.4);
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 16px;
-            border: 1px solid #edf2f9;
-        }
-        .form-section .form-label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: #4a5b6e;
-        }
-        .form-section .form-control,
-        .form-section .form-select {
-            border-radius: 14px;
-            border: 1.5px solid #e9edf4;
-            padding: 12px 16px;
-            font-size: 0.9rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-        }
-        .form-section .form-control:focus,
-        .form-section .form-select:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
-        }
-        .form-section .form-control.is-invalid,
-        .form-section .form-select.is-invalid { border-color: #dc3545; }
-
-        .saldo-info {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #6b7b8f;
-            display: block;
-            margin-top: 4px;
-        }
-
-        .btn-submit {
-            background: #1a8b5c;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 28px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.25s;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
         }
-        .btn-submit:hover {
-            background: #0e6b46;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(26,139,92,0.3);
-        }
+        .badge-folio { background: rgba(42,109,244,0.08); color: var(--accent-primary); }
+        .badge-interno { background: rgba(42,109,244,0.15); color: var(--accent-primary); }
+        .badge-debt { background: var(--danger-soft); color: var(--danger); }
 
-        .btn-clear {
-            border-radius: 60px;
-            padding: 12px 24px;
-            font-weight: 600;
-            border: 1.5px solid #dc3545;
-            color: #dc3545;
-            background: transparent;
-            transition: all 0.2s;
-        }
-        .btn-clear:hover { background: #dc3545; color: white; }
+        [data-theme="dark"] .badge-folio { background: rgba(91,147,255,0.15); }
+        [data-theme="dark"] .badge-interno { background: rgba(91,147,255,0.2); }
 
-        .modal-modern .modal-content {
-            border-radius: 28px;
+        .btn-select-client {
+            background: var(--warning);
             border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
-        }
-        .modal-modern .modal-header {
-            border-bottom: none;
-            padding: 20px 28px 8px 28px;
-        }
-        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
-        .modal-modern .modal-body { padding: 16px 28px 24px; }
-        .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
-        }
-
-        .file-preview-modal {
-            width: 100%;
-            height: 60vh;
-            border: none;
-            border-radius: 12px;
-        }
-
-        .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
+            border-radius: 40px;
+            padding: 8px 20px;
+            color: #0b1e33;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 4px;
+            min-height: 36px;
         }
-        .spinner-overlay.active {
-            display: flex;
+        .btn-select-client:hover {
+            background: var(--warning-hover);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px -4px rgba(245,179,66,0.5);
         }
-        .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        .btn-select-client:active { transform: scale(0.98); }
+
+        /* ============================================================
+           CONTRACT CARDS
+           ============================================================ */
+        .contract-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--danger);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            position: relative;
         }
-        .spinner-box .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
+        .contract-card:hover {
+            border-color: var(--accent-primary);
+            border-left-color: var(--danger);
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
         }
-        .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
+        .contract-card.selected {
+            border-left: 4px solid var(--accent-primary);
+            background: rgba(42,109,244,0.06);
+            box-shadow: 0 4px 16px rgba(42,109,244,0.12);
         }
-        .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
+        [data-theme="dark"] .contract-card.selected { background: rgba(91,147,255,0.1); }
+
+        .contract-card.selected::after {
+            content: '\F26E';
+            font-family: 'bootstrap-icons';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            color: var(--accent-primary);
+            font-size: 1.1rem;
+            animation: popIn 0.3s var(--transition-bounce);
+        }
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .empty-state { text-align: center; padding: 30px 20px; }
-        .empty-state i { font-size: 2.5rem; color: #d0d8e3; margin-bottom: 8px; }
-        .empty-state h5 { color: #0b1e33; font-weight: 600; }
-        .empty-state p { color: #8a9bb0; font-size: 0.9rem; }
+        .contract-service { font-weight: 700; color: var(--text-primary); font-size: 0.92rem; }
+        .contract-detail { color: var(--text-muted); font-size: 0.82rem; margin-top: 2px; }
+        .contract-balance { font-weight: 800; color: var(--danger); font-size: 1rem; }
+        .contract-paid { color: var(--success); font-size: 0.85rem; font-weight: 600; }
 
-        .contracts-section-title {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
-        }
-        .contracts-section-title i { color: #dc3545; margin-right: 8px; }
-
-        @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .card-glass { padding: 16px 18px; }
-            .btn-menu { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .client-header { flex-direction: column; }
-        }
-        @media (max-width: 480px) {
-            .client-card { flex-direction: column; align-items: stretch; }
-            .contract-card { flex-direction: column; align-items: stretch; }
-            .form-section { padding: 14px 16px; }
-        }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.card-glass,#resultsContainer,#paymentFormContainer{margin-left:16px; margin-right:16px;}
-        }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:16px 18px; border-radius:20px; margin-bottom:16px;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .card-glass{padding:16px 14px; border-radius:18px;}
-            .search-card .form-control,.btn-search{height:48px; font-size:16px;}
-            .client-card,.contract-card{flex-direction:column; align-items:flex-start;}
-            .client-card > div:last-child{width:100%; justify-content:space-between; display:flex; flex-wrap:wrap; gap:8px;}
-            .form-section{padding:14px 16px;}
-            .form-section .form-control,.form-section .form-select{font-size:16px;}
-            .d-flex.justify-content-between{flex-direction:column-reverse; gap:10px;}
-            .btn-submit,.btn-clear{width:100%; justify-content:center;}
-        }
-        @media (max-width: 480px){
-            .btn-menu{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px; flex-direction:column; align-items:flex-start;}
-            .page-header .badge-header{width:100%; text-align:center; justify-content:center; display:flex;}
-            .card-glass{margin:0 10px;}
-            #resultsContainer,#paymentFormContainer{margin-left:10px; margin-right:10px; padding:0;}
-            .badge-custom{font-size:0.6rem; padding:3px 8px;}
-            .saldo-info{font-size:0.75rem;}
-        }
-                /* ============================================================ */
-        /* MINI EXPEDIENTE EN CONTRATO CON DEUDA                        */
-        /* ============================================================ */
+        /* ============================================================
+           EXPEDIENTE MINI
+           ============================================================ */
         .expediente-mini {
-            margin-top: 8px;
+            margin-top: 10px;
             display: flex;
             flex-wrap: wrap;
             gap: 8px 16px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            border-left: 3px solid #2a6df4;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(42,109,244,0.12));
+            border-left: 3px solid var(--accent-primary);
             border-radius: 8px;
         }
-
+        [data-theme="dark"] .expediente-mini {
+            background: linear-gradient(135deg, rgba(91,147,255,0.08), rgba(91,147,255,0.15));
+        }
         .expediente-mini-item {
             display: inline-flex;
             align-items: center;
             gap: 5px;
             font-size: 0.8rem;
-            color: #1e40af;
+            color: var(--accent-primary);
+        }
+        .expediente-mini-item i { color: var(--accent-primary); font-size: 0.85rem; }
+        .expediente-mini-item strong { font-weight: 700; color: var(--text-primary); }
+
+        /* ============================================================
+           FORM SECTION
+           ============================================================ */
+        .form-section {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border-soft);
+            transition: border-color var(--transition-fast);
+        }
+        .form-section:focus-within { border-color: var(--accent-primary); }
+        .form-section .form-label {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
         }
 
-        .expediente-mini-item i {
-            color: #2a6df4;
-            font-size: 0.85rem;
+        .payment-summary {
+            background: linear-gradient(135deg, rgba(42,109,244,0.06) 0%, rgba(42,109,244,0.12) 100%);
+            border-radius: var(--radius-lg);
+            padding: 20px 22px;
+            border: 1px solid rgba(42,109,244,0.15);
+            margin-top: 16px;
+            animation: fadeInUp 0.35s ease-out;
+        }
+        [data-theme="dark"] .payment-summary {
+            background: linear-gradient(135deg, rgba(91,147,255,0.08) 0%, rgba(91,147,255,0.15) 100%);
+        }
+        .payment-summary .sum-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed rgba(42,109,244,0.15);
+        }
+        .payment-summary .sum-row:last-child {
+            border-bottom: none;
+            padding-top: 14px;
+            margin-top: 6px;
+            border-top: 2px solid rgba(42,109,244,0.2);
+        }
+        .payment-summary .sum-label { color: var(--text-secondary); font-weight: 500; }
+        .payment-summary .sum-value {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-variant-numeric: tabular-nums;
+            transition: color var(--transition-fast);
+        }
+        .payment-summary .sum-value.green { color: var(--success); }
+        .payment-summary .sum-value.red { color: var(--danger); }
+        .payment-summary .sum-value.blue { color: var(--accent-primary); }
+
+        .summary-liquidated {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--success-soft) 0%, rgba(167,243,208,0.5) 100%);
+            border-radius: var(--radius-md);
+            margin-top: 16px;
+            border: 1px solid rgba(26,139,92,0.25);
+        }
+        [data-theme="dark"] .summary-liquidated {
+            background: linear-gradient(135deg, rgba(52,211,153,0.15) 0%, rgba(52,211,153,0.08) 100%);
+            border-color: rgba(52,211,153,0.3);
+        }
+        .summary-liquidated.show {
+            display: block;
+            animation: liquidatedPop 0.5s var(--transition-bounce);
+        }
+        .summary-liquidated .liquidated-icon {
+            font-size: 3rem;
+            color: var(--success);
+            animation: liquidatedPulse 1.6s ease-in-out infinite;
+            display: inline-block;
+        }
+        .summary-liquidated h5 {
+            color: var(--success);
+            font-weight: 800;
+            margin: 10px 0 4px;
+            font-size: 1.15rem;
+        }
+        .summary-liquidated p { color: var(--text-secondary); font-size: 0.88rem; margin: 0; }
+        @keyframes liquidatedPop {
+            from { opacity: 0; transform: scale(0.9) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes liquidatedPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
         }
 
-        .expediente-mini-item strong {
+        /* ============================================================
+           UPLOAD RECEIPT BTN
+           ============================================================ */
+        .upload-receipt-btn {
+            width: 100%;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-soft);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .upload-receipt-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(42,109,244,0.05));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+        .upload-receipt-btn:hover::before { opacity: 1; }
+        .upload-receipt-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .upload-receipt-btn.has-file {
+            border-style: solid;
+            border-color: var(--success);
+            background: var(--success-soft);
+            color: var(--success);
+        }
+        [data-theme="dark"] .upload-receipt-btn.has-file {
+            background: rgba(52,211,153,0.15);
+            color: var(--success);
+        }
+        .upload-receipt-btn .upload-icon { font-size: 1.8rem; position: relative; z-index: 1; }
+        .upload-receipt-btn .upload-label {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+        .upload-receipt-btn .upload-label small {
+            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        .qr-mobile-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 60px;
+            background: rgba(42,109,244,0.1);
+            color: var(--accent-primary);
+            font-weight: 600;
+            font-size: 0.82rem;
+            border: none;
+            transition: all var(--transition-normal);
+            cursor: pointer;
+            min-height: 40px;
+        }
+        .qr-mobile-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
+        }
+
+        /* ============================================================
+           BOTONES PRINCIPALES
+           ============================================================ */
+        .btn-submit {
+            background: var(--success);
+            border: none;
+            border-radius: 60px;
+            padding: 14px 32px;
             font-weight: 700;
-            color: #0b1e33;
+            color: white;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--success-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(26,139,92,0.5);
+        }
+        .btn-submit:active:not(:disabled) { transform: translateY(0); }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-clear {
+            border-radius: 60px;
+            padding: 14px 28px;
+            font-weight: 600;
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
+            background: transparent;
+            transition: all var(--transition-normal);
+            min-height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-clear:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(220,53,69,0.4);
+        }
+
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 22px 28px 8px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
+            transition: all var(--transition-normal);
+        }
+        .modal-modern .modal-footer .btn:hover { transform: translateY(-1px); }
+
+        /* Animación de modales */
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Botón cerrar oscuro */
+        [data-theme="dark"] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        /* Header de modales con colores */
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        /* Notificación icon grande */
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        /* File preview modal */
+        .file-preview-modal {
+            width: 100%;
+            height: 65vh;
+            border: none;
+            border-radius: 0;
+            background: var(--bg-tertiary);
+        }
+
+        /* ============================================================
+           SPINNER OVERLAY GLOBAL
+           ============================================================ */
+        .spinner-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .spinner-box {
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        .spinner-box h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
+        }
+        .spinner-box p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+        }
+
+        /* Spinner pequeño en botones */
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SKELETON LOADER
+           ============================================================ */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            overflow: hidden;
+        }
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 40px 20px; }
+        .empty-state i { font-size: 3rem; color: var(--text-light); margin-bottom: 12px; display: block; }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* ============================================================
+           QR MODAL
+           ============================================================ */
+        #qrCodeContainer {
+            margin: 20px auto;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrCodeContainer img, #qrCodeContainer canvas {
+            border-radius: var(--radius-md);
+            padding: 12px;
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+        #qrWaitingStatus {
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Alertas personalizadas */
+        .alert {
+            border-radius: var(--radius-md);
+            border: none;
+            padding: 14px 18px;
+            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .card-glass, #resultsContainer, #paymentFormContainer {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
         }
 
         @media (max-width: 768px) {
-            .expediente-mini {
-                flex-direction: column;
-                gap: 4px;
-                font-size: 0.75rem;
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
             }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .badge-header { font-size: 0.75rem; padding: 6px 16px; }
+
+            .card-glass { padding: 18px 16px; border-radius: 18px; }
+
+            .search-card .form-control, .btn-search { height: 52px; min-height: 52px; font-size: 16px; }
+
+            .client-card, .contract-card { flex-direction: column; align-items: stretch; gap: 12px; }
+            .client-card > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .btn-select-client { width: 100%; justify-content: center; }
+
+            .form-section { padding: 16px 18px; }
+            .form-section .form-control, .form-section .form-select { font-size: 16px; }
+
+            .d-flex.justify-content-between { flex-direction: column-reverse; gap: 10px; }
+            .btn-submit, .btn-clear { width: 100%; justify-content: center; }
+
+            .expediente-mini { flex-direction: column; gap: 6px; font-size: 0.78rem; }
+
+            .modal-modern .modal-header { padding: 18px 20px 6px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header .badge-header {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .card-glass { margin: 0 12px; padding: 16px 14px; }
+            #resultsContainer, #paymentFormContainer { margin-left: 12px; margin-right: 12px; padding: 0; }
+            .badge-custom { font-size: 0.62rem; padding: 3px 10px; }
+            .saldo-info { font-size: 0.75rem; }
+            .payment-summary .sum-value { font-size: 0.92rem; }
+            .spinner-box { padding: 30px 28px; }
+        }
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        /* Scrollbar moderno */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+            /* ============================================================
+           SEPARACIÓN LIMPIA ENTRE PANELES DEL FORMULARIO
+           ============================================================ */
+        #paymentFormContainer { margin-top: 1.5rem; }
+
+        .form-section {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 22px 24px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-soft);
+            transition: border-color var(--transition-fast);
+        }
+        .form-section + .form-section {
+            margin-top: 1.5rem;
+        }
+
+        #accionesFormulario {
+            padding-top: .5rem;
         }
     </style>
 </head>
 <body>
+
+<!-- Theme toggle -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
 
 <a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
@@ -452,67 +1036,139 @@
             <div class="col-md-8">
                 <input type="text" id="searchInput" class="form-control"
                        placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..."
-                       autocomplete="off">
+                       autocomplete="off" maxlength="100" aria-label="Buscar cliente">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn-search"><i class="bi bi-search"></i> Buscar</button>
+                <button id="searchBtn" class="btn-search" type="button">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
+                </button>
             </div>
         </div>
     </div>
 
     <div id="resultsContainer"></div>
 
-    <div id="paymentFormContainer" class="payment-form-container">
+    <div id="paymentFormContainer" class="payment-form-container" style="display:none;">
         <div class="card-glass">
-            <div class="client-header">
+            <div class="client-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-2">
                 <div>
-                    <h5 id="clientNameDisplay"><i class="bi bi-person-circle text-primary me-2"></i></h5>
-                    <div class="client-meta" id="clientInfoDisplay"></div>
+                    <h5 id="clientNameDisplay" class="fw-bold mb-1"></h5>
+                    <div class="client-meta text-muted small" id="clientInfoDisplay"></div>
                 </div>
             </div>
             <hr>
-            <div class="contracts-section-title"><i class="bi bi-exclamation-triangle"></i> Contratos con Deuda</div>
+            <div class="contracts-section-title fw-bold mb-3">
+                <i class="bi bi-exclamation-triangle text-danger me-2"></i>Contratos con Deuda
+            </div>
             <div id="contractsContainer"></div>
             <hr>
+
             <form id="paymentForm" enctype="multipart/form-data" novalidate>
                 <input type="hidden" id="contractId" name="contract_id">
 
-                <div class="form-section">
-                    <div class="row g-3">
+                <!-- SECCIÓN 1: DATOS DEL PAGO (oculta hasta seleccionar contrato) -->
+                <div class="form-section" id="datosPagoSection" style="display:none;">
+                    <h6 class="fw-bold mb-4" style="color:var(--text-primary);">
+                        <i class="bi bi-cash-coin text-success me-2"></i>Datos del Pago
+                    </h6>
+
+                    <div class="row g-4">
                         <div class="col-md-6">
-                            <label class="form-label">Monto del Abono <span class="text-danger">*</span></label>
-                            <input type="text" name="amount" id="paymentAmount" class="form-control" required autocomplete="off" placeholder="$0.00" maxlength="12">
-                            <div class="invalid-feedback">El monto es obligatorio</div>
-                            <span class="saldo-info" id="saldoInfo"></span>
+                            <label class="form-label" for="paymentAmount">
+                                Monto del Abono <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" name="amount" id="paymentAmount"
+                                   class="form-control form-control-lg"
+                                   required autocomplete="off" placeholder="$0.00" maxlength="14"
+                                   inputmode="decimal"
+                                   style="font-size:1.3rem; font-weight:700; text-align:right; font-variant-numeric: tabular-nums;">
+                            <div class="invalid-feedback">Ingresa un monto válido</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Forma de Pago <span class="text-danger">*</span></label>
-                            <select name="payment_method" id="payment_method" class="form-select" required>
+                            <label class="form-label" for="payment_method">
+                                Forma de Pago <span class="text-danger">*</span>
+                            </label>
+                            <select name="payment_method" id="payment_method" class="form-select form-select-lg" required>
                                 <option value="">Selecciona...</option>
-                                <option value="efectivo">Efectivo</option>
-                                <option value="deposito">Depósito</option>
-                                <option value="transferencia">Transferencia</option>
+                                <option value="efectivo">💵 Efectivo</option>
+                                <option value="deposito">🏦 Depósito</option>
+                                <option value="transferencia">💳 Transferencia</option>
                             </select>
                             <div class="invalid-feedback">Selecciona la forma de pago</div>
                         </div>
                     </div>
-                    <div class="row g-3 mt-2">
-                        <div class="col-md-6" id="receiverContainer" style="display:none;">
-                            <label class="form-label">Recibió (efectivo) <span class="text-danger">*</span></label>
-                            <input type="text" name="receiver_name" id="receiver_name" class="form-control" autocomplete="off">
-                            <div class="invalid-feedback">Indica quién recibió</div>
+
+                    <!-- PANEL DE RESUMEN EN VIVO -->
+                    <div id="paymentSummary" class="payment-summary mt-4" style="display:none;">
+                        <div class="sum-row">
+                            <span class="sum-label"><i class="bi bi-file-earmark-text me-1"></i>Total del contrato</span>
+                            <span class="sum-value" id="sumTotal">$0.00</span>
                         </div>
-                        <div class="col-md-6" id="receiptContainer" style="display:none;">
-                            <label class="form-label">Comprobante (PDF) <span class="text-danger">*</span></label>
-                            <input type="file" name="receipt_file" id="receipt_file" accept=".pdf" class="form-control">
-                            <div class="invalid-feedback">Adjunta el comprobante</div>
+                        <div class="sum-row">
+                            <span class="sum-label"><i class="bi bi-check-circle me-1 text-success"></i>Pagado hasta ahora</span>
+                            <span class="sum-value green" id="sumPaid">$0.00</span>
                         </div>
+                        <div class="sum-row">
+                            <span class="sum-label"><i class="bi bi-exclamation-triangle me-1 text-danger"></i>Saldo actual</span>
+                            <span class="sum-value red" id="sumBalance">$0.00</span>
+                        </div>
+                        <div class="sum-row">
+                            <span class="sum-label"><i class="bi bi-arrow-down-circle me-1 text-primary"></i>Restante tras este pago</span>
+                            <span class="sum-value blue" id="sumRemaining">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div id="liquidatedCard" class="summary-liquidated mt-4">
+                        <div class="liquidated-icon"><i class="bi bi-check-circle-fill"></i></div>
+                        <h5>¡ADEUDO LIQUIDADO!</h5>
+                        <p>Con este pago el contrato quedará <strong>totalmente pagado</strong>.</p>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mt-3 gap-2 flex-wrap">
-                    <button type="button" class="btn-clear" onclick="limpiarFormulario()"><i class="bi bi-eraser"></i> Limpiar</button>
-                    <button type="submit" class="btn-submit"><i class="bi bi-check2"></i> Registrar Abono</button>
+                <!-- SECCIÓN 2: DETALLES DE RECEPCIÓN (oculta hasta seleccionar contrato) -->
+                <div class="form-section mt-4" id="recepcionSection" style="display:none;">
+                    <h6 class="fw-bold mb-4" style="color:var(--text-primary);">
+                        <i class="bi bi-receipt text-primary me-2"></i>Detalles de Recepción
+                    </h6>
+
+                    <div id="receiverContainer" style="display:none;" class="mb-4">
+                        <label class="form-label" for="receiver_name">
+                            Recibió (efectivo) <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="receiver_name" id="receiver_name"
+                               class="form-control" autocomplete="off"
+                               placeholder="Nombre de quien recibe" maxlength="100">
+                        <div class="invalid-feedback">Indica quién recibió</div>
+                    </div>
+
+                    <div id="receiptContainer" style="display:none;">
+                        <label class="form-label mb-3">
+                            <i class="bi bi-paperclip me-1"></i>Comprobante (PDF o Imagen) <span class="text-danger">*</span>
+                        </label>
+
+                        <button type="button" class="upload-receipt-btn" id="uploadReceiptBtn">
+                            <span class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                            <span class="upload-label">
+                                <span id="uploadReceiptText">Subir comprobante</span>
+                                <small id="uploadReceiptSub">PDF, JPG o PNG · máx. 25 MB</small>
+                            </span>
+                        </button>
+
+                        <input type="file" name="receipt_file" id="receipt_file"
+                               accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+                        <div class="invalid-feedback">Adjunta el comprobante</div>
+                    </div>
+                </div>
+
+                <!-- ACCIONES (ocultas hasta seleccionar contrato) -->
+                <div class="d-flex justify-content-between align-items-center mt-5 gap-3 flex-wrap"
+                     id="accionesFormulario" style="display:none;">
+                    <button type="button" class="btn-clear" onclick="limpiarFormulario()">
+                        <i class="bi bi-eraser"></i> Limpiar
+                    </button>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i class="bi bi-check2"></i> <span>Registrar Abono</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -520,63 +1176,160 @@
 
 </div>
 
-<!-- ================================================== -->
-<!-- MODALES -->
-<!-- ================================================== -->
-
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- MODAL NOTIFICACIÓN -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirmación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
+                    <i class="bi bi-check2 me-1"></i>Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1">
+<!-- MODAL PREVIEW PDF GENÉRICO -->
+<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Vista Previa del PDF</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-pdf text-danger me-2"></i>Vista Previa del PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-0">
-                <iframe id="pdfPreviewFrame" class="file-preview-modal"></iframe>
+                <iframe id="pdfPreviewFrame" class="file-preview-modal" title="Vista previa PDF"></iframe>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="acceptFileBtn"><i class="bi bi-check2"></i> Confirmar Archivo</button>
+                <button type="button" class="btn btn-success" id="acceptFileBtn">
+                    <i class="bi bi-check2"></i> Confirmar Archivo
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
+<!-- MODAL OPCIONES DE SUBIDA -->
+<div class="modal fade modal-modern" id="uploadOptionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-cloud-arrow-up me-2"></i>Subir Comprobante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small mb-3">Elige cómo quieres subir el comprobante de pago:</p>
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-outline-primary btn-lg" id="chooseFileBtn"
+                            style="border-radius:16px; padding:20px; text-align:left;">
+                        <i class="bi bi-folder2-open me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi computadora</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Selecciona un archivo PDF o imagen</small>
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-lg" id="chooseQRBtn"
+                            style="border-radius:16px; padding:20px; text-align:left;">
+                        <i class="bi bi-phone me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi celular (QR)</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Escanea con la cámara de tu teléfono</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--success),var(--success-hover));">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-qr-code me-2"></i>Subir desde el móvil
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Escanea este código con tu teléfono:</p>
+                <div id="qrCodeContainer">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p class="text-muted small mt-2 mb-0">Generando código QR...</p>
+                </div>
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-phone me-1"></i> Abre la cámara, escanea y elige el archivo.
+                </p>
+                <div id="qrWaitingStatus" class="alert alert-info mt-3 mb-0 py-2 d-flex align-items-center gap-2 justify-content-center"
+                     style="display:none;">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Esperando archivo desde el móvil...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="regenerateQRBtn">
+                    <i class="bi bi-arrow-repeat me-1"></i> Regenerar QR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PREVIEW COMPROBANTE -->
+<div class="modal fade modal-modern" id="receiptPreviewModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-earmark-check me-2"></i>Confirmar Comprobante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0" style="background:var(--bg-tertiary);">
+                <iframe id="receiptPreviewFrame" style="width:100%; height:65vh; border:none;"
+                        title="Vista previa del comprobante"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="rejectReceiptBtn">
+                    <i class="bi bi-x-circle me-1"></i> Rechazar
+                </button>
+                <button type="button" class="btn btn-success btn-lg" id="acceptReceiptBtn">
+                    <i class="bi bi-check-circle me-1"></i> Sí, usar este comprobante
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- LOADING OVERLAY -->
-<!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay">
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
         <h5 id="loadingTitle">Procesando pago</h5>
@@ -586,36 +1339,76 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// CÓDIGO ORIGINAL COMPLETO - SIN MODIFICAR NINGUNA FUNCIÓN
-// ============================================================
+'use strict';
 
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
 let selectedContractId = null;
 let currentSaldo = 0;
 let fileAccepted = false;
 let clientsData = [];
+let currentContractTotal = 0;
+let qrPollingInterval = null;
+let currentTempId = null;
+let isSubmitting = false;
+let searchDebounceTimer = null;
 
-function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-    const header = document.getElementById('notificationHeader');
-    const titleEl = document.getElementById('notificationTitle');
-    const bodyEl = document.getElementById('notificationBody');
-    header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
-    modal.show();
+/* ============================================================
+   UTILIDADES DE SEGURIDAD
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
-function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
-    modal.show();
+function safeNumber(value, fallback = 0) {
+    const n = parseFloat(value);
+    return isNaN(n) ? fallback : n;
 }
 
+function formatMoney(value) {
+    const num = safeNumber(value, 0);
+    return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function formatMoneyNumber(value) {
+    return safeNumber(value, 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+/* ============================================================
+   LOADING GLOBAL
+   ============================================================ */
 function showLoading(title = 'Procesando pago', text = 'Generando recibo, por favor espera.') {
     document.getElementById('loadingTitle').textContent = title;
     document.getElementById('loadingText').textContent = text;
@@ -626,303 +1419,1017 @@ function hideLoading() {
     document.getElementById('loadingOverlay').classList.remove('active');
 }
 
-function formatMoney(value) {
-    if (!value) return '$0.00';
-    const num = parseFloat(value);
-    if (isNaN(num)) return '$0.00';
-    return '$' + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function showNotification(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
+    modal.show();
 }
 
-function soloNumerosDecimales(event) {
-    const char = String.fromCharCode(event.which);
-    if (!/[0-9.]/.test(char)) event.preventDefault();
+/* ============================================================
+   MODAL CONFIRMACIÓN
+   ============================================================ */
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const bodyEl = document.getElementById('confirmBody');
+    bodyEl.innerHTML = `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    // Remover listeners previos clonando
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        onConfirm();
+    });
+
+    modal.show();
 }
 
-document.getElementById('paymentAmount').addEventListener('keypress', soloNumerosDecimales);
-document.getElementById('paymentAmount').addEventListener('blur', function() {
-    this.value = formatMoney(this.value);
+/* ============================================================
+   VALIDACIÓN DE MONTO
+   ============================================================ */
+const paymentAmountEl = document.getElementById('paymentAmount');
+
+paymentAmountEl.addEventListener('keypress', (e) => {
+    const char = String.fromCharCode(e.which);
+    // Permitir solo números y un punto decimal
+    if (!/[0-9.]/.test(char)) {
+        e.preventDefault();
+        return;
+    }
+    // No permitir más de un punto
+    if (char === '.' && paymentAmountEl.value.includes('.')) {
+        e.preventDefault();
+    }
 });
 
-document.getElementById('paymentAmount').addEventListener('input', function() {
-    this.value = this.value.replace(/[^0-9.]/g, '');
-    if (this.value.length > 12) this.value = this.value.slice(0, 12);
-    const amount = parseFloat(this.value) || 0;
+paymentAmountEl.addEventListener('input', function () {
+    let value = this.value.replace(/[^0-9.]/g, '');
+
+    // Limitar a 2 decimales
+    const parts = value.split('.');
+    if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    if (parts[1] && parts[1].length > 2) {
+        value = parts[0] + '.' + parts[1].slice(0, 2);
+    }
+    if (value.length > 14) value = value.slice(0, 14);
+
+    this.value = value;
+    const amount = safeNumber(value);
+
+    // Validación en vivo
     if (currentSaldo > 0 && amount > currentSaldo) {
+        this.classList.add('is-invalid');
+    } else if (amount === 0 && value !== '') {
         this.classList.add('is-invalid');
     } else {
         this.classList.remove('is-invalid');
     }
+
+    actualizarResumenPago(amount);
 });
 
-document.getElementById('payment_method').addEventListener('change', function() {
+paymentAmountEl.addEventListener('blur', function () {
+    if (this.value === '') return;
+    const amount = safeNumber(this.value.replace(/[^0-9.]/g, ''));
+    if (amount > 0) {
+        this.value = '$' + formatMoneyNumber(amount);
+    }
+    actualizarResumenPago(amount);
+});
+
+paymentAmountEl.addEventListener('focus', function () {
+    this.value = this.value.replace(/[^0-9.]/g, '');
+});
+
+/* ============================================================
+   ACTUALIZAR RESUMEN EN VIVO
+   ============================================================ */
+function actualizarResumenPago(amount) {
+    if (!currentSaldo || currentSaldo <= 0) {
+        document.getElementById('paymentSummary').style.display = 'none';
+        document.getElementById('liquidatedCard').classList.remove('show');
+        return;
+    }
+
+    const total = currentContractTotal || 0;
+    const pagado = Math.max(total - currentSaldo, 0);
+    const restante = Math.max(currentSaldo - amount, 0);
+
+    document.getElementById('paymentSummary').style.display = 'block';
+    document.getElementById('sumTotal').textContent = formatMoney(total);
+    document.getElementById('sumPaid').textContent = formatMoney(pagado);
+    document.getElementById('sumBalance').textContent = formatMoney(currentSaldo);
+    document.getElementById('sumRemaining').textContent = formatMoney(restante);
+
+    const remEl = document.getElementById('sumRemaining');
+    remEl.className = 'sum-value ' + (restante === 0 && amount > 0 ? 'green' : 'blue');
+
+    if (restante === 0 && amount > 0 && amount >= currentSaldo) {
+        document.getElementById('liquidatedCard').classList.add('show');
+    } else {
+        document.getElementById('liquidatedCard').classList.remove('show');
+    }
+}
+
+/* ============================================================
+   CAMBIO DE FORMA DE PAGO
+   ============================================================ */
+document.getElementById('payment_method').addEventListener('change', function () {
     const method = this.value;
     const receiverContainer = document.getElementById('receiverContainer');
     const receiptContainer = document.getElementById('receiptContainer');
     const receiverName = document.getElementById('receiver_name');
     const receiptFile = document.getElementById('receipt_file');
-    
+
+    this.classList.remove('is-invalid');
+
     receiverContainer.style.display = 'none';
     receiptContainer.style.display = 'none';
     receiverName.required = false;
     receiptFile.required = false;
-    
+    receiverName.classList.remove('is-invalid');
+    receiptFile.classList.remove('is-invalid');
+
     if (method === 'efectivo') {
         receiverContainer.style.display = 'block';
         receiverName.required = true;
+        resetearComprobante();
     } else if (method === 'deposito' || method === 'transferencia') {
         receiptContainer.style.display = 'block';
         receiptFile.required = true;
     }
 });
 
-document.getElementById('receipt_file').addEventListener('change', function(e) {
-    const file = this.files[0];
-    if (!file) return;
-    if (file.type !== 'application/pdf') { showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); this.value = ''; return; }
-    fileAccepted = false;
-    const fileURL = URL.createObjectURL(file);
-    document.getElementById('pdfPreviewFrame').src = fileURL;
-    const previewModal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
-    previewModal.show();
-    document.getElementById('acceptFileBtn').onclick = function() {
-        fileAccepted = true;
-        previewModal.hide();
-        showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
-    };
+/* ============================================================
+   SUBIDA DE COMPROBANTE
+   ============================================================ */
+document.getElementById('uploadReceiptBtn').addEventListener('click', () => {
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadOptionsModal')).show();
 });
 
-document.getElementById('searchInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } });
+document.getElementById('chooseFileBtn').addEventListener('click', () => {
+    const optModal = bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'));
+    optModal?.hide();
+    setTimeout(() => document.getElementById('receipt_file').click(), 300);
+});
 
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
-    
-    showLoading('Buscando clientes...', 'Por favor espera, estamos consultando la base de datos.');
-    
+document.getElementById('chooseQRBtn').addEventListener('click', () => {
+    const optModal = bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'));
+    optModal?.hide();
+    setTimeout(abrirQRPago, 300);
+});
+
+document.getElementById('qrMobileBtn')?.addEventListener('click', abrirQRPago);
+
+/* ============================================================
+   ARCHIVO LOCAL - VALIDACIÓN Y PREVIEW
+   ============================================================ */
+document.getElementById('receipt_file').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    const validExts = /\.(pdf|jpe?g|png)$/i;
+    const fileName = file.name || '';
+
+    if (!validTypes.includes(file.type) && !validExts.test(fileName)) {
+        showNotification('Formato no válido',
+            '<p>Solo se aceptan archivos <strong>PDF, JPG o PNG</strong>.</p>', 'error');
+        this.value = '';
+        return;
+    }
+
+    if (file.size > 25 * 1024 * 1024) {
+        showNotification('Archivo muy grande',
+            `<p>El archivo pesa <strong>${(file.size / 1024 / 1024).toFixed(1)} MB</strong>.<br>El límite es <strong>25 MB</strong>.</p>`,
+            'error');
+        this.value = '';
+        return;
+    }
+
+    if (file.size === 0) {
+        showNotification('Archivo vacío',
+            '<p>El archivo seleccionado está vacío. Elige otro.</p>', 'error');
+        this.value = '';
+        return;
+    }
+
+    this.classList.remove('is-invalid');
+    const fileURL = URL.createObjectURL(file);
+    mostrarPreviewComprobante(fileURL, file.name, file.type);
+});
+
+/* ============================================================
+   PREVIEW COMPROBANTE
+   ============================================================ */
+let currentPreviewURL = null;
+
+function mostrarPreviewComprobante(url, filename, mimeType) {
+    if (currentPreviewURL && currentPreviewURL !== url) {
+        try { URL.revokeObjectURL(currentPreviewURL); } catch (e) {}
+    }
+    currentPreviewURL = url;
+
+    const frame = document.getElementById('receiptPreviewFrame');
+    frame.src = url;
+
+    const modalEl = document.getElementById('receiptPreviewModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+    // Handler aceptar
+    const acceptBtn = document.getElementById('acceptReceiptBtn');
+    const newAccept = acceptBtn.cloneNode(true);
+    acceptBtn.parentNode.replaceChild(newAccept, acceptBtn);
+    newAccept.addEventListener('click', function () {
+        fileAccepted = true;
+        modal.hide();
+        const btn = document.getElementById('uploadReceiptBtn');
+        btn.classList.add('has-file');
+        document.getElementById('uploadReceiptText').textContent = '✓ Comprobante adjuntado';
+        document.getElementById('uploadReceiptSub').textContent = filename;
+        document.getElementById('receipt_file').classList.remove('is-invalid');
+
+        showNotification('Comprobante confirmado',
+            `<p>El archivo <strong>${escapeHTML(filename)}</strong> se adjuntará al registrar el pago.</p>`,
+            'success');
+    });
+
+    // Handler rechazar
+    const rejectBtn = document.getElementById('rejectReceiptBtn');
+    const newReject = rejectBtn.cloneNode(true);
+    rejectBtn.parentNode.replaceChild(newReject, rejectBtn);
+    newReject.addEventListener('click', function () {
+        fileAccepted = false;
+        modal.hide();
+        document.getElementById('receipt_file').value = '';
+        resetearBotonComprobante();
+    });
+
+    // Reset al cerrar sin aceptar
+    modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+        frame.src = '';
+        if (!fileAccepted) {
+            document.getElementById('receipt_file').value = '';
+            resetearBotonComprobante();
+        }
+        modalEl.removeEventListener('hidden.bs.modal', onHidden);
+    });
+}
+
+function resetearBotonComprobante() {
+    const btn = document.getElementById('uploadReceiptBtn');
+    btn.classList.remove('has-file');
+    document.getElementById('uploadReceiptText').textContent = 'Subir comprobante';
+    document.getElementById('uploadReceiptSub').textContent = 'PDF, JPG o PNG · máx. 25 MB';
+}
+
+function resetearComprobante() {
+    fileAccepted = false;
+    document.getElementById('receipt_file').value = '';
+    resetearBotonComprobante();
+}
+
+/* ============================================================
+   QR MÓVIL
+   ============================================================ */
+function abrirQRPago() {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+
+    currentTempId = 'pago_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
+    const baseUrl = window.location.origin;
+    const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${encodeURIComponent(currentTempId)}&doc_type=COMPROBANTE_PAGO`;
+
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '<div class="spinner-border text-success" role="status"></div><p class="text-muted small mt-2 mb-0">Generando código QR...</p>';
+
+    document.getElementById('qrWaitingStatus').style.display = 'none';
+
+    setTimeout(() => {
+        container.innerHTML = '';
+        if (typeof QRCode === 'undefined') {
+            container.innerHTML = `
+                <div class="alert alert-warning small">
+                    <p class="mb-2"><strong>Abre este enlace en tu teléfono:</strong></p>
+                    <p style="word-break:break-all; font-size:0.75rem; background:var(--bg-tertiary); padding:8px; border-radius:6px;">${escapeHTML(uploadUrl)}</p>
+                </div>`;
+        } else {
+            new QRCode(container, {
+                text: uploadUrl,
+                width: 220,
+                height: 220,
+                colorDark: '#1a8b5c',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    }, 300);
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('qrModal')).show();
+    iniciarPollingQR();
+}
+
+function iniciarPollingQR() {
+    let attempts = 0;
+    const maxAttempts = 90;
+
+    qrPollingInterval = setInterval(async () => {
+        attempts++;
+        if (attempts > maxAttempts) {
+            clearInterval(qrPollingInterval);
+            qrPollingInterval = null;
+            return;
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const res = await fetch(`/api/clients/check-upload/${encodeURIComponent(currentTempId)}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (!res.ok) return;
+            const data = await res.json();
+
+            if (data.success && data.file_url) {
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+                await recibirArchivoDesdeMovil(data.file_url, data.filename);
+            }
+        } catch (err) {
+            // silencio
+        }
+    }, 1000);
+
+    setTimeout(() => {
+        if (qrPollingInterval) {
+            document.getElementById('qrWaitingStatus').style.display = 'flex';
+        }
+    }, 3000);
+}
+
+async function recibirArchivoDesdeMovil(fileUrl, filename) {
+    try {
+        showLoading('Recibiendo archivo...', 'Descargando el comprobante desde tu móvil.');
+
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error('No se pudo descargar el archivo');
+        const blob = await response.blob();
+
+        // Validar tamaño
+        if (blob.size > 25 * 1024 * 1024) {
+            hideLoading();
+            showNotification('Archivo muy grande',
+                '<p>El archivo recibido excede los 25 MB permitidos.</p>', 'error');
+            return;
+        }
+
+        const safeName = (filename || 'comprobante').replace(/[^\w.\-]/g, '_');
+        const file = new File([blob], safeName, { type: blob.type || 'application/pdf' });
+
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('receipt_file').files = dt.files;
+
+        const qrModal = bootstrap.Modal.getInstance(document.getElementById('qrModal'));
+        qrModal?.hide();
+        document.getElementById('qrWaitingStatus').style.display = 'none';
+
+        hideLoading();
+        mostrarPreviewComprobante(fileUrl, safeName, blob.type);
+
+        showNotification('¡Recibido!',
+            '<p>El archivo llegó desde tu celular. <strong>Confírmalo</strong> para adjuntarlo.</p>',
+            'success');
+
+    } catch (err) {
+        hideLoading();
+        showNotification('Error',
+            '<p>No se pudo recibir el archivo desde el móvil. Intenta de nuevo.</p>', 'error');
+    }
+}
+
+document.getElementById('regenerateQRBtn').addEventListener('click', () => {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+    abrirQRPago();
+});
+
+document.getElementById('qrModal').addEventListener('hidden.bs.modal', () => {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+});
+
+/* ============================================================
+   BÚSQUEDA CON DEBOUNCE Y SKELETON
+   ============================================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarBusqueda();
+    }
+});
+
+searchInput.addEventListener('input', function () {
+    // Limpiar timer previo
+    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    // Habilitar botón si hay texto
+    searchBtn.disabled = this.value.trim().length === 0;
+});
+
+searchBtn.addEventListener('click', realizarBusqueda);
+
+function mostrarSkeletonResultados() {
+    const container = document.getElementById('resultsContainer');
+    let html = '<h5 class="mb-3 fw-bold d-flex align-items-center gap-2"><i class="bi bi-people" style="color:var(--accent-primary);"></i>Buscando...</h5>';
+    for (let i = 0; i < 3; i++) {
+        html += `
+            <div class="skeleton-card">
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line medium"></div>
+                <div class="skeleton-line"></div>
+            </div>`;
+    }
+    container.innerHTML = html;
+}
+
+async function realizarBusqueda() {
+    const searchTerm = searchInput.value.trim().toUpperCase();
+
+    if (!searchTerm) {
+        showNotification('Búsqueda vacía',
+            '<p>Por favor ingresa un término de búsqueda (nombre, CURP, folio, etc.).</p>',
+            'warning');
+        searchInput.focus();
+        return;
+    }
+
+    if (searchTerm.length < 2) {
+        showNotification('Búsqueda muy corta',
+            '<p>Ingresa al menos <strong>2 caracteres</strong> para buscar.</p>',
+            'warning');
+        return;
+    }
+
+    // Bloquear botón mientras busca
+    searchBtn.disabled = true;
+    const originalHTML = searchBtn.innerHTML;
+    searchBtn.innerHTML = '<span class="btn-spinner"></span> <span>Buscando...</span>';
+
+    mostrarSkeletonResultados();
+
     try {
         const formData = new FormData();
         formData.append('search_term', searchTerm);
-        const response = await fetch('/api/payments/search-client', { method: 'POST', body: formData });
-        
-        if (!response.ok) {
-            hideLoading();
-            const error = await response.json();
-            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
-            document.getElementById('resultsContainer').innerHTML = '';
-            return;
-        }
-        
-        clientsData = await response.json();
-        hideLoading();
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        const response = await fetch('/api/payments/search-client', {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
         const container = document.getElementById('resultsContainer');
-        
-        if (clientsData.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="bi bi-check-circle text-success"></i><h5>No hay clientes con deudas</h5><p>Todos los clientes están al corriente.</p></div>';
+
+        if (!response.ok) {
+            let errorMsg = 'No se encontraron clientes con deudas pendientes.';
+            try {
+                const error = await response.json();
+                if (error && error.detail) errorMsg = error.detail;
+            } catch (e) {}
+
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <h5>Sin resultados</h5>
+                    <p>${escapeHTML(errorMsg)}</p>
+                </div>`;
             return;
         }
-        
-        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes con deuda</h5>';
-        
-        clientsData.forEach(client => {
-            const card = document.createElement('div');
-            card.className = 'client-card d-flex align-items-center justify-content-between flex-wrap gap-2';
-            card.innerHTML = `
+
+        clientsData = await response.json();
+
+        if (!Array.isArray(clientsData) || clientsData.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-check-circle" style="color:var(--success);"></i>
+                    <h5>No hay clientes con deudas</h5>
+                    <p>Todos los clientes están al corriente. 🎉</p>
+                </div>`;
+            return;
+        }
+
+        renderizarClientes(clientsData);
+
+    } catch (error) {
+        const container = document.getElementById('resultsContainer');
+        let msg = 'Error de conexión. Verifica tu red e intenta de nuevo.';
+        if (error.name === 'AbortError') {
+            msg = 'La búsqueda tardó demasiado. Intenta de nuevo.';
+        }
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bi bi-wifi-off" style="color:var(--danger);"></i>
+                <h5>Error de conexión</h5>
+                <p>${escapeHTML(msg)}</p>
+            </div>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = originalHTML;
+    }
+}
+
+
+
+function renderizarClientes(clientes) {
+    const container = document.getElementById('resultsContainer');
+let html = `<h5 class="mt-5 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-people" style="color:var(--accent-primary);"></i>
+        Clientes con deuda <span class="badge-custom badge-debt ms-2">${clientes.length}</span>
+    </h5>`;
+
+
+    clientes.forEach((client, idx) => {
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const numContratos = Array.isArray(client.contratos) ? client.contratos.length : 0;
+        const clientId = safeNumber(client.id);
+
+        html += `
+            <div class="client-card d-flex align-items-center justify-content-between flex-wrap gap-2"
+                 style="animation-delay:${idx * 0.05}s;">
                 <div>
-                    <div class="client-name">${client.nombre_completo}</div>
-                    <div class="client-curp">${client.curp}</div>
+                    <div class="client-name">${nombre}</div>
+                    <div class="client-curp">CURP: ${curp}</div>
                 </div>
                 <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
-                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
-                    <span class="badge-custom badge-debt"><i class="bi bi-exclamation-triangle me-1"></i>${client.contratos.length} deuda(s)</span>
-                    <button class="btn-select-client select-client" data-id="${client.id}"><i class="bi bi-person-check me-1"></i>Seleccionar</button>
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${folio}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${exp}</span>
+                    <span class="badge-custom badge-debt">
+                        <i class="bi bi-exclamation-triangle me-1"></i>${numContratos} deuda${numContratos !== 1 ? 's' : ''}
+                    </span>
+                    <button class="btn-select-client select-client" data-id="${clientId}" type="button">
+                        <i class="bi bi-person-check"></i>Seleccionar
+                    </button>
                 </div>
-            `;
-            container.appendChild(card);
+            </div>`;
+    });
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.select-client').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const clientId = parseInt(this.dataset.id, 10);
+            loadClientFromData(clientId);
         });
-        
-        document.querySelectorAll('.select-client').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const clientId = parseInt(this.dataset.id);
-                loadClientFromData(clientId);
-            });
-        });
-        
-    } catch (error) {
-        hideLoading();
-        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-    }
-});
+    });
+}
+
+/* ============================================================
+   CARGAR CLIENTE Y CONTRATOS
+   ============================================================ */
 function loadClientFromData(clientId) {
     const client = clientsData.find(c => c.id === clientId);
-    
+
     if (!client) {
         showNotification('Error', '<p>Cliente no encontrado en los resultados.</p>', 'error');
         return;
     }
-    
+
+    // Resetear estado
+    selectedContractId = null;
+    currentSaldo = 0;
+    currentContractTotal = 0;
+    fileAccepted = false;
+
     document.getElementById('resultsContainer').innerHTML = '';
-    document.getElementById('paymentFormContainer').style.display = 'block';
-    document.getElementById('clientNameDisplay').innerHTML = '<i class="bi bi-person-circle text-primary me-2"></i>' + client.nombre_completo;
-    document.getElementById('clientInfoDisplay').textContent = 
-        `CURP: ${client.curp} | Teléfono: ${client.telefono} | Exp. Interno: ${client.expediente_interno} | Folio: ${client.folio_registro}`;
-    
+
+    const formContainer = document.getElementById('paymentFormContainer');
+    formContainer.style.display = 'block';
+
+    document.getElementById('clientNameDisplay').innerHTML =
+        `<i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${escapeHTML(client.nombre_completo || 'Sin nombre')}`;
+
+    document.getElementById('clientInfoDisplay').innerHTML = `
+        <strong>CURP:</strong> ${escapeHTML(client.curp || '—')} ·
+        <strong>Tel:</strong> ${escapeHTML(client.telefono || '—')} ·
+        <strong>Exp:</strong> ${escapeHTML(client.expediente_interno || '—')} ·
+        <strong>Folio:</strong> ${escapeHTML(client.folio_registro || '—')}
+    `;
+
     const contractsContainer = document.getElementById('contractsContainer');
     contractsContainer.innerHTML = '';
-    
-    if (client.contratos.length === 0) {
-        contractsContainer.innerHTML = '<div class="alert alert-success rounded-4"><i class="bi bi-check-circle me-2"></i><strong>¡Este cliente no tiene deudas pendientes!</strong></div>';
+
+    const contratos = Array.isArray(client.contratos) ? client.contratos : [];
+
+    if (contratos.length === 0) {
+        contractsContainer.innerHTML = `
+            <div class="alert alert-success rounded-4 d-flex align-items-center gap-2">
+                <i class="bi bi-check-circle-fill"></i>
+                <strong>¡Este cliente no tiene deudas pendientes!</strong>
+            </div>`;
         document.getElementById('paymentForm').style.display = 'none';
         return;
     }
-    
+
     document.getElementById('paymentForm').style.display = 'block';
-    
-    client.contratos.forEach(contract => {
+
+    // Resetear formulario
+    document.getElementById('paymentForm').reset();
+    resetearComprobante();
+    document.getElementById('receiverContainer').style.display = 'none';
+    document.getElementById('receiptContainer').style.display = 'none';
+    document.getElementById('paymentSummary').style.display = 'none';
+    document.getElementById('liquidatedCard').classList.remove('show');
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    // 👇 Ocultar secciones hasta que se seleccione un contrato
+    document.getElementById('datosPagoSection').style.display = 'none';
+    document.getElementById('recepcionSection').style.display = 'none';
+    document.getElementById('accionesFormulario').style.display = 'none';
+
+    contratos.forEach(contract => {
         const card = document.createElement('div');
         card.className = 'contract-card';
+
+        const servicio = escapeHTML(contract.servicio || 'Servicio');
+        const detalle = contract.detalle ? `<div class="contract-detail">${escapeHTML(contract.detalle)}</div>` : '';
+        const tipoJuicio = contract.tipo_juicio ? `<div class="contract-detail">${escapeHTML(contract.tipo_juicio)}</div>` : '';
+
+        let courtCaseHTML = '';
+        if (contract.court_case) {
+            const numExp = escapeHTML(contract.court_case.num_exp_tribunal || '—');
+            const tribunal = escapeHTML(contract.court_case.tribunal || '—');
+            courtCaseHTML = `
+                <div class="expediente-mini">
+                    <span class="expediente-mini-item">
+                        <i class="bi bi-folder2-open"></i>
+                        <strong>Exp:</strong> ${numExp}
+                    </span>
+                    <span class="expediente-mini-item">
+                        <i class="bi bi-bank"></i> ${tribunal}
+                    </span>
+                </div>`;
+        }
+
+        const pagado = safeNumber(contract.pagado);
+        const saldo = safeNumber(contract.saldo);
+
         card.innerHTML = `
             <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                <div>
-                    <div class="contract-service">${contract.servicio}</div>
-                    ${contract.detalle ? `<div class="contract-detail">${contract.detalle}</div>` : ''}
-                    ${contract.tipo_juicio ? `<div class="contract-detail">${contract.tipo_juicio}</div>` : ''}
-                    ${contract.court_case ? `
-                    <div class="expediente-mini">
-                        <span class="expediente-mini-item">
-                            <i class="bi bi-folder2-open"></i>
-                            <strong>Exp:</strong> ${contract.court_case.num_exp_tribunal}
-                        </span>
-                        <span class="expediente-mini-item">
-                            <i class="bi bi-bank"></i>
-                            ${contract.court_case.tribunal}
-                        </span>
-                    </div>
-                    ` : ''}
+                <div style="flex:1; min-width:0;">
+                    <div class="contract-service">${servicio}</div>
+                    ${detalle}
+                    ${tipoJuicio}
+                    ${courtCaseHTML}
                 </div>
                 <div class="text-end">
-                    <div class="contract-paid">Pagado: $${contract.pagado.toLocaleString()}</div>
-                    <div class="contract-balance">Saldo: $${contract.saldo.toLocaleString()}</div>
+                    <div class="contract-paid">Pagado: ${formatMoney(pagado)}</div>
+                    <div class="contract-balance">Saldo: ${formatMoney(saldo)}</div>
                 </div>
-            </div>
-        `;
-        card.onclick = function() {
+            </div>`;
+
+        card.addEventListener('click', function () {
             document.querySelectorAll('.contract-card').forEach(c => c.classList.remove('selected'));
             this.classList.add('selected');
-            selectedContractId = contract.id;
-            currentSaldo = contract.saldo;
-            document.getElementById('contractId').value = contract.id;
-            document.getElementById('paymentAmount').max = currentSaldo;
-            document.getElementById('paymentAmount').placeholder = `Máximo $${currentSaldo.toFixed(2)}`;
-            document.getElementById('saldoInfo').textContent = `Saldo pendiente: $${currentSaldo.toFixed(2)}`;
-        };
+
+            selectedContractId = safeNumber(contract.id);
+            currentSaldo = safeNumber(contract.saldo);
+            currentContractTotal = safeNumber(contract.total);
+
+            document.getElementById('contractId').value = selectedContractId;
+            paymentAmountEl.placeholder = `Máximo ${formatMoney(currentSaldo)}`;
+            paymentAmountEl.value = '';
+            paymentAmountEl.classList.remove('is-invalid');
+
+            actualizarResumenPago(0);
+
+            // 👇 AQUÍ SE MUESTRAN LAS SECCIONES AL SELECCIONAR CONTRATO
+            document.getElementById('datosPagoSection').style.display = 'block';
+            document.getElementById('recepcionSection').style.display = 'block';
+            document.getElementById('accionesFormulario').style.display = 'flex';
+
+            // Scroll suave al monto
+            paymentAmountEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => paymentAmountEl.focus(), 300);
+        });
+
         contractsContainer.appendChild(card);
     });
-    
-    document.getElementById('paymentFormContainer').scrollIntoView({ behavior: 'smooth' });
+
+    formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+/* ============================================================
+   LIMPIAR FORMULARIO
+   ============================================================ */
 function limpiarFormulario() {
-    showConfirm('Limpiar formulario', '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>', function() {
-        document.getElementById('paymentForm').reset();
-        document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        fileAccepted = false;
-        selectedContractId = null;
-        currentSaldo = 0;
-        document.getElementById('paymentFormContainer').style.display = 'none';
-        document.getElementById('resultsContainer').innerHTML = '';
-        document.getElementById('receiverContainer').style.display = 'none';
-        document.getElementById('receiptContainer').style.display = 'none';
-        clientsData = [];
-        showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
-    });
-}
+    showConfirm('Limpiar formulario',
+        `<p>¿Estás seguro de que deseas <strong>limpiar todos los campos</strong>?</p>
+         <p class="text-muted small mb-0">Se perderán los datos no guardados.</p>`,
+        function () {
+            document.getElementById('paymentForm').reset();
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
 
+            fileAccepted = false;
+            selectedContractId = null;
+            currentSaldo = 0;
+            currentContractTotal = 0;
+            clientsData = [];
+
+            document.getElementById('paymentFormContainer').style.display = 'none';
+            document.getElementById('resultsContainer').innerHTML = '';
+            document.getElementById('receiverContainer').style.display = 'none';
+            document.getElementById('receiptContainer').style.display = 'none';
+            document.getElementById('paymentSummary').style.display = 'none';
+            document.getElementById('liquidatedCard').classList.remove('show');
+
+            document.getElementById('datosPagoSection').style.display = 'none';
+            document.getElementById('recepcionSection').style.display = 'none';
+            document.getElementById('accionesFormulario').style.display = 'none';
+
+            resetearComprobante();
+
+            if (qrPollingInterval) {
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+            }
+
+            showNotification('Formulario limpiado',
+                '<p>Todos los campos han sido reiniciados.</p>', 'info');
+        });
+}
+/* ============================================================
+   SUBMIT DEL PAGO
+   ============================================================ */
 document.getElementById('paymentForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    if (!selectedContractId) { showNotification('Contrato no seleccionado', '<p>Por favor selecciona un contrato.</p>', 'warning'); return; }
-    
+
+    if (isSubmitting) return;
+
+    if (!selectedContractId) {
+        showNotification('Contrato no seleccionado',
+            '<p>Por favor selecciona un contrato de la lista.</p>', 'warning');
+        return;
+    }
+
+    // Validación de campos requeridos
     let valid = true;
     const fields = document.querySelectorAll('#paymentForm [required]');
     fields.forEach(field => {
-        if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
-        else { field.classList.remove('is-invalid'); }
+        const isEmpty = field.type === 'file'
+            ? (!field.files || !field.files.length)
+            : (!field.value || !field.value.trim());
+        if (isEmpty) {
+            field.classList.add('is-invalid');
+            valid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
     });
-    
+
+    if (!valid) {
+        showNotification('Campos incompletos',
+            '<p>Por favor completa todos los campos obligatorios marcados en <span style="color:var(--danger);">rojo</span>.</p>',
+            'warning');
+        const firstInvalid = document.querySelector('#paymentForm .is-invalid');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => firstInvalid.focus?.(), 300);
+        }
+        return;
+    }
+
     const paymentMethod = document.getElementById('payment_method').value;
-    if (paymentMethod === 'deposito' || paymentMethod === 'transferencia') {
-        if (!fileAccepted) { showNotification('Comprobante no validado', '<p>Por favor adjunta y valida el comprobante en PDF.</p>', 'warning'); return; }
+
+    if ((paymentMethod === 'deposito' || paymentMethod === 'transferencia') && !fileAccepted) {
+        showNotification('Comprobante no confirmado',
+            '<p>Adjunta el comprobante y confírmalo con el botón <strong>"Sí, usar este comprobante"</strong>.</p>',
+            'warning');
+        return;
     }
-    
-    if (!valid) { showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning'); return; }
-    
-    const amountStr = document.getElementById('paymentAmount').value.replace(/[^0-9.]/g, '');
-    const amount = parseFloat(amountStr);
-    
-    if (!amount || amount <= 0) { 
-        showNotification('Monto inválido', '<p>El monto debe ser mayor a cero.</p>', 'warning'); 
-        return; 
+
+    const amountStr = paymentAmountEl.value.replace(/[^0-9.]/g, '');
+    const amount = safeNumber(amountStr);
+
+    if (!amount || amount <= 0) {
+        paymentAmountEl.classList.add('is-invalid');
+        showNotification('Monto inválido',
+            '<p>El monto debe ser un número <strong>mayor a cero</strong>.</p>', 'warning');
+        paymentAmountEl.focus();
+        return;
     }
-    
-    if (amount > currentSaldo) { 
-        showNotification('Monto excedido', `<p>El abono no puede exceder el saldo de <strong>$${currentSaldo.toFixed(2)}</strong></p>`, 'warning'); 
-        return; 
+
+    if (amount > currentSaldo) {
+        paymentAmountEl.classList.add('is-invalid');
+        showNotification('Monto excedido',
+            `<p>El abono no puede ser mayor al saldo pendiente:</p>
+             <p class="text-center mt-2"><strong style="font-size:1.2rem; color:var(--danger);">${formatMoney(currentSaldo)}</strong></p>`,
+            'warning');
+        paymentAmountEl.focus();
+        return;
     }
-    
-    const esLiquidacion = amount >= currentSaldo;
-    const confirmMessage = esLiquidacion 
-        ? `<p>¿Registrar abono de <strong>$${amount.toFixed(2)}</strong>?</p><p class="text-success"><strong>🎉 Con este pago el contrato quedará LIQUIDADO.</strong></p>`
-        : `<p>¿Registrar abono de <strong>$${amount.toFixed(2)}</strong>?</p><p class="text-warning"><strong>Quedará pendiente de liquidar: $${(currentSaldo - amount).toFixed(2)}</strong></p>`;
-    
-    showConfirm('Confirmar abono', confirmMessage, async function() {
+
+    // Redondear a 2 decimales
+    const amountRounded = Math.round(amount * 100) / 100;
+    const esLiquidacion = amountRounded >= currentSaldo;
+
+    const confirmMessage = esLiquidacion
+        ? `<p>¿Registrar abono de <strong style="color:var(--success); font-size:1.2rem;">${formatMoney(amountRounded)}</strong>?</p>
+           <div class="alert alert-success mt-2 mb-0">
+               <i class="bi bi-trophy me-1"></i>
+               <strong>Con este pago el contrato quedará LIQUIDADO.</strong>
+           </div>`
+        : `<p>¿Registrar abono de <strong style="font-size:1.15rem;">${formatMoney(amountRounded)}</strong>?</p>
+           <div class="alert alert-warning mt-2 mb-0">
+               <i class="bi bi-info-circle me-1"></i>
+               Quedará pendiente: <strong>${formatMoney(currentSaldo - amountRounded)}</strong>
+           </div>`;
+
+    showConfirm('Confirmar abono', confirmMessage, async function () {
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        const submitBtn = document.getElementById('submitBtn');
+        const originalSubmitHTML = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="btn-spinner"></span> <span>Registrando...</span>';
+
         showLoading('Registrando pago...', 'Generando recibo, por favor espera.');
-        
+
         const formData = new FormData(e.target);
-        formData.set('amount', amount);
-        
+        formData.set('amount', amountRounded.toFixed(2));
+
         try {
-            const response = await fetch(`/api/payments/register/${selectedContractId}`, { method: 'POST', body: formData });
-            
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+            const response = await fetch(`/api/payments/register/${selectedContractId}`, {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
             if (!response.ok) {
-                hideLoading();
-                const error = await response.json();
-                showNotification('Error', `<p>${error.detail || 'Error al registrar el pago'}</p>`, 'error');
-                return;
+                let errorDetail = 'Error al registrar el pago.';
+                try {
+                    const error = await response.json();
+                    if (error && error.detail) errorDetail = error.detail;
+                } catch (e) {}
+                throw new Error(errorDetail);
             }
-            
-            hideLoading();
-            
+
             const blob = await response.blob();
+            if (blob.size === 0) throw new Error('El recibo generado está vacío.');
+
+            // Descargar PDF
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `recibo_pago_${Date.now()}.pdf`;
+            document.body.appendChild(a);
             a.click();
-            
-            const saldoRestante = currentSaldo - amount;
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+            hideLoading();
+
+            const saldoRestante = currentSaldo - amountRounded;
             let bodyHTML = `
-                <div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div>
-                <p><strong>Monto Abonado:</strong> $${amount.toFixed(2)}</p>
-            `;
-            
-            if (saldoRestante <= 0) {
-                bodyHTML += `<p class="text-success"><strong>🎉 ¡El contrato ha sido LIQUIDADO completamente!</strong></p>`;
+                <div class="d-flex flex-column gap-2">
+                    <div class="d-flex justify-content-between border-bottom pb-2">
+                        <span class="text-muted">Monto abonado:</span>
+                        <strong>${formatMoney(amountRounded)}</strong>
+                    </div>`;
+
+            if (saldoRestante <= 0.005) {
+                bodyHTML += `
+                    <div class="alert alert-success mb-0 mt-2">
+                        <i class="bi bi-trophy-fill me-1"></i>
+                        <strong>¡Contrato LIQUIDADO completamente!</strong>
+                    </div>`;
             } else {
-                bodyHTML += `<p class="text-warning"><strong>Pendiente de liquidar: $${saldoRestante.toFixed(2)}</strong></p>`;
+                bodyHTML += `
+                    <div class="d-flex justify-content-between border-bottom pb-2">
+                        <span class="text-muted">Saldo restante:</span>
+                        <strong style="color:var(--warning);">${formatMoney(saldoRestante)}</strong>
+                    </div>
+                    <div class="alert alert-warning mb-0 mt-2">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Aún queda saldo pendiente por liquidar.
+                    </div>`;
             }
-            
-            bodyHTML += `<p class="text-muted">El recibo de pago se ha descargado automáticamente.</p>`;
-            
-            showNotification('Pago Registrado', bodyHTML, 'success');
-            
-            setTimeout(() => location.reload(), 3000);
-            
+
+            bodyHTML += `
+                    <p class="text-muted small mb-0 mt-2">
+                        <i class="bi bi-download me-1"></i>
+                        El recibo PDF se ha descargado automáticamente.
+                    </p>
+                </div>`;
+
+            showNotification('¡Pago Registrado!', bodyHTML, 'success');
+
+            // Recargar después
+            setTimeout(() => {
+                window.location.reload();
+            }, 3500);
+
         } catch (error) {
             hideLoading();
-            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+            let msg = error.message || 'Error desconocido';
+            if (error.name === 'AbortError') {
+                msg = 'La operación tardó demasiado. Verifica tu conexión.';
+            }
+            showNotification('Error al registrar',
+                `<p>${escapeHTML(msg)}</p>
+                 <p class="text-muted small mb-0">Si el problema persiste, contacta al administrador.</p>`,
+                'error');
+        } finally {
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalSubmitHTML;
         }
     });
+});
+
+/* ============================================================
+   ATAJOS DE TECLADO
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+    // ESC cierra modales abiertos
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst && m.id !== 'qrModal') inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('searchBtn');
+    searchBtn.disabled = false;
+    // Focus inicial suave
+    setTimeout(() => document.getElementById('searchInput')?.focus(), 400);
+});
+
+// Evitar doble envío del form
+window.addEventListener('beforeunload', (e) => {
+    if (isSubmitting) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
 });
 </script>
 </body>
