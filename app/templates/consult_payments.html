@@ -1,207 +1,377 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Consulta de Pagos · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #dbe4ef;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
 
         body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Botón menú */
-        .btn-menu-modern {
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
+        .btn-menu {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 12px 24px;
             font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
         }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        .btn-menu:hover {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-primary);
         }
 
-        /* Header */
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1100px; }
+
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         .page-header h1 i {
-            color: #2a6df4;
             font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .page-header .header-badge {
-            background: #0b1e33;
+            background: var(--accent-dark);
             color: white;
             font-weight: 600;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .page-header .header-badge i {
-            margin-right: 6px;
-            color: #7aa9ff;
-        }
+        .page-header .header-badge i { color: var(--accent-light); font-size: 0.9rem; }
 
-        /* Tarjeta de búsqueda */
+        /* ============================================================
+           SEARCH CARD
+           ============================================================ */
         .search-card {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 24px 28px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.4s ease-out;
         }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .search-card .search-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .search-card .search-title i {
-            color: #2a6df4;
-            margin-right: 8px;
-        }
-        .search-card .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
+        .search-card .search-title i { color: var(--accent-primary); }
+
+        .form-control {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
             padding: 14px 18px;
             font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 56px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 56px;
         }
-        .search-card .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
         }
+
         .btn-search {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 60px;
             padding: 14px 24px;
             font-weight: 700;
             color: white;
-            transition: all 0.25s;
-            display: flex;
+            transition: all var(--transition-normal);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             width: 100%;
             height: 56px;
+            min-height: 56px;
         }
-        .btn-search:hover {
-            background: #1a3b6b;
+        .btn-search:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
+        .btn-search:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* Tarjetas de clientes */
+        /* ============================================================
+           CLIENT CARDS
+           ============================================================ */
         .client-card-modern {
-            background: white;
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
-            cursor: pointer;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .client-card-modern:hover {
-            border-color: #cbd9ed;
+            border-color: var(--accent-primary);
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
         }
-        .client-card-modern .client-name {
+        .client-name {
             font-weight: 700;
-            color: #0b1e33;
-            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 2px;
         }
-        .client-card-modern .client-curp {
-            color: #6b7b8f;
-            font-size: 0.8rem;
-        }
-        .client-card-modern .badge-custom {
+        .client-curp { color: var(--text-muted); font-size: 0.8rem; font-family: 'SF Mono', monospace; }
+
+        .badge-custom {
             font-weight: 600;
-            font-size: 0.65rem;
-            padding: 4px 12px;
+            font-size: 0.68rem;
+            padding: 5px 12px;
             border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
         }
-        .badge-folio { background: #eef3fa; color: #4a5b6e; }
-        .badge-interno { background: #e2edff; color: #1f4f9e; }
-        .badge-contratos { background: #e3f5ee; color: #1a8b5c; }
-        .badge-deuda { background: #fee9e7; color: #b12a2a; }
-        .badge-pagado { background: #e3f5ee; color: #1a8b5c; }
+        .badge-folio { background: rgba(42,109,244,0.08); color: var(--accent-primary); }
+        .badge-interno { background: rgba(42,109,244,0.15); color: var(--accent-primary); }
+        .badge-contratos { background: var(--info-soft); color: var(--info); }
+        .badge-pagado { background: var(--success-soft); color: var(--success); }
+        .badge-deuda { background: var(--danger-soft); color: var(--danger); }
+
+        [data-theme="dark"] .badge-folio { background: rgba(91,147,255,0.15); }
+        [data-theme="dark"] .badge-interno { background: rgba(91,147,255,0.2); }
 
         .btn-view-details {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 40px;
-            padding: 6px 18px;
+            padding: 8px 20px;
             color: white;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
         .btn-view-details:hover {
-            background: #2a6df4;
-            transform: scale(1.02);
+            background: var(--accent-primary);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
         }
 
-        /* Detalle del cliente */
+        /* ============================================================
+           DETAIL CONTAINER
+           ============================================================ */
         .detail-container {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
             display: none;
+            animation: fadeInUp 0.4s ease-out;
         }
         .detail-container .client-header {
             display: flex;
@@ -212,361 +382,568 @@
             margin-bottom: 8px;
         }
         .detail-container .client-header h4 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin: 0;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 8px 0;
+            font-size: 1.25rem;
         }
         .detail-container .client-header .client-meta {
-            color: #6b7b8f;
+            color: var(--text-muted);
             font-size: 0.85rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
         }
 
-        /* Contratos */
+        /* ============================================================
+           CONTRACT CARDS
+           ============================================================ */
         .contract-card-modern {
-            background: white;
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border-left: 4px solid #f5b342;
-            transition: all 0.15s;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--warning);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .contract-card-modern:hover {
-            background: #fafcff;
+            background: var(--bg-tertiary);
+            box-shadow: var(--shadow-sm);
+            border-left-color: var(--warning-hover);
         }
-        .contract-card-modern .contract-service {
+        .contract-service {
             font-weight: 700;
-            color: #0b1e33;
-            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .contract-service i { color: var(--accent-primary); }
+
+        .contract-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 14px;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        .contract-meta .meta-item {
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .contract-meta .meta-item strong {
+            color: var(--text-primary);
+            font-weight: 700;
         }
 
         .status-badge-modern {
-            padding: 4px 16px;
+            padding: 5px 14px;
             border-radius: 40px;
-            font-size: 0.65rem;
-            font-weight: 700;
+            font-size: 0.68rem;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .status-liquidado { background: #e3f5e9; color: #1f8b4c; }
-        .status-pendiente { background: #fee9e7; color: #b12a2a; }
+        .status-liquidado { background: var(--success-soft); color: var(--success); }
+        .status-pendiente { background: var(--danger-soft); color: var(--danger); }
 
         .btn-toggle-payments {
-            background: rgba(42,109,244,0.06);
-            border: none;
+            background: rgba(42,109,244,0.08);
+            border: 1.5px solid rgba(42,109,244,0.2);
             border-radius: 40px;
-            padding: 6px 16px;
-            color: #2a6df4;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
+            padding: 8px 18px;
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
         .btn-toggle-payments:hover {
-            background: #2a6df4;
+            background: var(--accent-primary);
             color: white;
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
         }
 
-        /* Pagos */
+        /* ============================================================
+           PAYMENT ITEMS
+           ============================================================ */
         .payment-item {
-            background: #f8faff;
-            border-radius: 12px;
-            padding: 10px 14px;
-            border: 1px solid #edf2f9;
-            transition: all 0.15s;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
             height: 100%;
         }
         .payment-item:hover {
-            border-color: #cbd9ed;
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
         .payment-item .payment-amount {
-            font-weight: 700;
-            color: #0b1e33;
-            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--success);
+            font-size: 1rem;
+            margin-bottom: 6px;
         }
-        .payment-item .payment-method {
-            font-size: 0.75rem;
-            color: #6b7b8f;
+        .payment-item .payment-row {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 3px;
         }
-        .payment-item .payment-date {
-            font-size: 0.7rem;
-            color: #8a9bb0;
-        }
-        .payment-item .payment-received {
-            font-size: 0.7rem;
-            color: #6b7b8f;
+        .payment-item .payment-row i {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            width: 14px;
         }
 
         .btn-view-receipt {
-            background: rgba(220,53,69,0.06);
+            background: rgba(220,53,69,0.08);
             border: none;
             border-radius: 40px;
-            padding: 3px 12px;
-            color: #dc3545;
-            font-weight: 600;
-            font-size: 0.65rem;
-            transition: all 0.2s;
+            padding: 6px 14px;
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 0.72rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         .btn-view-receipt:hover {
-            background: #dc3545;
+            background: var(--danger);
+            color: white;
+            transform: translateY(-1px);
+        }
+        .btn-view-receipt.reprint {
+            background: rgba(26,139,92,0.08);
+            color: var(--success);
+        }
+        .btn-view-receipt.reprint:hover {
+            background: var(--success);
             color: white;
         }
 
-        /* Resumen de pagos */
+        /* ============================================================
+           SUMMARY CARD
+           ============================================================ */
         .summary-card {
-            background: linear-gradient(135deg, #f8faff, #eef3fa);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-top: 16px;
-            border: 1px solid #e9edf4;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(26,139,92,0.08));
+            border-radius: var(--radius-md);
+            padding: 20px 24px;
+            margin-top: 20px;
+            border: 1px solid rgba(42,109,244,0.15);
+            animation: fadeInUp 0.5s ease-out;
+        }
+        [data-theme="dark"] .summary-card {
+            background: linear-gradient(135deg, rgba(91,147,255,0.08), rgba(52,211,153,0.08));
+            border-color: rgba(91,147,255,0.2);
         }
         .summary-card .summary-item {
             text-align: center;
-            padding: 4px 0;
+            padding: 8px 0;
         }
         .summary-card .summary-item .label {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #6b7b8f;
-            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 6px;
         }
         .summary-card .summary-item .value {
-            font-weight: 700;
-            font-size: 1.3rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            font-variant-numeric: tabular-nums;
         }
-        .summary-card .summary-item .value.text-success { color: #1a8b5c; }
-        .summary-card .summary-item .value.text-danger { color: #b12a2a; }
+        .summary-card .summary-item .value.text-success { color: var(--success); }
+        .summary-card .summary-item .value.text-danger { color: var(--danger); }
 
-        /* Modales modernos */
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
         .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
             overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
         }
         .modal-modern .modal-header {
             border-bottom: none;
-            padding: 20px 28px 8px 28px;
+            padding: 22px 28px 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .modal-modern .modal-header .modal-title {
-            font-weight: 700;
-            color: #0b1e33;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .modal-modern .modal-body {
-            padding: 16px 28px 24px;
-        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
         .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .modal-pdf {
             width: 100%;
             height: 75vh;
             border: none;
-            border-radius: 12px;
+            background: var(--bg-tertiary);
         }
 
-        /* Loading */
+        /* ============================================================
+           SPINNER OVERLAY
+           ============================================================ */
         .spinner-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
         }
         .spinner-box .spinner-border {
             width: 3rem;
             height: 3rem;
-            color: #2a6df4;
+            color: var(--accent-primary);
+            border-width: 3px;
         }
         .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
         }
         .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
         }
-        .empty-state i {
-            font-size: 3rem;
-            color: #d0d8e3;
-            margin-bottom: 12px;
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
         }
-        .empty-state h5 {
-            color: #0b1e33;
-            font-weight: 600;
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
         }
-        .empty-state p {
-            color: #8a9bb0;
-            font-size: 0.9rem;
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .search-card { padding: 16px 18px; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .detail-container .client-header { flex-direction: column; }
-        }
-        @media (max-width: 480px) {
-            .client-card-modern { flex-direction: column; align-items: stretch; }
-        }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.search-card,#resultsContainer,.detail-container{margin-left:16px; margin-right:16px;}
-        }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; flex-direction:column; align-items:flex-start;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .search-card{padding:16px; border-radius:18px; margin:0 12px 16px 12px;}
-            .search-card .form-control,.btn-search{height:48px; font-size:16px;}
-            .client-card-modern{flex-direction:column; align-items:flex-start; padding:14px;}
-            .client-card-modern > div:last-child{width:100%; display:flex; flex-wrap:wrap; gap:6px;}
-            .detail-container{padding:16px; border-radius:18px; margin:0 12px;}
-            .contract-card-modern .row{--bs-gutter-y:8px;}
-            .contract-card-modern .text-end{text-align:left !important;}
-            .payment-item{padding:12px;}
-            .summary-card{padding:12px;}
-        }
-        @media (max-width: 480px){
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
-            .page-header .header-badge{width:100%; text-align:center; display:flex; justify-content:center;}
-            .search-card{margin:0 10px 12px 10px; padding:12px; border-radius:16px;}
-            #resultsContainer{padding:0 10px; margin:0;}
-            .detail-container{margin:0 10px; padding:12px; border-radius:16px;}
-            .client-card-modern{padding:12px; border-radius:14px;}
-            .badge-custom{font-size:0.6rem; padding:3px 8px;}
-            .btn-view-details,.btn-toggle-payments,.btn-view-receipt{width:100%; justify-content:center; display:flex;}
-            .payment-item .row{--bs-gutter-y:6px;}
-            .modal-pdf{height:60vh;}
-        }
-                /* ============================================================ */
-        /* MINI EXPEDIENTE EN CONTRATO (nuevo)                          */
-        /* ============================================================ */
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 40px 20px; }
+        .empty-state i { font-size: 3rem; color: var(--text-light); margin-bottom: 12px; display: block; }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* ============================================================
+           EXPEDIENTE MINI
+           ============================================================ */
         .expediente-mini {
-            margin-top: 8px;
+            margin-top: 10px;
             display: flex;
             flex-wrap: wrap;
             gap: 8px 16px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            border-left: 3px solid #2a6df4;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(42,109,244,0.12));
+            border-left: 3px solid var(--accent-primary);
             border-radius: 8px;
         }
-
+        [data-theme="dark"] .expediente-mini {
+            background: linear-gradient(135deg, rgba(91,147,255,0.08), rgba(91,147,255,0.15));
+        }
         .expediente-mini-item {
             display: inline-flex;
             align-items: center;
             gap: 5px;
             font-size: 0.8rem;
-            color: #1e40af;
+            color: var(--accent-primary);
         }
+        .expediente-mini-item i { color: var(--accent-primary); font-size: 0.85rem; }
+        .expediente-mini-item strong { font-weight: 700; color: var(--text-primary); }
 
-        .expediente-mini-item i {
-            color: #2a6df4;
-            font-size: 0.85rem;
-        }
-
-        .expediente-mini-item strong {
-            font-weight: 700;
-            color: #0b1e33;
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .search-card, #resultsContainer, .detail-container {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
         }
 
         @media (max-width: 768px) {
-            .expediente-mini {
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
                 flex-direction: column;
-                gap: 4px;
-                font-size: 0.75rem;
+                align-items: flex-start;
+            }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .header-badge { font-size: 0.75rem; padding: 6px 16px; }
+            .search-card { padding: 18px 16px; border-radius: 18px; }
+            .search-card .form-control, .btn-search { height: 52px; min-height: 52px; font-size: 16px; }
+            .client-card-modern { flex-direction: column; align-items: stretch; gap: 12px; }
+            .client-card-modern > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .btn-view-details { width: 100%; justify-content: center; }
+            .detail-container { padding: 18px 16px; border-radius: 18px; }
+            .detail-container .client-header h4 { font-size: 1.1rem; }
+            .contract-card-modern .row { --bs-gutter-y: 12px; }
+            .contract-card-modern .text-end { text-align: left !important; }
+            .payment-item { padding: 12px 14px; }
+            .summary-card { padding: 16px 18px; }
+            .summary-card .summary-item .value { font-size: 1.3rem; }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+            }
+            .page-header .header-badge {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .search-card { margin: 0 12px 12px 12px; padding: 16px 14px; }
+            #resultsContainer { padding: 0 12px; }
+            .detail-container { margin: 0 12px; padding: 16px 14px; }
+            .badge-custom { font-size: 0.62rem; padding: 3px 10px; }
+            .btn-toggle-payments { width: 100%; justify-content: center; }
+            .modal-pdf { height: 60vh; }
+            .spinner-box { padding: 30px 28px; }
+        }
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
     </style>
 </head>
 <body>
 
-<!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
-    <i class="bi bi-arrow-left"></i> Menú Principal
-</a>
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
-    <!-- Header -->
+    <!-- ENCABEZADO -->
     <div class="page-header">
-        <h1>
-            <i class="bi bi-cash-stack"></i> Consulta de Pagos
-        </h1>
-        <span class="header-badge">
-            <i class="bi bi-search"></i> Historial financiero
-        </span>
+        <h1><i class="bi bi-cash-stack"></i> Consulta de Pagos</h1>
+        <span class="header-badge"><i class="bi bi-search"></i> Historial financiero</span>
     </div>
 
-    <!-- Buscador -->
+    <!-- BUSCADOR -->
     <div class="search-card">
-        <div class="search-title">
-            <i class="bi bi-search"></i> Buscar Cliente
-        </div>
+        <div class="search-title"><i class="bi bi-search"></i> Buscar Cliente</div>
         <div class="row g-3">
             <div class="col-md-8">
                 <input type="text" id="searchInput" class="form-control"
                        placeholder="Buscar por nombre, CURP, teléfono, folio o expediente interno..."
-                       autocomplete="off">
+                       autocomplete="off" maxlength="100" aria-label="Buscar cliente">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn-search">
-                    <i class="bi bi-search"></i> Buscar
+                <button id="searchBtn" class="btn-search" type="button">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Resultados -->
+    <!-- RESULTADOS -->
     <div id="resultsContainer"></div>
 
-    <!-- Detalle del cliente -->
+    <!-- DETALLE DEL CLIENTE -->
     <div id="clientDetailContainer" class="detail-container">
         <div id="clientContent"></div>
     </div>
+
 </div>
 
 <!-- ================================================== -->
 <!-- MODAL COMPROBANTE -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="receiptModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
+<div class="modal fade modal-modern" id="receiptModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Comprobante de Pago</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-pdf text-danger"></i> Comprobante de Pago
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-0">
-                <iframe id="pdfViewer" class="modal-pdf"></iframe>
+                <iframe id="pdfViewer" class="modal-pdf" title="Vista previa del comprobante"></iframe>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -581,16 +958,16 @@
 <!-- ================================================== -->
 <!-- MODAL NOTIFICACIONES -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -599,7 +976,7 @@
 <!-- ================================================== -->
 <!-- LOADING OVERLAY -->
 <!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay">
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
         <h5>Cargando información</h5>
@@ -609,124 +986,282 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
-// ============================================================
+'use strict';
 
-function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-    const header = document.getElementById('notificationHeader');
-    const titleEl = document.getElementById('notificationTitle');
-    const bodyEl = document.getElementById('notificationBody');
-    header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
-    modal.show();
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+function safeNumber(v, fallback = 0) {
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
 }
 
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+function formatMoney(v) {
+    const n = safeNumber(v, 0);
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        document.getElementById('searchBtn').click();
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
     }
 });
 
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-    if (!searchTerm) {
-        showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning');
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function showNotification(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
+    modal.show();
+}
+
+/* ============================================================
+   SKELETON LOADER
+   ============================================================ */
+function mostrarSkeleton() {
+    const container = document.getElementById('resultsContainer');
+    let html = '<h5 class="mb-3 fw-bold d-flex align-items-center gap-2"><i class="bi bi-people" style="color:var(--accent-primary);"></i>Buscando...</h5>';
+    for (let i = 0; i < 3; i++) {
+        html += `<div class="skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line"></div>
+        </div>`;
+    }
+    container.innerHTML = html;
+}
+
+/* ============================================================
+   BÚSQUEDA
+   ============================================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarBusqueda();
+    }
+});
+
+searchBtn.addEventListener('click', realizarBusqueda);
+
+async function realizarBusqueda() {
+    const term = searchInput.value.trim().toUpperCase();
+
+    if (!term) {
+        showNotification('Búsqueda vacía',
+            '<p>Por favor ingresa un término de búsqueda.</p>', 'warning');
+        searchInput.focus();
+        return;
+    }
+    if (term.length < 2) {
+        showNotification('Búsqueda muy corta',
+            '<p>Ingresa al menos 2 caracteres para buscar.</p>', 'warning');
         return;
     }
 
+    // Limpiar resultados previos
     document.getElementById('resultsContainer').innerHTML = '';
     document.getElementById('clientDetailContainer').style.display = 'none';
     document.getElementById('clientContent').innerHTML = '';
 
-    showLoading();
+    searchBtn.disabled = true;
+    const originalHTML = searchBtn.innerHTML;
+    searchBtn.innerHTML = '<span class="btn-spinner"></span> <span>Buscando...</span>';
+
+    mostrarSkeleton();
 
     try {
         const formData = new FormData();
-        formData.append('search_term', searchTerm);
+        formData.append('search_term', term);
+
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
 
         const response = await fetch('/api/payments/search-client-all', {
             method: 'POST',
-            body: formData
+            body: formData,
+            signal: controller.signal
         });
+        clearTimeout(tId);
 
-        hideLoading();
+        const container = document.getElementById('resultsContainer');
 
         if (!response.ok) {
-            const error = await response.json();
-            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
-            document.getElementById('resultsContainer').innerHTML = '';
+            let errorMsg = 'No se encontraron clientes.';
+            try {
+                const error = await response.json();
+                if (error.detail) errorMsg = error.detail;
+            } catch (_) {}
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <h5>Sin resultados</h5>
+                    <p>${escapeHTML(errorMsg)}</p>
+                </div>`;
             return;
         }
 
         const clients = await response.json();
-        const container = document.getElementById('resultsContainer');
 
-        if (clients.length === 0) {
+        if (!Array.isArray(clients) || clients.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-inbox"></i>
                     <h5>No se encontraron clientes</h5>
                     <p>Intenta con otro término de búsqueda.</p>
-                </div>
-            `;
+                </div>`;
             return;
         }
 
-        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes encontrados</h5>';
-
-        clients.forEach(client => {
-            const card = document.createElement('div');
-            card.className = 'client-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2';
-            card.innerHTML = `
-                <div>
-                    <div class="client-name">${client.nombre_completo}</div>
-                    <div class="client-curp">${client.curp}</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
-                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
-                    <span class="badge-custom badge-contratos"><i class="bi bi-files me-1"></i>${client.contratos_count} contratos</span>
-                    <span class="badge-custom badge-pagado"><i class="bi bi-coin me-1"></i>$${client.total_pagado.toLocaleString()}</span>
-                    <span class="badge-custom badge-deuda"><i class="bi bi-exclamation-triangle me-1"></i>$${client.deuda_total.toLocaleString()}</span>
-                    <button class="btn-view-details view-client" data-id="${client.id}"><i class="bi bi-eye me-1"></i>Ver detalles</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-
-        document.querySelectorAll('.view-client').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                const clientId = btn.dataset.id;
-                await loadClientDetail(clientId);
-            });
-        });
+        renderizarClientes(clients);
 
     } catch (error) {
-        hideLoading();
-        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+        let msg = 'Error de conexión. Verifica tu red e intenta de nuevo.';
+        if (error.name === 'AbortError') msg = 'La búsqueda tardó demasiado. Intenta de nuevo.';
+        document.getElementById('resultsContainer').innerHTML = `
+            <div class="empty-state">
+                <i class="bi bi-wifi-off" style="color:var(--danger);"></i>
+                <h5>Error de conexión</h5>
+                <p>${escapeHTML(msg)}</p>
+            </div>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = originalHTML;
     }
-});
+}
 
+function renderizarClientes(clients) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-people" style="color:var(--accent-primary);"></i>
+        Clientes encontrados <span class="badge-custom badge-interno ms-2">${clients.length}</span>
+    </h5>`;
+
+    clients.forEach((client, idx) => {
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const contratos = safeNumber(client.contratos_count);
+        const pagado = safeNumber(client.total_pagado);
+        const deuda = safeNumber(client.deuda_total);
+        const clientId = safeNumber(client.id);
+
+        html += `
+            <div class="client-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2"
+                 style="animation-delay:${idx * 0.05}s;">
+                <div>
+                    <div class="client-name">${nombre}</div>
+                    <div class="client-curp">CURP: ${curp}</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag"></i>${folio}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder"></i>Exp. ${exp}</span>
+                    <span class="badge-custom badge-contratos"><i class="bi bi-files"></i>${contratos} contrato${contratos !== 1 ? 's' : ''}</span>
+                    <span class="badge-custom badge-pagado"><i class="bi bi-coin"></i>${formatMoney(pagado)}</span>
+                    <span class="badge-custom badge-deuda"><i class="bi bi-exclamation-triangle"></i>${formatMoney(deuda)}</span>
+                    <button class="btn-view-details view-client" data-id="${clientId}" type="button">
+                        <i class="bi bi-eye"></i>Ver detalles
+                    </button>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.view-client').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const clientId = this.dataset.id;
+            await loadClientDetail(clientId);
+        });
+    });
+}
+
+/* ============================================================
+   CARGAR DETALLE DEL CLIENTE
+   ============================================================ */
 async function loadClientDetail(clientId) {
     showLoading();
 
     try {
         const response = await fetch(`/api/payments/client/${clientId}`);
+        if (!response.ok) throw new Error('Error al cargar el cliente');
         const client = await response.json();
 
         hideLoading();
@@ -734,15 +1269,21 @@ async function loadClientDetail(clientId) {
         const container = document.getElementById('clientContent');
         document.getElementById('clientDetailContainer').style.display = 'block';
 
-        let html = `
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const tel = escapeHTML(client.telefono || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+
+        container.innerHTML = `
             <div class="client-header">
                 <div>
-                    <h4><i class="bi bi-person-circle text-primary me-2"></i>${client.nombre_completo}</h4>
+                    <h4><i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${nombre}</h4>
                     <div class="client-meta">
-                        <span class="me-3"><i class="bi bi-person"></i> ${client.curp}</span>
-                        <span class="me-3"><i class="bi bi-telephone"></i> ${client.telefono}</span>
-                        <span class="me-3"><i class="bi bi-folder"></i> Exp. ${client.expediente_interno}</span>
-                        <span><i class="bi bi-tag"></i> ${client.folio_registro}</span>
+                        <span><i class="bi bi-person-badge"></i> ${curp}</span>
+                        <span><i class="bi bi-telephone"></i> ${tel}</span>
+                        <span><i class="bi bi-folder"></i> Exp. ${exp}</span>
+                        <span><i class="bi bi-tag"></i> ${folio}</span>
                     </div>
                 </div>
             </div>
@@ -750,85 +1291,131 @@ async function loadClientDetail(clientId) {
             <div id="contractsContainer"></div>
         `;
 
-        container.innerHTML = html;
-
         const contractsContainer = document.getElementById('contractsContainer');
         contractsContainer.innerHTML = '';
 
-        if (client.contratos.length === 0) {
-            contractsContainer.innerHTML = '<div class="alert alert-info rounded-4">Este cliente no tiene contratos registrados.</div>';
+        const contratos = Array.isArray(client.contratos) ? client.contratos : [];
+
+        if (contratos.length === 0) {
+            contractsContainer.innerHTML = `
+                <div class="alert alert-info rounded-4 d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle-fill"></i>
+                    Este cliente no tiene contratos registrados.
+                </div>`;
             return;
         }
 
-        client.contratos.forEach(contract => {
+        contratos.forEach((contract, cIdx) => {
             const card = document.createElement('div');
             card.className = 'contract-card-modern';
+            card.style.animationDelay = (cIdx * 0.05) + 's';
+
+            const servicio = escapeHTML(contract.servicio || 'Servicio');
+            const status = contract.status === 'liquidado' ? 'liquidado' : 'pendiente';
+            const statusLabel = status === 'liquidado' ? 'LIQUIDADO' : 'PENDIENTE';
+            const statusIcon = status === 'liquidado' ? 'bi-check-circle-fill' : 'bi-clock-fill';
+            const total = safeNumber(contract.total);
+            const pagado = safeNumber(contract.pagado);
+            const saldo = safeNumber(contract.saldo);
+
+            let courtCaseHTML = '';
+            if (contract.court_case) {
+                const numExp = escapeHTML(contract.court_case.num_exp_tribunal || '—');
+                const tribunal = escapeHTML(contract.court_case.tribunal || '—');
+                courtCaseHTML = `
+                    <div class="expediente-mini">
+                        <span class="expediente-mini-item">
+                            <i class="bi bi-folder2-open"></i>
+                            <strong>Exp:</strong> ${numExp}
+                        </span>
+                        <span class="expediente-mini-item">
+                            <i class="bi bi-bank"></i>
+                            ${tribunal}
+                        </span>
+                    </div>`;
+            }
+
+            // Pagos
+            const pagos = Array.isArray(contract.pagos) ? contract.pagos : [];
+            let pagosHTML = '';
+            if (pagos.length === 0) {
+                pagosHTML = '<p class="text-muted small mb-0">No hay pagos registrados.</p>';
+            } else {
+                pagosHTML = '<div class="row g-3">';
+                pagos.forEach(p => {
+                    const monto = formatMoney(p.monto);
+                    const metodo = escapeHTML(p.metodo || '—');
+                    const fecha = escapeHTML(p.fecha || '—');
+                    const recibio = escapeHTML(p.recibio || '—');
+                    const tieneComprobante = p.metodo !== 'efectivo' && p.comprobante;
+
+                    pagosHTML += `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="payment-item">
+                                <div class="payment-amount">${monto}</div>
+                                <div class="payment-row"><i class="bi bi-credit-card"></i>${metodo}</div>
+                                <div class="payment-row"><i class="bi bi-calendar3"></i>${fecha}</div>
+                                <div class="payment-row"><i class="bi bi-person"></i>${recibio}</div>
+                                <div class="d-flex flex-column gap-2 mt-2">
+                                    ${tieneComprobante ? `
+                                        <button class="btn-view-receipt view-receipt"
+                                                data-url="${escapeHTML(p.comprobante)}"
+                                                data-filename="comprobante_${safeNumber(p.id)}.pdf"
+                                                type="button">
+                                            <i class="bi bi-file-pdf"></i> Ver comprobante
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn-view-receipt reprint reprint-receipt"
+                                            data-payment-id="${safeNumber(p.id)}"
+                                            type="button">
+                                        <i class="bi bi-printer"></i> Reimprimir recibo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+                pagosHTML += '</div>';
+            }
+
             card.innerHTML = `
-                <div class="row align-items-center">
+                <div class="row align-items-start g-3">
                     <div class="col-md-8">
-                        <div class="contract-service"><i class="bi bi-file-earmark-text me-2"></i>${contract.servicio}</div>
-                        <div class="mt-1">
-                            <span class="status-badge-modern ${contract.status === 'liquidado' ? 'status-liquidado' : 'status-pendiente'}">${contract.status.toUpperCase()}</span>
-                            <span class="ms-2"><strong>Total:</strong> $${contract.total.toLocaleString()}</span>
-                            <span class="ms-2"><strong>Pagado:</strong> $${contract.pagado.toLocaleString()}</span>
-                            <span class="ms-2"><strong>Saldo:</strong> $${contract.saldo.toLocaleString()}</span>
+                        <div class="contract-service">
+                            <i class="bi bi-file-earmark-text"></i>${servicio}
                         </div>
-                        ${contract.court_case ? `
-                        <div class="expediente-mini">
-                            <span class="expediente-mini-item">
-                                <i class="bi bi-folder2-open"></i>
-                                <strong>Exp:</strong> ${contract.court_case.num_exp_tribunal}
-                            </span>
-                            <span class="expediente-mini-item">
-                                <i class="bi bi-bank"></i>
-                                ${contract.court_case.tribunal}
+                        <div class="contract-meta mb-2">
+                            <span class="status-badge-modern status-${status}">
+                                <i class="bi ${statusIcon}"></i>${statusLabel}
                             </span>
                         </div>
-                        ` : ''}
+                        <div class="contract-meta">
+                            <span class="meta-item"><i class="bi bi-cash"></i>Total: <strong>${formatMoney(total)}</strong></span>
+                            <span class="meta-item"><i class="bi bi-check-circle text-success"></i>Pagado: <strong style="color:var(--success);">${formatMoney(pagado)}</strong></span>
+                            <span class="meta-item"><i class="bi bi-exclamation-triangle text-danger"></i>Saldo: <strong style="color:var(--danger);">${formatMoney(saldo)}</strong></span>
+                        </div>
+                        ${courtCaseHTML}
                     </div>
                     <div class="col-md-4 text-end">
-                        <button class="btn-toggle-payments toggle-payments" data-contract="${contract.id}">
+                        <button class="btn-toggle-payments toggle-payments" data-contract="${safeNumber(contract.id)}" type="button">
                             <i class="bi bi-eye"></i> Ver pagos
                         </button>
                     </div>
                 </div>
-                <div id="payments-${contract.id}" style="display:none;" class="mt-3">
+                <div id="payments-${safeNumber(contract.id)}" style="display:none;" class="mt-3">
                     <hr>
-                    <h6 class="fw-bold"><i class="bi bi-list-ul me-2"></i>Pagos registrados</h6>
-                    ${contract.pagos.length === 0 ? '<p class="text-muted">No hay pagos registrados.</p>' : ''}
-                    <div class="row g-2">
-                        ${contract.pagos.map(p => `
-                            <div class="col-md-6 col-lg-4">
-                                <div class="payment-item">
-                                    <div class="payment-amount">$${p.monto.toLocaleString()}</div>
-                                    <div class="payment-method"><i class="bi bi-credit-card me-1"></i>${p.metodo}</div>
-                                    <div class="payment-date"><i class="bi bi-calendar3 me-1"></i>${p.fecha}</div>
-                                    <div class="payment-received"><i class="bi bi-person me-1"></i>${p.recibio}</div>
-                                    <div class="d-flex flex-column gap-1 mt-1">
-                                        ${p.metodo !== 'efectivo' && p.comprobante ? `
-                                            <button class="btn-view-receipt view-receipt" 
-                                                data-url="${p.comprobante}" 
-                                                data-filename="comprobante_${p.id}.pdf">
-                                                <i class="bi bi-file-pdf me-1"></i> Ver comprobante
-                                            </button>
-                                        ` : ''}
-                                        <button class="btn-view-receipt reprint-receipt" 
-                                            data-payment-id="${p.id}" 
-                                            style="background:rgba(26,139,92,0.08);color:#1a8b5c;">
-                                            <i class="bi bi-printer me-1"></i> Reimprimir recibo
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
+                    <h6 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                        <i class="bi bi-list-ul" style="color:var(--accent-primary);"></i>
+                        Pagos registrados
+                    </h6>
+                    ${pagosHTML}
                 </div>
             `;
             contractsContainer.appendChild(card);
         });
 
+        // Toggle de pagos
         document.querySelectorAll('.toggle-payments').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const contractId = this.dataset.contract;
                 const el = document.getElementById(`payments-${contractId}`);
                 if (el.style.display === 'none') {
@@ -841,60 +1428,82 @@ async function loadClientDetail(clientId) {
             });
         });
 
+        // Ver comprobantes
         document.querySelectorAll('.view-receipt').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const url = this.dataset.url;
                 const filename = this.dataset.filename;
                 document.getElementById('pdfViewer').src = url;
                 document.getElementById('downloadPdfBtn').href = url;
                 document.getElementById('downloadPdfBtn').download = filename;
-                new bootstrap.Modal(document.getElementById('receiptModal')).show();
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('receiptModal')).show();
             });
         });
 
+        // Reimprimir recibos
         document.querySelectorAll('.reprint-receipt').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 const paymentId = this.dataset.paymentId;
                 reimprimirRecibo(paymentId);
             });
         });
 
         // Resumen general
+        const totalPagado = safeNumber(client.total_pagado_general);
+        const totalDeuda = safeNumber(client.total_deuda_general);
+
         const summaryDiv = document.createElement('div');
         summaryDiv.className = 'summary-card';
         summaryDiv.innerHTML = `
-            <div class="row">
+            <div class="row g-3">
                 <div class="col-md-6 summary-item">
-                    <div class="label"><i class="bi bi-coin me-1"></i>Total Pagado</div>
-                    <div class="value text-success">$${client.total_pagado_general.toLocaleString()}</div>
+                    <div class="label"><i class="bi bi-coin"></i> Total Pagado</div>
+                    <div class="value text-success">${formatMoney(totalPagado)}</div>
                 </div>
                 <div class="col-md-6 summary-item">
-                    <div class="label"><i class="bi bi-exclamation-triangle me-1"></i>Total Deuda</div>
-                    <div class="value text-danger">$${client.total_deuda_general.toLocaleString()}</div>
+                    <div class="label"><i class="bi bi-exclamation-triangle"></i> Total Deuda</div>
+                    <div class="value text-danger">${formatMoney(totalDeuda)}</div>
                 </div>
             </div>
         `;
         contractsContainer.appendChild(summaryDiv);
 
-        document.getElementById('clientDetailContainer').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('clientDetailContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     } catch (error) {
         hideLoading();
-        showNotification('Error', `<p>Error al cargar detalles: ${error.message}</p>`, 'error');
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
     }
 }
 
-// ============================================================
-// REIMPRIMIR RECIBO DE PAGO
-// ============================================================
-
+/* ============================================================
+   REIMPRIMIR RECIBO
+   ============================================================ */
 function reimprimirRecibo(paymentId) {
     showLoading();
-    
     window.open(`/api/payments/receipt-pdf/${paymentId}`, '_blank');
-    
     setTimeout(() => hideLoading(), 1500);
 }
+
+/* ============================================================
+   ESC cierra modales
+   ============================================================ */
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst) inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    searchBtn.disabled = false;
+    setTimeout(() => searchInput?.focus(), 400);
+});
 </script>
 </body>
 </html>

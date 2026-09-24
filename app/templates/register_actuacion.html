@@ -1,403 +1,1129 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Expediente Electrónico · Lumen Legal</title>
-    <!-- Bootstrap 5 + Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <!-- Google Font (Inter) para un look más moderno -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #dbe4ef;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f1f5f9;
-            padding-bottom: 4rem;
-        }
-        .bg-soft-primary {
-            background: #eef2ff;
-        }
-        .shadow-soft {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-        }
-        .shadow-hover {
-            transition: all 0.2s ease;
-        }
-        .shadow-hover:hover {
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
-            transform: translateY(-2px);
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Menú principal flotante */
-        .btn-menu-float {
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 24px;
+            right: 24px;
             z-index: 1050;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            border-radius: 60px;
-            padding: 10px 20px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            color: #1e293b;
-            transition: all 0.2s;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
         }
-        .btn-menu-float:hover {
-            background: #ffffff;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
-            color: #0f172a;
-            transform: scale(1.02);
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
+        .btn-menu {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 60px;
+            padding: 12px 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+        }
+        .btn-menu:hover {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            color: var(--accent-primary);
         }
 
-        /* Header principal */
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1100px; }
+
         .page-header {
-            background: linear-gradient(145deg, #ffffff 0%, #fafcff 100%);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-            padding: 2.5rem 0 1.5rem 0;
-            margin-bottom: 2rem;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .search-card {
-            background: #ffffff;
-            border-radius: 28px;
-            border: 1px solid rgba(0, 0, 0, 0.03);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
-            padding: 1.75rem 2rem;
-            transition: all 0.2s;
+        .page-header h1 {
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
-        .search-card .form-control-lg {
-            border-radius: 60px;
-            padding: 0.9rem 1.75rem;
+        .page-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header p {
+            color: var(--text-muted);
             font-size: 0.95rem;
-            border: 1px solid #e2e8f0;
-            background: #f8fafc;
-            transition: all 0.2s;
+            margin: 4px 0 0 0;
         }
-        .search-card .form-control-lg:focus {
-            background: #ffffff;
-            border-color: #4361ee;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.12);
+        .page-header .header-badge {
+            background: var(--accent-dark);
+            color: white;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .btn-primary-soft {
-            background: #4361ee;
+        .page-header .header-badge i { color: var(--accent-light); font-size: 0.9rem; }
+
+        /* ============================================================
+           SEARCH CARD
+           ============================================================ */
+        .search-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.4s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-card .search-title {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .search-card .search-title i { color: var(--accent-primary); }
+
+        .form-control, .form-select {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 56px;
+        }
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger);
+            background-image: none;
+        }
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 4px rgba(220,53,69,0.12);
+        }
+
+        /* Search input con icono */
+        .search-input-wrapper {
+            position: relative;
+        }
+        .search-input-wrapper .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+            pointer-events: none;
+            z-index: 2;
+            transition: color var(--transition-fast);
+        }
+        .search-input-wrapper .form-control {
+            padding-left: 52px;
+        }
+        .search-input-wrapper .form-control:focus ~ .search-icon {
+            color: var(--accent-primary);
+        }
+
+        .btn-search {
+            background: var(--accent-dark);
             border: none;
             border-radius: 60px;
-            padding: 0.9rem 1.8rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
+            padding: 14px 24px;
+            font-weight: 700;
             color: white;
-            transition: all 0.2s;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 56px;
+            min-height: 56px;
         }
-        .btn-primary-soft:hover {
-            background: #3651d4;
-            transform: scale(1.01);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.25);
+        .btn-search:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
+        .btn-search:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* Tarjetas de clientes */
+        /* ============================================================
+           CLIENT CARDS
+           ============================================================ */
         .client-card {
-            background: #ffffff;
-            border-radius: 20px;
-            border-left: 5px solid #4361ee;
-            padding: 1rem 1.5rem;
-            margin-bottom: 0.75rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
-            cursor: default;
-            border: 1px solid rgba(0,0,0,0.02);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-primary);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .client-card:hover {
-            background: #fafcff;
-            transform: translateX(6px);
-            border-color: #cbd5e1;
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+            border-color: var(--accent-primary);
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
         }
+        .client-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        .client-curp { color: var(--text-muted); font-size: 0.8rem; font-family: 'SF Mono', monospace; }
+
+        .badge-custom {
+            font-weight: 600;
+            font-size: 0.68rem;
+            padding: 5px 12px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge-folio { background: rgba(42,109,244,0.08); color: var(--accent-primary); }
+        .badge-interno { background: rgba(42,109,244,0.15); color: var(--accent-primary); }
+        .badge-warning { background: var(--warning-soft); color: var(--warning); }
+        .badge-success { background: var(--success-soft); color: var(--success); }
+        .badge-danger { background: var(--danger-soft); color: var(--danger); }
+        .badge-info { background: var(--info-soft); color: var(--info); }
+
+        [data-theme="dark"] .badge-folio { background: rgba(91,147,255,0.15); }
+        [data-theme="dark"] .badge-interno { background: rgba(91,147,255,0.2); }
+
+        .btn-view-cases {
+            background: rgba(42,109,244,0.08);
+            border: 1.5px solid rgba(42,109,244,0.2);
+            border-radius: 40px;
+            padding: 8px 18px;
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
+        }
+        .btn-view-cases:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
+        }
+
+        /* ============================================================
+           CASE CARDS
+           ============================================================ */
         .case-card {
-            background: #ffffff;
-            border-radius: 20px;
-            border-left: 5px solid #f59e0b;
-            padding: 1rem 1.5rem;
-            margin-bottom: 0.75rem;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(0,0,0,0.02);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--warning);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .case-card:hover {
-            background: #fffbeb;
-            transform: translateX(6px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+            border-color: var(--warning);
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
         }
-        .badge-soft {
-            font-weight: 500;
-            padding: 0.45rem 1rem;
-            border-radius: 60px;
-            letter-spacing: 0.2px;
+        .case-exp {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .badge-soft-primary {
-            background: #e0e7ff;
-            color: #3730a3;
-        }
-        .badge-soft-warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .badge-soft-secondary {
-            background: #f1f5f9;
-            color: #334155;
-        }
-
-        /* Detalle del expediente */
-        .case-detail-card {
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
-            padding: 2rem 2rem 1.5rem;
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-
-        /* Formulario de actuación */
-        .actuacion-form-wrapper {
-            background: #f8fafc;
-            border-radius: 24px;
-            padding: 1.75rem 1.75rem 1.25rem;
-            border: 1px solid #e9edf2;
-        }
-        .actuacion-form-wrapper .form-label {
-            font-weight: 600;
+        .case-tribunal {
+            color: var(--text-secondary);
             font-size: 0.85rem;
-            color: #1e293b;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            margin-bottom: 0.4rem;
-        }
-        .actuacion-form-wrapper .form-control,
-        .actuacion-form-wrapper .form-select {
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            padding: 0.7rem 1.2rem;
-            background: #ffffff;
-            transition: all 0.15s;
-        }
-        .actuacion-form-wrapper .form-control:focus,
-        .actuacion-form-wrapper .form-select:focus {
-            border-color: #4361ee;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.10);
+            margin-top: 2px;
         }
 
-        .btn-outline-danger-soft {
-            border-radius: 60px;
-            padding: 0.6rem 1.8rem;
-            border: 1px solid #fecaca;
-            color: #b91c1c;
-            background: transparent;
-            font-weight: 500;
-            transition: all 0.15s;
-        }
-        .btn-outline-danger-soft:hover {
-            background: #fee2e2;
-            border-color: #f87171;
-        }
-        .btn-success-soft {
-            background: #059669;
+        .btn-select-case {
+            background: var(--accent-dark);
             border: none;
-            border-radius: 60px;
-            padding: 0.6rem 2.2rem;
-            font-weight: 600;
+            border-radius: 40px;
+            padding: 8px 20px;
             color: white;
-            transition: all 0.15s;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
-        .btn-success-soft:hover {
-            background: #047857;
-            transform: scale(1.02);
-            box-shadow: 0 6px 18px rgba(5, 150, 105, 0.25);
-        }
-
-        /* Actuaciones */
-        .actuacion-item {
-            background: #fafcff;
-            border-radius: 18px;
-            padding: 0.9rem 1.5rem;
-            margin-bottom: 0.7rem;
-            border: 1px solid #eef2f6;
-            transition: all 0.15s;
-        }
-        .actuacion-item:hover {
-            background: #ffffff;
-            border-color: #d1d9e6;
+        .btn-select-case:hover {
+            background: var(--accent-primary);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
         }
 
-        .actuacion-badge {
-            background: #dbeafe;
-            color: #1e40af;
+        /* ============================================================
+           CASE DETAIL
+           ============================================================ */
+        .case-detail-container {
+            display: none;
+            margin-top: 24px;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        .case-detail-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow-md);
+        }
+        .case-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid var(--border-soft);
+        }
+        .case-detail-header h4 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 6px 0;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .case-detail-header h4 i {
+            color: var(--accent-primary);
+        }
+        .case-detail-header .case-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+           FORM SECTION
+           ============================================================ */
+        .form-section {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-soft);
+            transition: border-color var(--transition-fast);
+        }
+        .form-section:focus-within {
+            border-color: rgba(42,109,244,0.3);
+        }
+        .form-section-title {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border-soft);
+        }
+        .form-section-title i {
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+        }
+
+        .form-section .form-label {
             font-weight: 600;
-            padding: 0.3rem 1.2rem;
-            border-radius: 60px;
-            font-size: 0.75rem;
-            letter-spacing: 0.3px;
-            display: inline-block;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .form-section .form-label .required {
+            color: var(--danger);
+        }
+        .form-section .row {
+            --bs-gutter-x: 1rem;
+            --bs-gutter-y: 1.25rem;
         }
 
-        /* modal preview */
-        .modal-pdf-frame {
+        /* Upload Button */
+        .upload-receipt-btn {
             width: 100%;
-            height: 80vh;
-            border: none;
-            border-radius: 16px;
-        }
-
-        .spinner-overlay-custom {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
+            padding: 18px;
+            border-radius: var(--radius-md);
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-soft);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: all var(--transition-normal);
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            text-align: left;
         }
-        .spinner-box-custom {
-            background: white;
-            padding: 2.5rem 3.5rem;
+        .upload-receipt-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .upload-receipt-btn.has-file {
+            border-style: solid;
+            border-color: var(--success);
+            background: var(--success-soft);
+            color: var(--success);
+        }
+        [data-theme="dark"] .upload-receipt-btn.has-file {
+            background: rgba(52,211,153,0.15);
+        }
+        .upload-receipt-btn .upload-icon { font-size: 1.7rem; }
+        .upload-receipt-btn .upload-label {
+            display: flex;
+            flex-direction: column;
+        }
+        .upload-receipt-btn .upload-label small {
+            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 2px;
+        }
+
+        /* Botones principales */
+        .btn-submit {
+            background: var(--success);
+            border: none;
+            border-radius: 60px;
+            padding: 14px 32px;
+            font-weight: 700;
+            color: white;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+        }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--success-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(26,139,92,0.5);
+        }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-clear {
+            border-radius: 60px;
+            padding: 14px 28px;
+            font-weight: 600;
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
+            background: transparent;
+            transition: all var(--transition-normal);
+            min-height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-clear:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(220,53,69,0.4);
+        }
+
+        /* ============================================================
+           ACTUACIONES
+           ============================================================ */
+        .actuacion-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
+        }
+        .actuacion-item:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
+        }
+        .actuacion-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+            color: white;
+            font-weight: 800;
+            font-size: 0.78rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px -2px rgba(42,109,244,0.4);
+            font-variant-numeric: tabular-nums;
+            transition: transform var(--transition-fast);
+        }
+        .actuacion-item:hover .actuacion-num {
+            transform: scale(1.08);
+        }
+        .actuacion-fecha {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+        .actuacion-desc {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+        }
+
+        .btn-preview-pdf {
+            background: rgba(42,109,244,0.08);
+            border: none;
             border-radius: 40px;
-            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.12);
+            padding: 8px 16px;
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 0.75rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 34px;
+        }
+        .btn-preview-pdf:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete-act {
+            background: rgba(220,53,69,0.08);
+            border: none;
+            border-radius: 40px;
+            padding: 8px 16px;
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 0.75rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 34px;
+        }
+        .btn-delete-act:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 22px 28px 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        .notification-icon {
+            font-size: 3.5rem;
             text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-pdf-frame {
+            width: 100%;
+            height: 75vh;
+            border: none;
+            background: var(--bg-tertiary);
         }
 
         .file-preview-frame {
             width: 100%;
-            height: 480px;
-            border: 2px solid #e2e8f0;
-            border-radius: 24px;
-            background: #f8fafc;
+            height: 60vh;
+            border: none;
+            border-radius: var(--radius-md);
+            background: var(--bg-tertiary);
         }
 
-        /* responsive */
+        /* ============================================================
+           SPINNER OVERLAY
+           ============================================================ */
+        .spinner-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .spinner-box {
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        .spinner-box h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
+        }
+        .spinner-box p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+        }
+
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+        }
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 40px 20px; }
+        .empty-state i { font-size: 3rem; color: var(--text-light); margin-bottom: 12px; display: block; }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* ============================================================
+           QR MODAL
+           ============================================================ */
+        #qrCodeContainer {
+            margin: 20px auto;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrCodeContainer img, #qrCodeContainer canvas {
+            border-radius: var(--radius-md);
+            padding: 12px;
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .search-card, #resultsContainer, .case-detail-container {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .search-card { padding: 1.25rem; }
-            .case-detail-card { padding: 1.25rem; }
-            .actuacion-form-wrapper { padding: 1.25rem; }
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .header-badge { font-size: 0.75rem; padding: 6px 16px; }
+            .search-card { padding: 18px 16px; border-radius: 18px; }
+            .search-card .form-control, .btn-search { height: 52px; min-height: 52px; font-size: 16px; }
+            .client-card, .case-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .client-card > div:last-child, .case-card > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .btn-view-cases, .btn-select-case { width: 100%; justify-content: center; }
+            .case-detail-card { padding: 18px 16px; border-radius: 18px; }
+            .case-detail-header h4 { font-size: 1.15rem; }
+            .form-section { padding: 18px 16px; }
+            .form-section .form-control, .form-section .form-select { font-size: 16px; }
+            .actuacion-item { flex-direction: column; align-items: stretch; gap: 12px; }
+            .actuacion-item > div:last-child {
+                width: 100%;
+                display: flex;
+                gap: 8px;
+            }
+            .actuacion-item .btn-preview-pdf,
+            .actuacion-item .btn-delete-act { flex: 1; justify-content: center; }
+            .d-flex.justify-content-between { flex-direction: column-reverse; gap: 10px; }
+            .btn-submit, .btn-clear { width: 100%; justify-content: center; }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
+            .file-preview-frame { height: 45vh; }
+            .modal-pdf-frame { height: 60vh; }
         }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-float{position:relative; top:auto; left:auto; margin:12px 0 0 16px; display:inline-flex;}
-            .page-header{padding:1.5rem 0 1rem 0;}
-            .page-header .container{padding-left:16px; padding-right:16px;}
+
+        @media (max-width: 480px) {
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+                        .actuacion-num {
+                width: 24px;
+                height: 24px;
+                font-size: 0.7rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+            }
+            .page-header .header-badge {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .search-card { margin: 0 12px 12px 12px; padding: 16px 14px; }
+            #resultsContainer { padding: 0 12px; }
+            .case-detail-container { padding: 0 12px; }
+            .case-detail-card { padding: 16px 14px; }
+            .badge-custom { font-size: 0.62rem; padding: 3px 10px; }
+            .spinner-box { padding: 30px 28px; }
+            .file-preview-frame { height: 40vh; }
         }
-        @media (max-width: 768px){
-            body{padding-bottom:2rem;}
-            .container{padding-left:0; padding-right:0;}
-            .search-card{margin:0 12px; border-radius:20px; padding:1rem;}
-            .search-card .form-control-lg{font-size:16px; padding:0.75rem 1.2rem 0.75rem 2.8rem;}
-            .btn-primary-soft{width:100%; padding:0.75rem;}
-            #resultsContainer{padding:0 12px;}
-            .client-card,.case-card{flex-direction:column; align-items:flex-start; gap:8px; border-radius:16px; padding:0.9rem 1rem;}
-            .client-card .btn,.case-card .btn{width:100%; justify-content:center;}
-            #caseDetailContainer{padding:0 12px;}
-            .case-detail-card{border-radius:20px; padding:1rem;}
-            .actuacion-form-wrapper{padding:1rem; border-radius:18px;}
-            .actuacion-form-wrapper .form-control-lg,.actuacion-form-wrapper .form-select-lg{font-size:16px; padding:0.6rem 1rem; border-radius:12px;}
-            .actuacion-item{flex-direction:column; align-items:flex-start; gap:8px; border-radius:14px; padding:0.8rem 1rem;}
-            .actuacion-item > div:last-child{width:100%; display:flex; gap:8px;}
-            .actuacion-item .btn{flex:1; justify-content:center;}
-            .file-preview-frame{height:300px; border-radius:16px;}
-            .modal-pdf-frame{height:60vh;}
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
-        @media (max-width: 480px){
-            .btn-menu-float{margin:8px 10px 0 10px; width:calc(100% - 20px); justify-content:center; border-radius:14px; padding:10px;}
-            .page-header{margin-bottom:1rem;}
-            .page-header h1{font-size:1.35rem;}
-            .search-card{margin:0 10px; padding:0.8rem;}
-            #resultsContainer{padding:0 10px;}
-            #caseDetailContainer{padding:0 10px;}
-            .case-detail-card{padding:0.8rem;}
-            .actuacion-form-wrapper .row{--bs-gutter-y:0.8rem;}
-            .spinner-box-custom{padding:1.5rem 1.8rem; border-radius:24px;}
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
     </style>
 </head>
 <body>
 
-<!-- Botón menú principal flotante -->
-<a href="/" class="btn-menu-float text-decoration-none">
-    <i class="bi bi-arrow-left-short me-1"></i> Menú Principal
-</a>
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
 
-<!-- Encabezado -->
-<div class="page-header">
-    <div class="container">
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div>
-                <h1 class="display-6 fw-bold" style="color: #0f172a; letter-spacing: -0.02em;">
-                    <i class="bi bi-folder2-open text-primary me-2" style="color: #4361ee;"></i>Expediente Electrónico
-                </h1>
-                <p class="text-muted mt-1" style="font-size: 0.95rem;">Gestión de actuaciones y documentos legales</p>
-            </div>
-            <div class="d-flex gap-2">
-                <span class="badge bg-white text-dark border px-4 py-2 rounded-pill shadow-sm">
-                    <i class="bi bi-shield-check text-success me-1"></i> Seguro
-                </span>
-            </div>
-        </div>
-    </div>
-</div>
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
-    <!-- Buscador -->
-    <div class="search-card mb-4">
-        <div class="row g-2 align-items-center">
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+        <div>
+            <h1><i class="bi bi-folder2-open"></i> Expediente Electrónico</h1>
+            <p>Gestión de actuaciones y documentos legales</p>
+        </div>
+        <span class="header-badge"><i class="bi bi-shield-check"></i> Seguro</span>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="search-card">
+        <div class="search-title"><i class="bi bi-search"></i> Buscar Cliente o Expediente</div>
+        <div class="row g-3">
             <div class="col-md-9">
-                <div class="position-relative">
-                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-4 text-muted" style="font-size: 1.1rem;"></i>
-                    <input type="text" id="searchInput" class="form-control form-control-lg ps-5" placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..." autocomplete="off">
+                <div class="search-input-wrapper">
+                    <i class="bi bi-search search-icon" aria-hidden="true"></i>
+                    <input type="text" id="searchInput" class="form-control"
+                           placeholder="Buscar por nombre, CURP, teléfono, folio o expediente..."
+                           autocomplete="off" maxlength="100" aria-label="Buscar cliente o expediente">
                 </div>
             </div>
             <div class="col-md-3">
-                <button id="searchBtn" class="btn btn-primary-soft w-100">
-                    <i class="bi bi-search me-1"></i> Buscar
+                <button id="searchBtn" class="btn-search" type="button">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Resultados -->
+    <!-- RESULTADOS -->
     <div id="resultsContainer"></div>
 
-    <!-- Detalle del expediente -->
-    <div id="caseDetailContainer" style="display:none;" class="mt-5">
+    <!-- DETALLE DEL EXPEDIENTE -->
+    <div id="caseDetailContainer" class="case-detail-container">
         <div class="case-detail-card">
-            <div class="d-flex flex-wrap justify-content-between align-items-start mb-3">
+            <div class="case-detail-header">
                 <div>
-                    <h4 id="caseTitle" class="fw-bold text-primary mb-1" style="letter-spacing: -0.01em;"></h4>
-                    <p id="caseInfo" class="text-muted mb-0" style="font-size: 0.95rem;"></p>
+                    <h4 id="caseTitle">
+                        <i class="bi bi-folder2-open"></i>
+                    </h4>
+                    <div class="case-info" id="caseInfo"></div>
                 </div>
-                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill mt-1 mt-sm-0">
-                    <i class="bi bi-clock-history me-1"></i> Actualizado
+                <span class="badge-custom badge-info">
+                    <i class="bi bi-clock-history"></i> Actualizado
                 </span>
             </div>
-            <hr class="opacity-25">
 
-            <!-- Formulario nueva actuación -->
-            <div class="actuacion-form-wrapper mb-4">
-                <h5 class="fw-semibold mb-3" style="color: #0f172a;">
-                    <i class="bi bi-plus-circle me-2" style="color: #4361ee;"></i>Nueva Actuación
-                </h5>
+            <!-- FORMULARIO NUEVA ACTUACIÓN -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="bi bi-plus-circle"></i> Nueva Actuación
+                </div>
+
                 <form id="actuacionForm" enctype="multipart/form-data" novalidate>
                     <input type="hidden" id="courtCaseId" name="court_case_id">
-                    <div class="row g-3">
+
+                    <div class="row g-4">
                         <div class="col-md-4">
-                            <label class="form-label"><i class="bi bi-tag me-1"></i> Tipo *</label>
-                            <select name="tipo" id="tipo" class="form-select form-select-lg" required>
+                            <label class="form-label" for="tipo">
+                                <i class="bi bi-tag"></i> Tipo de Actuación <span class="required">*</span>
+                            </label>
+                            <select name="tipo" id="tipo" class="form-select" required>
                                 <option value="">Selecciona...</option>
                                 <option value="demanda">Demanda Inicial</option>
                                 <option value="acuerdo">Acuerdo</option>
@@ -412,455 +1138,1126 @@
                                 <option value="escrito">Escrito</option>
                                 <option value="otro">Otro</option>
                             </select>
-                            <div class="invalid-feedback">Selecciona el tipo</div>
+                            <div class="invalid-feedback">Selecciona el tipo de actuación</div>
                         </div>
+
                         <div class="col-md-4">
-                            <label class="form-label"><i class="bi bi-calendar3 me-1"></i> Fecha *</label>
-                            <input type="date" name="fecha_actuacion" id="fecha_actuacion" class="form-control form-control-lg" required>
-                            <div class="invalid-feedback">Fecha obligatoria</div>
+                            <label class="form-label" for="fecha_actuacion">
+                                <i class="bi bi-calendar-event"></i> Fecha <span class="required">*</span>
+                            </label>
+                            <input type="date" name="fecha_actuacion" id="fecha_actuacion"
+                                   class="form-control" required>
+                            <div class="invalid-feedback">La fecha es obligatoria</div>
                         </div>
+
                         <div class="col-md-4">
-                            <label class="form-label"><i class="bi bi-file-pdf me-1"></i> Documento (PDF) *</label>
-                            <input type="file" name="pdf_file" id="pdf_file" accept=".pdf" class="form-control form-control-lg" required>
-                            <div class="invalid-feedback">Adjunta el PDF</div>
-                            <small class="text-muted d-flex align-items-center gap-1 mt-1">
-                                <span id="pdfStatus" class="badge bg-light text-dark border px-3 py-1 rounded-pill">❌ No validado</span>
-                            </small>
+                            <label class="form-label">
+                                <i class="bi bi-file-pdf"></i> Documento PDF <span class="required">*</span>
+                            </label>
+
+                            <button type="button" class="upload-receipt-btn" id="uploadReceiptBtn">
+                                <span class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                                <span class="upload-label">
+                                    <span id="uploadReceiptText">Subir PDF</span>
+                                    <small id="uploadReceiptSub">PDF · máx. 25 MB</small>
+                                </span>
+                            </button>
+
+                            <input type="file" name="pdf_file" id="pdf_file"
+                                   accept=".pdf" style="display:none;">
+                            <div class="invalid-feedback d-block" style="display:none !important;" id="pdfFeedback">
+                                Adjunta el PDF
+                            </div>
                         </div>
                     </div>
-                    <div class="row mt-3">
+
+                    <div class="row g-4 mt-1">
                         <div class="col-12">
-                            <label class="form-label"><i class="bi bi-pencil-square me-1"></i> Descripción (opcional)</label>
-                            <input type="text" name="descripcion" id="descripcion" class="form-control form-control-lg" placeholder="Breve descripción de la actuación" autocomplete="off">
+                            <label class="form-label" for="descripcion">
+                                <i class="bi bi-pencil-square"></i> Descripción (opcional)
+                            </label>
+                            <input type="text" name="descripcion" id="descripcion"
+                                   class="form-control" placeholder="Breve descripción de la actuación"
+                                   autocomplete="off" maxlength="200">
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-2">
-                        <button type="button" class="btn btn-outline-danger-soft" onclick="limpiarFormulario()">
-                            <i class="bi bi-eraser me-1"></i> Limpiar
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 gap-3 flex-wrap">
+                        <button type="button" class="btn-clear" onclick="limpiarFormulario()">
+                            <i class="bi bi-eraser"></i> Limpiar
                         </button>
-                        <button type="submit" class="btn btn-success-soft">
-                            <i class="bi bi-cloud-arrow-up me-1"></i> Subir Actuación
+                        <button type="submit" class="btn-submit" id="submitBtn">
+                            <i class="bi bi-cloud-arrow-up"></i> <span>Subir Actuación</span>
                         </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Listado actuaciones -->
-            <div class="mt-4">
-                <h5 class="fw-semibold mb-3" style="color: #0f172a;">
-                    <i class="bi bi-list-ul me-2" style="color: #f59e0b;"></i>Actuaciones Registradas
-                </h5>
+            <!-- LISTADO DE ACTUACIONES -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="bi bi-list-ul"></i> Actuaciones Registradas
+                    <span class="badge-custom badge-interno ms-2" id="actuacionesCount">0</span>
+                </div>
                 <div id="actuacionesContainer"></div>
             </div>
         </div>
     </div>
+
 </div>
 
-<!-- ===== MODALES ===== -->
-<!-- Notificación -->
-<div class="modal fade" id="notificationModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header border-0 pb-0" id="notificationHeader">
-                <h5 class="modal-title fw-bold" id="notificationTitle"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body pt-2" id="notificationBody"></div>
-            <div class="modal-footer border-0 pt-0">
-                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content border-0 shadow-lg rounded-4">
-            <div class="modal-header bg-warning bg-opacity-10 border-0 pb-0">
-                <h5 class="modal-title fw-bold text-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body pt-3" id="confirmBody"></div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger rounded-pill px-4" id="confirmBtn">Confirmar</button>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Vista previa PDF (almacenado) -->
-<div class="modal fade" id="previewModal" tabindex="-1" data-bs-backdrop="static">
+<!-- MODAL PREVIEW PDF ALMACENADO -->
+<div class="modal fade modal-modern" id="previewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-            <div class="modal-header bg-dark text-white border-0">
-                <h5 class="modal-title fw-semibold"><i class="bi bi-eye me-2"></i>Vista previa del PDF</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-pdf text-danger"></i> Vista Previa del PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body p-0 bg-light">
-                <iframe id="pdfPreview" src="" class="modal-pdf-frame"></iframe>
+            <div class="modal-body p-0">
+                <iframe id="pdfPreview" class="modal-pdf-frame" title="Vista previa PDF"></iframe>
             </div>
-            <div class="modal-footer border-0 bg-light">
-                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
-                <a id="downloadPdfLink" href="#" download class="btn btn-primary rounded-pill px-4"><i class="bi bi-download me-1"></i>Descargar</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Vista previa antes de subir -->
-<div class="modal fade" id="pdfUploadPreviewModal" tabindex="-1" data-bs-backdrop="static">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-            <div class="modal-header bg-dark text-white border-0">
-                <h5 class="modal-title fw-semibold"><i class="bi bi-file-earmark-pdf me-2"></i>Vista previa del archivo</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-3 bg-light">
-                <iframe id="pdfUploadPreviewFrame" class="file-preview-frame w-100"></iframe>
-            </div>
-            <div class="modal-footer border-0 bg-light">
-                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success rounded-pill px-4" id="acceptUploadFileBtn"><i class="bi bi-check2-circle me-1"></i>Confirmar Archivo</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="downloadPdfLink" href="#" download class="btn btn-primary">
+                    <i class="bi bi-download"></i> Descargar
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Loading overlay -->
-<div id="loadingOverlay" class="spinner-overlay-custom" style="display:none;">
-    <div class="spinner-box-custom">
-        <div class="spinner-border text-primary mb-3" style="width: 3.5rem; height: 3.5rem;" role="status"></div>
-        <h5 class="fw-bold">Procesando...</h5>
-        <p class="text-muted small mb-0">Por favor espera un momento</p>
+<!-- MODAL PREVIEW ANTES DE SUBIR -->
+<div class="modal fade modal-modern" id="pdfUploadPreviewModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-earmark-check"></i> Confirmar Archivo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-3" style="background:var(--bg-tertiary);">
+                <iframe id="pdfUploadPreviewFrame" class="file-preview-frame" title="Vista previa del archivo"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="rejectUploadFileBtn">
+                    <i class="bi bi-x-circle"></i> Rechazar
+                </button>
+                <button type="button" class="btn btn-success btn-lg" id="acceptUploadFileBtn">
+                    <i class="bi bi-check-circle"></i> Sí, usar este PDF
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- scripts -->
+<!-- MODAL OPCIONES DE SUBIDA (QR) -->
+<div class="modal fade modal-modern" id="uploadOptionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-cloud-arrow-up"></i> Subir PDF
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small mb-3">Elige cómo quieres subir el documento:</p>
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-outline-primary btn-lg" id="chooseFileBtn"
+                            style="border-radius:16px; padding:20px; text-align:left;">
+                        <i class="bi bi-folder2-open me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi computadora</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Selecciona un archivo PDF</small>
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-lg" id="chooseQRBtn"
+                            style="border-radius:16px; padding:20px; text-align:left; display:none;">
+                        <i class="bi bi-phone me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi celular (QR)</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Escanea con la cámara de tu teléfono</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--success),var(--success-hover));">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-qr-code"></i> Subir desde el móvil
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Escanea este código con tu teléfono:</p>
+                <div id="qrCodeContainer">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p class="text-muted small mt-2 mb-0">Generando código QR...</p>
+                </div>
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-phone me-1"></i> Abre la cámara, escanea y elige el archivo.
+                </p>
+                <div id="qrWaitingStatus" class="alert alert-info mt-3 mb-0 py-2 d-flex align-items-center gap-2 justify-content-center"
+                     style="display:none;">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Esperando archivo desde el móvil...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="regenerateQRBtn">
+                    <i class="bi bi-arrow-repeat"></i> Regenerar QR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5 id="loadingTitle">Procesando...</h5>
+        <p id="loadingText">Por favor espera un momento</p>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ════════════════════════════════════════════
-    // TODO EL CÓDIGO ORIGINAL SE MANTIENE ÍNTEGRO
-    // SOLO SE MODIFICARON ESTILOS Y ESTRUCTURA VISUAL
-    // ════════════════════════════════════════════
+'use strict';
 
-    let currentCaseId = null;
-    let fileValidated = false;
+/* ============================================================
+   DETECCIÓN DE DISPOSITIVO MÓVIL
+   ============================================================ */
+const isMobileDevice = (() => {
+    const ua = navigator.userAgent || '';
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+    return isMobileUA && isSmallScreen;
+})();
 
-    function showNotification(title, bodyHTML, type = 'info') {
-        const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-        const header = document.getElementById('notificationHeader');
-        const titleEl = document.getElementById('notificationTitle');
-        const bodyEl = document.getElementById('notificationBody');
-        header.className = 'modal-header border-0 pb-0';
-        if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-        else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-        else if (type === 'warning') { header.classList.add('bg-warning', 'bg-opacity-10', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-        else { header.classList.add('bg-primary', 'bg-opacity-10', 'text-primary'); titleEl.textContent = 'ℹ️ ' + title; }
-        bodyEl.innerHTML = bodyHTML;
-        modal.show();
-    }
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+let currentCaseId = null;
+let fileValidated = false;
+let isSubmitting = false;
+let currentPreviewURL = null;
+let qrPollingInterval = null;
+let currentTempId = null;
 
-    function showConfirm(title, bodyHTML, onConfirm) {
-        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-        document.getElementById('confirmBody').innerHTML = bodyHTML;
-        document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
-        modal.show();
-    }
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 
-    function showLoading() {
-        document.getElementById('loadingOverlay').style.display = 'flex';
-    }
+function safeNumber(v, fallback = 0) {
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
+}
 
-    function hideLoading() {
-        document.getElementById('loadingOverlay').style.display = 'none';
-    }
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
 
-    // Vista previa del PDF a subir
-    document.getElementById('pdf_file').addEventListener('change', function(e) {
-        const file = this.files[0];
-        if (!file) return;
-        if (file.type !== 'application/pdf') { 
-            showNotification('Archivo inválido', '<p>Por favor selecciona un archivo PDF.</p>', 'error'); 
-            this.value = ''; 
-            return; 
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
         }
-        fileValidated = false;
-        const fileURL = URL.createObjectURL(file);
-        document.getElementById('pdfUploadPreviewFrame').src = fileURL;
-        const previewModal = new bootstrap.Modal(document.getElementById('pdfUploadPreviewModal'));
-        previewModal.show();
-        document.getElementById('acceptUploadFileBtn').onclick = function() {
-            fileValidated = true;
-            previewModal.hide();
-            document.getElementById('pdfStatus').innerHTML = '✅ Validado: ' + file.name;
-            showNotification('Archivo aceptado', `<p><strong>${file.name}</strong> ha sido validado correctamente.</p>`, 'success');
-        };
-    });
+    }
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst && m.id !== 'qrModal') inst.hide();
+        });
+    }
+});
 
-    document.getElementById('searchInput').addEventListener('keydown', function(e) { 
-        if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); } 
-    });
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading(title = 'Procesando...', text = 'Por favor espera un momento') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
 
-    document.getElementById('searchBtn').addEventListener('click', async () => {
-        const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-        if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
-        
-        showLoading();
-        
-        try {
-            const formData = new FormData();
-            formData.append('search_term', searchTerm);
-            const response = await fetch('/api/actuaciones/search-client', { method: 'POST', body: formData });
-            
-            hideLoading();
-            
-            if (!response.ok) {
-                const error = await response.json();
-                showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
-                document.getElementById('resultsContainer').innerHTML = '';
-                return;
-            }
-            
-            const clients = await response.json();
-            const container = document.getElementById('resultsContainer');
-            
-            if (clients.length === 0) {
-                container.innerHTML = '<div class="alert alert-warning text-center shadow-sm rounded-4"><i class="bi bi-inbox me-2"></i><strong>No se encontraron clientes con expedientes.</strong></div>';
-                return;
-            }
-            
-            container.innerHTML = '<h5 class="fw-semibold mb-3"><i class="bi bi-people me-2"></i>Clientes con expedientes:</h5>';
-            
-            clients.forEach(client => {
-                const card = document.createElement('div');
-                card.className = 'client-card d-flex flex-wrap align-items-center justify-content-between';
-                card.innerHTML = `
-                    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-4">
-                        <span class="fw-semibold" style="color:#0f172a;">${client.nombre_completo}</span>
-                        <span class="badge badge-soft badge-soft-secondary"><i class="bi bi-hash me-1"></i>${client.folio_registro}</span>
-                        <span class="badge badge-soft badge-soft-primary"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
-                        <span class="text-muted small">${client.curp}</span>
-                    </div>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill view-cases" data-id="${client.id}" style="padding: 0.3rem 1.2rem;">
-                        <i class="bi bi-eye me-1"></i>Ver expedientes
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-            
-            document.querySelectorAll('.view-cases').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const clientId = parseInt(this.dataset.id);
-                    const clientData = clients.find(c => c.id === clientId);
-                    if (clientData) showCaseSelection(clientData);
-                });
-            });
-            
-        } catch (error) {
-            hideLoading();
-            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-        }
-    });
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
 
-    function showCaseSelection(client) {
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function showNotification(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
+    modal.show();
+}
+
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        onConfirm();
+    });
+    modal.show();
+}
+
+/* ============================================================
+   SKELETON
+   ============================================================ */
+function mostrarSkeleton() {
+    const container = document.getElementById('resultsContainer');
+    let html = '<h5 class="mb-3 fw-bold d-flex align-items-center gap-2"><i class="bi bi-people" style="color:var(--accent-primary);"></i>Buscando...</h5>';
+    for (let i = 0; i < 3; i++) {
+        html += `<div class="skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line"></div>
+        </div>`;
+    }
+    container.innerHTML = html;
+}
+
+/* ============================================================
+   BÚSQUEDA
+   ============================================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+
+searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarBusqueda();
+    }
+});
+
+searchBtn.addEventListener('click', realizarBusqueda);
+
+async function realizarBusqueda() {
+    const term = searchInput.value.trim().toUpperCase();
+
+    if (!term) {
+        showNotification('Búsqueda vacía', '<p>Ingresa un término de búsqueda.</p>', 'warning');
+        searchInput.focus();
+        return;
+    }
+    if (term.length < 2) {
+        showNotification('Búsqueda muy corta', '<p>Ingresa al menos 2 caracteres.</p>', 'warning');
+        return;
+    }
+
+    searchBtn.disabled = true;
+    const originalHTML = searchBtn.innerHTML;
+    searchBtn.innerHTML = '<span class="btn-spinner"></span> <span>Buscando...</span>';
+
+    mostrarSkeleton();
+
+    try {
+        const formData = new FormData();
+        formData.append('search_term', term);
+
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
+
+        const response = await fetch('/api/actuaciones/search-client', {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal
+        });
+        clearTimeout(tId);
+
         const container = document.getElementById('resultsContainer');
-        let html = `<h5 class="fw-semibold mb-3"><i class="bi bi-folder2-open me-2"></i>Expedientes de ${client.nombre_completo}:</h5>`;
-        client.casos.forEach(caso => {
-            html += `
-                <div class="case-card d-flex flex-wrap align-items-center justify-content-between">
-                    <div class="d-flex flex-wrap align-items-center gap-2 gap-md-4">
-                        <span class="fw-semibold" style="color:#0f172a;">${caso.expediente_tribunal}</span>
-                        <span class="text-muted">${caso.tribunal}</span>
-                        <span class="badge badge-soft badge-soft-warning">${caso.status}</span>
-                    </div>
-                    <button class="btn btn-sm btn-primary rounded-pill select-case" data-id="${caso.id}" style="padding: 0.3rem 1.5rem;">
-                        <i class="bi bi-arrow-right-circle me-1"></i>Seleccionar
-                    </button>
-                </div>
-            `;
-        });
-        html += `<button class="btn btn-outline-secondary rounded-pill btn-sm mt-2" onclick="searchAgain()"><i class="bi bi-arrow-left me-1"></i>Nueva búsqueda</button>`;
-        container.innerHTML = html;
-        
-        document.querySelectorAll('.select-case').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                await loadCaseDetail(btn.dataset.id);
-            });
-        });
-    }
 
-    function searchAgain() {
-        document.getElementById('resultsContainer').innerHTML = '';
-        document.getElementById('searchInput').value = '';
-        document.getElementById('searchInput').focus();
-    }
-
-    async function loadCaseDetail(caseId) {
-        showLoading();
-        try {
-            const response = await fetch(`/api/actuaciones/case/${caseId}`);
-            const caseData = await response.json();
-            hideLoading();
-            
-            currentCaseId = caseId;
-            document.getElementById('caseDetailContainer').style.display = 'block';
-            document.getElementById('caseTitle').textContent = `Expediente: ${caseData.num_exp_tribunal}`;
-            document.getElementById('caseInfo').textContent = `Tribunal: ${caseData.tribunal} · Estatus: ${caseData.status}`;
-            document.getElementById('courtCaseId').value = caseId;
-            
-            renderActuaciones(caseData.actuaciones);
-            
-            document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth' });
-            
-        } catch (error) {
-            hideLoading();
-            showNotification('Error', `<p>Error al cargar el expediente: ${error.message}</p>`, 'error');
-        }
-    }
-
-    function renderActuaciones(actuaciones) {
-        const container = document.getElementById('actuacionesContainer');
-        container.innerHTML = '';
-        
-        if (actuaciones.length === 0) {
-            container.innerHTML = '<div class="alert alert-info bg-light border-0 rounded-4"><i class="bi bi-info-circle me-2"></i><strong>No hay actuaciones registradas.</strong></div>';
+        if (!response.ok) {
+            let errorMsg = 'No se encontraron clientes.';
+            try { const e = await response.json(); if (e.detail) errorMsg = e.detail; } catch (_) {}
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-search"></i><h5>Sin resultados</h5><p>${escapeHTML(errorMsg)}</p></div>`;
             return;
         }
-        
-        actuaciones.forEach(act => {
-            const card = document.createElement('div');
-            card.className = 'actuacion-item d-flex flex-wrap align-items-center justify-content-between';
-            card.innerHTML = `
-                <div class="d-flex flex-wrap align-items-center gap-2 gap-md-4">
-                    <span class="actuacion-badge">${act.tipo_label || act.tipo}</span>
-                    <span class="fw-semibold" style="color:#0f172a;">${act.fecha}</span>
-                    <span class="text-muted">${act.descripcion || 'Sin descripción'}</span>
+
+        const clients = await response.json();
+
+        if (!Array.isArray(clients) || clients.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-inbox"></i><h5>No se encontraron clientes con expedientes</h5><p>Intenta con otro término de búsqueda.</p></div>`;
+            return;
+        }
+
+        renderizarClientes(clients);
+    } catch (error) {
+        let msg = 'Error de conexión. Verifica tu red.';
+        if (error.name === 'AbortError') msg = 'La búsqueda tardó demasiado.';
+        document.getElementById('resultsContainer').innerHTML =
+            `<div class="empty-state"><i class="bi bi-wifi-off" style="color:var(--danger);"></i><h5>Error de conexión</h5><p>${escapeHTML(msg)}</p></div>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = originalHTML;
+    }
+}
+
+function renderizarClientes(clients) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-people" style="color:var(--accent-primary);"></i>
+        Clientes con expedientes <span class="badge-custom badge-interno ms-2">${clients.length}</span>
+    </h5>`;
+
+    clients.forEach((client, idx) => {
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const clientId = safeNumber(client.id);
+
+        html += `
+            <div class="client-card d-flex align-items-center justify-content-between flex-wrap gap-2"
+                 style="animation-delay:${idx * 0.05}s;">
+                <div>
+                    <div class="client-name">${nombre}</div>
+                    <div class="client-curp">CURP: ${curp}</div>
                 </div>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-outline-info rounded-pill preview-btn" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf" style="padding: 0.2rem 1rem;">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag"></i>${folio}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder"></i>Exp. ${exp}</span>
+                    <button class="btn-view-cases view-cases" data-id="${clientId}" type="button">
+                        <i class="bi bi-eye"></i>Ver expedientes
+                    </button>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.view-cases').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const clientId = parseInt(this.dataset.id, 10);
+            const clientData = clients.find(c => c.id === clientId);
+            if (clientData) showCaseSelection(clientData);
+        });
+    });
+}
+
+function showCaseSelection(client) {
+    const container = document.getElementById('resultsContainer');
+    const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-folder2-open" style="color:var(--accent-primary);"></i>
+        Expedientes de ${nombre}
+    </h5>`;
+
+    const casos = Array.isArray(client.casos) ? client.casos : [];
+    if (casos.length === 0) {
+        html += `<div class="empty-state"><i class="bi bi-folder2"></i><h5>Sin expedientes</h5><p>Este cliente no tiene expedientes registrados.</p></div>`;
+    } else {
+        casos.forEach((caso, idx) => {
+            const status = escapeHTML(caso.status || 'inactivo');
+            const expTribunal = escapeHTML(caso.expediente_tribunal || '—');
+            const tribunal = escapeHTML(caso.tribunal || '—');
+            const casoId = safeNumber(caso.id);
+
+            html += `
+                <div class="case-card d-flex align-items-center justify-content-between flex-wrap gap-2"
+                     style="animation-delay:${idx * 0.05}s;">
+                    <div>
+                        <div class="case-exp">
+                            <i class="bi bi-file-earmark-text"></i>${expTribunal}
+                        </div>
+                        <div class="case-tribunal">${tribunal}</div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <span class="badge-custom badge-warning">${status.toUpperCase()}</span>
+                        <button class="btn-select-case select-case" data-id="${casoId}" type="button">
+                            <i class="bi bi-arrow-right-circle"></i>Seleccionar
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    html += `<button class="btn btn-outline-secondary mt-3" onclick="searchAgain()" style="border-radius:60px;padding:10px 22px;font-weight:600;" type="button">
+        <i class="bi bi-arrow-left"></i> Nueva búsqueda
+    </button>`;
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.select-case').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            await loadCaseDetail(this.dataset.id);
+        });
+    });
+}
+
+function searchAgain() {
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchInput').focus();
+    document.getElementById('caseDetailContainer').style.display = 'none';
+}
+
+/* ============================================================
+   CARGAR DETALLE DEL EXPEDIENTE
+   ============================================================ */
+async function loadCaseDetail(caseId) {
+    showLoading('Cargando expediente...', 'Consultando información del expediente.');
+
+    try {
+        const response = await fetch(`/api/actuaciones/case/${caseId}`);
+        if (!response.ok) throw new Error('Error al cargar el expediente');
+        const caseData = await response.json();
+
+        hideLoading();
+
+        currentCaseId = caseId;
+        const detailContainer = document.getElementById('caseDetailContainer');
+        detailContainer.style.display = 'block';
+
+        const numExp = escapeHTML(caseData.num_exp_tribunal || '—');
+        const tribunal = escapeHTML(caseData.tribunal || '—');
+        const status = escapeHTML(caseData.status || 'N/A');
+
+        document.getElementById('caseTitle').innerHTML =
+            `<i class="bi bi-folder2-open"></i> Expediente: ${numExp}`;
+        document.getElementById('caseInfo').innerHTML =
+            `<strong>Tribunal:</strong> ${tribunal} · <strong>Estatus:</strong> ${status}`;
+        document.getElementById('courtCaseId').value = caseId;
+
+        renderActuaciones(caseData.actuaciones || []);
+
+        detailContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (error) {
+        hideLoading();
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+    }
+}
+
+function renderActuaciones(actuaciones) {
+    const container = document.getElementById('actuacionesContainer');
+    const countEl = document.getElementById('actuacionesCount');
+    if (countEl) countEl.textContent = actuaciones.length;
+
+    if (actuaciones.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="bi bi-file-earmark"></i>
+                <h5>Sin actuaciones registradas</h5>
+                <p>Sube la primera actuación usando el formulario de arriba.</p>
+            </div>`;
+        return;
+    }
+
+    let html = '';
+    actuaciones.forEach((act, idx) => {
+        const tipo = escapeHTML(act.tipo_label || act.tipo || 'N/A');
+        const fecha = escapeHTML(act.fecha || '—');
+        const desc = escapeHTML(act.descripcion || 'Sin descripción');
+        const pdfUrl = escapeHTML(act.pdf_url || '');
+        const actId = safeNumber(act.id);
+        const numero = idx + 1;
+
+        html += `
+            <div class="actuacion-item" style="animation-delay:${idx * 0.03}s;">
+                <div class="d-flex align-items-center gap-3 flex-wrap" style="flex:1;min-width:0;">
+                    <span class="actuacion-num" title="Actuación #${numero}">${numero}</span>
+                    <span class="actuacion-badge">${tipo}</span>
+                    <span class="actuacion-fecha"><i class="bi bi-calendar3 me-1"></i>${fecha}</span>
+                    <span class="actuacion-desc">${desc}</span>
+                </div>
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <button class="btn-preview-pdf preview-btn"
+                            data-url="${pdfUrl}"
+                            data-filename="actuacion_${actId}.pdf"
+                            type="button">
                         <i class="bi bi-eye"></i> Ver
                     </button>
-                    <button class="btn btn-sm btn-outline-danger rounded-pill delete-btn" data-id="${act.id}" style="padding: 0.2rem 1rem;">
+                    <button class="btn-delete-act delete-btn" data-id="${actId}" type="button">
                         <i class="bi bi-trash"></i> Eliminar
                     </button>
                 </div>
-            `;
-            container.appendChild(card);
-        });
-        
-        document.querySelectorAll('.preview-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const url = this.dataset.url;
-                document.getElementById('pdfPreview').src = url;
-                document.getElementById('downloadPdfLink').href = url;
-                document.getElementById('downloadPdfLink').download = this.dataset.filename;
-                new bootstrap.Modal(document.getElementById('previewModal')).show();
-            });
-        });
-        
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const actuacionId = this.dataset.id;
-                showConfirm(
-                    'Eliminar Actuación',
-                    '<p>¿Estás seguro de que deseas <strong>eliminar</strong> esta actuación?</p><p class="text-danger small">Esta acción no se puede deshacer.</p>',
-                    async function() {
-                        await deleteActuacion(actuacionId);
-                    }
-                );
-            });
-        });
-    }
-
-    async function deleteActuacion(actuacionId) {
-        showLoading();
-        try {
-            const response = await fetch(`/api/actuaciones/delete/${actuacionId}`, { method: 'DELETE' });
-            hideLoading();
-            if (!response.ok) {
-                const error = await response.json();
-                showNotification('Error', `<p>${error.detail || 'Error al eliminar la actuación'}</p>`, 'error');
-                return;
-            }
-            showNotification('Actuación Eliminada', '<p>La actuación ha sido eliminada correctamente.</p>', 'success');
-            await loadCaseDetail(currentCaseId);
-        } catch (error) {
-            hideLoading();
-            showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-        }
-    }
-
-    function limpiarFormulario() {
-        showConfirm(
-            'Limpiar formulario',
-            '<p>¿Estás seguro de que deseas limpiar todos los campos?</p>',
-            function() {
-                document.getElementById('actuacionForm').reset();
-                document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                fileValidated = false;
-                document.getElementById('pdfStatus').innerHTML = '❌ No validado';
-                showNotification('Formulario limpiado', '<p>Todos los campos han sido limpiados.</p>', 'info');
-            }
-        );
-    }
-
-    document.getElementById('actuacionForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const caseId = document.getElementById('courtCaseId').value;
-        
-        let valid = true;
-        const fields = document.querySelectorAll('#actuacionForm [required]');
-        fields.forEach(field => {
-            if (!field.value || (field.type === 'file' && !field.files.length)) { field.classList.add('is-invalid'); valid = false; }
-            else { field.classList.remove('is-invalid'); }
-        });
-        
-        if (!fileValidated) {
-            showNotification('Archivo no validado', '<p>Por favor adjunta y valida el PDF antes de subir.</p>', 'warning');
-            return;
-        }
-        
-        if (!valid) {
-            showNotification('Campos incompletos', '<p>Por favor completa todos los campos obligatorios.</p>', 'warning');
-            return;
-        }
-        
-        showConfirm(
-            'Confirmar subida',
-            '<p>¿Estás seguro de que deseas subir esta actuación?</p>',
-            async function() {
-                showLoading();
-                const formData = new FormData(e.target);
-                try {
-                    const response = await fetch(`/api/actuaciones/register/${caseId}`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    hideLoading();
-                    if (!response.ok) {
-                        const error = await response.json();
-                        showNotification('Error', `<p>${error.detail || 'Error al registrar la actuación'}</p>`, 'error');
-                        return;
-                    }
-                    showNotification(
-                        'Actuación Registrada',
-                        '<div class="text-center mb-2"><span style="font-size: 48px;">✅</span></div><p>La actuación se ha subido correctamente.</p>',
-                        'success'
-                    );
-                    document.getElementById('actuacionForm').reset();
-                    fileValidated = false;
-                    document.getElementById('pdfStatus').innerHTML = '❌ No validado';
-                    await loadCaseDetail(caseId);
-                } catch (error) {
-                    hideLoading();
-                    showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-                }
-            }
-        );
+            </div>`;
     });
+
+    container.innerHTML = html;
+
+    // Preview handlers
+    container.querySelectorAll('.preview-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const url = this.dataset.url;
+            const filename = this.dataset.filename || 'documento.pdf';
+            document.getElementById('pdfPreview').src = url;
+            document.getElementById('downloadPdfLink').href = url;
+            document.getElementById('downloadPdfLink').download = filename;
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('previewModal')).show();
+        });
+    });
+
+    // Delete handlers
+    container.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const actuacionId = this.dataset.id;
+            showConfirm(
+                'Eliminar Actuación',
+                `<p>¿Estás seguro de que deseas <strong>eliminar</strong> esta actuación?</p>
+                 <p class="text-danger small mb-0">Esta acción no se puede deshacer.</p>`,
+                async function () {
+                    await deleteActuacion(actuacionId);
+                }
+            );
+        });
+    });
+}
+
+async function deleteActuacion(actuacionId) {
+    showLoading('Eliminando actuación...', 'Por favor espera.');
+
+    try {
+        const response = await fetch(`/api/actuaciones/delete/${actuacionId}`, { method: 'DELETE' });
+
+        if (!response.ok) {
+            let errorDetail = 'Error al eliminar la actuación.';
+            try { const e = await response.json(); if (e.detail) errorDetail = e.detail; } catch (_) {}
+            hideLoading();
+            showNotification('Error', `<p>${escapeHTML(errorDetail)}</p>`, 'error');
+            return;
+        }
+
+        hideLoading();
+        showNotification('Actuación Eliminada',
+            '<p>La actuación ha sido eliminada correctamente.</p>', 'success');
+
+        await loadCaseDetail(currentCaseId);
+
+    } catch (error) {
+        hideLoading();
+        showNotification('Error de conexión', `<p>${escapeHTML(error.message)}</p>`, 'error');
+    }
+}
+
+/* ============================================================
+   SUBIDA DE PDF - OPCIONES
+   ============================================================ */
+document.getElementById('uploadReceiptBtn').addEventListener('click', () => {
+    if (isMobileDevice) {
+        document.getElementById('pdf_file').click();
+        return;
+    }
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadOptionsModal')).show();
+});
+
+document.getElementById('chooseFileBtn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+    setTimeout(() => document.getElementById('pdf_file').click(), 300);
+});
+
+document.getElementById('chooseQRBtn').addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+    setTimeout(abrirQR, 300);
+});
+
+// Mostrar opción QR SOLO si NO es móvil
+if (!isMobileDevice) {
+    const chooseQRBtn = document.getElementById('chooseQRBtn');
+    if (chooseQRBtn) chooseQRBtn.style.display = 'block';
+}
+
+/* ============================================================
+   ARCHIVO LOCAL - VALIDACIÓN Y PREVIEW
+   ============================================================ */
+document.getElementById('pdf_file').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    const validTypes = ['application/pdf'];
+    const validExts = /\.pdf$/i;
+    const fileName = file.name || '';
+
+    if (!validTypes.includes(file.type) && !validExts.test(fileName)) {
+        showNotification('Formato no válido',
+            '<p>Solo se aceptan archivos <strong>PDF</strong>.</p>', 'error');
+        this.value = '';
+        return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+        showNotification('Archivo muy grande',
+            `<p>El archivo pesa <strong>${(file.size / 1024 / 1024).toFixed(1)} MB</strong>.<br>El límite es 25 MB.</p>`, 'error');
+        this.value = '';
+        return;
+    }
+    if (file.size === 0) {
+        showNotification('Archivo vacío',
+            '<p>El archivo seleccionado está vacío.</p>', 'error');
+        this.value = '';
+        return;
+    }
+
+    this.classList.remove('is-invalid');
+    const url = URL.createObjectURL(file);
+    mostrarPreviewFile(url, file.name);
+});
+
+/* ============================================================
+   PREVIEW PDF
+   ============================================================ */
+function mostrarPreviewFile(url, filename) {
+    if (currentPreviewURL && currentPreviewURL !== url) {
+        try { URL.revokeObjectURL(currentPreviewURL); } catch (e) {}
+    }
+    currentPreviewURL = url;
+
+    const frame = document.getElementById('pdfUploadPreviewFrame');
+    frame.src = url;
+
+    const modalEl = document.getElementById('pdfUploadPreviewModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+    const acceptBtn = document.getElementById('acceptUploadFileBtn');
+    const newAccept = acceptBtn.cloneNode(true);
+    acceptBtn.parentNode.replaceChild(newAccept, acceptBtn);
+    newAccept.addEventListener('click', function () {
+        fileValidated = true;
+        modal.hide();
+
+        const btn = document.getElementById('uploadReceiptBtn');
+        btn.classList.add('has-file');
+        document.getElementById('uploadReceiptText').textContent = '✓ PDF adjuntado';
+        document.getElementById('uploadReceiptSub').textContent = filename;
+        document.getElementById('pdf_file').classList.remove('is-invalid');
+
+        showNotification('Archivo confirmado',
+            `<p>El archivo <strong>${escapeHTML(filename)}</strong> se adjuntará al subir la actuación.</p>`,
+            'success');
+    });
+
+    const rejectBtn = document.getElementById('rejectUploadFileBtn');
+    const newReject = rejectBtn.cloneNode(true);
+    rejectBtn.parentNode.replaceChild(newReject, rejectBtn);
+    newReject.addEventListener('click', function () {
+        fileValidated = false;
+        modal.hide();
+        document.getElementById('pdf_file').value = '';
+        resetFile();
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+        frame.src = '';
+        if (!fileValidated) {
+            document.getElementById('pdf_file').value = '';
+            resetFile();
+        }
+        modalEl.removeEventListener('hidden.bs.modal', onHidden);
+    });
+}
+
+function resetFile() {
+    fileValidated = false;
+    const fileInput = document.getElementById('pdf_file');
+    if (fileInput) fileInput.value = '';
+    const btn = document.getElementById('uploadReceiptBtn');
+    if (btn) {
+        btn.classList.remove('has-file');
+        document.getElementById('uploadReceiptText').textContent = 'Subir PDF';
+        document.getElementById('uploadReceiptSub').textContent = 'PDF · máx. 25 MB';
+    }
+}
+
+/* ============================================================
+   QR
+   ============================================================ */
+function abrirQR() {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+
+    currentTempId = 'actuacion_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
+    const baseUrl = window.location.origin;
+    const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${encodeURIComponent(currentTempId)}&doc_type=ACTUACION`;
+
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '<div class="spinner-border text-success" role="status"></div><p class="text-muted small mt-2 mb-0">Generando código QR...</p>';
+    document.getElementById('qrWaitingStatus').style.display = 'none';
+
+    setTimeout(() => {
+        container.innerHTML = '';
+        if (typeof QRCode === 'undefined') {
+            container.innerHTML = `
+                <div class="alert alert-warning small">
+                    <p class="mb-2"><strong>Abre este enlace en tu teléfono:</strong></p>
+                    <p style="word-break:break-all; font-size:0.75rem; background:var(--bg-tertiary); padding:8px; border-radius:6px;">${escapeHTML(uploadUrl)}</p>
+                </div>`;
+        } else {
+            new QRCode(container, {
+                text: uploadUrl,
+                width: 220,
+                height: 220,
+                colorDark: '#1a8b5c',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    }, 300);
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('qrModal')).show();
+    iniciarPollingQR();
+}
+
+function iniciarPollingQR() {
+    let attempts = 0;
+    const maxAttempts = 90;
+
+    qrPollingInterval = setInterval(async () => {
+        attempts++;
+        if (attempts > maxAttempts) {
+            clearInterval(qrPollingInterval);
+            qrPollingInterval = null;
+            return;
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const res = await fetch(`/api/clients/check-upload/${encodeURIComponent(currentTempId)}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            if (data.success && data.file_url) {
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+                await recibirArchivoDesdeQR(data.file_url, data.filename);
+            }
+        } catch (e) {}
+    }, 1000);
+
+    setTimeout(() => {
+        if (qrPollingInterval) {
+            document.getElementById('qrWaitingStatus').style.display = 'flex';
+        }
+    }, 3000);
+}
+
+async function recibirArchivoDesdeQR(fileUrl, filename) {
+    try {
+        showLoading('Recibiendo archivo...', 'Descargando el PDF desde tu móvil.');
+
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error('No se pudo descargar');
+        const blob = await response.blob();
+
+        if (blob.size > 25 * 1024 * 1024) {
+            hideLoading();
+            showNotification('Archivo muy grande',
+                '<p>El archivo excede los 25 MB permitidos.</p>', 'error');
+            return;
+        }
+
+        const safeName = (filename || 'actuacion.pdf').replace(/[^\w.\-]/g, '_');
+        const file = new File([blob], safeName, { type: blob.type || 'application/pdf' });
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('pdf_file').files = dt.files;
+
+        bootstrap.Modal.getInstance(document.getElementById('qrModal'))?.hide();
+        document.getElementById('qrWaitingStatus').style.display = 'none';
+
+        hideLoading();
+        mostrarPreviewFile(fileUrl, safeName);
+
+        showNotification('¡Recibido!',
+            '<p>El archivo llegó desde tu celular. <strong>Confírmalo</strong> para adjuntarlo.</p>',
+            'success');
+    } catch (err) {
+        hideLoading();
+        showNotification('Error',
+            '<p>No se pudo recibir el archivo. Intenta de nuevo.</p>', 'error');
+    }
+}
+
+document.getElementById('regenerateQRBtn').addEventListener('click', () => {
+    if (qrPollingInterval) clearInterval(qrPollingInterval);
+    abrirQR();
+});
+
+document.getElementById('qrModal').addEventListener('hidden.bs.modal', () => {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+});
+
+/* ============================================================
+   LIMPIAR FORMULARIO
+   ============================================================ */
+function limpiarFormulario() {
+    showConfirm('Limpiar formulario',
+        `<p>¿Deseas limpiar todos los campos?</p>
+         <p class="text-muted small mb-0">Se perderán los datos no guardados.</p>`,
+        function () {
+            document.getElementById('actuacionForm').reset();
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            fileValidated = false;
+            resetFile();
+            showNotification('Formulario limpiado', '<p>Todos los campos han sido reiniciados.</p>', 'info');
+        });
+}
+
+/* ============================================================
+   SUBMIT DE ACTUACIÓN
+   ============================================================ */
+document.getElementById('actuacionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    const caseId = document.getElementById('courtCaseId').value;
+
+    // Validación de campos requeridos
+    let valid = true;
+    const fields = document.querySelectorAll('#actuacionForm [required]');
+    fields.forEach(field => {
+        const isEmpty = field.type === 'file'
+            ? (!field.files || !field.files.length)
+            : (!field.value || !field.value.trim());
+        if (isEmpty) {
+            field.classList.add('is-invalid');
+            valid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+
+    if (!valid) {
+        showNotification('Campos incompletos',
+            '<p>Completa todos los campos obligatorios marcados en rojo.</p>', 'warning');
+        const firstInvalid = document.querySelector('#actuacionForm .is-invalid');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+
+    if (!fileValidated) {
+        showNotification('Archivo no validado',
+            '<p>Adjunta y confirma el PDF antes de subir la actuación.</p>', 'warning');
+        return;
+    }
+
+    // Obtener datos para el confirm
+    const tipoSelect = document.getElementById('tipo');
+    const tipoLabel = tipoSelect.options[tipoSelect.selectedIndex]?.textContent || '—';
+    const fechaVal = document.getElementById('fecha_actuacion').value;
+
+    showConfirm('Confirmar subida',
+        `<p>¿Registrar esta actuación?</p>
+         <div class="alert alert-info mt-2 mb-0 small">
+            <div class="d-flex justify-content-between mb-1"><span>Tipo:</span><strong>${escapeHTML(tipoLabel)}</strong></div>
+            <div class="d-flex justify-content-between"><span>Fecha:</span><strong>${escapeHTML(fechaVal)}</strong></div>
+         </div>`,
+        async function () {
+            if (isSubmitting) return;
+            isSubmitting = true;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-spinner"></span> <span>Subiendo...</span>';
+
+            showLoading('Subiendo actuación...', 'Registrando documento, por favor espera.');
+
+            const formData = new FormData(e.target);
+
+            try {
+                const controller = new AbortController();
+                const tId = setTimeout(() => controller.abort(), 60000);
+
+                const response = await fetch(`/api/actuaciones/register/${caseId}`, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal
+                });
+                clearTimeout(tId);
+
+                if (!response.ok) {
+                    let errorDetail = 'Error al registrar la actuación.';
+                    try {
+                        const errJson = await response.json();
+                        if (errJson.detail) errorDetail = errJson.detail;
+                    } catch (_) {}
+                    throw new Error(errorDetail);
+                }
+
+                hideLoading();
+
+                showNotification('¡Actuación Registrada!',
+                    `<div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between border-bottom pb-2">
+                            <span class="text-muted">Tipo:</span>
+                            <strong>${escapeHTML(tipoLabel)}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Fecha:</span>
+                            <strong>${escapeHTML(fechaVal)}</strong>
+                        </div>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-check-circle me-1"></i>
+                            La actuación se ha subido correctamente.
+                        </p>
+                    </div>`, 'success');
+
+                document.getElementById('actuacionForm').reset();
+                fileValidated = false;
+                resetFile();
+
+                await loadCaseDetail(caseId);
+
+            } catch (error) {
+                hideLoading();
+                let msg = error.message || 'Error desconocido';
+                if (error.name === 'AbortError') msg = 'La operación tardó demasiado. Verifica tu conexión.';
+                showNotification('Error', `<p>${escapeHTML(msg)}</p>`, 'error');
+            } finally {
+                isSubmitting = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
+        }
+    );
+});
+
+/* ============================================================
+   LIMPIAR MODAL PREVIEW
+   ============================================================ */
+document.getElementById('previewModal').addEventListener('hidden.bs.modal', function () {
+    const frame = document.getElementById('pdfPreview');
+    frame.src = 'about:blank';
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    searchBtn.disabled = false;
+    setTimeout(() => searchInput?.focus(), 400);
+});
+
+window.addEventListener('beforeunload', (e) => {
+    if (isSubmitting) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
 </script>
 </body>
 </html>

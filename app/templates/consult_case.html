@@ -1,432 +1,874 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Consultar Expediente · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #dbe4ef;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --purple: #6f42c1;
+            --purple-soft: #ede7fe;
+            --orange: #9b5e00;
+            --orange-soft: #ffedd5;
+            --slate: #3d4a5c;
+            --slate-soft: #eef2f6;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167,139,250,0.15);
+            --orange: #fb923c;
+            --orange-soft: rgba(251,146,60,0.15);
+            --slate: #94a3b8;
+            --slate-soft: rgba(148,163,184,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
 
         body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Botón menú */
-        .btn-menu-modern {
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
+        .btn-menu {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 12px 24px;
             font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
         }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        .btn-menu:hover {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-primary);
         }
 
-        /* Header */
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1100px; }
+
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         .page-header h1 i {
-            color: #2a6df4;
             font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .page-header .header-badge {
-            background: #0b1e33;
+            background: var(--accent-dark);
             color: white;
             font-weight: 600;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .page-header .header-badge i {
-            margin-right: 6px;
-            color: #7aa9ff;
-        }
+        .page-header .header-badge i { color: var(--accent-light); font-size: 0.9rem; }
 
-        /* Tarjeta de búsqueda */
+        /* ============================================================
+           SEARCH CARD
+           ============================================================ */
         .search-card {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 24px 28px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.4s ease-out;
         }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .search-card .search-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .search-card .search-title i {
-            color: #2a6df4;
-            margin-right: 8px;
-        }
-        .search-card .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
+        .search-card .search-title i { color: var(--accent-primary); }
+
+        .form-control {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
             padding: 14px 18px;
             font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 56px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 56px;
         }
-        .search-card .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
         }
+
         .btn-search {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 60px;
             padding: 14px 24px;
             font-weight: 700;
             color: white;
-            transition: all 0.25s;
-            display: flex;
+            transition: all var(--transition-normal);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             width: 100%;
             height: 56px;
+            min-height: 56px;
         }
-        .btn-search:hover {
-            background: #1a3b6b;
+        .btn-search:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
+        .btn-search:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* Tarjetas de clientes */
+        /* ============================================================
+           CLIENT CARDS
+           ============================================================ */
         .client-card-modern {
-            background: white;
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
-            cursor: pointer;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .client-card-modern:hover {
-            border-color: #cbd9ed;
+            border-color: var(--accent-primary);
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
         }
-        .client-card-modern .client-name {
+        .client-name {
             font-weight: 700;
-            color: #0b1e33;
-            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 2px;
         }
-        .client-card-modern .client-curp {
-            color: #6b7b8f;
-            font-size: 0.8rem;
-        }
-        .client-card-modern .badge-custom {
+        .client-curp { color: var(--text-muted); font-size: 0.8rem; font-family: 'SF Mono', monospace; }
+
+        .badge-custom {
             font-weight: 600;
-            font-size: 0.65rem;
-            padding: 4px 12px;
+            font-size: 0.68rem;
+            padding: 5px 12px;
             border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
         }
-        .badge-folio { background: #eef3fa; color: #4a5b6e; }
-        .badge-interno { background: #e2edff; color: #1f4f9e; }
-        .badge-casos { background: #e3f5ee; color: #1a8b5c; }
+        .badge-folio { background: rgba(42,109,244,0.08); color: var(--accent-primary); }
+        .badge-interno { background: rgba(42,109,244,0.15); color: var(--accent-primary); }
+        .badge-casos { background: var(--success-soft); color: var(--success); }
+
+        [data-theme="dark"] .badge-folio { background: rgba(91,147,255,0.15); }
+        [data-theme="dark"] .badge-interno { background: rgba(91,147,255,0.2); }
 
         .btn-view-cases {
-            background: rgba(42,109,244,0.06);
-            border: none;
+            background: rgba(42,109,244,0.08);
+            border: 1.5px solid rgba(42,109,244,0.2);
             border-radius: 40px;
-            padding: 6px 18px;
-            color: #2a6df4;
-            font-weight: 600;
-            font-size: 0.8rem;
-            transition: all 0.2s;
+            padding: 8px 18px;
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
         .btn-view-cases:hover {
-            background: #2a6df4;
+            background: var(--accent-primary);
             color: white;
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
         }
 
-        /* Tarjetas de casos */
+        /* ============================================================
+           CASE CARDS
+           ============================================================ */
         .case-card-modern {
-            background: white;
-            border-radius: 18px;
-            padding: 14px 18px;
-            margin-bottom: 6px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .case-card-modern:hover {
-            border-color: #cbd9ed;
-            background: #fafcff;
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
         }
-        .case-card-modern .case-exp {
+        .case-exp {
             font-weight: 700;
-            color: #0b1e33;
-            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        .case-card-modern .case-tribunal {
-            color: #4a5b6e;
+        .case-exp i { color: var(--accent-primary); }
+        .case-tribunal {
+            color: var(--text-secondary);
             font-size: 0.85rem;
+            margin-top: 2px;
         }
 
         .btn-consult-case {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 40px;
-            padding: 6px 18px;
+            padding: 8px 20px;
             color: white;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
         .btn-consult-case:hover {
-            background: #2a6df4;
-            transform: scale(1.02);
+            background: var(--accent-primary);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
         }
 
-        /* Detalle del expediente */
+        /* ============================================================
+           STATUS BADGES
+           ============================================================ */
+        .status-badge-modern {
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-iniciado { background: var(--info-soft); color: var(--info); }
+        .status-terminado { background: var(--success-soft); color: var(--success); }
+        .status-inactivo { background: var(--slate-soft); color: var(--slate); }
+        .status-desistido { background: var(--danger-soft); color: var(--danger); }
+        .status-caducado { background: var(--orange-soft); color: var(--orange); }
+        .status-revocado { background: var(--purple-soft); color: var(--purple); }
+        .status-pendiente { background: var(--danger-soft); color: var(--danger); }
+        .status-liquidado { background: var(--success-soft); color: var(--success); }
+
+        /* ============================================================
+           DETAIL CONTAINER
+           ============================================================ */
         .detail-container {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
             display: none;
+            animation: fadeInUp 0.4s ease-out;
         }
         .detail-container .section-title {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-soft);
         }
-        .detail-container .section-title i {
-            color: #2a6df4;
-            margin-right: 8px;
-        }
+        .detail-container .section-title i { color: var(--accent-primary); }
 
+        /* ============================================================
+           INFO GRID
+           ============================================================ */
         .info-grid-detail {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 8px 16px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 16px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
+            gap: 12px 20px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 20px 22px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-soft);
         }
         .info-grid-detail .info-item {
             display: flex;
             flex-direction: column;
+            gap: 3px;
         }
         .info-grid-detail .info-item .label {
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #8a9bb0;
-            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            font-weight: 700;
         }
         .info-grid-detail .info-item .value {
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             font-size: 0.9rem;
+            word-break: break-word;
         }
 
+        /* ============================================================
+           ACTUACIÓN CARDS
+           ============================================================ */
         .actuacion-item-modern {
-            background: white;
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin-bottom: 6px;
-            border-left: 4px solid #2a6df4;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-primary);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 8px;
-            transition: all 0.15s;
+            gap: 10px;
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .actuacion-item-modern:hover {
-            background: #fafcff;
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
         }
-        .actuacion-item-modern .act-tipo {
+        .act-tipo {
             font-weight: 700;
-            font-size: 0.75rem;
-            padding: 3px 14px;
+            font-size: 0.72rem;
+            padding: 5px 14px;
             border-radius: 40px;
-            background: #e2edff;
-            color: #1f4f9e;
+            background: rgba(42,109,244,0.1);
+            color: var(--accent-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
         }
-        .actuacion-item-modern .act-fecha {
-            font-size: 0.8rem;
-            color: #4a5b6e;
+        .act-fecha {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .actuacion-item-modern .act-desc {
-            font-size: 0.85rem;
-            color: #1e293b;
+        .act-desc {
+            font-size: 0.88rem;
+            color: var(--text-primary);
             flex: 1;
-            min-width: 120px;
+            min-width: 140px;
         }
 
         .btn-preview-pdf {
-            background: rgba(42,109,244,0.06);
+            background: rgba(42,109,244,0.08);
             border: none;
             border-radius: 40px;
-            padding: 4px 14px;
-            color: #2a6df4;
-            font-weight: 600;
-            font-size: 0.7rem;
-            transition: all 0.2s;
+            padding: 6px 16px;
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 0.75rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         .btn-preview-pdf:hover {
-            background: #2a6df4;
+            background: var(--accent-primary);
             color: white;
+            transform: translateY(-1px);
         }
 
-        /* Badge estatus */
-        .status-badge-modern {
-            padding: 4px 16px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            display: inline-block;
-        }
-        .status-iniciado { background: #e2edff; color: #1f4f9e; }
-        .status-terminado { background: #e3f5e9; color: #1f8b4c; }
-        .status-inactivo { background: #eef2f6; color: #3d4a5c; }
-        .status-desistido { background: #fee9e7; color: #b12a2a; }
-        .status-caducado { background: #ffedd5; color: #9b5e00; }
-        .status-revocado { background: #ede7fe; color: #6f42c1; }
-        .status-pendiente { background: #fee9e7; color: #b12a2a; }
-        .status-liquidado { background: #e3f5e9; color: #1f8b4c; }
-
-        /* Botones de acción */
+        /* ============================================================
+           ACTION BUTTONS
+           ============================================================ */
         .action-btn-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-soft);
         }
         .action-btn-group .btn {
-            border-radius: 40px;
-            padding: 8px 20px;
-            font-weight: 600;
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 700;
             font-size: 0.85rem;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all var(--transition-normal);
+        }
+        .action-btn-group .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
 
-        /* Modales modernos */
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
         .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
             overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
         }
         .modal-modern .modal-header {
             border-bottom: none;
-            padding: 20px 28px 8px 28px;
+            padding: 22px 28px 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         .modal-modern .modal-header .modal-title {
-            font-weight: 700;
-            color: #0b1e33;
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .modal-modern .modal-body {
-            padding: 16px 28px 24px;
-        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
         .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .modal-pdf {
             width: 100%;
             height: 70vh;
             border: none;
-            border-radius: 12px;
+            background: var(--bg-tertiary);
         }
 
-        /* Loading */
+        /* ============================================================
+           MODAL LOADER
+           ============================================================ */
+        .modal-loader-state {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            z-index: 10;
+            gap: 12px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .modal-loader-state.hidden { display: none; }
+        .modal-loader-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.1), rgba(42,109,244,0.03));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+        [data-theme="dark"] .modal-loader-icon {
+            background: linear-gradient(135deg, rgba(91,147,255,0.15), rgba(91,147,255,0.05));
+        }
+        .modal-loader-icon .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--accent-primary);
+        }
+        .modal-loader-state h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            margin: 0;
+        }
+        .modal-loader-state p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+            max-width: 400px;
+        }
+        .modal-loader-progress {
+            width: 260px;
+            height: 4px;
+            background: var(--border-soft);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .modal-loader-progress-bar {
+            height: 100%;
+            width: 30%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-light));
+            border-radius: 4px;
+            animation: modalProgressSlide 1.6s ease-in-out infinite;
+        }
+        @keyframes modalProgressSlide {
+            0%   { transform: translateX(-100%); }
+            50%  { transform: translateX(150%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ============================================================
+           SPINNER OVERLAY
+           ============================================================ */
         .spinner-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
         }
         .spinner-box .spinner-border {
             width: 3rem;
             height: 3rem;
-            color: #2a6df4;
+            color: var(--accent-primary);
+            border-width: 3px;
         }
         .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
         }
         .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
         }
 
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+        }
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 40px 20px; }
+        .empty-state i { font-size: 3rem; color: var(--text-light); margin-bottom: 12px; display: block; }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* ============================================================
+           QR MODAL
+           ============================================================ */
+        #qrCodeContainer {
+            margin: 20px auto;
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #qrCodeContainer img, #qrCodeContainer canvas {
+            border-radius: var(--radius-md);
+            padding: 12px;
+            background: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ============================================================
+           ANIMACIONES DE TRANSICIÓN
+           ============================================================ */
         .fade-out {
             animation: fadeOutSlide 0.35s ease forwards;
         }
@@ -442,234 +884,215 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .empty-state i {
-            font-size: 3rem;
-            color: #d0d8e3;
-            margin-bottom: 12px;
-        }
-        .empty-state h5 {
-            color: #0b1e33;
-            font-weight: 600;
-        }
-        .empty-state p {
-            color: #8a9bb0;
-            font-size: 0.9rem;
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .search-card, #resultsContainer, .detail-container {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .search-card { padding: 16px 18px; }
-            .info-grid-detail { grid-template-columns: 1fr 1fr; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .header-badge { font-size: 0.75rem; padding: 6px 16px; }
+            .search-card { padding: 18px 16px; border-radius: 18px; }
+            .search-card .form-control, .btn-search { height: 52px; min-height: 52px; font-size: 16px; }
+            .client-card-modern, .case-card-modern {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .client-card-modern > div:last-child, .case-card-modern > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .btn-view-cases, .btn-consult-case { width: 100%; justify-content: center; }
+            .detail-container { padding: 18px 16px; border-radius: 18px; }
+            .info-grid-detail { grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
             .actuacion-item-modern { flex-direction: column; align-items: stretch; }
+            .actuacion-item-modern .act-desc { width: 100%; }
+            .btn-preview-pdf { width: 100%; justify-content: center; }
+            .action-btn-group .btn { flex: 1 1 100%; justify-content: center; }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
+            .modal-pdf { height: 60vh; }
         }
+
         @media (max-width: 480px) {
-            .info-grid-detail { grid-template-columns: 1fr; }
-            .client-card-modern { flex-direction: column; align-items: stretch; }
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+            }
+            .page-header .header-badge {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .search-card { margin: 0 12px 12px 12px; padding: 16px 14px; }
+            #resultsContainer { padding: 0 12px; }
+            .detail-container { margin: 0 12px; padding: 16px 14px; }
+            .info-grid-detail { grid-template-columns: 1fr; padding: 14px; }
+            .badge-custom { font-size: 0.62rem; padding: 3px 10px; }
+            .status-badge-modern { font-size: 0.62rem; padding: 4px 10px; }
+            .modal-pdf { height: 55vh; }
+            .spinner-box { padding: 30px 28px; }
         }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.search-card,#resultsContainer,.detail-container{margin-left:16px; margin-right:16px;}
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; flex-direction:column; align-items:flex-start;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .search-card{padding:16px; border-radius:18px; margin:0 12px 16px 12px;}
-            .search-card .form-control,.btn-search{height:48px; font-size:16px;}
-            .client-card-modern,.case-card-modern{flex-direction:column; align-items:flex-start; padding:14px;}
-            .client-card-modern > div:last-child,.case-card-modern > div:last-child{width:100%; display:flex; flex-wrap:wrap; gap:6px;}
-            .detail-container{padding:16px; border-radius:18px; margin:0 12px;}
-            .info-grid-detail{grid-template-columns:1fr 1fr; gap:10px; padding:12px;}
-            .actuacion-item-modern{flex-direction:column; align-items:flex-start;}
-            .actuacion-item-modern .act-desc{width:100%;}
-            .action-btn-group .btn{flex:1 1 100%; justify-content:center;}
-            .modal-pdf{height:60vh;}
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
-        @media (max-width: 480px){
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
-            .page-header .header-badge{width:100%; text-align:center; display:flex; justify-content:center;}
-            .search-card{margin:0 10px 12px 10px; padding:12px; border-radius:16px;}
-            #resultsContainer{padding:0 10px; margin:0;}
-            .detail-container{margin:0 10px; padding:12px;}
-            .info-grid-detail{grid-template-columns:1fr; padding:10px;}
-            .badge-custom{font-size:0.6rem; padding:3px 8px;}
-            .btn-view-cases,.btn-consult-case,.btn-preview-pdf{width:100%; justify-content:center;}
-            .status-badge-modern{font-size:0.6rem; padding:3px 10px;}
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
         }
-                /* ============================================================ */
-        /* LOADER DENTRO DEL MODAL                                      */
-        /* ============================================================ */
-        .modal-loader-state {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #f8fafc;
-            z-index: 10;
-            gap: 12px;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        .modal-loader-state.hidden {
-            display: none;
-        }
-        .modal-loader-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 24px;
-            background: linear-gradient(135deg, rgba(42,109,244,0.1), rgba(42,109,244,0.03));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 8px;
-        }
-        .modal-loader-icon .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
-        }
-        .modal-loader-state h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            font-size: 1.2rem;
-            margin: 0;
-        }
-        .modal-loader-state p {
-            color: #6b7b8f;
-            font-size: 0.9rem;
-            margin: 0;
-            max-width: 400px;
-        }
-        .modal-loader-progress {
-            width: 260px;
-            height: 4px;
-            background: #eef3fa;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
-        .modal-loader-progress-bar {
-            height: 100%;
-            width: 30%;
-            background: linear-gradient(90deg, #2a6df4, #5a8df4);
-            border-radius: 4px;
-            animation: modalProgressSlide 1.6s ease-in-out infinite;
-        }
-        @keyframes modalProgressSlide {
-            0%   { transform: translateX(-100%); }
-            50%  { transform: translateX(150%); }
-            100% { transform: translateX(-100%); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* Print */
+        @media print {
+            .btn-menu, .theme-toggle, .action-btn-group, .search-card {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
-    <i class="bi bi-arrow-left"></i> Menú Principal
-</a>
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
-    <!-- Header -->
+    <!-- ENCABEZADO -->
     <div class="page-header">
-        <h1>
-            <i class="bi bi-folder2-open"></i> Consultar Expediente
-        </h1>
-        <span class="header-badge">
-            <i class="bi bi-search"></i> Búsqueda avanzada
-        </span>
+        <h1><i class="bi bi-folder2-open"></i> Consultar Expediente</h1>
+        <span class="header-badge"><i class="bi bi-search"></i> Búsqueda avanzada</span>
     </div>
 
-    <!-- Buscador -->
+    <!-- BUSCADOR -->
     <div class="search-card">
-        <div class="search-title">
-            <i class="bi bi-search"></i> Buscar Cliente o Expediente
-        </div>
+        <div class="search-title"><i class="bi bi-search"></i> Buscar Cliente o Expediente</div>
         <div class="row g-3">
             <div class="col-md-8">
                 <input type="text" id="searchInput" class="form-control"
-                       placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..."
-                       autocomplete="off">
+                       placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de tribunal..."
+                       autocomplete="off" maxlength="100" aria-label="Buscar cliente o expediente">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn-search">
-                    <i class="bi bi-search"></i> Buscar
+                <button id="searchBtn" class="btn-search" type="button">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Resultados -->
+    <!-- RESULTADOS -->
     <div id="resultsContainer"></div>
 
-    <!-- Detalle del expediente -->
-    <div id="caseDetailContainer" class="detail-container fade-in">
+    <!-- DETALLE DEL EXPEDIENTE -->
+    <div id="caseDetailContainer" class="detail-container">
         <div id="caseContent"></div>
     </div>
+
 </div>
 
 <!-- ================================================== -->
 <!-- MODAL NOTIFICACIONES -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
 <!-- MODAL CONFIRMACIÓN -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
 <!-- MODAL PDF PREVIEW -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="pdfModal" tabindex="-1">
+<div class="modal fade modal-modern" id="pdfModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-file-pdf text-danger me-2"></i>Vista Previa</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-pdf text-danger"></i> Vista Previa
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-0">
-                <iframe id="pdfPreview" class="modal-pdf"></iframe>
+                <iframe id="pdfPreview" class="modal-pdf" title="Vista previa PDF"></iframe>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -681,19 +1104,18 @@
     </div>
 </div>
 
-<!-- ================================================== -->
 <!-- MODAL EXPEDIENTE COMPLETO -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="fullCasePreviewModal" tabindex="-1">
+<div class="modal fade modal-modern" id="fullCasePreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-folder2-open me-2"></i>Expediente Electrónico Completo</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-folder2-open"></i> Expediente Electrónico Completo
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-0" style="position:relative; min-height:70vh;">
 
-                <!-- Loading interno del modal -->
                 <div id="modalGeneratingLoader" class="modal-loader-state">
                     <div class="modal-loader-icon">
                         <div class="spinner-border" role="status"></div>
@@ -705,8 +1127,7 @@
                     </div>
                 </div>
 
-                <!-- Iframe con el PDF (oculto mientras carga) -->
-                <iframe id="fullCasePreviewFrame" style="width:100%;height:70vh;border:none;border-radius:0;display:none;"></iframe>
+                <iframe id="fullCasePreviewFrame" style="width:100%;height:70vh;border:none;border-radius:0;display:none;" title="Expediente completo"></iframe>
 
             </div>
             <div class="modal-footer">
@@ -719,34 +1140,105 @@
     </div>
 </div>
 
-<!-- ================================================== -->
 <!-- MODAL PASSWORD -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="passwordModal" tabindex="-1">
+<div class="modal fade modal-modern" id="passwordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="max-width:400px;margin:0 auto;">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-lock me-2"></i>Verificar Identidad</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-lock-fill"></i> Verificar Identidad
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p class="text-muted">Ingresa tu contraseña para continuar:</p>
+                <p class="text-muted mb-3">Ingresa tu contraseña para continuar:</p>
+                <label class="form-label fw-semibold" for="passwordInput">Contraseña</label>
                 <input type="password" id="passwordInput" class="form-control form-control-lg"
-                       placeholder="Contraseña..." autocomplete="off">
-                <div id="passwordError" class="text-danger mt-2" style="display:none;">Contraseña incorrecta</div>
+                       placeholder="Tu contraseña..." autocomplete="current-password" maxlength="200">
+                <div id="passwordError" class="text-danger mt-2 fw-semibold" style="display:none;">
+                    <i class="bi bi-x-circle-fill"></i> Contraseña incorrecta
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" id="confirmPasswordBtn" class="btn btn-primary">Confirmar</button>
+                <button type="button" id="confirmPasswordBtn" class="btn btn-primary">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- ================================================== -->
-<!-- LOADING OVERLAY -->
+<!-- MODAL OPCIONES DE SUBIDA (QR)                        -->
 <!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay">
+<div class="modal fade modal-modern" id="uploadOptionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-cloud-arrow-up"></i> Subir Documento
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small mb-3">Elige cómo quieres subir el documento:</p>
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-outline-primary btn-lg" id="chooseFileBtn"
+                            style="border-radius:16px; padding:20px; text-align:left;">
+                        <i class="bi bi-folder2-open me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi computadora</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Selecciona un archivo PDF</small>
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-lg" id="chooseQRBtn"
+                            style="border-radius:16px; padding:20px; text-align:left; display:none;">
+                        <i class="bi bi-phone me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Desde mi celular (QR)</strong>
+                        <br><small class="text-muted" style="margin-left:2.2rem;">Escanea con la cámara de tu teléfono</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL QR -->
+<div class="modal fade modal-modern" id="qrModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--success),var(--success-hover));">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-qr-code"></i> Subir desde el móvil
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-2">Escanea este código con tu teléfono:</p>
+                <div id="qrCodeContainer">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p class="text-muted small mt-2 mb-0">Generando código QR...</p>
+                </div>
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-phone me-1"></i> Abre la cámara, escanea y elige el archivo.
+                </p>
+                <div id="qrWaitingStatus" class="alert alert-info mt-3 mb-0 py-2 d-flex align-items-center gap-2 justify-content-center"
+                     style="display:none;">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    Esperando archivo desde el móvil...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="regenerateQRBtn">
+                    <i class="bi bi-arrow-repeat"></i> Regenerar QR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
         <h5>Generando expediente</h5>
@@ -756,147 +1248,354 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
-// ============================================================
+'use strict';
 
+/* ============================================================
+   DETECCIÓN DE DISPOSITIVO MÓVIL
+   ============================================================ */
+const isMobileDevice = (() => {
+    const ua = navigator.userAgent || '';
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+    return isMobileUA && isSmallScreen;
+})();
+
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
 let currentAction = null;
 let currentData = null;
+let qrPollingInterval = null;
+let currentTempId = null;
+let isSubmitting = false;
 
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function safeNumber(v, fallback = 0) {
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
+}
+
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+    // ESC cierra modales
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst && m.id !== 'qrModal') inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
 function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     const header = document.getElementById('notificationHeader');
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
+
     header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
     modal.show();
 }
 
 function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        onConfirm();
+    });
     modal.show();
 }
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+/* ============================================================
+   SKELETON
+   ============================================================ */
+function mostrarSkeleton() {
+    const container = document.getElementById('resultsContainer');
+    let html = '<h5 class="mb-3 fw-bold d-flex align-items-center gap-2"><i class="bi bi-people" style="color:var(--accent-primary);"></i>Buscando...</h5>';
+    for (let i = 0; i < 3; i++) {
+        html += `<div class="skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line"></div>
+        </div>`;
+    }
+    container.innerHTML = html;
 }
 
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
+/* ============================================================
+   BÚSQUEDA
+   ============================================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
 
-document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); }
+searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarBusqueda();
+    }
 });
 
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+searchBtn.addEventListener('click', realizarBusqueda);
 
-    showLoading();
+async function realizarBusqueda() {
+    const term = searchInput.value.trim().toUpperCase();
+
+    if (!term) {
+        showNotification('Búsqueda vacía',
+            '<p>Por favor ingresa un término de búsqueda.</p>', 'warning');
+        searchInput.focus();
+        return;
+    }
+    if (term.length < 2) {
+        showNotification('Búsqueda muy corta',
+            '<p>Ingresa al menos 2 caracteres para buscar.</p>', 'warning');
+        return;
+    }
+
+    searchBtn.disabled = true;
+    const originalHTML = searchBtn.innerHTML;
+    searchBtn.innerHTML = '<span class="btn-spinner"></span> <span>Buscando...</span>';
+
+    mostrarSkeleton();
 
     try {
         const formData = new FormData();
-        formData.append('search_term', searchTerm);
+        formData.append('search_term', term);
+
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch('/api/cases/search-client-consult', {
             method: 'POST',
-            body: formData
+            body: formData,
+            signal: controller.signal
         });
+        clearTimeout(tId);
 
-        hideLoading();
+        const container = document.getElementById('resultsContainer');
 
         if (!response.ok) {
-            const error = await response.json();
-            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
-            document.getElementById('resultsContainer').innerHTML = '';
+            let errorMsg = 'No se encontraron expedientes.';
+            try { const e = await response.json(); if (e.detail) errorMsg = e.detail; } catch (_) {}
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-search"></i>
+                    <h5>Sin resultados</h5>
+                    <p>${escapeHTML(errorMsg)}</p>
+                </div>`;
             return;
         }
 
         const clients = await response.json();
-        const container = document.getElementById('resultsContainer');
 
-        if (clients.length === 0) {
+        if (!Array.isArray(clients) || clients.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-inbox"></i>
                     <h5>No se encontraron expedientes</h5>
                     <p>Intenta con otro término de búsqueda.</p>
-                </div>
-            `;
+                </div>`;
             return;
         }
 
-        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes con expedientes</h5>';
-        container.classList.add('fade-in');
-
-        clients.forEach(client => {
-            const card = document.createElement('div');
-            card.className = 'client-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2';
-            card.innerHTML = `
-                <div>
-                    <div class="client-name">${client.nombre_completo}</div>
-                    <div class="client-curp">${client.curp}</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
-                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
-                    <span class="badge-custom badge-casos"><i class="bi bi-files me-1"></i>${client.casos.length} expediente(s)</span>
-                    <button class="btn-view-cases view-cases" data-id="${client.id}"><i class="bi bi-eye me-1"></i>Ver expedientes</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-
-        document.querySelectorAll('.view-cases').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const clientId = parseInt(this.dataset.id);
-                const clientData = clients.find(c => c.id === clientId);
-                if (clientData) showCaseSelection(clientData);
-            });
-        });
+        renderizarClientes(clients);
 
     } catch (error) {
-        hideLoading();
-        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+        let msg = 'Error de conexión. Verifica tu red.';
+        if (error.name === 'AbortError') msg = 'La búsqueda tardó demasiado.';
+        document.getElementById('resultsContainer').innerHTML = `
+            <div class="empty-state">
+                <i class="bi bi-wifi-off" style="color:var(--danger);"></i>
+                <h5>Error de conexión</h5>
+                <p>${escapeHTML(msg)}</p>
+            </div>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = originalHTML;
     }
-});
+}
+
+function renderizarClientes(clients) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-people" style="color:var(--accent-primary);"></i>
+        Clientes con expedientes <span class="badge-custom badge-interno ms-2">${clients.length}</span>
+    </h5>`;
+
+    clients.forEach((client, idx) => {
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const casosCount = Array.isArray(client.casos) ? client.casos.length : 0;
+        const clientId = safeNumber(client.id);
+
+        html += `
+            <div class="client-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2"
+                 style="animation-delay:${idx * 0.05}s;">
+                <div>
+                    <div class="client-name">${nombre}</div>
+                    <div class="client-curp">CURP: ${curp}</div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag"></i>${folio}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder"></i>Exp. ${exp}</span>
+                    <span class="badge-custom badge-casos">
+                        <i class="bi bi-files"></i>${casosCount} expediente${casosCount !== 1 ? 's' : ''}
+                    </span>
+                    <button class="btn-view-cases view-cases" data-id="${clientId}" type="button">
+                        <i class="bi bi-eye"></i>Ver expedientes
+                    </button>
+                </div>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+    container.classList.add('fade-in');
+
+    container.querySelectorAll('.view-cases').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const clientId = parseInt(this.dataset.id, 10);
+            const clientData = clients.find(c => c.id === clientId);
+            if (clientData) showCaseSelection(clientData);
+        });
+    });
+}
 
 function showCaseSelection(client) {
     const container = document.getElementById('resultsContainer');
-    let html = `<h5 class="mb-3 fw-bold"><i class="bi bi-folder me-2" style="color:#2a6df4;"></i>Expedientes de ${client.nombre_completo}</h5>`;
+    const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-folder" style="color:var(--accent-primary);"></i>
+        Expedientes de ${nombre}
+    </h5>`;
 
-    client.casos.forEach(caso => {
-        const statusClass = `status-${caso.status}`;
-        html += `
-            <div class="case-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div>
-                    <div class="case-exp"><i class="bi bi-file-earmark-text me-1"></i>${caso.expediente_tribunal}</div>
-                    <div class="case-tribunal">${caso.tribunal}</div>
-                </div>
-                <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <span class="status-badge-modern ${statusClass}">${caso.status.replace(/_/g, ' ').toUpperCase()}</span>
-                    <span class="text-muted small">${caso.fecha_presentacion}</span>
-                    <button class="btn-consult-case view-case" data-id="${caso.id}"><i class="bi bi-folder2-open me-1"></i>Consultar</button>
-                </div>
-            </div>
-        `;
-    });
+    const casos = Array.isArray(client.casos) ? client.casos : [];
+    if (casos.length === 0) {
+        html += `<div class="empty-state"><i class="bi bi-folder2"></i><h5>Sin expedientes</h5><p>Este cliente no tiene expedientes registrados.</p></div>`;
+    } else {
+        casos.forEach((caso, idx) => {
+            const status = escapeHTML(caso.status || 'inactivo');
+            const statusClass = `status-${status}`;
+            const expTribunal = escapeHTML(caso.expediente_tribunal || '—');
+            const tribunal = escapeHTML(caso.tribunal || '—');
+            const fecha = escapeHTML(caso.fecha_presentacion || '—');
+            const casoId = safeNumber(caso.id);
 
-    html += `<button class="btn btn-outline-secondary btn-sm mt-2" onclick="newSearch()"><i class="bi bi-arrow-left me-1"></i> Nueva búsqueda</button>`;
+            html += `
+                <div class="case-card-modern d-flex align-items-center justify-content-between flex-wrap gap-2"
+                     style="animation-delay:${idx * 0.05}s;">
+                    <div>
+                        <div class="case-exp">
+                            <i class="bi bi-file-earmark-text"></i>${expTribunal}
+                        </div>
+                        <div class="case-tribunal">${tribunal}</div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <span class="status-badge-modern ${statusClass}">${status.replace(/_/g, ' ').toUpperCase()}</span>
+                        <span class="text-muted small">${fecha}</span>
+                        <button class="btn-consult-case view-case" data-id="${casoId}" type="button">
+                            <i class="bi bi-folder2-open"></i>Consultar
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    html += `<button class="btn btn-outline-secondary mt-3" onclick="newSearch()" style="border-radius:60px;padding:10px 22px;font-weight:600;" type="button">
+        <i class="bi bi-arrow-left"></i> Nueva búsqueda
+    </button>`;
+
     container.innerHTML = html;
     container.classList.remove('fade-in');
+    void container.offsetWidth;
     container.classList.add('fade-in');
 
-    document.querySelectorAll('.view-case').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            await loadCaseDetail(btn.dataset.id);
+    container.querySelectorAll('.view-case').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            await loadCaseDetail(this.dataset.id);
         });
     });
 }
@@ -923,6 +1622,7 @@ async function loadCaseDetail(caseId) {
 
     try {
         const response = await fetch(`/api/cases/consult-detail/${caseId}`);
+        if (!response.ok) throw new Error('Error al cargar el expediente');
         const data = await response.json();
 
         hideLoading();
@@ -940,35 +1640,125 @@ async function loadCaseDetail(caseId) {
 
             document.getElementById('caseContent').innerHTML = renderCaseDetail(data);
 
+            // Preview PDF individual
             document.querySelectorAll('.preview-pdf').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const url = this.dataset.url;
                     const filename = this.dataset.filename || 'documento.pdf';
                     document.getElementById('pdfPreview').src = url;
                     document.getElementById('downloadPdfLink').href = url;
                     document.getElementById('downloadPdfLink').download = filename;
-                    new bootstrap.Modal(document.getElementById('pdfModal')).show();
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('pdfModal')).show();
                 });
             });
 
+            // Botones que requieren password
             document.querySelectorAll('.require-password').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     currentAction = this.dataset.action;
                     document.getElementById('passwordInput').value = '';
                     document.getElementById('passwordError').style.display = 'none';
-                    new bootstrap.Modal(document.getElementById('passwordModal')).show();
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('passwordModal')).show();
                 });
             });
 
-            document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('caseDetailContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 350);
 
     } catch (error) {
         hideLoading();
-        showNotification('Error', `<p>Error al cargar el expediente: ${error.message}</p>`, 'error');
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
     }
 }
 
+function renderCaseDetail(data) {
+    const cliente = data.cliente || {};
+    const expediente = data.expediente || {};
+    const actuaciones = Array.isArray(data.actuaciones) ? data.actuaciones : [];
+
+    // Detectar si es bilateral para mostrar/ocultar actor 2
+    const esBilateral = (expediente.actor2_nombre && expediente.actor2_nombre.trim() !== '');
+    const demandadoHTML = expediente.demandado_nombre ? `
+        <div class="info-item"><span class="label">Demandado</span><span class="value">${escapeHTML(expediente.demandado_nombre)}</span></div>
+    ` : '';
+    const actor2HTML = esBilateral ? `
+        <div class="info-item"><span class="label">Segundo Actor</span><span class="value">${escapeHTML(expediente.actor2_nombre)}</span></div>
+    ` : '';
+
+    return `
+        <div class="section-title"><i class="bi bi-person-circle"></i> Datos del Cliente</div>
+        <div class="info-grid-detail">
+            <div class="info-item"><span class="label">Nombre</span><span class="value">${escapeHTML(cliente.nombre_completo || '—')}</span></div>
+            <div class="info-item"><span class="label">CURP</span><span class="value">${escapeHTML(cliente.curp || '—')}</span></div>
+            <div class="info-item"><span class="label">Teléfono</span><span class="value">${escapeHTML(cliente.telefono || '—')}</span></div>
+            <div class="info-item"><span class="label">Email</span><span class="value">${escapeHTML(cliente.email || '—')}</span></div>
+            <div class="info-item"><span class="label">Domicilio</span><span class="value">${escapeHTML(cliente.domicilio || '—')}</span></div>
+            <div class="info-item"><span class="label">Ocupación</span><span class="value">${escapeHTML(cliente.ocupacion || '—')}</span></div>
+            <div class="info-item"><span class="label">Expediente Interno</span><span class="value">${escapeHTML(cliente.expediente_interno || '—')}</span></div>
+            <div class="info-item"><span class="label">Folio Registro</span><span class="value">${escapeHTML(cliente.folio_registro || '—')}</span></div>
+        </div>
+
+        <div class="section-title"><i class="bi bi-folder2-open"></i> Datos del Expediente</div>
+        <div class="info-grid-detail">
+            <div class="info-item"><span class="label">N° Expediente</span><span class="value">${escapeHTML(expediente.num_exp_tribunal || '—')}</span></div>
+            <div class="info-item"><span class="label">Folio</span><span class="value">${escapeHTML(expediente.folio_tribunal || '—')}</span></div>
+            <div class="info-item"><span class="label">Tribunal</span><span class="value">${escapeHTML(expediente.tribunal || '—')}</span></div>
+            <div class="info-item"><span class="label">Secretaría</span><span class="value">${escapeHTML(expediente.secretaria || '—')}</span></div>
+            <div class="info-item"><span class="label">Fecha Presentación</span><span class="value">${escapeHTML(expediente.fecha_presentacion || '—')}</span></div>
+            <div class="info-item"><span class="label">Estatus</span><span class="value">
+                <span class="status-badge-modern status-${escapeHTML(expediente.status || 'inactivo')}">
+                    ${escapeHTML((expediente.status || 'N/A').toUpperCase())}
+                </span>
+            </span></div>
+            ${demandadoHTML}
+            <div class="info-item"><span class="label">Actor</span><span class="value">${escapeHTML(expediente.actor_nombre || '—')}</span></div>
+            ${actor2HTML}
+        </div>
+
+        <div class="section-title"><i class="bi bi-list-ul"></i> Actuaciones (${actuaciones.length})</div>
+        ${actuaciones.length === 0
+            ? '<div class="alert alert-info rounded-4 d-flex align-items-center gap-2"><i class="bi bi-info-circle-fill"></i>No hay actuaciones registradas.</div>'
+            : actuaciones.map((act, idx) => `
+                <div class="actuacion-item-modern" style="animation-delay:${idx * 0.03}s;">
+                    <div class="d-flex align-items-center gap-3 flex-wrap" style="flex:1;min-width:0;">
+                        <span class="act-tipo">${escapeHTML(act.tipo || 'N/A')}</span>
+                        <span class="act-fecha"><i class="bi bi-calendar3"></i>${escapeHTML(act.fecha || '—')}</span>
+                        <span class="act-desc">${escapeHTML(act.descripcion || 'Sin descripción')}</span>
+                        <span class="text-muted small">${escapeHTML(act.subido_en || '')}</span>
+                    </div>
+                    <button class="btn-preview-pdf preview-pdf"
+                            data-url="${escapeHTML(act.pdf_url)}"
+                            data-filename="actuacion_${safeNumber(act.id)}.pdf"
+                            type="button">
+                        <i class="bi bi-eye"></i> Ver
+                    </button>
+                </div>
+            `).join('')
+        }
+
+        <div class="action-btn-group">
+            <button class="btn btn-outline-secondary" onclick="newSearch()" type="button">
+                <i class="bi bi-arrow-left"></i> Nueva búsqueda
+            </button>
+            <button class="btn btn-primary" onclick="openFullCasePDF()" type="button">
+                <i class="bi bi-folder2-open"></i> Ver PDF Completo
+            </button>
+            <button class="btn btn-outline-info" onclick="window.print()" type="button">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+            <button class="btn btn-outline-primary require-password" data-action="email" type="button">
+                <i class="bi bi-envelope"></i> Enviar Email
+            </button>
+            <button class="btn btn-outline-success require-password" data-action="whatsapp" type="button">
+                <i class="bi bi-whatsapp"></i> WhatsApp
+            </button>
+        </div>
+    `;
+}
+
+/* ============================================================
+   EXPEDIENTE COMPLETO PDF
+   ============================================================ */
 function openFullCasePDF() {
     if (!currentData || !currentData.expediente || !currentData.expediente.id) {
         showNotification('Error', '<p>No se pudo cargar el expediente.</p>', 'error');
@@ -978,39 +1768,31 @@ function openFullCasePDF() {
     const caseId = currentData.expediente.id;
     const pdfUrl = `/api/cases/full-case-pdf/${caseId}`;
 
-    // Referencias a los elementos del modal
     const iframe = document.getElementById('fullCasePreviewFrame');
     const loader = document.getElementById('modalGeneratingLoader');
 
-    // 1. Resetear estado: mostrar loader, ocultar iframe
     loader.classList.remove('hidden');
     iframe.style.display = 'none';
     iframe.src = 'about:blank';
 
-    // 2. Configurar link de descarga
+    const numExp = currentData.expediente.num_exp_tribunal || 'expediente';
     document.getElementById('fullCaseDownloadLink').href = pdfUrl;
     document.getElementById('fullCaseDownloadLink').setAttribute(
         'download',
-        `expediente_completo_${currentData.expediente.num_exp_tribunal}.pdf`
+        `expediente_completo_${numExp}.pdf`
     );
 
-    // 3. Abrir el modal
-    const modal = new bootstrap.Modal(document.getElementById('fullCasePreviewModal'));
-    modal.show();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('fullCasePreviewModal')).show();
 
-    // 4. Cargar el iframe
     iframe.src = pdfUrl;
 
-    // 5. Cuando termine de cargar, ocultar loader y mostrar iframe
-    iframe.onload = function() {
-        // Pequeña pausa para que el visor PDF del navegador pinte
+    iframe.onload = function () {
         setTimeout(() => {
             loader.classList.add('hidden');
             iframe.style.display = 'block';
         }, 500);
     };
 
-    // 6. Fallback: si tras 60s no cargó, mostrar el iframe de todos modos
     setTimeout(() => {
         if (!loader.classList.contains('hidden')) {
             loader.classList.add('hidden');
@@ -1018,65 +1800,24 @@ function openFullCasePDF() {
         }
     }, 60000);
 }
-function renderCaseDetail(data) {
-    return `
-        <div class="section-title"><i class="bi bi-person"></i> Datos del Cliente</div>
-        <div class="info-grid-detail">
-            <div class="info-item"><span class="label">Nombre</span><span class="value">${data.cliente.nombre_completo}</span></div>
-            <div class="info-item"><span class="label">CURP</span><span class="value">${data.cliente.curp}</span></div>
-            <div class="info-item"><span class="label">Teléfono</span><span class="value">${data.cliente.telefono}</span></div>
-            <div class="info-item"><span class="label">Email</span><span class="value">${data.cliente.email}</span></div>
-            <div class="info-item"><span class="label">Domicilio</span><span class="value">${data.cliente.domicilio}</span></div>
-            <div class="info-item"><span class="label">Ocupación</span><span class="value">${data.cliente.ocupacion}</span></div>
-            <div class="info-item"><span class="label">Expediente Interno</span><span class="value">${data.cliente.expediente_interno}</span></div>
-            <div class="info-item"><span class="label">Folio Registro</span><span class="value">${data.cliente.folio_registro}</span></div>
-        </div>
 
-        <div class="section-title"><i class="bi bi-folder"></i> Datos del Expediente</div>
-        <div class="info-grid-detail">
-            <div class="info-item"><span class="label">N° Expediente</span><span class="value">${data.expediente.num_exp_tribunal}</span></div>
-            <div class="info-item"><span class="label">Folio</span><span class="value">${data.expediente.folio_tribunal}</span></div>
-            <div class="info-item"><span class="label">Tribunal</span><span class="value">${data.expediente.tribunal}</span></div>
-            <div class="info-item"><span class="label">Secretaría</span><span class="value">${data.expediente.secretaria}</span></div>
-            <div class="info-item"><span class="label">Fecha Presentación</span><span class="value">${data.expediente.fecha_presentacion}</span></div>
-            <div class="info-item"><span class="label">Estatus</span><span class="value"><span class="status-badge-modern status-${data.expediente.status}">${data.expediente.status.toUpperCase()}</span></span></div>
-            <div class="info-item"><span class="label">Demandado</span><span class="value">${data.expediente.demandado_nombre}</span></div>
-            <div class="info-item"><span class="label">Actor</span><span class="value">${data.expediente.actor_nombre}</span></div>
-        </div>
-
-        <div class="section-title"><i class="bi bi-list-ul"></i> Actuaciones (${data.actuaciones.length})</div>
-        ${data.actuaciones.length === 0 ? '<div class="alert alert-info rounded-4">No hay actuaciones registradas.</div>' : ''}
-        ${data.actuaciones.map(act => `
-            <div class="actuacion-item-modern">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <span class="act-tipo">${act.tipo}</span>
-                    <span class="act-fecha"><i class="bi bi-calendar3 me-1"></i>${act.fecha}</span>
-                    <span class="act-desc">${act.descripcion || 'Sin descripción'}</span>
-                    <span class="text-muted small">${act.subido_en}</span>
-                </div>
-                <button class="btn-preview-pdf preview-pdf" data-url="${act.pdf_url}" data-filename="actuacion_${act.id}.pdf">
-                    <i class="bi bi-eye"></i> Ver
-                </button>
-            </div>
-        `).join('')}
-
-        <div class="action-btn-group">
-            <button class="btn btn-outline-secondary" onclick="newSearch()"><i class="bi bi-arrow-left"></i> Nueva búsqueda</button>
-            <button class="btn btn-primary" onclick="openFullCasePDF()"><i class="bi bi-folder2-open"></i> Ver PDF Completo</button>
-            <button class="btn btn-outline-info" onclick="window.print()"><i class="bi bi-printer"></i> Imprimir</button>
-            <button class="btn btn-outline-primary require-password" data-action="email"><i class="bi bi-envelope"></i> Enviar Email</button>
-            <button class="btn btn-outline-success require-password" data-action="whatsapp"><i class="bi bi-whatsapp"></i> WhatsApp</button>
-        </div>
-    `;
-}
-
-document.getElementById('confirmPasswordBtn').addEventListener('click', async () => {
+/* ============================================================
+   PASSWORD MODAL
+   ============================================================ */
+document.getElementById('confirmPasswordBtn').addEventListener('click', async function () {
     const password = document.getElementById('passwordInput').value;
+    const errorEl = document.getElementById('passwordError');
+    const btn = this;
+
     if (!password) {
-        document.getElementById('passwordError').textContent = 'Ingresa tu contraseña';
-        document.getElementById('passwordError').style.display = 'block';
+        errorEl.textContent = 'Ingresa tu contraseña';
+        errorEl.style.display = 'block';
         return;
     }
+
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner" style="border-color:rgba(255,255,255,0.4);"></span> Verificando...';
 
     try {
         const formData = new FormData();
@@ -1088,14 +1829,16 @@ document.getElementById('confirmPasswordBtn').addEventListener('click', async ()
         });
 
         if (!response.ok) {
-            document.getElementById('passwordError').textContent = 'Contraseña incorrecta';
-            document.getElementById('passwordError').style.display = 'block';
+            errorEl.innerHTML = '<i class="bi bi-x-circle-fill"></i> Contraseña incorrecta';
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
             return;
         }
 
-        bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
+        bootstrap.Modal.getInstance(document.getElementById('passwordModal'))?.hide();
 
-        switch(currentAction) {
+        switch (currentAction) {
             case 'email':
                 showNotification('📧 Email', '<p>Función de envío por email - En desarrollo</p>', 'info');
                 break;
@@ -1105,9 +1848,10 @@ document.getElementById('confirmPasswordBtn').addEventListener('click', async ()
             default:
                 showNotification('Completado', '<p>Acción completada.</p>', 'success');
         }
-
     } catch (error) {
-        showNotification('Error', `<p>${error.message}</p>`, 'error');
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
     }
 });
 
@@ -1117,12 +1861,139 @@ document.getElementById('passwordInput').addEventListener('keypress', (e) => {
     }
 });
 
-document.getElementById('fullCasePreviewModal').addEventListener('hidden.bs.modal', function() {
+/* ============================================================
+   SUBIDA DE DOCUMENTO POR QR
+   ============================================================ */
+document.getElementById('chooseQRBtn')?.addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+    setTimeout(abrirQR, 300);
+});
+
+document.getElementById('chooseFileBtn')?.addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+});
+
+// Mostrar opción QR SOLO si NO es móvil
+if (!isMobileDevice) {
+    const chooseQRBtn = document.getElementById('chooseQRBtn');
+    if (chooseQRBtn) chooseQRBtn.style.display = 'block';
+}
+
+function abrirQR() {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+
+    currentTempId = 'expediente_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
+    const baseUrl = window.location.origin;
+    const uploadUrl = `${baseUrl}/api/clients/upload-mobile-page?temp_id=${encodeURIComponent(currentTempId)}&doc_type=EXPEDIENTE`;
+
+    const container = document.getElementById('qrCodeContainer');
+    container.innerHTML = '<div class="spinner-border text-success" role="status"></div><p class="text-muted small mt-2 mb-0">Generando código QR...</p>';
+    document.getElementById('qrWaitingStatus').style.display = 'none';
+
+    setTimeout(() => {
+        container.innerHTML = '';
+        if (typeof QRCode === 'undefined') {
+            container.innerHTML = `
+                <div class="alert alert-warning small">
+                    <p class="mb-2"><strong>Abre este enlace en tu teléfono:</strong></p>
+                    <p style="word-break:break-all; font-size:0.75rem; background:var(--bg-tertiary); padding:8px; border-radius:6px;">${escapeHTML(uploadUrl)}</p>
+                </div>`;
+        } else {
+            new QRCode(container, {
+                text: uploadUrl,
+                width: 220,
+                height: 220,
+                colorDark: '#1a8b5c',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+    }, 300);
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('qrModal')).show();
+    iniciarPollingQR();
+}
+
+function iniciarPollingQR() {
+    let attempts = 0;
+    const maxAttempts = 90;
+
+    qrPollingInterval = setInterval(async () => {
+        attempts++;
+        if (attempts > maxAttempts) {
+            clearInterval(qrPollingInterval);
+            qrPollingInterval = null;
+            return;
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const res = await fetch(`/api/clients/check-upload/${encodeURIComponent(currentTempId)}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            if (!res.ok) return;
+            const data = await res.json();
+
+            if (data.success && data.file_url) {
+                clearInterval(qrPollingInterval);
+                qrPollingInterval = null;
+                recibirArchivoDesdeQR(data.file_url, data.filename);
+            }
+        } catch (e) {}
+    }, 1000);
+
+    setTimeout(() => {
+        if (qrPollingInterval) {
+            document.getElementById('qrWaitingStatus').style.display = 'flex';
+        }
+    }, 3000);
+}
+
+function recibirArchivoDesdeQR(fileUrl, filename) {
+    bootstrap.Modal.getInstance(document.getElementById('qrModal'))?.hide();
+    document.getElementById('qrWaitingStatus').style.display = 'none';
+
+    showNotification('¡Recibido!',
+        `<p>El documento <strong>${escapeHTML(filename || 'archivo')}</strong> llegó desde tu celular.</p>
+         <p class="text-muted small mb-0">Puedes proceder a consultarlo.</p>`,
+        'success');
+}
+
+document.getElementById('regenerateQRBtn')?.addEventListener('click', () => {
+    if (qrPollingInterval) clearInterval(qrPollingInterval);
+    abrirQR();
+});
+
+document.getElementById('qrModal')?.addEventListener('hidden.bs.modal', () => {
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+});
+
+/* ============================================================
+   LIMPIAR MODAL EXPEDIENTE COMPLETO
+   ============================================================ */
+document.getElementById('fullCasePreviewModal').addEventListener('hidden.bs.modal', function () {
     const iframe = document.getElementById('fullCasePreviewFrame');
     const loader = document.getElementById('modalGeneratingLoader');
     iframe.src = 'about:blank';
     iframe.style.display = 'none';
     loader.classList.remove('hidden');
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    searchBtn.disabled = false;
+    setTimeout(() => searchInput?.focus(), 400);
 });
 </script>
 </body>

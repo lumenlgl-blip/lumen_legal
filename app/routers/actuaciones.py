@@ -163,10 +163,12 @@ async def get_case_actuaciones(court_case_id: int, db: Session = Depends(get_db)
     if not court_case:
         raise HTTPException(404, "Expediente no encontrado")
 
+    # Orden cronológico ascendente: la primera actuación arriba,
+    # las más recientes abajo. Desempate por id (la más antigua fue creada primero).
     actuaciones = (
         db.query(Actuacion)
         .filter(Actuacion.court_case_id == court_case_id)
-        .order_by(Actuacion.fecha_actuacion.desc())
+        .order_by(Actuacion.fecha_actuacion.asc(), Actuacion.id.asc())
         .all()
     )
 

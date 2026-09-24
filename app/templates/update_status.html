@@ -1,433 +1,928 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Actualizar Estatus · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-
-        body {
-            background: #f2f5fb;
-            padding: 20px 0 40px 0;
-            min-height: 100vh;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #dbe4ef;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --slate: #3d4a5c;
+            --slate-soft: #eef2f6;
+            --purple: #6f42c1;
+            --purple-soft: #ede7fe;
+            --orange: #9b5e00;
+            --orange-soft: #ffedd5;
+            --teal: #0e7a7a;
+            --teal-soft: #d5f0f0;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --slate: #94a3b8;
+            --slate-soft: rgba(148,163,184,0.15);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167,139,250,0.15);
+            --orange: #fb923c;
+            --orange-soft: rgba(251,146,60,0.15);
+            --teal: #2dd4bf;
+            --teal-soft: rgba(45,212,191,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245,179,66,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
         .btn-menu {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 12px 24px;
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            transition: all 0.2s;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
         }
         .btn-menu:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-primary);
         }
 
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1100px; }
+
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 20px 28px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
-        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
+        .page-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--warning), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         .page-header .badge-header {
-            background: #0b1e33;
+            background: var(--accent-dark);
             color: white;
             font-weight: 600;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
             font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .page-header .badge-header i { margin-right: 6px; color: #7aa9ff; }
+        .page-header .badge-header i { color: var(--accent-light); font-size: 0.9rem; }
 
+        /* ============================================================
+           CARDS GLASS
+           ============================================================ */
         .card-glass {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
             padding: 24px 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: box-shadow 0.2s;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-normal);
+            animation: fadeInUp 0.4s ease-out;
         }
-        .card-glass:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-glass:hover { box-shadow: var(--shadow-md); }
 
+        /* ============================================================
+           BÚSQUEDA
+           ============================================================ */
         .search-title {
             font-weight: 700;
             font-size: 1rem;
-            color: #0b1e33;
-            margin-bottom: 12px;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .search-title i { color: #2a6df4; margin-right: 8px; }
+        .search-title i { color: var(--accent-primary); }
 
-        .search-card .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
+        .form-control, .form-select {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
             padding: 14px 18px;
             font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 56px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 56px;
         }
-        .search-card .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger);
+            background-image: none;
         }
 
         .btn-search {
-            background: #0b1e33;
+            background: var(--accent-dark);
             border: none;
             border-radius: 60px;
             padding: 14px 24px;
             font-weight: 700;
             color: white;
-            transition: all 0.25s;
-            display: flex;
+            transition: all var(--transition-normal);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             width: 100%;
             height: 56px;
+            min-height: 56px;
         }
-        .btn-search:hover {
-            background: #1a3b6b;
+        .btn-search:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(11,30,51,0.25);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
+        .btn-search:disabled { opacity: 0.7; cursor: not-allowed; }
 
+        /* ============================================================
+           CLIENT CARDS
+           ============================================================ */
         .client-card {
-            background: white;
-            border-radius: 18px;
-            padding: 16px 20px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .client-card:hover {
-            border-color: #cbd9ed;
+            border-color: var(--accent-primary);
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
         }
-        .client-name { font-weight: 700; color: #0b1e33; font-size: 0.95rem; }
-        .client-curp { color: #6b7b8f; font-size: 0.8rem; }
+        .client-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+        .client-curp { color: var(--text-muted); font-size: 0.8rem; font-family: 'SF Mono', monospace; }
 
         .badge-custom {
             font-weight: 600;
-            font-size: 0.65rem;
-            padding: 4px 12px;
+            font-size: 0.68rem;
+            padding: 5px 12px;
             border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .badge-folio { background: #eef3fa; color: #4a5b6e; }
-        .badge-interno { background: #e2edff; color: #1f4f9e; }
+        .badge-folio { background: rgba(42,109,244,0.08); color: var(--accent-primary); }
+        .badge-interno { background: rgba(42,109,244,0.15); color: var(--accent-primary); }
+
+        [data-theme="dark"] .badge-folio { background: rgba(91,147,255,0.15); }
+        [data-theme="dark"] .badge-interno { background: rgba(91,147,255,0.2); }
 
         .btn-view-cases {
-            background: rgba(42,109,244,0.06);
-            border: none;
+            background: rgba(42,109,244,0.08);
+            border: 1.5px solid rgba(42,109,244,0.2);
             border-radius: 40px;
-            padding: 6px 18px;
-            color: #2a6df4;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-        }
-        .btn-view-cases:hover { background: #2a6df4; color: white; }
-
-        .case-card {
-            background: white;
-            border-radius: 18px;
-            padding: 14px 18px;
-            margin-bottom: 6px;
-            border: 1px solid #edf2f9;
-            transition: all 0.2s ease;
-        }
-        .case-card:hover { border-color: #cbd9ed; background: #fafcff; }
-        .case-exp { font-weight: 700; color: #0b1e33; font-size: 0.9rem; }
-        .case-tribunal { color: #4a5b6e; font-size: 0.85rem; }
-
-        .status-badge-modern {
-            padding: 4px 16px;
-            border-radius: 40px;
-            font-size: 0.7rem;
+            padding: 8px 18px;
+            color: var(--accent-primary);
             font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
+        }
+        .btn-view-cases:hover {
+            background: var(--accent-primary);
+            color: white;
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px -4px rgba(42,109,244,0.5);
+        }
+
+        /* ============================================================
+           CASE CARDS
+           ============================================================ */
+        .case-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--warning);
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
+        }
+        .case-card:hover {
+            border-color: var(--warning);
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
+        }
+        .case-exp {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .case-exp i { color: var(--accent-primary); }
+        .case-tribunal {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+
+        /* ============================================================
+           STATUS BADGES
+           ============================================================ */
+        .status-badge-modern {
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.68rem;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .status-iniciado { background: #e2edff; color: #1f4f9e; }
-        .status-terminado { background: #e3f5e9; color: #1f8b4c; }
-        .status-inactivo { background: #eef2f6; color: #3d4a5c; }
-        .status-desistido { background: #fee9e7; color: #b12a2a; }
-        .status-caducado { background: #ffedd5; color: #9b5e00; }
-        .status-revocado { background: #ede7fe; color: #6f42c1; }
-        .status-cliente_no_contesta { background: #fdf3e0; color: #b7791f; }
-        .status-otro { background: #d5f0f0; color: #0e7a7a; }
+        .status-iniciado { background: var(--info-soft); color: var(--info); }
+        .status-terminado { background: var(--success-soft); color: var(--success); }
+        .status-inactivo { background: var(--slate-soft); color: var(--slate); }
+        .status-desistido { background: var(--danger-soft); color: var(--danger); }
+        .status-caducado { background: var(--orange-soft); color: var(--orange); }
+        .status-revocado { background: var(--purple-soft); color: var(--purple); }
+        .status-cliente_no_contesta { background: var(--warning-soft); color: #b7791f; }
+        [data-theme="dark"] .status-cliente_no_contesta { color: var(--warning); }
+        .status-otro { background: var(--teal-soft); color: var(--teal); }
 
         .btn-update-status {
-            background: #f5b342;
+            background: var(--warning);
             border: none;
             border-radius: 40px;
-            padding: 6px 18px;
+            padding: 8px 20px;
             color: #0b1e33;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-height: 36px;
         }
-        .btn-update-status:hover { background: #e6a030; transform: scale(1.02); }
+        .btn-update-status:hover {
+            background: var(--warning-hover);
+            transform: scale(1.03);
+            box-shadow: 0 6px 16px -4px rgba(245,179,66,0.5);
+        }
 
+        /* ============================================================
+           UPDATE FORM
+           ============================================================ */
         .update-form-container {
             display: none;
             margin-top: 24px;
+            animation: fadeInUp 0.4s ease-out;
         }
-
-        .form-section {
-            background: rgba(255,255,255,0.4);
-            border-radius: 16px;
-            padding: 18px 20px;
-            margin-bottom: 16px;
-            border: 1px solid #edf2f9;
-        }
-        .form-section .form-label {
-            font-weight: 600;
-            font-size: 0.8rem;
-            color: #4a5b6e;
-        }
-        .form-section .form-select {
-            border-radius: 14px;
-            border: 1.5px solid #e9edf4;
-            padding: 12px 16px;
-            font-size: 0.9rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%238a9bb0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 12px;
-        }
-        .form-section .form-select:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
-        }
-        .form-section .form-select.is-invalid { border-color: #dc3545; }
-
-        .btn-submit {
-            background: #f5b342;
-            border: none;
-            border-radius: 60px;
-            padding: 12px 28px;
-            font-weight: 700;
-            color: #0b1e33;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            justify-content: center;
-        }
-        .btn-submit:hover {
-            background: #e6a030;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px -8px rgba(245,179,66,0.3);
-        }
-
-        .section-title {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #0b1e33;
-            margin-bottom: 8px;
-        }
-        .section-title i { color: #2a6df4; margin-right: 8px; }
-
         .case-header-detail {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid var(--border-soft);
         }
-        .case-header-detail h5 { font-weight: 700; color: #0b1e33; margin: 0; }
-        .case-meta { color: #6b7b8f; font-size: 0.85rem; }
+        .case-header-detail h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0 0 6px 0;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .case-header-detail h5 i { color: var(--accent-primary); }
+        .case-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-        .modal-modern .modal-content {
-            border-radius: 28px;
+        .form-section {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-soft);
+            transition: border-color var(--transition-fast);
+        }
+        .form-section:focus-within {
+            border-color: rgba(42,109,244,0.3);
+        }
+        .section-title {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border-soft);
+        }
+        .section-title i {
+            color: var(--warning);
+            font-size: 1.2rem;
+        }
+
+        .form-section .form-label {
+            font-weight: 600;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            padding-left: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .form-section .form-label .required {
+            color: var(--danger);
+        }
+
+        .btn-submit {
+            background: var(--warning);
             border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            border-radius: 60px;
+            padding: 14px 32px;
+            font-weight: 700;
+            color: #0b1e33;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            width: 100%;
+            position: relative;
             overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
+        }
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            transition: left 0.6s ease;
+        }
+        .btn-submit:hover:not(:disabled)::before { left: 100%; }
+        .btn-submit:hover:not(:disabled) {
+            background: var(--warning-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(245,179,66,0.5);
+        }
+        .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-back-search {
+            border-radius: 40px;
+            padding: 10px 22px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: 1.5px solid var(--border-soft);
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 42px;
+        }
+        .btn-back-search:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
         }
         .modal-modern .modal-header {
             border-bottom: none;
-            padding: 20px 28px 8px 28px;
+            padding: 22px 28px 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
-        .modal-modern .modal-body { padding: 16px 28px 24px; }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
         .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
         }
 
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* ============================================================
+           SPINNER OVERLAY
+           ============================================================ */
         .spinner-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 9999;
             display: none;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
         }
-        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: #f5b342; }
-        .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
-        .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
-
-        .empty-state { text-align: center; padding: 30px 20px; }
-        .empty-state i { font-size: 2.5rem; color: #d0d8e3; margin-bottom: 8px; }
-        .empty-state h5 { color: #0b1e33; font-weight: 600; }
-        .empty-state p { color: #8a9bb0; font-size: 0.9rem; }
-
-        .btn-back-search {
-            border-radius: 40px;
-            padding: 6px 18px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            border: 1px solid #e9edf4;
-            color: #4a5b6e;
-            background: transparent;
-            transition: all 0.2s;
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--warning);
+            border-width: 3px;
         }
-        .btn-back-search:hover { background: white; border-color: #cbd9ed; }
+        .spinner-box h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
+        }
+        .spinner-box p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+        }
+
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 22px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+        }
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 40px 20px; }
+        .empty-state i { font-size: 3rem; color: var(--text-light); margin-bottom: 12px; display: block; }
+        .empty-state h5 { color: var(--text-primary); font-weight: 700; margin-bottom: 6px; }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .card-glass, #resultsContainer, #updateFormContainer {
+                margin-left: 16px;
+                margin-right: 16px;
+            }
+        }
 
         @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .card-glass { padding: 16px 18px; }
-            .btn-menu { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .case-header-detail { flex-direction: column; }
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .badge-header { font-size: 0.75rem; padding: 6px 16px; }
+            .card-glass { padding: 18px 16px; border-radius: 18px; }
+            .search-card .form-control, .btn-search { height: 52px; min-height: 52px; font-size: 16px; }
+            .client-card, .case-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .client-card > div:last-child, .case-card > div:last-child {
+                width: 100%;
+                justify-content: space-between;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .btn-view-cases, .btn-update-status { width: 100%; justify-content: center; }
+            .case-header-detail h5 { font-size: 1.1rem; }
+            .form-section { padding: 18px 16px; }
+            .form-section .form-control, .form-section .form-select { font-size: 16px; }
+            .btn-submit { width: 100%; }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
         }
+
         @media (max-width: 480px) {
-            .client-card { flex-direction: column; align-items: stretch; }
-            .case-card { flex-direction: column; align-items: stretch; }
-            .form-section { padding: 14px 16px; }
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+            }
+            .page-header .badge-header {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            .card-glass { margin: 0 12px; padding: 16px 14px; }
+            #resultsContainer { padding: 0 12px; }
+            #updateFormContainer { margin: 0 12px; }
+            .badge-custom { font-size: 0.62rem; padding: 3px 10px; }
+            .status-badge-modern { font-size: 0.62rem; padding: 4px 10px; }
+            .spinner-box { padding: 30px 28px; }
         }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.search-card,.card-glass,#resultsContainer,#updateFormContainer{margin-left:16px; margin-right:16px;}
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; flex-direction:column; align-items:flex-start;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .card-glass{padding:16px 18px; border-radius:18px; margin:0 12px 16px 12px;}
-            .search-card .form-control,.btn-search,.btn-submit{height:48px; font-size:16px;}
-            .client-card,.case-card{flex-direction:column; align-items:flex-start; padding:14px;}
-            .client-card > div:last-child,.case-card > div:last-child{width:100%; display:flex; flex-wrap:wrap; gap:6px;}
-            .form-section{padding:14px 16px;}
-            .btn-update-status,.btn-view-cases,.btn-back-search{width:100%; justify-content:center;}
+
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
-        @media (max-width: 480px){
-            .btn-menu{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
-            .page-header .badge-header{width:100%; text-align:center; display:flex; justify-content:center;}
-            .card-glass{margin:0 10px 12px 10px; padding:12px; border-radius:16px;}
-            #resultsContainer{padding:0 10px; margin:0;}
-            #updateFormContainer{margin:0 10px;}
-            .badge-custom{font-size:0.6rem; padding:3px 8px;}
-            .status-badge-modern{font-size:0.6rem; padding:3px 10px;}
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
         }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
     </style>
 </head>
 <body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
 
 <a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
+    <!-- ENCABEZADO -->
     <div class="page-header">
         <h1><i class="bi bi-arrow-repeat"></i> Actualizar Estatus</h1>
         <span class="badge-header"><i class="bi bi-pencil"></i> Gestión de expedientes</span>
     </div>
 
+    <!-- BUSCADOR -->
     <div class="card-glass search-card">
         <div class="search-title"><i class="bi bi-search"></i> Buscar Cliente o Expediente</div>
         <div class="row g-3">
             <div class="col-md-8">
                 <input type="text" id="searchInput" class="form-control"
-                       placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de expediente del tribunal..."
-                       autocomplete="off">
+                       placeholder="Buscar por nombre, CURP, teléfono, folio, expediente interno o número de tribunal..."
+                       autocomplete="off" maxlength="100" aria-label="Buscar cliente o expediente">
             </div>
             <div class="col-md-4">
-                <button id="searchBtn" class="btn-search"><i class="bi bi-search"></i> Buscar</button>
+                <button id="searchBtn" class="btn-search" type="button">
+                    <i class="bi bi-search"></i> <span>Buscar</span>
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- RESULTADOS -->
     <div id="resultsContainer"></div>
 
+    <!-- FORMULARIO DE ACTUALIZACIÓN -->
     <div id="updateFormContainer" class="update-form-container">
         <div class="card-glass">
             <div class="case-header-detail">
                 <div>
-                    <h5 id="caseTitle"><i class="bi bi-folder2-open text-primary me-2"></i></h5>
+                    <h5 id="caseTitle"><i class="bi bi-folder2-open"></i></h5>
                     <div class="case-meta" id="caseInfo"></div>
                 </div>
             </div>
-            <hr>
+
             <form id="updateForm" novalidate>
                 <input type="hidden" id="courtCaseId" name="court_case_id">
+
                 <div class="form-section">
-                    <div class="section-title"><i class="bi bi-tag"></i> Nuevo Estatus <span class="text-danger">*</span></div>
-                    <div class="row g-3">
+                    <div class="section-title">
+                        <i class="bi bi-tag-fill"></i> Nuevo Estatus
+                    </div>
+
+                    <div class="row g-4">
                         <div class="col-md-8">
+                            <label class="form-label" for="newStatus">
+                                <i class="bi bi-arrow-repeat"></i> Selecciona el nuevo estatus <span class="required">*</span>
+                            </label>
                             <select id="newStatus" name="new_status" class="form-select" required>
                                 <option value="">Selecciona un estatus...</option>
                                 <option value="iniciado">Iniciado</option>
@@ -441,9 +936,9 @@
                             </select>
                             <div class="invalid-feedback">Selecciona un estatus</div>
                         </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn-submit">
-                                <i class="bi bi-arrow-repeat"></i> Actualizar
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn-submit" id="submitBtn">
+                                <i class="bi bi-check2-circle"></i> <span>Actualizar Estatus</span>
                             </button>
                         </div>
                     </div>
@@ -455,189 +950,385 @@
 </div>
 
 <!-- ================================================== -->
-<!-- MODALES -->
+<!-- MODAL NOTIFICACIÓN -->
 <!-- ================================================== -->
-
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="confirmBody"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-warning" id="confirmBtn">Confirmar</button>
+                <button type="button" class="btn btn-warning" id="confirmBtn">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
-        <h5>Actualizando estatus</h5>
-        <p>Por favor espera.</p>
+        <h5 id="loadingTitle">Actualizando estatus</h5>
+        <p id="loadingText">Por favor espera.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// CÓDIGO ORIGINAL COMPLETO - SIN MODIFICAR NINGUNA FUNCIÓN
-// ============================================================
+'use strict';
 
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function safeNumber(v, fallback = 0) {
+    const n = parseFloat(v);
+    return isNaN(n) ? fallback : n;
+}
+
+// Iconos por estatus (para mostrar en el preview del confirm)
+const STATUS_ICONS = {
+    iniciado: 'bi-play-circle-fill',
+    terminado: 'bi-check-circle-fill',
+    inactivo: 'bi-pause-circle-fill',
+    desistido: 'bi-x-circle-fill',
+    caducado: 'bi-clock-history',
+    revocado: 'bi-arrow-counterclockwise',
+    cliente_no_contesta: 'bi-telephone-x-fill',
+    otro: 'bi-three-dots'
+};
+
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst) inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading(title = 'Actualizando estatus', text = 'Por favor espera.') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
 function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     const header = document.getElementById('notificationHeader');
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
+
     header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
     modal.show();
 }
 
 function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); onConfirm(); };
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        onConfirm();
+    });
     modal.show();
 }
 
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+/* ============================================================
+   SKELETON
+   ============================================================ */
+function mostrarSkeleton() {
+    const container = document.getElementById('resultsContainer');
+    let html = '<h5 class="mb-3 fw-bold d-flex align-items-center gap-2"><i class="bi bi-people" style="color:var(--accent-primary);"></i>Buscando...</h5>';
+    for (let i = 0; i < 3; i++) {
+        html += `<div class="skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line"></div>
+        </div>`;
+    }
+    container.innerHTML = html;
 }
 
-function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-}
+/* ============================================================
+   BÚSQUEDA
+   ============================================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
 
-document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('searchBtn').click(); }
+searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        realizarBusqueda();
+    }
 });
 
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchTerm = document.getElementById('searchInput').value.trim().toUpperCase();
-    if (!searchTerm) { showNotification('Búsqueda vacía', '<p>Por favor ingresa un término de búsqueda.</p>', 'warning'); return; }
+searchBtn.addEventListener('click', realizarBusqueda);
 
-    showLoading();
+async function realizarBusqueda() {
+    const term = searchInput.value.trim().toUpperCase();
+
+    if (!term) {
+        showNotification('Búsqueda vacía',
+            '<p>Por favor ingresa un término de búsqueda.</p>', 'warning');
+        searchInput.focus();
+        return;
+    }
+    if (term.length < 2) {
+        showNotification('Búsqueda muy corta',
+            '<p>Ingresa al menos 2 caracteres.</p>', 'warning');
+        return;
+    }
+
+    searchBtn.disabled = true;
+    const originalHTML = searchBtn.innerHTML;
+    searchBtn.innerHTML = '<span class="btn-spinner"></span> <span>Buscando...</span>';
+
+    mostrarSkeleton();
 
     try {
         const formData = new FormData();
-        formData.append('search_term', searchTerm);
+        formData.append('search_term', term);
+
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch('/api/cases/search-client-status', {
             method: 'POST',
-            body: formData
+            body: formData,
+            signal: controller.signal
         });
+        clearTimeout(tId);
 
-        hideLoading();
+        const container = document.getElementById('resultsContainer');
 
         if (!response.ok) {
-            const error = await response.json();
-            showNotification('Sin resultados', `<p>${error.detail || 'No se encontraron clientes'}</p>`, 'warning');
-            document.getElementById('resultsContainer').innerHTML = '';
+            let errorMsg = 'No se encontraron clientes.';
+            try { const e = await response.json(); if (e.detail) errorMsg = e.detail; } catch (_) {}
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-search"></i><h5>Sin resultados</h5><p>${escapeHTML(errorMsg)}</p></div>`;
             return;
         }
 
         const clients = await response.json();
-        const container = document.getElementById('resultsContainer');
 
-        if (clients.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="bi bi-inbox"></i><h5>No se encontraron clientes con expedientes</h5><p>Intenta con otro término de búsqueda.</p></div>';
+        if (!Array.isArray(clients) || clients.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-inbox"></i><h5>No se encontraron clientes con expedientes</h5><p>Intenta con otro término de búsqueda.</p></div>`;
             return;
         }
 
-        container.innerHTML = '<h5 class="mb-3 fw-bold"><i class="bi bi-people me-2" style="color:#2a6df4;"></i>Clientes con expedientes</h5>';
+        renderizarClientes(clients);
+    } catch (error) {
+        let msg = 'Error de conexión. Verifica tu red.';
+        if (error.name === 'AbortError') msg = 'La búsqueda tardó demasiado.';
+        document.getElementById('resultsContainer').innerHTML =
+            `<div class="empty-state"><i class="bi bi-wifi-off" style="color:var(--danger);"></i><h5>Error de conexión</h5><p>${escapeHTML(msg)}</p></div>`;
+    } finally {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = originalHTML;
+    }
+}
 
-        clients.forEach(client => {
-            const card = document.createElement('div');
-            card.className = 'client-card d-flex align-items-center justify-content-between flex-wrap gap-2';
-            card.innerHTML = `
+function renderizarClientes(clients) {
+    const container = document.getElementById('resultsContainer');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-people" style="color:var(--accent-primary);"></i>
+        Clientes con expedientes <span class="badge-custom badge-interno ms-2">${clients.length}</span>
+    </h5>`;
+
+    clients.forEach((client, idx) => {
+        const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+        const curp = escapeHTML(client.curp || '—');
+        const folio = escapeHTML(client.folio_registro || '—');
+        const exp = escapeHTML(client.expediente_interno || '—');
+        const clientId = safeNumber(client.id);
+
+        html += `
+            <div class="client-card d-flex align-items-center justify-content-between flex-wrap gap-2"
+                 style="animation-delay:${idx * 0.05}s;">
                 <div>
-                    <div class="client-name">${client.nombre_completo}</div>
-                    <div class="client-curp">${client.curp}</div>
+                    <div class="client-name">${nombre}</div>
+                    <div class="client-curp">CURP: ${curp}</div>
                 </div>
                 <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <span class="badge-custom badge-folio"><i class="bi bi-tag me-1"></i>${client.folio_registro}</span>
-                    <span class="badge-custom badge-interno"><i class="bi bi-folder me-1"></i>Exp. ${client.expediente_interno}</span>
-                    <button class="btn-view-cases view-cases" data-id="${client.id}"><i class="bi bi-eye me-1"></i>Ver expedientes</button>
+                    <span class="badge-custom badge-folio"><i class="bi bi-tag"></i>${folio}</span>
+                    <span class="badge-custom badge-interno"><i class="bi bi-folder"></i>Exp. ${exp}</span>
+                    <button class="btn-view-cases view-cases" data-id="${clientId}" type="button">
+                        <i class="bi bi-eye"></i>Ver expedientes
+                    </button>
                 </div>
-            `;
-            container.appendChild(card);
-        });
+            </div>`;
+    });
 
-        document.querySelectorAll('.view-cases').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const clientId = parseInt(this.dataset.id);
-                const clientData = clients.find(c => c.id === clientId);
-                if (clientData) showCaseSelection(clientData);
-            });
-        });
+    container.innerHTML = html;
 
-    } catch (error) {
-        hideLoading();
-        showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
-    }
-});
+    container.querySelectorAll('.view-cases').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const clientId = parseInt(this.dataset.id, 10);
+            const clientData = clients.find(c => c.id === clientId);
+            if (clientData) showCaseSelection(clientData);
+        });
+    });
+}
 
 function showCaseSelection(client) {
     const container = document.getElementById('resultsContainer');
-    let html = `<h5 class="mb-3 fw-bold"><i class="bi bi-folder me-2" style="color:#2a6df4;"></i>Expedientes de ${client.nombre_completo}</h5>`;
+    const nombre = escapeHTML(client.nombre_completo || 'Sin nombre');
+    let html = `<h5 class="mt-4 mb-4 fw-bold d-flex align-items-center gap-2" style="color:var(--text-primary);">
+        <i class="bi bi-folder" style="color:var(--accent-primary);"></i>
+        Expedientes de ${nombre}
+    </h5>`;
 
-    client.casos.forEach(caso => {
-        const statusClass = `status-${caso.status}`;
-        const statusLabel = caso.status.replace(/_/g, ' ').toUpperCase();
-        html += `
-            <div class="case-card d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <div>
-                    <div class="case-exp"><i class="bi bi-file-earmark-text me-1"></i>${caso.expediente_tribunal}</div>
-                    <div class="case-tribunal">${caso.tribunal || 'N/A'}</div>
-                </div>
-                <div class="d-flex gap-2 align-items-center">
-                    <span class="status-badge-modern ${statusClass}">${statusLabel}</span>
-                    <span class="text-muted small">${caso.fecha_presentacion}</span>
-                    <button class="btn-update-status update-status" 
-                            data-id="${caso.id}" 
-                            data-tribunal="${caso.tribunal}" 
-                            data-exp="${caso.expediente_tribunal}" 
-                            data-status="${caso.status}">
-                        <i class="bi bi-pencil"></i> Actualizar
-                    </button>
-                </div>
-            </div>
-        `;
-    });
+    const casos = Array.isArray(client.casos) ? client.casos : [];
+    if (casos.length === 0) {
+        html += `<div class="empty-state"><i class="bi bi-folder2"></i><h5>Sin expedientes</h5><p>Este cliente no tiene expedientes registrados.</p></div>`;
+    } else {
+        casos.forEach((caso, idx) => {
+            const status = escapeHTML(caso.status || 'inactivo');
+            const statusClass = `status-${status}`;
+            const statusLabel = status.replace(/_/g, ' ').toUpperCase();
+            const expTribunal = escapeHTML(caso.expediente_tribunal || '—');
+            const tribunal = escapeHTML(caso.tribunal || 'N/A');
+            const fecha = escapeHTML(caso.fecha_presentacion || '—');
+            const casoId = safeNumber(caso.id);
 
-    html += `<button class="btn-back-search mt-2" onclick="newSearch()"><i class="bi bi-arrow-left me-1"></i> Nueva búsqueda</button>`;
+            html += `
+                <div class="case-card d-flex align-items-center justify-content-between flex-wrap gap-2"
+                     style="animation-delay:${idx * 0.05}s;">
+                    <div>
+                        <div class="case-exp">
+                            <i class="bi bi-file-earmark-text"></i>${expTribunal}
+                        </div>
+                        <div class="case-tribunal">${tribunal}</div>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <span class="status-badge-modern ${statusClass}">${statusLabel}</span>
+                        <span class="text-muted small">${fecha}</span>
+                        <button class="btn-update-status update-status"
+                                data-id="${casoId}"
+                                data-tribunal="${escapeHTML(caso.tribunal || '')}"
+                                data-exp="${expTribunal}"
+                                data-status="${status}"
+                                type="button">
+                            <i class="bi bi-pencil"></i> Actualizar
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    html += `<button class="btn-back-search mt-3" onclick="newSearch()" type="button">
+        <i class="bi bi-arrow-left"></i> Nueva búsqueda
+    </button>`;
+
     container.innerHTML = html;
 
-    document.querySelectorAll('.update-status').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const caseId = this.dataset.id;
-            const tribunal = this.dataset.tribunal;
-            const expTribunal = this.dataset.exp;
-            const currentStatus = this.dataset.status;
-            loadUpdateForm(caseId, tribunal, expTribunal, currentStatus);
+    container.querySelectorAll('.update-status').forEach(btn => {
+        btn.addEventListener('click', function () {
+            loadUpdateForm(
+                this.dataset.id,
+                this.dataset.tribunal,
+                this.dataset.exp,
+                this.dataset.status
+            );
         });
     });
 }
@@ -646,60 +1337,116 @@ function newSearch() {
     document.getElementById('resultsContainer').innerHTML = '';
     document.getElementById('searchInput').value = '';
     document.getElementById('searchInput').focus();
+    document.getElementById('updateFormContainer').style.display = 'none';
 }
 
+/* ============================================================
+   CARGAR FORMULARIO DE ACTUALIZACIÓN
+   ============================================================ */
 function loadUpdateForm(caseId, tribunal, expTribunal, currentStatus) {
-    document.getElementById('updateFormContainer').style.display = 'block';
+    const container = document.getElementById('updateFormContainer');
+    container.style.display = 'block';
+
     document.getElementById('courtCaseId').value = caseId;
-    document.getElementById('caseTitle').textContent = `Expediente: ${expTribunal}`;
-    document.getElementById('caseInfo').textContent = `Tribunal: ${tribunal || 'N/A'} | Estatus actual: ${currentStatus.toUpperCase().replace(/_/g, ' ')}`;
-    document.getElementById('newStatus').value = currentStatus;
-    document.getElementById('updateFormContainer').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('caseTitle').innerHTML =
+        `<i class="bi bi-folder2-open"></i> Expediente: ${escapeHTML(expTribunal)}`;
+
+    const statusLabel = (currentStatus || '—').replace(/_/g, ' ').toUpperCase();
+    document.getElementById('caseInfo').innerHTML =
+        `<strong>Tribunal:</strong> ${escapeHTML(tribunal || 'N/A')} · <strong>Estatus actual:</strong> ${escapeHTML(statusLabel)}`;
+
+    document.getElementById('newStatus').value = currentStatus || '';
+    document.getElementById('newStatus').classList.remove('is-invalid');
+
+    setTimeout(() => {
+        document.getElementById('newStatus').focus();
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
 }
 
+/* ============================================================
+   SUBMIT DE ACTUALIZACIÓN
+   ============================================================ */
 document.getElementById('updateForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const caseId = document.getElementById('courtCaseId').value;
     const newStatus = document.getElementById('newStatus').value;
+    const selectEl = document.getElementById('newStatus');
 
     if (!newStatus) {
-        showNotification('Estatus no seleccionado', '<p>Por favor selecciona un estatus.</p>', 'warning');
+        selectEl.classList.add('is-invalid');
+        showNotification('Estatus no seleccionado',
+            '<p>Por favor selecciona un estatus de la lista.</p>', 'warning');
+        selectEl.focus();
         return;
     }
+    selectEl.classList.remove('is-invalid');
+
+    const statusLabel = newStatus.replace(/_/g, ' ').toUpperCase();
+    const statusIcon = STATUS_ICONS[newStatus] || 'bi-circle';
 
     showConfirm(
         'Actualizar estatus',
-        `<p>¿Estás seguro de cambiar el estatus a <strong>${newStatus.toUpperCase().replace(/_/g, ' ')}</strong>?</p>`,
-        async function() {
-            showLoading();
+        `<p class="mb-3">¿Confirmas el cambio de estatus?</p>
+         <div class="alert alert-warning d-flex align-items-center gap-2 mb-0">
+            <i class="bi ${statusIcon}" style="font-size:1.5rem;"></i>
+            <div>
+                <small class="text-muted d-block">Nuevo estatus</small>
+                <strong>${escapeHTML(statusLabel)}</strong>
+            </div>
+         </div>`,
+        async function () {
+            const submitBtn = document.getElementById('submitBtn');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="btn-spinner"></span> <span>Actualizando...</span>';
+
+            showLoading('Actualizando estatus...', 'Guardando cambios, por favor espera.');
 
             const formData = new FormData();
             formData.append('new_status', newStatus);
 
             try {
+                const controller = new AbortController();
+                const tId = setTimeout(() => controller.abort(), 30000);
+
                 const response = await fetch(`/api/cases/status/${caseId}`, {
                     method: 'PUT',
-                    body: formData
+                    body: formData,
+                    signal: controller.signal
                 });
+                clearTimeout(tId);
 
                 hideLoading();
 
                 if (!response.ok) {
-                    const error = await response.json();
-                    showNotification('Error', `<p>${error.detail || 'Error al actualizar'}</p>`, 'error');
+                    let errorDetail = 'Error al actualizar el estatus.';
+                    try { const e = await response.json(); if (e.detail) errorDetail = e.detail; } catch (_) {}
+                    showNotification('Error', `<p>${escapeHTML(errorDetail)}</p>`, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalHTML;
                     return;
                 }
 
                 const result = await response.json();
 
                 showNotification(
-                    'Estatus Actualizado',
-                    `
-                    <div class="text-center mb-3"><span style="font-size: 48px;">✅</span></div>
-                    <p><strong>Expediente:</strong> ${result.expediente}</p>
-                    <p><strong>Nuevo estatus:</strong> ${result.nuevo_estatus.toUpperCase().replace(/_/g, ' ')}</p>
-                    `,
+                    '¡Estatus Actualizado!',
+                    `<div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between border-bottom pb-2">
+                            <span class="text-muted">Expediente:</span>
+                            <strong>${escapeHTML(result.expediente || '—')}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Nuevo estatus:</span>
+                            <strong>${escapeHTML((result.nuevo_estatus || newStatus).toUpperCase().replace(/_/g, ' '))}</strong>
+                        </div>
+                        <p class="text-muted small mb-0 mt-2">
+                            <i class="bi bi-check-circle me-1"></i>
+                            El estatus ha sido actualizado correctamente.
+                        </p>
+                    </div>`,
                     'success'
                 );
 
@@ -709,10 +1456,23 @@ document.getElementById('updateForm').addEventListener('submit', async (e) => {
 
             } catch (error) {
                 hideLoading();
-                showNotification('Error de conexión', `<p>${error.message}</p>`, 'error');
+                let msg = error.message || 'Error desconocido';
+                if (error.name === 'AbortError') msg = 'La operación tardó demasiado. Verifica tu conexión.';
+                showNotification('Error', `<p>${escapeHTML(msg)}</p>`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
             }
         }
     );
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    searchBtn.disabled = false;
+    setTimeout(() => searchInput?.focus(), 400);
 });
 </script>
 </body>

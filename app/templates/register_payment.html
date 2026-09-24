@@ -1256,7 +1256,7 @@
                         <br><small class="text-muted" style="margin-left:2.2rem;">Selecciona un archivo PDF o imagen</small>
                     </button>
                     <button type="button" class="btn btn-outline-success btn-lg" id="chooseQRBtn"
-                            style="border-radius:16px; padding:20px; text-align:left;">
+                            style="border-radius:16px; padding:20px; text-align:left; display:none;">
                         <i class="bi bi-phone me-2" style="font-size:1.5rem; vertical-align:middle;"></i>
                         <strong style="font-size:1rem;">Desde mi celular (QR)</strong>
                         <br><small class="text-muted" style="margin-left:2.2rem;">Escanea con la cámara de tu teléfono</small>
@@ -1340,6 +1340,16 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 'use strict';
+
+/* ============================================================
+   DETECCIÓN DE DISPOSITIVO MÓVIL
+   ============================================================ */
+const isMobileDevice = (() => {
+    const ua = navigator.userAgent || '';
+    const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const isSmallScreen = window.matchMedia('(max-width: 768px)').matches;
+    return isMobileUA && isSmallScreen;
+})();
 
 /* ============================================================
    ESTADO GLOBAL
@@ -1595,6 +1605,12 @@ document.getElementById('payment_method').addEventListener('change', function ()
    SUBIDA DE COMPROBANTE
    ============================================================ */
 document.getElementById('uploadReceiptBtn').addEventListener('click', () => {
+    // Si es móvil, abrir directo el explorador de archivos
+    if (isMobileDevice) {
+        document.getElementById('receipt_file').click();
+        return;
+    }
+    // Desktop/tablet: mostrar modal con las 2 opciones
     bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadOptionsModal')).show();
 });
 
@@ -1610,7 +1626,11 @@ document.getElementById('chooseQRBtn').addEventListener('click', () => {
     setTimeout(abrirQRPago, 300);
 });
 
-document.getElementById('qrMobileBtn')?.addEventListener('click', abrirQRPago);
+// Mostrar opción QR SOLO si NO es móvil
+if (!isMobileDevice) {
+    const chooseQRBtn = document.getElementById('chooseQRBtn');
+    if (chooseQRBtn) chooseQRBtn.style.display = 'block';
+}
 
 /* ============================================================
    ARCHIVO LOCAL - VALIDACIÓN Y PREVIEW
