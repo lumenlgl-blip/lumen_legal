@@ -47,19 +47,25 @@ Base.metadata.create_all(bind=engine)
 
 
 # ============================================================
-# STARTUP: limpieza de temporales
+# STARTUP: limpieza + auto-backup
 # ============================================================
 import asyncio
 
 @app.on_event("startup")
-async def startup_cleanup():
-    """Limpia al arrancar y luego loopea cada 6 horas en background."""
+async def startup_tasks():
+    """
+    Arranca las tareas automáticas del sistema:
+      1. Limpieza de temporales locales (inmediata + cada 6h)
+      2. Auto-backup (cada N días, con rotación)
+    """
     from app.cleanup import cleanup_all
+    from app.config import settings
 
-    # Limpieza inmediata al arrancar
-    cleanup_all()
+    # ------------------------------------------------------------
+    # 1. LIMPIEZA DE TEMPORALES
+    # ------------------------------------------------------------
+    cleanup_all()  # limpieza inmediata al arrancar
 
-    # Tarea en background: limpia cada 6 horas sin bloquear la app
     async def periodic_cleanup():
         while True:
             await asyncio.sleep(6 * 3600)  # 6 horas
@@ -71,13 +77,90 @@ async def startup_cleanup():
     asyncio.create_task(periodic_cleanup())
     print("🧹 Limpieza automática activada (cada 6 horas)")
 
+    # ------------------------------------------------------------
+    # 2. AUTO-BACKUP
+    # ------------------------------------------------------------
+    if settings.BACKUP_AUTO_ENABLED:
+        from app.database import SessionLocal
+        from app.models import core
+        from app import backup_service as bs
+
+        async def periodic_backup():
+            # Esperar 1 min al arranque para no bloquear startup
+            await asyncio.sleep(60)
+
+            while True:
+                try:
+                    db = SessionLocal()
+                    try:
+                        admin = (
+                            db.query(core.User)
+                            .filter(core.User.role == "admin")
+                            .order_by(core.User.id.asc())
+                            .first()
+                        )
+                        admin_id = admin.id if admin else None
+
+                        print("🔄 Iniciando respaldo automático…")
+                        result = bs.generar_backup(
+                            db=db,
+                            user_id=admin_id,
+                            notes="📅 Respaldo automático",
+                        )
+
+                        b = core.Backup(
+                            filename=result["filename"],
+                            stored_name=result["stored_name"],
+                            size=result["size"],
+                            sha256=result["sha256"],
+                            num_records=result["num_records"],
+                            num_files=result["num_files"],
+                            created_by=admin_id,
+                            notes="📅 Respaldo automático",
+                        )
+                        db.add(b)
+                        db.commit()
+                        print(
+                            f"✅ Backup automático: {b.filename} "
+                            f"({b.num_records} registros, {b.num_files} archivos)"
+                        )
+
+                        # Rotación: mantener solo los últimos N automáticos
+                        keep = settings.BACKUP_AUTO_KEEP
+                        if keep > 0:
+                            autos = (
+                                db.query(core.Backup)
+                                .filter(core.Backup.notes == "📅 Respaldo automático")
+                                .order_by(core.Backup.created_at.desc())
+                                .all()
+                            )
+                            for old in autos[keep:]:
+                                print(f"🗑️  Eliminando backup viejo: {old.filename}")
+                                bs.borrar_backup(db, old.id)
+
+                    finally:
+                        db.close()
+
+                except Exception as e:
+                    print(f"⚠️ Error en backup automático: {e}")
+
+                # Esperar N días hasta el siguiente
+                await asyncio.sleep(settings.BACKUP_AUTO_EVERY_DAYS * 24 * 3600)
+
+        asyncio.create_task(periodic_backup())
+        print(
+            f"📅 Auto-backup activado cada {settings.BACKUP_AUTO_EVERY_DAYS} días "
+            f"(retiene los últimos {settings.BACKUP_AUTO_KEEP})"
+        )
+    else:
+        print("⏭️  Auto-backup desactivado (BACKUP_AUTO_ENABLED=false)")
+
 
 # ============================================================
 # MIDDLEWARE DE AUTENTICACIÓN
 # ============================================================
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        # Rutas públicas (no requieren autenticación)
         public_paths = [
             "/auth/login",
             "/auth/logout",
@@ -86,31 +169,26 @@ class AuthMiddleware(BaseHTTPMiddleware):
             "/auth/change-password-login",
             "/setup-admin",
             "/static",
-            # ❌ "/uploads" ya no existe
             "/docs",
             "/openapi.json",
             "/redoc",
             "/loading",
             "/ping",
-            # Endpoints móviles (subida vía QR sin login)
             "/api/clients/upload-mobile",
             "/api/clients/check-upload",
             "/api/clients/upload-mobile-page",
             "/api/clients/check-qr-status",
         ]
 
-        # Verificar si la ruta es pública
         for path in public_paths:
             if request.url.path.startswith(path):
                 return await call_next(request)
 
-        # Verificar autenticación
         token = request.cookies.get("access_token")
         if not token:
             return RedirectResponse("/auth/login", status_code=302)
 
         return await call_next(request)
-
 
 app.add_middleware(AuthMiddleware)
 

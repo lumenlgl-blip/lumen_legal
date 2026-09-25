@@ -1,7 +1,11 @@
-from sqlalchemy import Column, Integer, String, Text, Date, Numeric, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from app.database import Base
 from datetime import datetime
+
+from sqlalchemy import (
+    Column, Integer, String, Text, Date, Numeric,
+    ForeignKey, Boolean, DateTime, BigInteger,
+)
 
 # --- Modelo de la firma ---
 class Firm(Base):
@@ -175,3 +179,17 @@ class ActivityLog(Base):
     description = Column(Text, nullable=True)
     ip_address = Column(String(50), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+    
+    # --- Respaldos del sistema ---
+class Backup(Base):
+    __tablename__ = "backups"
+    id = Column(Integer, primary_key=True)
+    filename = Column(String(255), nullable=False)
+    stored_name = Column(String(255), nullable=False)
+    size = Column(BigInteger, default=0)
+    sha256 = Column(String(64), nullable=True)
+    num_records = Column(Integer, default=0)
+    num_files = Column(Integer, default=0)
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    notes = Column(Text, nullable=True)

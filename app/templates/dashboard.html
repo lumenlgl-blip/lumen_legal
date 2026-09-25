@@ -8,336 +8,957 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
+<style>
+    /* ============================================================
+       VARIABLES DE TEMA
+       ============================================================ */
+    :root {
+        --bg-primary: #f2f5fb;
+        --bg-secondary: #ffffff;
+        --bg-tertiary: #f8fafc;
+        --surface-glass: rgba(255,255,255,0.8);
+        --surface-glass-strong: rgba(255,255,255,0.92);
+        --border-subtle: rgba(255,255,255,0.5);
+        --border-soft: #e9edf4;
+        --border-strong: #dbe4ef;
+        --text-primary: #0b1e33;
+        --text-secondary: #4a5b6e;
+        --text-muted: #6b7b8f;
+        --text-light: #8a9bb0;
+        --accent-primary: #2a6df4;
+        --accent-primary-hover: #1a5ad4;
+        --accent-light: #7aa9ff;
+        --accent-dark: #0b1e33;
+        --accent-dark-hover: #1a3b6b;
+        --success: #1a8b5c;
+        --success-hover: #0e6b46;
+        --success-soft: #d1fae5;
+        --warning: #f5b342;
+        --warning-hover: #e6a030;
+        --warning-soft: #fdf3e0;
+        --danger: #dc3545;
+        --danger-hover: #b02a37;
+        --danger-soft: #fee9e7;
+        --info: #1f6f9e;
+        --info-soft: #e3effa;
+        --purple: #6f42c1;
+        --purple-soft: #ede7fe;
+        --teal: #0e7a7a;
+        --teal-soft: #d5f0f0;
+        --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+        --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+        --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+        --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --radius-lg: 24px;
+        --radius-xl: 28px;
+        --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-        body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
-        }
+    [data-theme="dark"] {
+        --bg-primary: #0a1523;
+        --bg-secondary: #111d2e;
+        --bg-tertiary: #16243a;
+        --surface-glass: rgba(22,36,58,0.75);
+        --surface-glass-strong: rgba(22,36,58,0.92);
+        --border-subtle: rgba(255,255,255,0.08);
+        --border-soft: #223147;
+        --border-strong: #2d3f5a;
+        --text-primary: #e8eef7;
+        --text-secondary: #b8c5d6;
+        --text-muted: #8a9bb0;
+        --text-light: #6b7b8f;
+        --accent-primary: #5b93ff;
+        --accent-primary-hover: #7aa9ff;
+        --accent-light: #a8c5ff;
+        --accent-dark: #5b93ff;
+        --accent-dark-hover: #7aa9ff;
+        --success: #34d399;
+        --success-hover: #10b981;
+        --success-soft: rgba(52,211,153,0.15);
+        --warning: #fbbf24;
+        --warning-hover: #f59e0b;
+        --warning-soft: rgba(251,191,36,0.15);
+        --danger: #f87171;
+        --danger-hover: #ef4444;
+        --danger-soft: rgba(248,113,113,0.15);
+        --info: #60a5fa;
+        --info-soft: rgba(96,165,250,0.15);
+        --purple: #a78bfa;
+        --purple-soft: rgba(167,139,250,0.15);
+        --teal: #2dd4bf;
+        --teal-soft: rgba(45,212,191,0.15);
+        --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+        --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+        --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+        --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+    }
 
-        /* Botón menú */
-        .btn-menu-modern {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px;
-            padding: 10px 22px;
-            font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-            color: #0b1e33;
-        }
+    * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    html { scroll-behavior: smooth; }
 
-        /* Header */
+    body {
+        background: var(--bg-primary);
+        background-image:
+            radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+        padding: 20px 0 40px 0;
+        min-height: 100vh;
+        color: var(--text-primary);
+        transition: background-color var(--transition-normal), color var(--transition-normal);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 1050;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--surface-glass-strong);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+    }
+    .theme-toggle:hover {
+        transform: translateY(-2px) rotate(15deg);
+        box-shadow: var(--shadow-lg);
+        color: var(--accent-primary);
+    }
+
+    /* BOTÓN MENÚ */
+    .btn-menu {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        z-index: 1050;
+        background: var(--surface-glass-strong);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: 60px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-normal);
+    }
+    .btn-menu:hover {
+        background: var(--bg-secondary);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+        color: var(--accent-primary);
+    }
+
+    /* LAYOUT */
+    .container { max-width: 1200px; }
+
+    .page-header {
+        background: var(--surface-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: var(--radius-xl);
+        padding: 28px 32px;
+        margin-bottom: 28px;
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-lg);
+        text-align: center;
+        animation: slideDown 0.5s ease-out;
+    }
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .page-header h1 {
+        font-weight: 800;
+        font-size: 1.85rem;
+        color: var(--text-primary);
+        letter-spacing: -0.025em;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+    }
+    .page-header h1 i {
+        font-size: 2rem;
+        background: linear-gradient(135deg, var(--accent-primary), var(--success));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .page-header .subtitle {
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.95rem;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .page-header .subtitle span {
+        background: var(--info-soft);
+        padding: 4px 14px;
+        border-radius: 40px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--accent-primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+    .stat-card-modern {
+        background: var(--surface-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 20px 16px 18px;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        transition: all var(--transition-normal);
+        cursor: pointer;
+        animation: fadeInUp 0.4s ease-out backwards;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .stat-card-modern:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent-primary);
+    }
+    .stat-card-modern .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin: 0 auto 10px;
+        transition: transform var(--transition-bounce);
+    }
+    .stat-card-modern:hover .stat-icon {
+        transform: scale(1.1) rotate(-5deg);
+    }
+    .stat-card-modern .stat-value {
+        font-weight: 800;
+        font-size: 1.6rem;
+        color: var(--text-primary);
+        line-height: 1.2;
+        font-variant-numeric: tabular-nums;
+    }
+    .stat-card-modern .stat-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 4px;
+    }
+
+    .icon-blue { background: var(--info-soft); color: var(--accent-primary); }
+    .icon-green { background: var(--success-soft); color: var(--success); }
+    .icon-red { background: var(--danger-soft); color: var(--danger); }
+    .icon-orange { background: var(--warning-soft); color: #9b5e00; }
+    [data-theme="dark"] .icon-orange { color: var(--warning); }
+    .icon-purple { background: var(--purple-soft); color: var(--purple); }
+    .icon-teal { background: var(--teal-soft); color: var(--teal); }
+
+    /* CHARTS */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+    .chart-card {
+        background: var(--surface-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 22px 24px;
+        box-shadow: var(--shadow-sm);
+        animation: fadeInUp 0.4s ease-out 0.1s backwards;
+    }
+    .chart-card .chart-title {
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .chart-card .chart-title i { color: var(--accent-primary); }
+
+    /* EVENTS */
+    .events-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 4px;
+    }
+    .event-card-modern {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        border: 1px solid var(--border-soft);
+        border-left: 4px solid var(--accent-primary);
+        transition: all var(--transition-normal);
+        animation: fadeInUp 0.3s ease-out backwards;
+    }
+    .event-card-modern:hover {
+        background: var(--bg-tertiary);
+        transform: translateX(4px);
+        box-shadow: var(--shadow-md);
+    }
+    .event-card-modern.tomorrow { border-left-color: var(--warning); }
+    .event-card-modern .event-title {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 0.92rem;
+    }
+    .event-card-modern .event-meta {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+        align-items: center;
+    }
+    .badge-type {
+        font-weight: 700;
+        font-size: 0.6rem;
+        padding: 3px 10px;
+        border-radius: 40px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: var(--bg-tertiary);
+        color: var(--text-secondary);
+    }
+    .badge-type.audiencia { background: var(--danger-soft); color: var(--danger); }
+    .badge-type.plazos { background: var(--warning-soft); color: #9b5e00; }
+    [data-theme="dark"] .badge-type.plazos { color: var(--warning); }
+    .badge-type.junta { background: var(--info-soft); color: var(--info); }
+    .badge-type.otro { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+    .event-empty {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--text-muted);
+        font-size: 0.88rem;
+    }
+    .event-empty i {
+        font-size: 2.2rem;
+        color: var(--text-light);
+        display: block;
+        margin-bottom: 8px;
+        opacity: 0.5;
+    }
+
+    /* MODALES */
+    .modal-modern .modal-content {
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        background: var(--surface-glass-strong);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        color: var(--text-primary);
+    }
+    .modal-modern .modal-header {
+        border-bottom: none;
+        padding: 22px 28px 12px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .modal-modern .modal-header .modal-title {
+        font-weight: 800;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .modal-modern .modal-body { padding: 18px 28px 24px; }
+    .modal-modern .modal-footer {
+        border-top: 1px solid var(--border-soft);
+        padding: 16px 28px 22px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .modal-modern .modal-footer .btn {
+        border-radius: 60px;
+        font-weight: 600;
+        padding: 10px 24px;
+        min-height: 44px;
+    }
+
+    .modal.fade .modal-dialog {
+        transform: scale(0.92) translateY(20px);
+        opacity: 0;
+        transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+    }
+    .modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+    .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+    [data-theme="dark"] .btn-close-white { filter: none; }
+
+    /* SPINNER */
+    .spinner-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(11,30,51,0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    }
+    .spinner-overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .spinner-box {
+        background: var(--bg-secondary);
+        padding: 40px 52px;
+        border-radius: var(--radius-xl);
+        text-align: center;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--border-subtle);
+        animation: popIn 0.4s var(--transition-bounce);
+        max-width: 90vw;
+    }
+    @keyframes popIn {
+        from { transform: scale(0); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .spinner-box .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        color: var(--accent-primary);
+        border-width: 3px;
+    }
+    .spinner-box h5 {
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-top: 16px;
+    }
+    .spinner-box p {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
+    /* TABLAS MODAL */
+    .dm-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        font-size: 0.85rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+    .dm-table thead th {
+        background: var(--bg-tertiary);
+        padding: 12px 14px;
+        text-align: left;
+        font-weight: 800;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        border-bottom: 2px solid var(--border-soft);
+        white-space: nowrap;
+    }
+    .dm-table tbody td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border-soft);
+        color: var(--text-primary);
+        vertical-align: middle;
+    }
+    .dm-table tbody tr:last-child td { border-bottom: none; }
+    .dm-table tbody tr { transition: background-color var(--transition-fast); }
+    .dm-table tbody tr:hover { background: var(--bg-tertiary); }
+
+    .dm-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.68rem;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 40px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+    }
+    .dm-badge.blue { background: var(--info-soft); color: var(--accent-primary); }
+    .dm-badge.green { background: var(--success-soft); color: var(--success); }
+    .dm-badge.red { background: var(--danger-soft); color: var(--danger); }
+    .dm-badge.orange { background: var(--warning-soft); color: #b7791f; }
+    [data-theme="dark"] .dm-badge.orange { color: var(--warning); }
+    .dm-badge.gray { background: var(--bg-tertiary); color: var(--text-muted); }
+
+    .dm-money {
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+    .dm-money.positive { color: var(--success); }
+    .dm-money.negative { color: var(--danger); }
+    .dm-money.neutral { color: var(--text-primary); }
+
+    .dm-actions {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .dm-actions a, .dm-btn-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 40px;
+        text-decoration: none;
+        background: var(--info-soft);
+        color: var(--accent-primary);
+        transition: all var(--transition-fast);
+        border: none;
+        cursor: pointer;
+    }
+    .dm-actions a:hover, .dm-btn-link:hover {
+        background: var(--accent-primary);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .dm-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .dm-summary-item {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: 16px 20px;
+        border-left: 4px solid var(--accent-primary);
+        box-shadow: var(--shadow-sm);
+        transition: transform var(--transition-normal);
+    }
+    .dm-summary-item:hover { transform: translateY(-2px); }
+    .dm-summary-item .lbl {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .dm-summary-item .val {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        font-variant-numeric: tabular-nums;
+        margin-top: 4px;
+    }
+    .dm-summary-item.green { border-left-color: var(--success); }
+    .dm-summary-item.red { border-left-color: var(--danger); }
+    .dm-summary-item.orange { border-left-color: var(--warning); }
+
+    .dm-empty {
+        text-align: center;
+        padding: 50px 20px;
+        color: var(--text-muted);
+    }
+    .dm-empty i {
+        font-size: 3rem;
+        opacity: 0.4;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    /* DETALLE */
+    .det-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 22px;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        margin-bottom: 22px;
+        box-shadow: var(--shadow-sm);
+        flex-wrap: wrap;
+    }
+    .det-header-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.9rem;
+        flex-shrink: 0;
+    }
+    .det-header-info { flex: 1; min-width: 200px; }
+    .det-header-info h3 {
+        font-weight: 800;
+        font-size: 1.25rem;
+        margin: 0 0 6px;
+        color: var(--text-primary);
+    }
+    .det-header-info p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .det-section-title {
+        font-weight: 800;
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        margin: 24px 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--border-soft);
+    }
+    .det-section-title i { color: var(--accent-primary); }
+
+    .det-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+    }
+    .det-box {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        border-left: 3px solid var(--accent-primary);
+        box-shadow: var(--shadow-sm);
+    }
+    .det-box .det-lbl {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 800;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .det-box .det-val2 {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        word-break: break-word;
+    }
+    .det-box .det-val2 a { color: var(--accent-primary); text-decoration: none; }
+    .det-box .det-val2 a:hover { text-decoration: underline; }
+
+    .det-docs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 12px;
+    }
+    .det-doc {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid var(--border-soft);
+        transition: all var(--transition-normal);
+    }
+    .det-doc:hover {
+        border-color: var(--accent-primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    .det-doc > i {
+        font-size: 1.8rem;
+        color: var(--danger);
+        flex-shrink: 0;
+    }
+    .det-doc-info { flex: 1; min-width: 0; }
+    .det-doc-type { font-weight: 800; font-size: 0.88rem; color: var(--text-primary); }
+    .det-doc-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+
+    .det-contracts { display: flex; flex-direction: column; gap: 14px; }
+    .det-contract {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: 18px 20px;
+        border: 1px solid var(--border-soft);
+        border-left: 4px solid var(--accent-primary);
+        box-shadow: var(--shadow-sm);
+    }
+    .det-contract-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+    }
+    .det-contract-title { font-weight: 800; font-size: 0.95rem; color: var(--text-primary); }
+    .det-contract-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    .det-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        font-size: 0.85rem;
+        border-bottom: 1px dashed var(--border-soft);
+    }
+    .det-row:last-child { border-bottom: none; }
+    .det-row .det-label {
+        flex-shrink: 0;
+        font-weight: 800;
+        color: var(--text-muted);
+        min-width: 110px;
+        font-size: 0.78rem;
+    }
+    .det-section-sm {
+        font-weight: 800;
+        font-size: 0.8rem;
+        color: var(--accent-primary);
+        margin: 14px 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .det-acts { display: flex; flex-direction: column; gap: 10px; }
+    .det-act {
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        padding: 16px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        border-left: 4px solid var(--accent-primary);
+        border-top: 1px solid var(--border-soft);
+        border-right: 1px solid var(--border-soft);
+        border-bottom: 1px solid var(--border-soft);
+        flex-wrap: wrap;
+        transition: all var(--transition-normal);
+    }
+    .det-act:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateX(3px);
+    }
+    .det-act-num {
+        width: 36px; height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+    .det-act-info { flex: 1; min-width: 180px; }
+    .det-act-info > div:first-child { font-size: 0.88rem; color: var(--text-primary); }
+    .det-act-desc { font-size: 0.82rem; color: var(--text-secondary); margin-top: 4px; }
+    .det-act-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+    .det-empty {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        background: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        border: 2px dashed var(--border-soft);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+        .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+        .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+        body { padding-top: 12px; }
+        .page-header { margin-left: 16px; margin-right: 16px; }
+        .charts-grid { grid-template-columns: 1fr; }
+        .events-grid { grid-template-columns: 1fr; }
+        .stats-grid { margin-left: 16px; margin-right: 16px; }
+    }
+
+    @media (max-width: 768px) {
+        .container { padding-left: 0; padding-right: 0; max-width: 100%; }
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
-            margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
-            text-align: center;
-        }
-        .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-        .page-header h1 i {
-            color: #2a6df4;
-            font-size: 2rem;
-        }
-        .page-header .subtitle {
-            color: #6b7b8f;
-            font-weight: 500;
-            font-size: 0.95rem;
-            margin-top: 4px;
-        }
-        .page-header .subtitle span {
-            background: #eef3fa;
-            padding: 2px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #2a4a7a;
-        }
-
-        /* Tarjetas de estadísticas */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .stat-card-modern {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
+            padding: 20px;
             border-radius: 20px;
-            padding: 18px 14px 16px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: all 0.2s;
+            margin: 0 12px 18px;
+            text-align: left;
         }
-        .stat-card-modern:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 28px -8px rgba(0,20,40,0.1);
-            border-color: #cbd9ed;
+        .page-header h1 { font-size: 1.4rem; justify-content: flex-start; }
+        .page-header h1 i { font-size: 1.6rem; }
+        .page-header .subtitle { justify-content: flex-start; font-size: 0.85rem; }
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 0 12px 20px;
         }
-        .stat-card-modern .stat-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
+        .stat-card-modern { padding: 16px 12px; border-radius: 16px; }
+        .stat-card-modern .stat-icon { width: 40px; height: 40px; font-size: 1.1rem; }
+        .stat-card-modern .stat-value { font-size: 1.35rem; }
+        .charts-grid, .events-grid { margin: 0 12px 20px; gap: 14px; }
+        .chart-card { padding: 18px; border-radius: 20px; }
+        .modal-modern .modal-header { padding: 18px 20px 10px; }
+        .modal-modern .modal-body { padding: 14px 20px 20px; }
+        .modal-modern .modal-footer { padding: 12px 20px 18px; }
+
+        /* Tablas responsivas */
+        .dm-table thead { display: none; }
+        .dm-table tbody tr {
+            display: block;
+            border-bottom: 8px solid var(--bg-primary);
+            padding: 8px 0;
+        }
+        .dm-table tbody td {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            margin: 0 auto 8px;
+            justify-content: space-between;
+            padding: 8px 16px;
+            border-bottom: 1px dashed var(--border-soft);
+            text-align: right;
         }
-        .stat-card-modern .stat-value {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #0b1e33;
-            line-height: 1.2;
-        }
-        .stat-card-modern .stat-label {
-            font-size: 0.7rem;
-            color: #6b7b8f;
-            font-weight: 500;
+        .dm-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 800;
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-top: 2px;
+            color: var(--text-muted);
+            text-align: left;
+            margin-right: 12px;
+            flex-shrink: 0;
         }
-        .stat-card-modern .stat-change {
-            font-size: 0.6rem;
-            font-weight: 600;
-            margin-top: 4px;
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 40px;
-        }
-        .stat-change.up { background: #e3f5ee; color: #1a8b5c; }
-        .stat-change.down { background: #fee9e7; color: #b12a2a; }
+        .dm-table tbody td:last-child { border-bottom: none; }
 
-        .icon-blue { background: #e2edff; color: #2a6df4; }
-        .icon-green { background: #e3f5e9; color: #1f8b4c; }
-        .icon-red { background: #fee9e7; color: #b12a2a; }
-        .icon-orange { background: #ffedd5; color: #9b5e00; }
-        .icon-purple { background: #ede7fe; color: #6f42c1; }
-        .icon-teal { background: #d5f0f0; color: #0e7a7a; }
+        .det-header { padding: 16px; }
+        .det-header-avatar { width: 48px; height: 48px; font-size: 1.5rem; }
+        .det-header-info h3 { font-size: 1.05rem; }
+        .det-grid { grid-template-columns: 1fr; }
+        .det-docs { grid-template-columns: 1fr; }
+        .det-act { flex-direction: column; align-items: flex-start; }
+        .det-act .dm-btn-link { width: 100%; justify-content: center; }
+    }
 
-        /* Gráficas */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-        .chart-card {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
-            padding: 20px 22px 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-        .chart-card .chart-title {
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: #0b1e33;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .chart-card .chart-title i {
-            color: #2a6df4;
-        }
-
-        /* Eventos */
-        .events-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 4px;
-        }
-        .event-card-modern {
-            background: white;
-            border-radius: 16px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border-left: 4px solid #2a6df4;
-            transition: all 0.15s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        .event-card-modern:hover {
-            background: #fafcff;
-            transform: translateX(3px);
-        }
-        .event-card-modern.tomorrow {
-            border-left-color: #f5b342;
-        }
-        .event-card-modern .event-title {
-            font-weight: 600;
-            color: #0b1e33;
+    @media (max-width: 480px) {
+        .btn-menu {
+            width: calc(100% - 32px);
+            margin: 0 16px 12px 16px;
+            justify-content: center;
+            border-radius: 14px;
+            padding: 10px 16px;
             font-size: 0.9rem;
         }
-        .event-card-modern .event-meta {
-            font-size: 0.7rem;
-            color: #6b7b8f;
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 2px;
+        .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+        .page-header { margin: 0 12px 14px; border-radius: 16px; padding: 16px; }
+        .page-header h1 { font-size: 1.2rem; }
+        .page-header h1 i { font-size: 1.3rem; }
+        .page-header .subtitle { font-size: 0.78rem; }
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 0 12px 14px;
         }
-        .event-card-modern .event-meta .badge-type {
-            font-weight: 600;
-            font-size: 0.55rem;
-            padding: 2px 10px;
-            border-radius: 40px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            background: #eef3fa;
-            color: #4a5b6e;
-        }
-        .badge-type.audiencia { background: #fee9e7; color: #b12a2a; }
-        .badge-type.plazos { background: #ffedd5; color: #9b5e00; }
-        .badge-type.junta { background: #e2edff; color: #1f4f9e; }
-        .badge-type.otro { background: #eef2f6; color: #3d4a5c; }
+        .stat-card-modern { padding: 14px 10px; border-radius: 14px; }
+        .stat-card-modern .stat-icon { width: 36px; height: 36px; font-size: 1rem; margin-bottom: 6px; }
+        .stat-card-modern .stat-value { font-size: 1.2rem; }
+        .stat-card-modern .stat-label { font-size: 0.62rem; }
+        .charts-grid, .events-grid { margin: 0 12px 14px; gap: 10px; }
+        .chart-card { padding: 14px; border-radius: 16px; }
+        .chart-card .chart-title { font-size: 0.85rem; margin-bottom: 12px; }
+        .event-card-modern { padding: 12px 14px; border-radius: 12px; }
+        .event-card-modern .event-meta { font-size: 0.68rem; }
+        .spinner-box { padding: 30px 28px; }
+    }
 
-        .event-empty {
-            text-align: center;
-            padding: 20px 10px;
-            color: #8a9bb0;
-            font-size: 0.85rem;
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-        .event-empty i {
-            font-size: 1.8rem;
-            color: #d0d8e3;
-            display: block;
-            margin-bottom: 6px;
-        }
+    }
 
-        /* Loading */
-        .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-        }
-        .spinner-box .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
-        }
-        .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
-        }
-        .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
-        }
+    :focus-visible {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+    }
 
-        /* Responsive */
-        @media (max-width: 992px) {
-            .charts-grid { grid-template-columns: 1fr; }
-            .events-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .stats-grid { grid-template-columns: repeat(3, 1fr); }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .stat-card-modern .stat-value { font-size: 1.2rem; }
-            .chart-card { padding: 14px 16px; }
-        }
-                /* ========== ADAPTACIÓN MÓVIL REFORZADA - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.stats-grid,.charts-grid,.events-grid{margin-left:16px; margin-right:16px;}
-            .charts-grid{grid-template-columns:1fr;}
-            .events-grid{grid-template-columns:1fr;}
-        }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; text-align:left;}
-            .page-header h1{justify-content:flex-start; font-size:1.3rem;}
-            .stats-grid{grid-template-columns:repeat(2, 1fr); gap:10px; margin:0 12px 16px 12px;}
-            .stat-card-modern{padding:14px 10px; border-radius:16px;}
-            .stat-card-modern .stat-icon{width:36px; height:36px; font-size:1rem; border-radius:10px;}
-            .stat-card-modern .stat-value{font-size:1.25rem;}
-            .charts-grid{margin:0 12px 16px 12px; gap:12px;}
-            .chart-card{padding:16px; border-radius:18px;}
-            .chart-card canvas{max-height:240px;}
-            .events-grid{margin:0 12px; gap:12px;}
-        }
-        @media (max-width: 480px){
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
-            .page-header h1{font-size:1.15rem;}
-            .page-header .subtitle{font-size:0.8rem;}
-            .stats-grid{margin:0 10px 12px 10px; grid-template-columns:repeat(2, 1fr); gap:8px;}
-            .stat-card-modern{padding:12px 8px; border-radius:14px;}
-            .stat-card-modern .stat-label{font-size:0.6rem;}
-            .stat-card-modern .stat-value{font-size:1.1rem;}
-            .charts-grid{margin:0 10px 12px 10px;}
-            .events-grid{margin:0 10px;}
-            .chart-card{padding:12px; border-radius:16px;}
-            .event-card-modern{padding:10px 12px; border-radius:12px;}
-            .event-card-modern .event-meta{font-size:0.65rem;}
-        }
-    </style>
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+        background: var(--border-soft);
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+</style>
 </head>
 <body>
 
 <!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
-    <i class="bi bi-arrow-left"></i> Menú Principal
-</a>
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
@@ -348,33 +969,33 @@
         </h1>
         <div class="subtitle">
             Resumen general del despacho
-            <span><i class="bi bi-clock me-1"></i> Actualizado en tiempo real</span>
+            <span><i class="bi bi-clock"></i> Actualizado en tiempo real</span>
         </div>
     </div>
 
     <!-- Estadísticas -->
     <div class="stats-grid" id="statsContainer">
-        <div class="stat-card-modern">
+        <div class="stat-card-modern" onclick="openClientsModal()" style="cursor:pointer;">
             <div class="stat-icon icon-blue"><i class="bi bi-people"></i></div>
             <div class="stat-value" id="statClients">0</div>
             <div class="stat-label">Clientes Registrados</div>
         </div>
-        <div class="stat-card-modern">
+        <div class="stat-card-modern" onclick="openActiveCasesModal()" style="cursor:pointer;">
             <div class="stat-icon icon-green"><i class="bi bi-folder-check"></i></div>
             <div class="stat-value" id="statActiveCases">0</div>
             <div class="stat-label">Juicios Activos</div>
         </div>
-        <div class="stat-card-modern">
+        <div class="stat-card-modern" onclick="openMonthlyIncomeModal()" style="cursor:pointer;">
             <div class="stat-icon icon-orange"><i class="bi bi-cash-stack"></i></div>
             <div class="stat-value" id="statMonthlyIncome">$0</div>
             <div class="stat-label">Ingresos del Mes</div>
         </div>
-        <div class="stat-card-modern">
+        <div class="stat-card-modern" onclick="openDebtModal()" style="cursor:pointer;">
             <div class="stat-icon icon-red"><i class="bi bi-exclamation-triangle"></i></div>
             <div class="stat-value" id="statDebt">$0</div>
             <div class="stat-label">Deuda Pendiente</div>
         </div>
-        <div class="stat-card-modern">
+        <div class="stat-card-modern" onclick="openPendingContractsModal()" style="cursor:pointer;">
             <div class="stat-icon icon-purple"><i class="bi bi-file-earmark"></i></div>
             <div class="stat-value" id="statPendingContracts">0</div>
             <div class="stat-label">Contratos Pendientes</div>
@@ -415,6 +1036,74 @@
         </div>
     </div>
 
+    <!-- ================================================== -->
+<!-- MODAL GENÉRICO: LISTA (reutilizado por las 5 tarjetas) -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="dataModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-table" id="dataModalIcon"></i>
+                    <span id="dataModalTitle">Detalle</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="dataModalBody" style="background:var(--bg-primary);"></div>
+            <div class="modal-footer">
+                <span class="me-auto small text-muted" id="dataModalMeta"></span>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL DETALLE (cliente o expediente)               -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header" id="detailModalHeader" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-info-circle" id="detailModalIcon"></i>
+                    <span id="detailModalTitle">Detalle</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailModalBody" style="background:var(--bg-primary);"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL VISOR PDF                                    -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="pdfViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#7a1a1a;">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-pdf"></i> <span id="pdfViewerTitle">Documento</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0" style="background:#333;">
+                <iframe id="pdfViewerFrame" style="width:100%; height:75vh; border:none;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <a id="pdfViewerDownload" href="#" download class="btn btn-primary">
+                    <i class="bi bi-download"></i> Descargar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>
 
 <!-- ================================================== -->
@@ -430,12 +1119,58 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
-// ============================================================
+'use strict';
 
-function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
-function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+    // Redibujar gráficas con colores actualizados
+    setTimeout(() => {
+        if (typeof redibujarGraficas === 'function') redibujarGraficas();
+    }, 100);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (!e || typeof e.key !== 'string') return;
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+});
+
+/* ============================================================
+   FUNCIONES ORIGINALES
+   ============================================================ */
+
+function showLoading() { 
+    document.getElementById('loadingOverlay').classList.add('active'); 
+}
+function hideLoading() { 
+    document.getElementById('loadingOverlay').classList.remove('active'); 
+}
 
 function formatMoney(value) {
     return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -507,74 +1242,9 @@ async function loadDashboard() {
             });
         }
 
-        // Gráfica de ingresos
-        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
-        const incomeLabels = data.monthly_income_history.map(item => item.month);
-        const incomeValues = data.monthly_income_history.map(item => item.total);
-
-        new Chart(incomeCtx, {
-            type: 'bar',
-            data: {
-                labels: incomeLabels,
-                datasets: [{
-                    label: 'Ingresos',
-                    data: incomeValues,
-                    backgroundColor: 'rgba(42, 109, 244, 0.6)',
-                    borderColor: '#2a6df4',
-                    borderWidth: 1.5,
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) { return '$' + value.toLocaleString(); }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Gráfica de tipos de caso
-        const caseCtx = document.getElementById('caseTypeChart').getContext('2d');
-        const caseLabels = data.case_types.map(item => item.status.toUpperCase());
-        const caseValues = data.case_types.map(item => item.count);
-        const caseColors = ['#2a6df4', '#1f8b4c', '#fd7e14', '#b12a2a', '#6f42c1', '#6c757d', '#ffc107', '#20c997'];
-
-        new Chart(caseCtx, {
-            type: 'doughnut',
-            data: {
-                labels: caseLabels,
-                datasets: [{
-                    data: caseValues,
-                    backgroundColor: caseColors.slice(0, caseLabels.length),
-                    borderWidth: 2,
-                    borderColor: 'white'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            padding: 10,
-                            font: { size: 10 }
-                        }
-                    }
-                },
-                cutout: '65%'
-            }
-        });
+        // 🔥 Guardar data global para redibujar al cambiar tema
+        window._dashboardData = data;
+        dibujarGraficas(data);
 
         hideLoading();
 
@@ -585,6 +1255,847 @@ async function loadDashboard() {
 }
 
 loadDashboard();
+
+
+/* ============================================================
+   MODALES DEL DASHBOARD — 5 TARJETAS INTERACTIVAS
+   ============================================================ */
+
+const dmEsc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[c]));
+
+function dmMoney(v) {
+    const n = parseFloat(v) || 0;
+    return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function dmShowLoading(text = 'Cargando…') {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        const h5 = overlay.querySelector('h5');
+        if (h5) h5.textContent = text;
+        overlay.style.display = 'flex';
+    }
+}
+function dmHideLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) overlay.style.display = 'none';
+}
+
+function dmOpen(title, icon, bodyHTML, meta = '') {
+    document.getElementById('dataModalTitle').textContent = title;
+    document.getElementById('dataModalIcon').className = 'bi ' + icon;
+    document.getElementById('dataModalBody').innerHTML = bodyHTML;
+    document.getElementById('dataModalMeta').textContent = meta;
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('dataModal')).show();
+}
+
+/* ------------------------------------------------------------
+   MODAL 1: CLIENTES REGISTRADOS
+   ------------------------------------------------------------ */
+async function openClientsModal() {
+    dmShowLoading('Cargando clientes…');
+    try {
+        const r = await fetch('/api/dashboard/clients');
+        if (!r.ok) throw new Error('No se pudieron cargar los clientes');
+        const data = await r.json();
+        dmHideLoading();
+
+        const totalConDeuda = data.filter(c => c.total_contratos > 0).length;
+        const totalJuicios = data.reduce((s, c) => s + c.juicios_activos, 0);
+
+        let body = `
+            <div class="dm-summary">
+                <div class="dm-summary-item">
+                    <div class="lbl"><i class="bi bi-people-fill"></i> Total clientes</div>
+                    <div class="val">${data.length}</div>
+                </div>
+                <div class="dm-summary-item green">
+                    <div class="lbl"><i class="bi bi-file-earmark-text"></i> Con contratos</div>
+                    <div class="val">${totalConDeuda}</div>
+                </div>
+                <div class="dm-summary-item orange">
+                    <div class="lbl"><i class="bi bi-folder-check"></i> Juicios activos</div>
+                    <div class="val">${totalJuicios}</div>
+                </div>
+            </div>
+        `;
+
+        if (!data.length) {
+            body += `<div class="dm-empty"><i class="bi bi-people"></i><h5>No hay clientes registrados</h5></div>`;
+        } else {
+            body += `
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th>Expediente</th>
+                            <th>Cliente</th>
+                            <th>Teléfono</th>
+                            <th>Folio</th>
+                            <th class="text-center">Contratos</th>
+                            <th class="text-center">Juicios activos</th>
+                            <th>Registro</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(c => `
+                            <tr>
+                                <td data-label="Expediente"><span class="dm-badge blue">Exp. ${dmEsc(c.expediente_interno)}</span></td>
+                                <td data-label="Cliente">
+                                    <div style="font-weight:700;">${dmEsc(c.nombre_completo)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">${dmEsc(c.curp)}</div>
+                                </td>
+                                <td data-label="Teléfono">${dmEsc(c.telefono)}</td>
+                                <td data-label="Folio"><code style="font-size:0.75rem;">${dmEsc(c.folio_registro)}</code></td>
+                                <td data-label="Contratos" class="text-center">
+                                    <span class="dm-badge ${c.total_contratos > 0 ? 'green' : 'gray'}">${c.total_contratos}</span>
+                                </td>
+                                <td data-label="Juicios activos" class="text-center">
+                                    <span class="dm-badge ${c.juicios_activos > 0 ? 'orange' : 'gray'}">${c.juicios_activos}</span>
+                                </td>
+                                <td data-label="Registro">${dmEsc(c.created_at)}</td>
+                                <td data-label="">
+                                    <div class="dm-actions">
+                                        <button class="dm-btn-link" onclick="openClientDetail(${c.id})">
+                                            <i class="bi bi-eye"></i> Ver
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        dmOpen('Clientes Registrados', 'bi-people-fill', body, `${data.length} cliente(s) en total`);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+/* ------------------------------------------------------------
+   MODAL 2: JUICIOS ACTIVOS
+   ------------------------------------------------------------ */
+async function openActiveCasesModal() {
+    dmShowLoading('Cargando juicios activos…');
+    try {
+        const r = await fetch('/api/dashboard/active-cases');
+        if (!r.ok) throw new Error('No se pudieron cargar los juicios');
+        const data = await r.json();
+        dmHideLoading();
+
+        // Agrupar por tipo de juicio
+        const porTipo = data.reduce((acc, c) => {
+            const t = c.tipo_juicio || 'Sin clasificar';
+            acc[t] = (acc[t] || 0) + 1;
+            return acc;
+        }, {});
+
+        let body = `
+            <div class="dm-summary">
+                <div class="dm-summary-item green">
+                    <div class="lbl"><i class="bi bi-folder-check"></i> Total juicios activos</div>
+                    <div class="val">${data.length}</div>
+                </div>
+                ${Object.entries(porTipo).slice(0, 3).map(([tipo, count]) => `
+                    <div class="dm-summary-item orange">
+                        <div class="lbl">${dmEsc(tipo)}</div>
+                        <div class="val">${count}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        if (!data.length) {
+            body += `<div class="dm-empty"><i class="bi bi-folder2-open"></i><h5>No hay juicios activos</h5><p>Todos los expedientes están cerrados o no existen.</p></div>`;
+        } else {
+            body += `
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th>Expediente</th>
+                            <th>Cliente</th>
+                            <th>Tipo</th>
+                            <th>Actor</th>
+                            <th>Demandado</th>
+                            <th>Tribunal</th>
+                            <th>Estatus</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(c => `
+                            <tr>
+                                <td data-label="Expediente">
+                                    <div style="font-weight:700;">${dmEsc(c.num_exp_tribunal)}</div>
+                                    <div style="font-size:0.7rem;color:var(--text-muted);">${dmEsc(c.fecha_presentacion)}</div>
+                                </td>
+                                <td data-label="Cliente">
+                                    <div style="font-weight:600;">${dmEsc(c.cliente)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);"><i class="bi bi-telephone"></i> ${dmEsc(c.cliente_telefono)}</div>
+                                </td>
+                                <td data-label="Tipo"><span class="dm-badge blue">${dmEsc(c.tipo_juicio)}</span></td>
+                                <td data-label="Actor">${dmEsc(c.actor_nombre)}</td>
+                                <td data-label="Demandado">${dmEsc(c.demandado_nombre)}</td>
+                                <td data-label="Tribunal">
+                                    <div style="font-size:0.78rem;">${dmEsc(c.tribunal)}</div>
+                                    <div style="font-size:0.7rem;color:var(--text-muted);">${dmEsc(c.secretaria)}</div>
+                                </td>
+                                <td data-label="Estatus"><span class="dm-badge green">INICIADO</span></td>
+                                <td data-label="">
+                                    <div class="dm-actions">
+                                        <button class="dm-btn-link" onclick="openCaseDetail(${c.id})"><i class="bi bi-eye"></i> Ver</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        dmOpen('Juicios Activos', 'bi-folder-check', body, `${data.length} expediente(s) activo(s)`);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+/* ------------------------------------------------------------
+   MODAL 3: INGRESOS DEL MES
+   ------------------------------------------------------------ */
+async function openMonthlyIncomeModal() {
+    dmShowLoading('Cargando ingresos del mes…');
+    try {
+        const r = await fetch('/api/dashboard/monthly-income');
+        if (!r.ok) throw new Error('No se pudieron cargar los ingresos');
+        const data = await r.json();
+        dmHideLoading();
+
+        const pagos = data.pagos || [];
+        const total = data.total || 0;
+
+        // Agrupar por método
+        const porMetodo = pagos.reduce((acc, p) => {
+            const m = p.metodo || 'otro';
+            acc[m] = (acc[m] || 0) + p.monto;
+            return acc;
+        }, {});
+
+        let body = `
+            <div class="dm-summary">
+                <div class="dm-summary-item green">
+                    <div class="lbl"><i class="bi bi-cash-stack"></i> Total del mes</div>
+                    <div class="val">${dmMoney(total)}</div>
+                </div>
+                <div class="dm-summary-item">
+                    <div class="lbl"><i class="bi bi-receipt"></i> # Pagos</div>
+                    <div class="val">${pagos.length}</div>
+                </div>
+                ${Object.entries(porMetodo).map(([m, val]) => `
+                    <div class="dm-summary-item orange">
+                        <div class="lbl">${dmEsc(m)}</div>
+                        <div class="val">${dmMoney(val)}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        if (!pagos.length) {
+            body += `<div class="dm-empty"><i class="bi bi-cash"></i><h5>Sin ingresos este mes</h5><p>No se han registrado pagos en el período actual.</p></div>`;
+        } else {
+            body += `
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Expediente</th>
+                            <th>Método</th>
+                            <th>Recibió</th>
+                            <th class="text-end">Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${pagos.map(p => `
+                            <tr>
+                                <td data-label="Fecha">${dmEsc(p.fecha)}</td>
+                                <td data-label="Cliente">
+                                    <div style="font-weight:600;">${dmEsc(p.cliente)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);"><i class="bi bi-telephone"></i> ${dmEsc(p.cliente_telefono)}</div>
+                                </td>
+                                <td data-label="Servicio">
+                                    <div style="font-weight:600;">${dmEsc(p.service_type)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">${dmEsc(p.tipo_juicio)}</div>
+                                </td>
+                                <td data-label="Expediente">${dmEsc(p.num_exp_tribunal)}</td>
+                                <td data-label="Método"><span class="dm-badge blue">${dmEsc(p.metodo)}</span></td>
+                                <td data-label="Recibió">${dmEsc(p.recibio)}</td>
+                                <td data-label="Monto" class="text-end dm-money positive">${dmMoney(p.monto)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        dmOpen('Ingresos del Mes', 'bi-cash-stack', body, `Total: ${dmMoney(total)} · ${pagos.length} pago(s)`);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+/* ------------------------------------------------------------
+   MODAL 4: DEUDA PENDIENTE
+   ------------------------------------------------------------ */
+async function openDebtModal() {
+    dmShowLoading('Cargando deudas pendientes…');
+    try {
+        const r = await fetch('/api/dashboard/debt');
+        if (!r.ok) throw new Error('No se pudieron cargar las deudas');
+        const data = await r.json();
+        dmHideLoading();
+
+        const clientes = data.clientes || [];
+        const totalDeuda = data.total_deuda || 0;
+        const clientesUnicos = new Set(clientes.map(c => c.cliente_id)).size;
+
+        let body = `
+            <div class="dm-summary">
+                <div class="dm-summary-item red">
+                    <div class="lbl"><i class="bi bi-exclamation-triangle"></i> Total adeudado</div>
+                    <div class="val">${dmMoney(totalDeuda)}</div>
+                </div>
+                <div class="dm-summary-item">
+                    <div class="lbl"><i class="bi bi-people"></i> Clientes con deuda</div>
+                    <div class="val">${clientesUnicos}</div>
+                </div>
+                <div class="dm-summary-item orange">
+                    <div class="lbl"><i class="bi bi-file-earmark-text"></i> Contratos pendientes</div>
+                    <div class="val">${clientes.length}</div>
+                </div>
+            </div>
+        `;
+
+        if (!clientes.length) {
+            body += `<div class="dm-empty"><i class="bi bi-check-circle" style="color:var(--success);"></i><h5>¡Sin deudas!</h5><p>Todos los contratos están liquidados.</p></div>`;
+        } else {
+            body += `
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Servicio / Juicio</th>
+                            <th>Expediente</th>
+                            <th class="text-end">Cobrado</th>
+                            <th class="text-end">Pagado</th>
+                            <th class="text-end">Debe</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${clientes.map(c => `
+                            <tr>
+                                <td data-label="Cliente">
+                                    <div style="font-weight:700;">${dmEsc(c.cliente)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">
+                                        <i class="bi bi-telephone"></i> ${dmEsc(c.cliente_telefono)}
+                                    </div>
+                                    <div style="font-size:0.7rem;color:var(--text-muted);">
+                                        Exp. Interno ${dmEsc(c.expediente_interno)} · ${dmEsc(c.folio_registro)}
+                                    </div>
+                                </td>
+                                <td data-label="Servicio">
+                                    <div style="font-weight:600;">${dmEsc(c.service_type)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">
+                                        ${dmEsc(c.tipo_juicio)}
+                                    </div>
+                                    ${c.specific_detail !== '—' ? `<div style="font-size:0.7rem;color:var(--text-muted);">${dmEsc(c.specific_detail)}</div>` : ''}
+                                </td>
+                                <td data-label="Expediente">
+                                    ${c.num_exp_tribunal !== '—'
+                                        ? `<div style="font-weight:700;">${dmEsc(c.num_exp_tribunal)}</div>
+                                           <div style="font-size:0.7rem;color:var(--text-muted);">${dmEsc(c.tribunal)}</div>
+                                           <span class="dm-badge ${c.case_status === 'iniciado' ? 'green' : 'gray'}" style="margin-top:2px;">${dmEsc(c.case_status)}</span>`
+                                        : '<span class="dm-badge gray">Sin expediente</span>'}
+                                </td>
+                                <td data-label="Cobrado" class="text-end dm-money">${dmMoney(c.cobrado)}</td>
+                                <td data-label="Pagado" class="text-end dm-money positive">${dmMoney(c.pagado)}</td>
+                                <td data-label="Debe" class="text-end dm-money negative">${dmMoney(c.debe)}</td>
+                                <td data-label="">
+                                    <div class="dm-actions">
+                                        <a href="/api/payments/register" target="_blank"><i class="bi bi-cash"></i> Cobrar</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        dmOpen('Deuda Pendiente', 'bi-exclamation-triangle', body,
+            `${clientes.length} contrato(s) con saldo · Total: ${dmMoney(totalDeuda)}`);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+/* ------------------------------------------------------------
+   MODAL 5: CONTRATOS PENDIENTES
+   ------------------------------------------------------------ */
+async function openPendingContractsModal() {
+    dmShowLoading('Cargando contratos pendientes…');
+    try {
+        const r = await fetch('/api/dashboard/pending-contracts');
+        if (!r.ok) throw new Error('No se pudieron cargar los contratos');
+        const data = await r.json();
+        dmHideLoading();
+
+        const totalCobrado = data.reduce((s, c) => s + c.cobrado, 0);
+        const totalPagado = data.reduce((s, c) => s + c.pagado, 0);
+        const totalDebe = data.reduce((s, c) => s + c.debe, 0);
+
+        let body = `
+            <div class="dm-summary">
+                <div class="dm-summary-item">
+                    <div class="lbl"><i class="bi bi-file-earmark-text"></i> Contratos pendientes</div>
+                    <div class="val">${data.length}</div>
+                </div>
+                <div class="dm-summary-item green">
+                    <div class="lbl"><i class="bi bi-check-circle"></i> Total cobrado</div>
+                    <div class="val">${dmMoney(totalCobrado)}</div>
+                </div>
+                <div class="dm-summary-item">
+                    <div class="lbl"><i class="bi bi-cash-stack"></i> Total pagado</div>
+                    <div class="val">${dmMoney(totalPagado)}</div>
+                </div>
+                <div class="dm-summary-item red">
+                    <div class="lbl"><i class="bi bi-exclamation-triangle"></i> Total por cobrar</div>
+                    <div class="val">${dmMoney(totalDebe)}</div>
+                </div>
+            </div>
+        `;
+
+        if (!data.length) {
+            body += `<div class="dm-empty"><i class="bi bi-check-circle" style="color:var(--success);"></i><h5>¡Todos al día!</h5><p>No hay contratos pendientes de cobro.</p></div>`;
+        } else {
+            body += `
+                <table class="dm-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Teléfono</th>
+                            <th>Servicio</th>
+                            <th>Expediente</th>
+                            <th class="text-end">Cobrado</th>
+                            <th class="text-end">Pagado</th>
+                            <th class="text-end">Debe</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(c => `
+                            <tr>
+                                <td data-label="Cliente">
+                                    <div style="font-weight:700;">${dmEsc(c.cliente)}</div>
+                                    <div style="font-size:0.7rem;color:var(--text-muted);">
+                                        ${dmEsc(c.folio_registro)} · ${dmEsc(c.fecha_contratacion)}
+                                    </div>
+                                </td>
+                                <td data-label="Teléfono">
+                                    <a href="tel:${dmEsc(c.cliente_telefono)}" style="color:var(--text-primary);text-decoration:none;font-weight:600;">
+                                        <i class="bi bi-telephone"></i> ${dmEsc(c.cliente_telefono)}
+                                    </a>
+                                </td>
+                                <td data-label="Servicio">
+                                    <div style="font-weight:600;">${dmEsc(c.service_type)}</div>
+                                    <div style="font-size:0.72rem;color:var(--text-muted);">${dmEsc(c.tipo_juicio)}</div>
+                                    ${c.specific_detail !== '—' ? `<div style="font-size:0.7rem;color:var(--text-muted);">${dmEsc(c.specific_detail)}</div>` : ''}
+                                </td>
+                                <td data-label="Expediente">
+                                    ${c.num_exp_tribunal !== '—'
+                                        ? `<div style="font-weight:700;">${dmEsc(c.num_exp_tribunal)}</div>
+                                           <div style="font-size:0.7rem;color:var(--text-muted);">${dmEsc(c.tribunal)}</div>`
+                                        : '<span class="dm-badge gray">Sin expediente</span>'}
+                                </td>
+                                <td data-label="Cobrado" class="text-end dm-money">${dmMoney(c.cobrado)}</td>
+                                <td data-label="Pagado" class="text-end dm-money positive">${dmMoney(c.pagado)}</td>
+                                <td data-label="Debe" class="text-end dm-money negative">${dmMoney(c.debe)}</td>
+                                <td data-label="">
+                                    <div class="dm-actions">
+                                        <a href="/api/payments/register" target="_blank"><i class="bi bi-cash"></i> Cobrar</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        dmOpen('Contratos Pendientes', 'bi-file-earmark', body,
+            `${data.length} contrato(s) · Por cobrar: ${dmMoney(totalDebe)}`);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+/* ============================================================
+   MODALES DE DETALLE: CLIENTE y EXPEDIENTE
+   ============================================================ */
+
+function openDetailModal(title, icon, bodyHTML) {
+    document.getElementById('detailModalTitle').textContent = title;
+    document.getElementById('detailModalIcon').className = 'bi ' + icon;
+    document.getElementById('detailModalBody').innerHTML = bodyHTML;
+    // Cerrar el dataModal antes de abrir el detalle
+    bootstrap.Modal.getInstance(document.getElementById('dataModal'))?.hide();
+    setTimeout(() => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('detailModal')).show();
+    }, 250);
+}
+
+function openPdfViewer(url, title) {
+    document.getElementById('pdfViewerTitle').textContent = title || 'Documento';
+    document.getElementById('pdfViewerFrame').src = url;
+    document.getElementById('pdfViewerDownload').href = url;
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('pdfViewerModal')).show();
+}
+
+// Cerrar el iframe al cerrar el modal (libera memoria)
+document.getElementById('pdfViewerModal')?.addEventListener('hidden.bs.modal', () => {
+    document.getElementById('pdfViewerFrame').src = 'about:blank';
+});
+
+
+/* ------------------------------------------------------------
+   DETALLE DE CLIENTE
+   ------------------------------------------------------------ */
+async function openClientDetail(clientId) {
+    dmShowLoading('Cargando cliente…');
+    try {
+        const r = await fetch(`/api/clients/consult-detail/${clientId}`);
+        if (!r.ok) throw new Error('No se pudo cargar el cliente');
+        const c = await r.json();
+        dmHideLoading();
+
+        const docIcons = { CURP: 'bi-person-vcard', INE: 'bi-card-text', DOMICILIO: 'bi-house-door' };
+
+        // --- Documentos ---
+        const docsHTML = (c.documentos || []).length
+            ? (c.documentos || []).map(d => `
+                <div class="det-doc">
+                    <i class="bi ${docIcons[d.tipo] || 'bi-file-pdf'}"></i>
+                    <div class="det-doc-info">
+                        <div class="det-doc-type">${dmEsc(d.tipo)}</div>
+                        <div class="det-doc-date">${dmEsc(d.fecha)}</div>
+                    </div>
+                    <button class="dm-btn-link" onclick="openPdfViewer('${dmEsc(d.url)}', '${dmEsc(d.tipo)}')">
+                        <i class="bi bi-eye"></i> Ver
+                    </button>
+                </div>
+            `).join('')
+            : '<div class="det-empty">Sin documentos adjuntos</div>';
+
+        // --- Contratos ---
+        const contratosHTML = (c.contratos || []).length
+            ? (c.contratos || []).map(ct => {
+                const cc = ct.court_case;
+                const expInfo = cc ? `
+                    <div class="det-row">
+                        <span class="det-label"><i class="bi bi-folder2-open"></i> Expediente</span>
+                        <span class="det-val">
+                            <strong>${dmEsc(cc.num_exp_tribunal)}</strong> · ${dmEsc(cc.tribunal)}
+                            <span class="dm-badge ${cc.status === 'iniciado' ? 'green' : 'gray'}" style="margin-left:6px;">${dmEsc(cc.status)}</span>
+                        </span>
+                    </div>
+                ` : '';
+                const actorDem = cc ? `
+                    ${cc.actor_nombre ? `<div class="det-row"><span class="det-label">Actor</span><span class="det-val">${dmEsc(cc.actor_nombre)}</span></div>` : ''}
+                    ${cc.demandado_nombre ? `<div class="det-row"><span class="det-label">Demandado</span><span class="det-val">${dmEsc(cc.demandado_nombre)}</span></div>` : ''}
+                ` : '';
+                const lastP = ct.last_payment ? `
+                    <div class="det-row"><span class="det-label">Último pago</span><span class="det-val">${dmMoney(ct.last_payment.monto)} · ${dmEsc(ct.last_payment.fecha)}</span></div>
+                ` : '';
+                return `
+                    <div class="det-contract">
+                        <div class="det-contract-head">
+                            <div>
+                                <div class="det-contract-title">
+                                    ${dmEsc(ct.service_type)} · ${dmEsc(ct.tipo_juicio || '—')}
+                                </div>
+                                ${ct.specific_detail ? `<div class="det-contract-sub">${dmEsc(ct.specific_detail)}</div>` : ''}
+                            </div>
+                            <span class="dm-badge ${ct.status === 'liquidado' ? 'green' : 'red'}">${dmEsc(ct.status.toUpperCase())}</span>
+                        </div>
+                        <div class="det-grid">
+                            <div class="det-box"><span class="det-lbl">Total</span><span class="det-val2">${dmMoney(ct.total_cost)}</span></div>
+                            <div class="det-box"><span class="det-lbl">Pagado</span><span class="det-val2" style="color:var(--success);">${dmMoney(ct.pagado)}</span></div>
+                            <div class="det-box"><span class="det-lbl">Saldo</span><span class="det-val2" style="color:${ct.saldo > 0 ? 'var(--danger)' : 'var(--success)'};">${dmMoney(ct.saldo)}</span></div>
+                            <div class="det-box"><span class="det-lbl">Pagos</span><span class="det-val2">${ct.total_payments}</span></div>
+                        </div>
+                        ${expInfo ? `<div class="det-section-sm"><i class="bi bi-folder2-open"></i> Expediente relacionado</div>${expInfo}${actorDem}` : ''}
+                        ${lastP}
+                    </div>
+                `;
+            }).join('')
+            : '<div class="det-empty">Sin contratos registrados</div>';
+
+        const body = `
+            <div class="det-header">
+                <div class="det-header-avatar"><i class="bi bi-person-circle"></i></div>
+                <div class="det-header-info">
+                    <h3>${dmEsc(c.nombre_completo)}</h3>
+                    <p>${dmEsc(c.curp)} · Exp. interno ${dmEsc(c.expediente_interno)} · ${dmEsc(c.folio_registro)}</p>
+                </div>
+            </div>
+
+            <div class="det-section-title"><i class="bi bi-person-vcard"></i> Datos personales</div>
+            <div class="det-grid">
+                <div class="det-box"><span class="det-lbl">Teléfono</span><span class="det-val2"><a href="tel:${dmEsc(c.telefono)}">${dmEsc(c.telefono)}</a></span></div>
+                <div class="det-box"><span class="det-lbl">Email</span><span class="det-val2">${dmEsc(c.email)}</span></div>
+                <div class="det-box"><span class="det-lbl">Ocupación</span><span class="det-val2">${dmEsc(c.ocupacion)}</span></div>
+                <div class="det-box"><span class="det-lbl">Registro</span><span class="det-val2">${dmEsc(c.created_at)}</span></div>
+                <div class="det-box" style="grid-column:1/-1;"><span class="det-lbl">Domicilio</span><span class="det-val2">${dmEsc(c.domicilio)}</span></div>
+            </div>
+
+            <div class="det-section-title"><i class="bi bi-paperclip"></i> Documentos adjuntos</div>
+            <div class="det-docs">${docsHTML}</div>
+
+            <div class="det-section-title"><i class="bi bi-file-earmark-text"></i> Contratos y juicios (${(c.contratos || []).length})</div>
+            <div class="det-contracts">${contratosHTML}</div>
+        `;
+
+        openDetailModal('Detalle del Cliente', 'bi-person-badge', body);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+
+/* ------------------------------------------------------------
+   DETALLE DE EXPEDIENTE
+   ------------------------------------------------------------ */
+async function openCaseDetail(caseId) {
+    dmShowLoading('Cargando expediente…');
+    try {
+        const r = await fetch(`/api/cases/consult-detail/${caseId}`);
+        if (!r.ok) throw new Error('No se pudo cargar el expediente');
+        const d = await r.json();
+        dmHideLoading();
+
+        const cli = d.cliente || {};
+        const ctr = d.contrato || {};
+        const exp = d.expediente || {};
+        const acts = d.actuaciones || [];
+
+        const actHTML = acts.length
+            ? acts.map((a, i) => `
+                <div class="det-act">
+                    <div class="det-act-num">${i + 1}</div>
+                    <div class="det-act-info">
+                        <div><strong>${dmEsc(a.tipo.toUpperCase())}</strong> · ${dmEsc(a.fecha)}</div>
+                        <div class="det-act-desc">${dmEsc(a.descripcion || 'Sin descripción')}</div>
+                        <div class="det-act-meta">Registrado: ${dmEsc(a.subido_en)}</div>
+                    </div>
+                    <button class="dm-btn-link" onclick="openPdfViewer('${dmEsc(a.pdf_url)}', '${dmEsc(a.tipo)}')">
+                        <i class="bi bi-eye"></i> Ver PDF
+                    </button>
+                </div>
+            `).join('')
+            : '<div class="det-empty">Sin actuaciones registradas</div>';
+
+        const acuseHTML = exp.acuse_pdf_url
+            ? `<button class="dm-btn-link" onclick="openPdfViewer('${dmEsc(exp.acuse_pdf_url)}', 'Acuse de recibido')"><i class="bi bi-file-pdf"></i> Ver acuse</button>`
+            : '<span style="color:var(--text-muted);font-size:0.8rem;">Sin acuse</span>';
+
+        const body = `
+            <div class="det-header">
+                <div class="det-header-avatar" style="background:linear-gradient(135deg,var(--success),#10b981);">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+                <div class="det-header-info">
+                    <h3>Expediente ${dmEsc(exp.num_exp_tribunal || '—')}</h3>
+                    <p>${dmEsc(exp.tribunal || '—')} · Folio ${dmEsc(exp.folio_tribunal || '—')}</p>
+                </div>
+                <span class="dm-badge ${exp.status === 'iniciado' ? 'green' : 'gray'}" style="font-size:0.75rem;">${dmEsc((exp.status || '').toUpperCase())}</span>
+            </div>
+
+            <div class="det-section-title"><i class="bi bi-info-circle"></i> Datos del expediente</div>
+            <div class="det-grid">
+                <div class="det-box"><span class="det-lbl">Tribunal</span><span class="det-val2">${dmEsc(exp.tribunal)}</span></div>
+                <div class="det-box"><span class="det-lbl">Secretaría</span><span class="det-val2">${dmEsc(exp.secretaria)}</span></div>
+                <div class="det-box"><span class="det-lbl">N° Expediente</span><span class="det-val2">${dmEsc(exp.num_exp_tribunal)}</span></div>
+                <div class="det-box"><span class="det-lbl">Folio</span><span class="det-val2">${dmEsc(exp.folio_tribunal)}</span></div>
+                <div class="det-box"><span class="det-lbl">Fecha presentación</span><span class="det-val2">${dmEsc(exp.fecha_presentacion)}</span></div>
+                <div class="det-box"><span class="det-lbl">Acuse</span><span class="det-val2">${acuseHTML}</span></div>
+                <div class="det-box" style="grid-column:1/-1;"><span class="det-lbl">Actor(es)</span><span class="det-val2">${dmEsc(exp.actor_nombre || '—')}</span></div>
+                <div class="det-box" style="grid-column:1/-1;"><span class="det-lbl">Demandado(a)</span><span class="det-val2">${dmEsc(exp.demandado_nombre || '—')}</span></div>
+            </div>
+
+            <div class="det-section-title"><i class="bi bi-person"></i> Cliente</div>
+            <div class="det-grid">
+                <div class="det-box"><span class="det-lbl">Nombre</span><span class="det-val2">${dmEsc(cli.nombre_completo)}</span></div>
+                <div class="det-box"><span class="det-lbl">CURP</span><span class="det-val2">${dmEsc(cli.curp)}</span></div>
+                <div class="det-box"><span class="det-lbl">Teléfono</span><span class="det-val2"><a href="tel:${dmEsc(cli.telefono)}">${dmEsc(cli.telefono)}</a></span></div>
+                <div class="det-box"><span class="det-lbl">Email</span><span class="det-val2">${dmEsc(cli.email)}</span></div>
+            </div>
+
+            <div class="det-section-title"><i class="bi bi-file-earmark-text"></i> Contrato</div>
+            <div class="det-grid">
+                <div class="det-box"><span class="det-lbl">Servicio</span><span class="det-val2">${dmEsc(ctr.service_type)}</span></div>
+                <div class="det-box"><span class="det-lbl">Tipo de juicio</span><span class="det-val2">${dmEsc(ctr.tipo_juicio || ctr.tipo_juicio_otro || '—')}</span></div>
+                <div class="det-box"><span class="det-lbl">Costo total</span><span class="det-val2">${dmMoney(ctr.total_cost)}</span></div>
+                <div class="det-box"><span class="det-lbl">Estatus</span><span class="det-val2"><span class="dm-badge ${ctr.status === 'liquidado' ? 'green' : 'red'}">${dmEsc((ctr.status || '').toUpperCase())}</span></span></div>
+                ${ctr.specific_detail ? `<div class="det-box" style="grid-column:1/-1;"><span class="det-lbl">Detalle</span><span class="det-val2">${dmEsc(ctr.specific_detail)}</span></div>` : ''}
+            </div>
+
+            <div class="det-section-title"><i class="bi bi-list-ol"></i> Actuaciones (${acts.length})</div>
+            <div class="det-acts">${actHTML}</div>
+        `;
+
+        openDetailModal('Detalle del Expediente', 'bi-folder2-open', body);
+    } catch (e) {
+        dmHideLoading();
+        alert('Error: ' + e.message);
+    }
+}
+
+/* ============================================================
+   GRÁFICAS ADAPTATIVAS AL TEMA
+   ============================================================ */
+let chartIngresos = null;
+let chartExpedientes = null;
+
+function obtenerColores() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return {
+        text: isDark ? '#b8c5d6' : '#4a5b6e',
+        grid: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+        accent: isDark ? '#5b93ff' : '#2a6df4',
+        accentSoft: isDark ? 'rgba(91,147,255,0.5)' : 'rgba(42,109,244,0.6)',
+        border: isDark ? '#223147' : '#ffffff'
+    };
+}
+
+function dibujarGraficas(data) {
+    const colors = obtenerColores();
+
+    // Ingresos
+    const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+    const incomeLabels = data.monthly_income_history.map(item => item.month);
+    const incomeValues = data.monthly_income_history.map(item => item.total);
+
+    if (chartIngresos) chartIngresos.destroy();
+    chartIngresos = new Chart(incomeCtx, {
+        type: 'bar',
+        data: {
+            labels: incomeLabels,
+            datasets: [{
+                label: 'Ingresos',
+                data: incomeValues,
+                backgroundColor: colors.accentSoft,
+                borderColor: colors.accent,
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: colors.accent,
+                    padding: 12,
+                    cornerRadius: 10,
+                    titleFont: { weight: '700' }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: colors.text,
+                        font: { size: 11, weight: '600' },
+                        callback: function (value) { return '$' + value.toLocaleString(); }
+                    },
+                    grid: { color: colors.grid }
+                },
+                x: {
+                    ticks: {
+                        color: colors.text,
+                        font: { size: 11, weight: '600' }
+                    },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+
+    // Expedientes
+    const caseCtx = document.getElementById('caseTypeChart').getContext('2d');
+    const caseLabels = data.case_types.map(item => item.status.toUpperCase());
+    const caseValues = data.case_types.map(item => item.count);
+    const caseColors = ['#2a6df4', '#1a8b5c', '#fd7e14', '#dc3545', '#6f42c1', '#6c757d', '#ffc107', '#20c997'];
+
+    if (chartExpedientes) chartExpedientes.destroy();
+    chartExpedientes = new Chart(caseCtx, {
+        type: 'doughnut',
+        data: {
+            labels: caseLabels,
+            datasets: [{
+                data: caseValues,
+                backgroundColor: caseColors.slice(0, caseLabels.length),
+                borderWidth: 3,
+                borderColor: colors.border
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: colors.text,
+                        boxWidth: 12,
+                        boxHeight: 12,
+                        padding: 12,
+                        font: { size: 11, weight: '700' },
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                }
+            },
+            cutout: '68%'
+        }
+    });
+}
+
+function redibujarGraficas() {
+    if (window._dashboardData) {
+        dibujarGraficas(window._dashboardData);
+    }
+}
+
+// Redibujar al cambiar tamaño (para responsive)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(redibujarGraficas, 300);
+});
 </script>
 </body>
 </html>

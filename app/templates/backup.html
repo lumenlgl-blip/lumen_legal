@@ -1,528 +1,766 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-     <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backup · Lumen Legal</title>
+    <title>Respaldos · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        :root {
+            --bg-primary: #f2f5fb; --bg-secondary: #ffffff; --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8); --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-soft: #e9edf4; --text-primary: #0b1e33; --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f; --accent-primary: #2a6df4; --accent-dark: #0b1e33;
+            --success: #1a8b5c; --success-soft: #d1fae5; --warning: #f5b342;
+            --danger: #dc3545; --danger-soft: #fee9e7; --radius: 20px;
         }
-
+        [data-theme="dark"] {
+            --bg-primary: #0a1523; --bg-secondary: #111d2e; --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75); --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-soft: #223147; --text-primary: #e8eef7; --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0; --accent-primary: #5b93ff; --accent-dark: #5b93ff;
+            --success: #34d399; --success-soft: rgba(52,211,153,0.15);
+            --danger: #f87171; --danger-soft: rgba(248,113,113,0.15);
+        }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body {
-            background: #f2f5fb;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-primary);
+            padding: 20px 0 40px; min-height: 100vh;
+            color: var(--text-primary);
         }
+        .container { max-width: 1000px; }
 
-        /* Fondo decorativo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -30%;
-            right: -20%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(42,109,244,0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
+        .theme-toggle {
+            position: fixed; top: 24px; right: 24px; z-index: 1050;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-soft);
+            color: var(--text-primary);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            cursor: pointer; transition: all 0.25s;
         }
-        body::after {
-            content: '';
-            position: fixed;
-            bottom: -30%;
-            left: -15%;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(42,109,244,0.04) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
+        .theme-toggle:hover { transform: rotate(15deg) translateY(-2px); }
 
-        /* Botón menú */
-        .btn-menu-modern {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px;
-            padding: 10px 22px;
-            font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+        .btn-menu {
+            position: fixed; top: 24px; left: 24px; z-index: 1050;
+            background: var(--surface-glass-strong); backdrop-filter: blur(12px);
+            border: 1px solid var(--border-soft); border-radius: 60px;
+            padding: 12px 24px; font-weight: 600; color: var(--text-primary);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08); transition: all 0.25s;
         }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-            color: #0b1e33;
-        }
+        .btn-menu:hover { transform: translateY(-2px); color: var(--accent-primary); }
 
-        /* Contenedor principal */
-        .backup-container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 520px;
-            margin: 0 auto;
+        .page-header {
+            background: var(--surface-glass); backdrop-filter: blur(12px);
+            border-radius: 28px; padding: 24px 32px; margin-bottom: 24px;
+            border: 1px solid var(--border-soft); display: flex;
+            justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px;
         }
-
-        /* Tarjeta principal */
-        .backup-card {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 32px;
-            padding: 40px 36px 36px;
-            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.14);
-            border: 1px solid rgba(255,255,255,0.5);
-            text-align: center;
-            transition: box-shadow 0.2s;
+        .page-header h1 {
+            font-weight: 800; font-size: 1.85rem; margin: 0;
+            display: flex; align-items: center; gap: 14px;
         }
-        .backup-card:hover {
-            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.18);
+        .page-header h1 i {
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 2rem;
         }
-
-        /* Icono animado */
-        .icon-wrapper {
-            width: 100px;
-            height: 100px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, rgba(42,109,244,0.08), rgba(42,109,244,0.02));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            position: relative;
-        }
-        .icon-wrapper i {
-            font-size: 3.8rem;
-            color: #2a6df4;
-        }
-        .icon-wrapper .pulse-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 30px;
-            border: 2px solid rgba(42,109,244,0.1);
-            animation: pulse-ring 2.4s ease-in-out infinite;
-        }
-        @keyframes pulse-ring {
-            0%, 100% { transform: scale(1); opacity: 0.4; }
-            50% { transform: scale(1.08); opacity: 0.1; }
-        }
-
-        /* Títulos */
-        .backup-title {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
-            margin-bottom: 4px;
-        }
-        .backup-title i {
-            color: #2a6df4;
-            margin-right: 6px;
-        }
-        .backup-subtitle {
-            color: #6b7b8f;
-            font-weight: 500;
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-        }
-        .backup-subtitle span {
-            background: #eef3fa;
-            padding: 2px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #2a4a7a;
-        }
-
-        .backup-desc {
-            color: #8a9bb0;
-            font-size: 0.85rem;
-            margin-bottom: 24px;
-            line-height: 1.5;
-        }
-        .backup-desc i {
-            color: #2a6df4;
-        }
-
-        /* Botón principal */
-        .btn-backup {
-            background: #0b1e33;
-            border: none;
-            border-radius: 60px;
-            padding: 16px 20px;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            width: 100%;
-            transition: all 0.25s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-backup:hover {
-            background: #1a3b6b;
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px -8px rgba(11,30,51,0.3);
-        }
-        .btn-backup:active {
-            transform: scale(0.97);
-        }
-        .btn-backup .btn-shimmer {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-            animation: shimmer 3.2s infinite;
-        }
-        @keyframes shimmer {
-            0% { left: -60%; }
-            100% { left: 120%; }
-        }
-
-        /* Información adicional */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #eef3fa;
-        }
-        .info-item {
-            background: rgba(255,255,255,0.5);
-            border-radius: 16px;
-            padding: 12px 10px;
-            text-align: center;
-        }
-        .info-item .info-icon {
-            font-size: 1.2rem;
-            color: #2a6df4;
-            display: block;
-            margin-bottom: 2px;
-        }
-        .info-item .info-label {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #8a9bb0;
+        .badge-header {
+            background: var(--accent-dark); color: white;
+            padding: 8px 20px; border-radius: 40px; font-size: 0.8rem;
             font-weight: 600;
         }
-        .info-item .info-value {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #0b1e33;
+
+        .card-glass {
+            background: var(--surface-glass); backdrop-filter: blur(12px);
+            border: 1px solid var(--border-soft); border-radius: var(--radius);
+            padding: 24px 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 20px;
         }
 
-        /* Alerta de recomendación */
-        .alert-modern {
-            border-radius: 20px;
-            padding: 14px 20px;
-            margin-top: 16px;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            background: rgba(42,109,244,0.06);
-            color: #1a3b6b;
-            font-weight: 500;
+        .card-glass h2 {
+            font-weight: 800; font-size: 1.15rem; margin: 0 0 6px;
+            display: flex; align-items: center; gap: 10px;
         }
-        .alert-modern i {
-            font-size: 1.4rem;
-            color: #2a6df4;
-        }
-        .alert-modern strong {
-            color: #0b1e33;
-        }
+        .card-glass p.sub { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 18px; }
 
-        /* Loading overlay */
-        .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
+        .btn-lg-modern {
+            border-radius: 60px; padding: 12px 28px; font-weight: 700;
+            min-height: 48px; display: inline-flex; align-items: center;
+            gap: 8px; transition: all 0.25s; border: none; cursor: pointer;
         }
-        .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+        .btn-primary-modern {
+            background: var(--accent-dark); color: white;
         }
-        .spinner-box .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
+        .btn-primary-modern:hover:not(:disabled) {
+            background: #1a3b6b; transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
         }
-        .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
+        .btn-warning-modern {
+            background: linear-gradient(135deg, var(--warning), #e6a030); color: #0b1e33;
         }
-        .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
+        .btn-warning-modern:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn-ghost {
+            background: var(--bg-tertiary); color: var(--text-primary);
+            border: 1px solid var(--border-soft);
         }
+        .btn-ghost:hover:not(:disabled) { background: var(--surface-glass-strong); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-        /* Modal moderno */
+        .backup-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-soft);
+            border-radius: 14px; padding: 14px 18px; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+        }
+        .backup-item .info { flex: 1; min-width: 0; }
+        .backup-item .name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+        .backup-item .meta {
+            font-size: 0.78rem; color: var(--text-muted);
+            display: flex; gap: 12px; flex-wrap: wrap;
+        }
+        .btn-icon-sm {
+            width: 34px; height: 34px; border-radius: 10px; border: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--bg-tertiary); color: var(--text-secondary);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-icon-sm:hover { transform: scale(1.08); }
+        .btn-icon-sm.dl:hover { background: rgba(42,109,244,0.1); color: var(--accent-primary); }
+        .btn-icon-sm.del:hover { background: var(--danger-soft); color: var(--danger); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 3rem; opacity: 0.3; display: block; margin-bottom: 10px; }
+
         .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
+            border-radius: 28px; border: none;
             box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
+            background: var(--surface-glass-strong); backdrop-filter: blur(20px);
+            color: var(--text-primary);
         }
         .modal-modern .modal-header {
-            border-bottom: none;
-            padding: 20px 28px 8px 28px;
+            border-bottom: none; padding: 22px 28px 8px;
         }
         .modal-modern .modal-header .modal-title {
-            font-weight: 700;
-            color: #0b1e33;
+            font-weight: 800; display: flex; align-items: center; gap: 10px;
         }
-        .modal-modern .modal-body {
-            padding: 16px 28px 24px;
-        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
         .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
+            border-top: 1px solid var(--border-soft); padding: 16px 28px 22px;
+            gap: 10px; flex-wrap: wrap;
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
-            .backup-card { padding: 28px 20px 24px; }
-            .backup-title { font-size: 1.4rem; }
-            .icon-wrapper { width: 80px; height: 80px; }
-            .icon-wrapper i { font-size: 2.8rem; }
-            .info-grid { grid-template-columns: 1fr; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+        .form-control, .form-select {
+            background: var(--bg-secondary); color: var(--text-primary);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 12px; padding: 12px 16px; font-size: 0.9rem;
         }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px; overflow:auto; min-height:100vh; align-items:flex-start;}
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary); color: var(--text-primary);
         }
-        @media (max-width: 768px){
-            body{padding:16px 16px 24px 16px; overflow:auto;}
-            .backup-container{max-width:100%;}
-            .backup-card{padding:32px 24px; border-radius:28px;}
+        .form-label {
+            font-weight: 700; font-size: 0.8rem;
+            color: var(--text-secondary); margin-bottom: 6px;
         }
-        @media (max-width: 480px){
-            body{padding:10px; overflow:auto; align-items:flex-start;}
-            body::before,body::after{display:none;}
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .backup-container{padding:0;}
-            .backup-card{padding:24px 16px 20px; border-radius:20px;}
-            .backup-title{font-size:1.4rem;}
-            .backup-desc{font-size:0.8rem;}
-            .btn-backup{padding:14px; font-size:0.95rem; border-radius:16px;}
-            .info-grid{grid-template-columns:1fr 1fr; gap:8px;}
-            .alert-modern{padding:12px; font-size:0.8rem; border-radius:14px;}
+
+        .tabla-row {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; padding: 10px 14px; border-radius: 10px;
+            border: 1px solid var(--border-soft); margin-bottom: 6px;
+            background: var(--bg-secondary);
+        }
+        .tabla-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; flex: 1; margin: 0; }
+        .tabla-row .counts { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+
+        .alert-modern {
+            border-radius: 14px; padding: 12px 16px; font-size: 0.85rem;
+            border: 1px solid; margin-bottom: 16px;
+            display: flex; gap: 10px; align-items: flex-start;
+        }
+        .alert-modern.info { background: rgba(42,109,244,0.08); border-color: rgba(42,109,244,0.2); color: var(--accent-primary); }
+        .alert-modern.warning { background: rgba(245,179,66,0.1); border-color: rgba(245,179,66,0.3); color: #8a6d00; }
+        [data-theme="dark"] .alert-modern.warning { color: var(--warning); }
+        .alert-modern.danger { background: var(--danger-soft); border-color: rgba(220,53,69,0.25); color: var(--danger); }
+
+        .spinner-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(11,30,51,0.5); backdrop-filter: blur(12px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .spinner-overlay.active { display: flex; }
+        .spinner-box {
+            background: var(--bg-secondary); padding: 40px 52px;
+            border-radius: 28px; text-align: center;
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.3);
+        }
+        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: var(--accent-primary); }
+        .spinner-box h5 { font-weight: 800; margin-top: 16px; color: var(--text-primary); }
+        .spinner-box p { color: var(--text-muted); margin-bottom: 0; font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .btn-menu, .theme-toggle { position: relative; top: auto; left: auto; right: auto; margin: 0 12px 12px; }
+            .btn-menu { width: calc(100% - 24px); justify-content: center; }
+            .page-header { flex-direction: column; align-items: flex-start; padding: 18px; }
+            .card-glass { padding: 18px 16px; }
         }
     </style>
 </head>
 <body>
 
-<!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
-    <i class="bi bi-arrow-left"></i> Menú Principal
-</a>
+<button class="theme-toggle" id="themeToggle"><i class="bi bi-moon-stars" id="themeIcon"></i></button>
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
-<div class="backup-container">
+<div class="container">
+    <div class="page-header">
+        <h1><i class="bi bi-cloud-arrow-down"></i> Respaldos del Sistema</h1>
+        <span class="badge-header"><i class="bi bi-shield-check me-1"></i> Solo admin</span>
+    </div>
 
-    <!-- Tarjeta principal -->
-    <div class="backup-card">
+    <div class="card-glass">
+        <h2><i class="bi bi-database-fill-gear text-primary"></i> Gestión de respaldos</h2>
+        <p class="sub">Exporta o restaura la base de datos y todos los archivos adjuntos de R2.</p>
 
-        <!-- Icono -->
-        <div class="icon-wrapper">
-            <span class="pulse-ring"></span>
-            <i class="bi bi-cloud-arrow-down"></i>
+        <div class="d-flex gap-2 flex-wrap mb-3">
+            <button class="btn-lg-modern btn-primary-modern" id="btnCreate">
+                <i class="bi bi-plus-circle"></i> Generar respaldo
+            </button>
+            <button class="btn-lg-modern btn-warning-modern" id="btnRestore">
+                <i class="bi bi-arrow-up-circle"></i> Restaurar
+            </button>
+            <button class="btn-lg-modern btn-ghost" id="btnReload">
+                <i class="bi bi-arrow-repeat"></i> Actualizar lista
+            </button>
         </div>
 
-        <!-- Títulos -->
-        <h1 class="backup-title"><i class="bi bi-database"></i> Backup</h1>
-        <div class="backup-subtitle">
-            Respaldo del Sistema
-            <span><i class="bi bi-shield-check me-1"></i> Seguro</span>
-        </div>
-
-        <p class="backup-desc">
-            <i class="bi bi-check-circle-fill me-1"></i>
-            Incluye base de datos y todos los archivos PDF del sistema.
-        </p>
-
-        <!-- Botón de descarga -->
-        <a href="/api/backup/download" class="btn-backup" id="downloadBtn">
-            <span class="btn-shimmer"></span>
-            <i class="bi bi-download"></i> Descargar Backup Completo
-        </a>
-
-        <!-- Grid de información -->
-        <div class="info-grid">
-            <div class="info-item">
-                <span class="info-icon"><i class="bi bi-hdd-stack"></i></span>
-                <div class="info-label">Tamaño estimado</div>
-                <div class="info-value">~ 50 MB</div>
-            </div>
-            <div class="info-item">
-                <span class="info-icon"><i class="bi bi-clock-history"></i></span>
-                <div class="info-label">Último backup</div>
-                <div class="info-value" id="lastBackupTime">Hoy</div>
-            </div>
-        </div>
-
-        <!-- Alerta de recomendación -->
-        <div class="alert-modern">
-            <i class="bi bi-info-circle"></i>
+        <div class="alert-modern warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
             <div>
-                <strong>Recomendación:</strong> Realiza un backup al menos cada semana para proteger tu información.
+                <strong>Restaurar</strong> reemplaza los datos actuales según las tablas que selecciones.
+                El proceso pide contraseña de administrador y palabra <code>CONFIRMAR</code>.
             </div>
         </div>
 
-    </div>
-
-</div>
-
-<!-- ================================================== -->
-<!-- LOADING OVERLAY -->
-<!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay">
-    <div class="spinner-box">
-        <div class="spinner-border" role="status"></div>
-        <h5>Preparando backup</h5>
-        <p>Esto puede tomar unos segundos.</p>
+        <div id="listBackups"></div>
     </div>
 </div>
 
-<!-- ================================================== -->
-<!-- MODAL NOTIFICACIÓN -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+<!-- ============ MODAL: CREAR ============ -->
+<div class="modal fade modal-modern" id="modalCreate" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" id="notificationHeader">
-                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-plus-circle text-primary"></i> Generar respaldo</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-body">
+                <div class="alert-modern info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <div>Se exportará la BD completa + todos los archivos de R2. Puede tardar varios minutos.</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Notas (opcional)</label>
+                    <input type="text" class="form-control" id="createNotes" placeholder="Ej: respaldo antes de migración">
+                </div>
+                <div>
+                    <label class="form-label">🔐 Contraseña de administrador</label>
+                    <input type="password" class="form-control" id="createPassword" autocomplete="current-password">
+                </div>
+            </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button class="btn-lg-modern btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-lg-modern btn-primary-modern" id="confirmCreate">Generar respaldo</button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- ============ MODAL: PASSWORD GENÉRICO ============ -->
+<div class="modal fade modal-modern" id="modalPassword" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-shield-lock text-warning"></i> <span id="pwdTitle">Confirmar</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="sub" id="pwdSubtitle"></p>
+                <label class="form-label">Contraseña del administrador</label>
+                <input type="password" class="form-control" id="pwdInput" autocomplete="current-password">
+            </div>
+            <div class="modal-footer">
+                <button class="btn-lg-modern btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-lg-modern btn-primary-modern" id="confirmPwd">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ MODAL: SUBIR ZIP (PASO 1) ============ -->
+<div class="modal fade modal-modern" id="modalRestore1" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-arrow-up-circle text-warning"></i> Restaurar respaldo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="sub">Paso 1 de 2 — Sube el ZIP y tu contraseña</p>
+                <div class="mb-3">
+                    <label class="form-label">Archivo ZIP</label>
+                    <input type="file" accept=".zip" id="restoreFile" class="form-control">
+                </div>
+                <div>
+                    <label class="form-label">🔐 Contraseña de administrador</label>
+                    <input type="password" class="form-control" id="restorePassword" autocomplete="current-password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-lg-modern btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-lg-modern btn-primary-modern" id="btnInspect">
+                    <i class="bi bi-search"></i> Ver contenido
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ MODAL: PREVIEW + SELECT (PASO 2) ============ -->
+<div class="modal fade modal-modern" id="modalRestore2" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="border-top: 4px solid var(--danger);">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-danger"></i> Restaurar respaldo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <p class="sub" style="margin-bottom:12px;">Paso 2 de 2 — Selecciona qué restaurar</p>
+
+                <div id="previewInfo" class="alert-modern info"></div>
+
+                <label class="form-label">🔄 Modo</label>
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <label class="tabla-row" style="cursor:pointer;">
+                            <div style="display:flex;gap:8px;align-items:flex-start;">
+                                <input type="radio" name="modoR" value="replace" id="modoReplace">
+                                <div>
+                                    <div style="font-weight:700;">🗑 Reemplazar</div>
+                                    <div style="font-size:0.75rem;color:var(--text-muted);">Borra los actuales y pone los del ZIP</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="tabla-row" style="cursor:pointer;">
+                            <div style="display:flex;gap:8px;align-items:flex-start;">
+                                <input type="radio" name="modoR" value="merge" id="modoMerge" checked>
+                                <div>
+                                    <div style="font-weight:700;">🔀 Fusionar</div>
+                                    <div style="font-size:0.75rem;color:var(--text-muted);">Solo agrega nuevos (recomendado)</div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <label class="form-label mb-0">📋 Tablas a restaurar</label>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="selAll">Todas</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="selNone">Ninguna</button>
+                    </div>
+                </div>
+                <div id="tablasList" style="max-height: 240px; overflow-y: auto; margin-bottom: 16px;"></div>
+
+                <label class="tabla-row" style="cursor:pointer;">
+                    <input type="checkbox" id="chkFiles" checked>
+                    <div style="flex:1;">
+                        <div style="font-weight:700;">📎 Restaurar archivos adjuntos</div>
+                        <div style="font-size:0.75rem;color:var(--text-muted);" id="filesCount"></div>
+                    </div>
+                </label>
+
+                <div class="mt-3">
+                    <label class="form-label">⚠️ Escribe <strong>CONFIRMAR</strong></label>
+                    <input type="text" class="form-control" id="confirmText" placeholder="CONFIRMAR">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-lg-modern btn-ghost" id="btnBack1">← Atrás</button>
+                <button class="btn-lg-modern" style="background:var(--danger);color:white;" id="btnDoRestore" disabled>
+                    <i class="bi bi-shield-exclamation"></i> Restaurar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ LOADING ============ -->
+<div class="spinner-overlay" id="loadingOverlay">
+    <div class="spinner-box">
+        <div class="spinner-border"></div>
+        <h5 id="loadingText">Procesando…</h5>
+        <p>Por favor espera.</p>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Mostrar notificaciones
-    function showNotification(title, bodyHTML, type = 'info') {
-        const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-        const header = document.getElementById('notificationHeader');
-        const titleEl = document.getElementById('notificationTitle');
-        const bodyEl = document.getElementById('notificationBody');
-        header.className = 'modal-header';
-        if (type === 'success') {
-            header.classList.add('bg-success', 'text-white');
-            titleEl.textContent = '✅ ' + title;
-        } else if (type === 'error') {
-            header.classList.add('bg-danger', 'text-white');
-            titleEl.textContent = '❌ ' + title;
-        } else if (type === 'warning') {
-            header.classList.add('bg-warning', 'text-dark');
-            titleEl.textContent = '⚠️ ' + title;
-        } else {
-            header.classList.add('bg-primary', 'text-white');
-            titleEl.textContent = 'ℹ️ ' + title;
+'use strict';
+
+// ============ TEMA ============
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateIcon(theme);
+})();
+function updateIcon(t) {
+    const i = document.getElementById('themeIcon');
+    if (i) i.className = t === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const nx = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nx);
+    localStorage.setItem('lumen-theme', nx);
+    updateIcon(nx);
+});
+
+// ============ HELPERS ============
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function showLoading(text = 'Procesando…') {
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+function showToast(title, msg, type = 'info') {
+    // simple toast minimal
+    const div = document.createElement('div');
+    div.style.cssText = `position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;
+      background:var(--bg-secondary);color:var(--text-primary);padding:14px 22px;border-radius:14px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.15);border-left:4px solid ${
+        type==='success'?'var(--success)':type==='error'?'var(--danger)':'var(--accent-primary)'
+      };max-width:90vw;`;
+    div.innerHTML = `<strong style="display:block;margin-bottom:4px;">${esc(title)}</strong><span style="font-size:0.85rem;color:var(--text-muted);">${esc(msg)}</span>`;
+    document.body.appendChild(div);
+    setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity 0.4s'; }, 4000);
+    setTimeout(() => div.remove(), 4600);
+}
+function formatSize(b) {
+    if (!b && b !== 0) return '—';
+    const u = ['B','KB','MB','GB']; let i = 0, n = b;
+    while (n >= 1024 && i < u.length-1) { n /= 1024; i++; }
+    return `${n.toFixed(n<10&&i>0?1:0)} ${u[i]}`;
+}
+function formatDate(iso) {
+    if (!iso) return '—';
+    try {
+        let s = iso;
+        if (s && !s.endsWith('Z') && !/[+-]\d{2}:?\d{2}$/.test(s)) s += 'Z';
+        return new Date(s).toLocaleString('es-MX', {
+            timeZone: 'America/Mexico_City',
+            day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'
+        });
+    } catch { return iso; }
+}
+
+// ============ MODAL PASSWORD PROMISE ============
+let pwdResolve = null;
+function askPassword(title, subtitle) {
+    document.getElementById('pwdTitle').textContent = title;
+    document.getElementById('pwdSubtitle').textContent = subtitle || '';
+    document.getElementById('pwdInput').value = '';
+    const modal = new bootstrap.Modal(document.getElementById('modalPassword'));
+    modal.show();
+    return new Promise(res => {
+        pwdResolve = res;
+        document.getElementById('confirmPwd').onclick = () => {
+            const p = document.getElementById('pwdInput').value;
+            modal.hide();
+            pwdResolve = null;
+            res(p || null);
+        };
+    });
+}
+
+// ============ LISTAR BACKUPS ============
+let lastPassword = null;
+
+async function loadBackups(pwd) {
+    if (!pwd) {
+        pwd = await askPassword('Ver respaldos', 'Ingresa tu contraseña para listar los respaldos');
+        if (!pwd) return;
+    }
+    showLoading('Cargando respaldos…');
+    try {
+        const fd = new FormData();
+        fd.append('password', pwd);
+        const r = await fetch('/api/backup/list', { method: 'POST', body: fd });
+        if (r.status === 401) {
+            lastPassword = null;
+            showToast('Error', 'Contraseña incorrecta', 'error');
+            return;
         }
-        bodyEl.innerHTML = bodyHTML;
-        modal.show();
-    }
-
-    // Mostrar/ocultar loading
-    function showLoading() {
-        document.getElementById('loadingOverlay').style.display = 'flex';
-    }
-
-    function hideLoading() {
-        document.getElementById('loadingOverlay').style.display = 'none';
-    }
-
-    // Obtener fecha del último backup (simulado)
-    function getLastBackupTime() {
-        const now = new Date();
-        const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return now.toLocaleDateString('es-ES', options);
-    }
-
-    // Actualizar fecha del último backup
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('lastBackupTime').textContent = getLastBackupTime();
-    });
-
-    // Manejar clic en el botón de descarga
-    document.getElementById('downloadBtn').addEventListener('click', function(e) {
-        showLoading();
-
-        // Simular tiempo de preparación
-        setTimeout(() => {
-            hideLoading();
-            // Mostrar notificación de éxito (el backup ya se está descargando)
-            showNotification(
-                'Backup iniciado',
-                '<p>La descarga del backup ha comenzado.</p><p class="text-muted small">El archivo se guardará automáticamente en tu computadora.</p>',
-                'success'
-            );
-            // Actualizar la fecha del último backup
-            document.getElementById('lastBackupTime').textContent = getLastBackupTime();
-        }, 1500);
-    });
-
-    // Si el backup falla (por ejemplo, error de red), se puede mostrar error
-    // Esto es solo para manejar posibles errores en la descarga
-    document.querySelector('.btn-backup').addEventListener('error', function() {
+        if (!r.ok) {
+            showToast('Error', 'No se pudieron cargar los respaldos', 'error');
+            return;
+        }
+        const data = await r.json();
+        lastPassword = pwd;
+        renderList(data);
+    } catch (e) {
+        showToast('Error', e.message, 'error');
+    } finally {
         hideLoading();
-        showNotification(
-            'Error en la descarga',
-            '<p>Hubo un problema al iniciar la descarga del backup.</p><p class="text-muted small">Por favor, intenta nuevamente más tarde.</p>',
-            'error'
-        );
-    });
+    }
+}
+
+function renderList(items) {
+    const el = document.getElementById('listBackups');
+    if (!items.length) {
+        el.innerHTML = `<div class="empty-state">
+            <i class="bi bi-database-slash"></i>
+            No hay respaldos guardados todavía.
+        </div>`;
+        return;
+    }
+    el.innerHTML = items.map(b => `
+        <div class="backup-item">
+            <div class="info">
+                <div class="name">${esc(b.filename)}</div>
+                <div class="meta">
+                    <span><i class="bi bi-calendar3"></i> ${esc(formatDate(b.created_at))}</span>
+                    <span><i class="bi bi-hdd"></i> ${esc(formatSize(b.size))}</span>
+                    <span><i class="bi bi-list-ol"></i> ${b.num_records} registros</span>
+                    <span><i class="bi bi-paperclip"></i> ${b.num_files} archivos</span>
+                    ${b.notes ? `<span><i class="bi bi-sticky"></i> ${esc(b.notes)}</span>` : ''}
+                </div>
+            </div>
+            <button class="btn-icon-sm dl" onclick="downloadBackup(${b.id}, '${esc(b.filename)}')" title="Descargar">
+                <i class="bi bi-download"></i>
+            </button>
+            <button class="btn-icon-sm del" onclick="deleteBackup(${b.id}, '${esc(b.filename)}')" title="Eliminar">
+                <i class="bi bi-trash3"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+function downloadBackup(id, name) {
+    window.open(`/api/backup/download/${id}`, '_blank');
+    showToast('Descarga iniciada', name, 'success');
+}
+
+async function deleteBackup(id, name) {
+    const pwd = await askPassword('Eliminar respaldo', `¿Eliminar "${name}"?`);
+    if (!pwd) return;
+    showLoading('Eliminando…');
+    try {
+        const fd = new FormData();
+        fd.append('password', pwd);
+        const r = await fetch(`/api/backup/${id}`, { method: 'DELETE', body: fd });
+        if (!r.ok) {
+            const e = await r.json().catch(() => ({}));
+            showToast('Error', e.detail || 'No se pudo eliminar', 'error');
+            return;
+        }
+        showToast('Respaldo eliminado', name, 'success');
+        await loadBackups(lastPassword);
+    } catch (e) {
+        showToast('Error', e.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// ============ CREAR BACKUP ============
+document.getElementById('btnCreate').onclick = () => {
+    document.getElementById('createNotes').value = '';
+    document.getElementById('createPassword').value = '';
+    new bootstrap.Modal(document.getElementById('modalCreate')).show();
+};
+
+document.getElementById('confirmCreate').onclick = async () => {
+    const pwd = document.getElementById('createPassword').value;
+    const notes = document.getElementById('createNotes').value;
+    if (!pwd) { showToast('Falta contraseña', 'Ingresa tu contraseña', 'warning'); return; }
+
+    bootstrap.Modal.getInstance(document.getElementById('modalCreate')).hide();
+    showLoading('Generando respaldo (puede tardar varios minutos)…');
+    try {
+        const fd = new FormData();
+        fd.append('password', pwd);
+        fd.append('notes', notes);
+        const r = await fetch('/api/backup/create', { method: 'POST', body: fd });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+            showToast('Error', data.detail || 'No se pudo generar', 'error');
+            return;
+        }
+        showToast('Respaldo creado', `${data.filename} · ${data.num_records} registros · ${data.num_files} archivos`, 'success');
+        lastPassword = pwd;
+        await loadBackups(pwd);
+    } catch (e) {
+        showToast('Error', e.message, 'error');
+    } finally {
+        hideLoading();
+    }
+};
+
+// ============ RESTAURAR ============
+let restoreState = { file: null, password: null, preview: null };
+
+document.getElementById('btnRestore').onclick = () => {
+    document.getElementById('restoreFile').value = '';
+    document.getElementById('restorePassword').value = '';
+    restoreState = { file: null, password: null, preview: null };
+    new bootstrap.Modal(document.getElementById('modalRestore1')).show();
+};
+
+document.getElementById('btnInspect').onclick = async () => {
+    const fileInput = document.getElementById('restoreFile');
+    const pwd = document.getElementById('restorePassword').value;
+    if (!fileInput.files.length) { showToast('Falta ZIP', 'Selecciona el archivo', 'warning'); return; }
+    if (!pwd) { showToast('Falta contraseña', 'Ingresa tu contraseña', 'warning'); return; }
+
+    restoreState.file = fileInput.files[0];
+    restoreState.password = pwd;
+
+    bootstrap.Modal.getInstance(document.getElementById('modalRestore1')).hide();
+    showLoading('Analizando el respaldo…');
+    try {
+        const fd = new FormData();
+        fd.append('file', restoreState.file);
+        fd.append('password', pwd);
+        const r = await fetch('/api/backup/inspect', { method: 'POST', body: fd });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+            showToast('Error', data.detail || 'No se pudo inspeccionar', 'error');
+            new bootstrap.Modal(document.getElementById('modalRestore1')).show();
+            return;
+        }
+        restoreState.preview = data;
+        renderPreview(data);
+        new bootstrap.Modal(document.getElementById('modalRestore2')).show();
+    } catch (e) {
+        showToast('Error', e.message, 'error');
+    } finally {
+        hideLoading();
+    }
+};
+
+function renderPreview(data) {
+    const meta = data.metadata || {};
+    document.getElementById('previewInfo').innerHTML = `
+        <i class="bi bi-box-seam-fill"></i>
+        <div>
+            <strong>Respaldo del ${esc(formatDate(meta.created_at))}</strong><br>
+            ${meta.num_records || data.total_records} registros · ${data.total_files} archivos · ${esc(formatSize(data.tamaño_total))}
+            ${meta.notes ? `<br><em>"${esc(meta.notes)}"</em>` : ''}
+        </div>`;
+
+    const tablas = data.tablas || {};
+    const actuales = data.actuales || {};
+    const labels = {
+        firms: '🏢 Firmas',
+        users: '👥 Usuarios',
+        clients: '👤 Clientes',
+        client_documents: '📎 Documentos de clientes',
+        contracts: '📜 Contratos',
+        court_cases: '📁 Expedientes',
+        payments: '💰 Pagos',
+        actuaciones: '📄 Actuaciones',
+        agenda_events: '📅 Agenda',
+        activity_logs: '📋 Bitácora',
+        backups: '💾 Respaldos (excluida)',
+    };
+
+    const list = document.getElementById('tablasList');
+    list.innerHTML = Object.entries(tablas).map(([t, count]) => {
+        const disabled = t === 'backups' ? 'disabled' : '';
+        const checked = t === 'backups' ? '' : 'checked';
+        return `
+            <label class="tabla-row">
+                <div style="display:flex;align-items:center;gap:8px;flex:1;">
+                    <input type="checkbox" class="tabla-cb" value="${esc(t)}" ${checked} ${disabled}>
+                    <span style="font-weight:600;font-size:0.85rem;">${esc(labels[t] || t)}</span>
+                </div>
+                <span class="counts">${count} en ZIP · ${actuales[t] ?? 0} actuales</span>
+            </label>`;
+    }).join('');
+
+    document.getElementById('filesCount').textContent =
+        `${data.total_files} archivos · ${esc(formatSize(data.tamaño_storage))}`;
+
+    document.getElementById('confirmText').value = '';
+    document.getElementById('btnDoRestore').disabled = true;
+}
+
+document.getElementById('selAll').onclick = () => {
+    document.querySelectorAll('.tabla-cb:not([disabled])').forEach(c => c.checked = true);
+};
+document.getElementById('selNone').onclick = () => {
+    document.querySelectorAll('.tabla-cb').forEach(c => c.checked = false);
+};
+document.getElementById('confirmText').addEventListener('input', e => {
+    const ok = e.target.value.trim().toUpperCase() === 'CONFIRMAR';
+    document.getElementById('btnDoRestore').disabled = !ok;
+});
+document.getElementById('btnBack1').onclick = () => {
+    bootstrap.Modal.getInstance(document.getElementById('modalRestore2')).hide();
+    setTimeout(() => new bootstrap.Modal(document.getElementById('modalRestore1')).show(), 300);
+};
+
+document.getElementById('btnDoRestore').onclick = async () => {
+    const tablas = Array.from(document.querySelectorAll('.tabla-cb:checked')).map(c => c.value);
+    if (!tablas.length) { showToast('Sin tablas', 'Selecciona al menos una', 'warning'); return; }
+    const modo = document.querySelector('input[name="modoR"]:checked').value;
+    const arch = document.getElementById('chkFiles').checked;
+
+    bootstrap.Modal.getInstance(document.getElementById('modalRestore2')).hide();
+    showLoading('Restaurando (puede tardar varios minutos)…');
+    try {
+        const fd = new FormData();
+        fd.append('file', restoreState.file);
+        fd.append('password', restoreState.password);
+        fd.append('confirm', 'CONFIRMAR');
+        fd.append('tablas', JSON.stringify(tablas));
+        fd.append('modo', modo);
+        fd.append('restaurar_archivos', arch ? 'true' : 'false');
+        const r = await fetch('/api/backup/restore-selective', { method: 'POST', body: fd });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+            showToast('Error', data.detail || 'No se pudo restaurar', 'error');
+            return;
+        }
+        showToast('✅ Restauración completada',
+            `${data.num_records_insertados} insertados · ${data.num_records_borrados} borrados · ${data.num_files} archivos`,
+            'success');
+        setTimeout(() => location.reload(), 3000);
+    } catch (e) {
+        showToast('Error', e.message, 'error');
+    } finally {
+        hideLoading();
+    }
+};
+
+// ============ INIT ============
+document.getElementById('btnReload').onclick = () => loadBackups(lastPassword);
+// Cargar lista al inicio (pide contraseña)
+setTimeout(() => loadBackups(), 300);
 </script>
 </body>
 </html>

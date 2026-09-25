@@ -68,3 +68,44 @@ def make_key(folder: str, filename: str) -> str:
     """Genera una key única con UUID para evitar colisiones."""
     ext = filename.rsplit(".", 1)[-1] if "." in filename else "pdf"
     return f"{folder}/{uuid.uuid4().hex}.{ext}"
+
+
+# ============================================================
+# HELPERS PARA BACKUP (exponen acceso raw a R2)
+# ============================================================
+def get_bytes(key: str):
+    """Descarga bytes de R2. Devuelve None si no existe."""
+    if not key:
+        return None
+    try:
+        resp = s3_client.get_object(Bucket=R2_BUCKET, Key=key)
+        return resp["Body"].read()
+    except Exception as e:
+        if "NoSuchKey" in str(e) or "404" in str(e):
+            return None
+        print(f"⚠️ Error leyendo {key} de R2: {e}")
+        return None
+
+
+def list_objects(prefix: str = ""):
+    """Lista objetos de R2 con un prefijo. Devuelve [{'key', 'size'}, ...]."""
+    results = []
+    try:
+        paginator = s3_client.get_paginator("list_objects_v2")
+        for page in paginator.paginate(Bucket=R2_BUCKET, Prefix=prefix):
+            for obj in page.get("Contents", []):
+                results.append({"key": obj["Key"], "size": obj["Size"]})
+    except Exception as e:
+        print(f"⚠️ Error listando R2 ({prefix}): {e}")
+    return results
+
+
+def object_exists(key: str) -> bool:
+    """Verifica si un objeto existe en R2."""
+    if not key:
+        return False
+    try:
+        s3_client.head_object(Bucket=R2_BUCKET, Key=key)
+        return True
+    except Exception:
+        return False

@@ -643,40 +643,52 @@ async def regenerate_constancia(client_id: int, db: Session = Depends(get_db)):
     )
 
 
-# ============================================================
-# SISTEMA QR — SUBIDA DESDE MÓVIL
-# ============================================================
 @router.post("/upload-mobile/{client_temp_id}")
 async def upload_mobile_document(
     client_temp_id: str,
     file: UploadFile = File(...),
     doc_type: str = Form(...),
 ):
-    """El móvil sube un archivo; se guarda en R2 bajo temp/{temp_id}/."""
+    """
+    Sube un archivo desde el móvil. El QR es de UN SOLO USO.
+    Una vez subido, ni recargando la página se puede volver a subir.
+    """
     try:
-        # 1. Verificar si el QR ya fue usado
+        # 1) ¿Ya se usó este QR? (marcador .used en R2)
         if _qr_is_used(client_temp_id):
             return {
                 "success": False,
                 "error": "Este código QR ya ha sido utilizado. Genera uno nuevo desde el sistema.",
+                "code": "QR_USED",
             }
 
-        # 2. Leer el contenido
+        # 2) ¿Ya hay archivos subidos con este temp_id? (doble verificación)
+        existing_files = _list_qr_files(client_temp_id)
+        if existing_files:
+            # Marcar como usado por si acaso y rechazar
+            _mark_qr_used(client_temp_id, doc_type)
+            return {
+                "success": False,
+                "error": "Este código QR ya tiene un archivo subido. No se permiten más envíos.",
+                "code": "QR_USED",
+            }
+
+        # 3) Leer contenido
         content = await file.read()
         file_ext = file.filename.split(".")[-1].lower() if file.filename else "pdf"
 
-        # 3. Si es imagen, convertir a PDF
+        # 4) Si es imagen, convertir a PDF
         if file_ext in ("jpg", "jpeg", "png"):
             content = convert_image_to_pdf(content)
 
-        # 4. Subir a R2
+        # 5) Subir a R2
         filename = f"{doc_type}_{uuid.uuid4().hex[:8]}.pdf"
         key = f"temp/{client_temp_id}/{filename}"
         folder = key.rsplit("/", 1)[0]
         filename_only = key.rsplit("/", 1)[-1]
         upload_bytes(content, folder, filename_only, content_type="application/pdf")
 
-        # 5. Marcar el QR como usado
+        # 6) Marcar el QR como USADO (ahora sí, definitivo)
         _mark_qr_used(client_temp_id, doc_type)
 
         return {
@@ -719,15 +731,29 @@ async def upload_mobile_page(
 
 @router.get("/check-qr-status/{temp_id}")
 async def check_qr_status(temp_id: str):
-    """Verifica si un QR ya fue utilizado."""
+    """
+    Devuelve el estado del QR:
+      - used: True si ya se usó (tiene .used o archivos)
+      - files: archivos subidos (si los hay)
+    """
+    # 1) ¿Tiene el marcador .used?
     if _qr_is_used(temp_id):
-        return {"used": True, "message": "Este QR ya fue utilizado"}
+        files = _list_qr_files(temp_id)
+        return {
+            "used": True,
+            "has_files": len(files) > 0,
+            "files": [f.rsplit("/", 1)[-1] for f in files],
+            "message": "Este QR ya fue utilizado.",
+        }
 
+    # 2) ¿Tiene archivos pero no marcador? (caso borde: falló al marcar)
     files = _list_qr_files(temp_id)
     if files:
         return {
-            "used": False,
+            "used": True,
             "has_files": True,
             "files": [f.rsplit("/", 1)[-1] for f in files],
+            "message": "Este QR ya tiene un archivo subido.",
         }
+
     return {"used": False, "has_files": False}

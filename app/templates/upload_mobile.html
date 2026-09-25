@@ -1280,7 +1280,7 @@
                     showToast('Éxito', '¡Documento subido correctamente!', 'success', 4000);
 
                     // Deshabilitar formulario permanentemente
-                    disableFormPermanent();
+                    disableFormPermanent('completed');
 
                     setTimeout(() => {
                         hideLoading();
@@ -1288,10 +1288,10 @@
 
                 } else {
                     // Error del servidor
-                    if (result.error && result.error.includes('ya ha sido utilizado')) {
+                    if (result.code === 'QR_USED' || (result.error && result.error.includes('ya ha sido utilizado'))) {
                         setLoadingError('QR Expirado', 'Este código QR ya fue utilizado. Genera uno nuevo desde el sistema.');
                         showToast('QR no válido', 'Este código QR ya fue utilizado.', 'error', 5000);
-                        disableFormPermanent();
+                        disableFormPermanent('already_used');
                         setTimeout(() => hideLoading(), 1200);
                     } else {
                         setLoadingError('Error al subir', result.error || 'No se pudo procesar el archivo.');
@@ -1317,56 +1317,115 @@
             }
         });
 
+
+                // ============================================================
+        // VERIFICAR ESTADO DEL QR AL CARGAR LA PÁGINA
         // ============================================================
-        // DESHABILITAR FORMULARIO PERMANENTEMENTE
+        // Si ya fue usado → bloquear todo desde el inicio.
+        // Si falla la consulta → mostrar advertencia pero dejar intentar.
+        async function verificarEstadoQR() {
+            if (!tempId) {
+                // Sin temp_id no se puede subir nada
+                disableFormPermanent('expired', 'Falta el identificador del QR. Solicita uno nuevo desde el sistema.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/clients/check-qr-status/${encodeURIComponent(tempId)}`);
+                if (!res.ok) throw new Error('No se pudo verificar el QR');
+
+                const data = await res.json();
+
+                if (data.used) {
+                    // QR ya usado → bloquear todo
+                    disableFormPermanent('already_used');
+                    showToast('QR ya utilizado',
+                        'Este enlace ya fue usado. Genera uno nuevo desde el sistema.',
+                        'error', 6000);
+                }
+            } catch (err) {
+                // Si no se puede verificar, dejar intentar (el backend rechazará si aplica)
+                console.warn('No se pudo verificar el QR:', err);
+            }
+        }
+
+        // Ejecutar al cargar la página
+        verificarEstadoQR();
+
+
+                // Asegurar que el loading esté oculto al cargar (por si quedó abierto)
+        window.addEventListener('pageshow', () => {
+            if (loadingOverlay) loadingOverlay.classList.remove('active');
+        });
+
+              // ============================================================
+        // DESHABILITAR FORMULARIO PERMANENTEMENTE (modos)
         // ============================================================
-        function disableFormPermanent() {
+        function disableFormPermanent(mode = 'completed', extraMsg = '') {
             // Deshabilitar todos los inputs y botones del formulario
             uploadForm.querySelectorAll('input, button').forEach(el => {
                 el.disabled = true;
             });
 
+            const configs = {
+                completed: {
+                    icon: 'bi-check-circle',
+                    color: '#1a8b5c',
+                    title: 'Documento subido correctamente',
+                    subtitle: 'Este QR ya no es válido para nuevas subidas.',
+                    badge: '✅ SUBIDO',
+                    badgeBg: 'linear-gradient(135deg, #e6f7f0, #ddf3ea)',
+                    badgeColor: '#1a6b4c',
+                },
+                already_used: {
+                    icon: 'bi-x-circle',
+                    color: '#dc3545',
+                    title: 'QR ya utilizado',
+                    subtitle: 'Este enlace ya fue usado. Genera uno nuevo desde el sistema.',
+                    badge: '❌ USADO',
+                    badgeBg: 'linear-gradient(135deg, #fde8e6, #fad4d0)',
+                    badgeColor: '#7a2a2a',
+                },
+                expired: {
+                    icon: 'bi-clock-history',
+                    color: '#f5b342',
+                    title: 'QR expirado',
+                    subtitle: extraMsg || 'Este enlace ya no es válido. Genera uno nuevo desde el sistema.',
+                    badge: '⏰ EXPIRADO',
+                    badgeBg: 'linear-gradient(135deg, #fef3e2, #fde8cc)',
+                    badgeColor: '#7a5a1a',
+                },
+            };
+
+            const cfg = configs[mode] || configs.completed;
+
             // Modificar drop zone
-            dropZone.style.opacity = '0.5';
+            dropZone.style.opacity = '0.85';
             dropZone.style.cursor = 'not-allowed';
             dropZone.style.pointerEvents = 'none';
             dropZone.innerHTML = `
-                <span class="icon-wrap" style="color:#1a8b5c;">
-                    <i class="bi bi-check-circle"></i>
+                <span class="icon-wrap" style="color:${cfg.color};">
+                    <i class="bi ${cfg.icon}"></i>
                 </span>
-                <p><strong>Documento subido correctamente</strong></p>
-                <p class="small text-muted">Este QR ya no es válido para nuevas subidas.</p>
+                <p><strong>${cfg.title}</strong></p>
+                <p class="small text-muted">${cfg.subtitle}</p>
                 <div class="supported-formats">
-                    <span style="background:rgba(26,139,92,0.1);color:#1a8b5c;">✓ Completado</span>
+                    <span style="background:${cfg.badgeBg};color:${cfg.badgeColor};">${cfg.badge}</span>
                 </div>
             `;
 
             // Ocultar botón eliminar
-            removeFileBtn.style.display = 'none';
+            if (removeFileBtn) removeFileBtn.style.display = 'none';
+
+            // Ocultar botón subir
+            if (submitBtn) submitBtn.style.display = 'none';
 
             // Cambiar mensaje del badge
-            document.getElementById('docTypeBadge').textContent = '✅ SUBIDO';
-            document.getElementById('docTypeBadge').style.background = 'linear-gradient(135deg, #e6f7f0, #ddf3ea)';
-            document.getElementById('docTypeBadge').style.color = '#1a6b4c';
+            const badge = document.getElementById('docTypeBadge');
+            badge.textContent = cfg.badge;
+            badge.style.background = cfg.badgeBg;
+            badge.style.color = cfg.badgeColor;
         }
-
-        // ============================================================
-        // RECUPERAR ESTADO SI EL QR YA ESTÁ USADO (desde el backend)
-        // ============================================================
-        // Si la página se carga y el QR ya fue usado, podemos verificar
-        // y deshabilitar temprano. (Opcional)
-        // ============================================================
-
-        // ============================================================
-        // PREVENIR CIERRE ACCIDENTAL
-        // ============================================================
-        window.addEventListener('beforeunload', (e) => {
-            if (selectedFile && !submitBtn.disabled) {
-                e.preventDefault();
-                e.returnValue = '¿Estás seguro? El archivo no se ha subido.';
-                return e.returnValue;
-            }
-        });
 
         // ============================================================
         // LOG PARA DEPURACIÓN (eliminar en producción)

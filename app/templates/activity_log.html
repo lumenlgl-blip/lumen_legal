@@ -1,142 +1,292 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Bitácora · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.8);
+            --surface-glass-strong: rgba(255,255,255,0.92);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #dbe4ef;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --purple: #6f42c1;
+            --purple-soft: #ede7fe;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167,139,250,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
 
         body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
             min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* Botón menú flotante */
-        .btn-menu-modern {
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+        .theme-toggle:active { transform: scale(0.95); }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
+        .btn-menu {
             position: fixed;
             top: 24px;
             left: 24px;
             z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
             border-radius: 60px;
-            padding: 10px 22px;
+            padding: 12px 24px;
             font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
+            color: var(--text-primary);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
         }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+        .btn-menu:hover {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
-            color: #0b1e33;
+            color: var(--accent-primary);
         }
 
-        /* Título principal */
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1100px; }
+
         .page-header {
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 28px;
-            padding: 24px 28px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
             margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
+            animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .page-header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #0b1e33;
-            letter-spacing: -0.02em;
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
             margin: 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         .page-header h1 i {
-            color: #2a6df4;
             font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .page-header .badge-count {
-            background: #0b1e33;
+            background: var(--accent-dark);
             color: white;
             font-weight: 600;
-            padding: 6px 18px;
+            padding: 8px 20px;
             border-radius: 40px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .page-header .badge-count i {
-            margin-right: 6px;
-            color: #7aa9ff;
-        }
+        .page-header .badge-count i { color: var(--accent-light); font-size: 0.9rem; }
 
-        /* Tarjeta principal */
+        /* ============================================================
+           CARD PRINCIPAL
+           ============================================================ */
         .card-modern {
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 28px;
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.08);
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
             padding: 28px;
-            transition: box-shadow 0.2s;
+            transition: box-shadow var(--transition-normal);
+            animation: fadeInUp 0.4s ease-out;
         }
-        .card-modern:hover {
-            box-shadow: 0 28px 56px -16px rgba(0,20,40,0.12);
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        .card-modern:hover { box-shadow: var(--shadow-lg); }
 
         .card-header-custom {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #eef3fa;
-            margin-bottom: 20px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid var(--border-soft);
+            margin-bottom: 24px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .card-header-custom h5 {
-            font-weight: 700;
-            color: #0b1e33;
+            font-weight: 800;
+            color: var(--text-primary);
             margin: 0;
             font-size: 1.1rem;
-        }
-        .card-header-custom h5 i {
-            color: #2a6df4;
-            margin-right: 8px;
-        }
-        .card-header-custom .badge-live {
-            background: #e3f5ee;
-            color: #1a8b5c;
-            font-weight: 600;
-            font-size: 0.7rem;
-            padding: 4px 14px;
-            border-radius: 40px;
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+        .card-header-custom h5 i { color: var(--accent-primary); }
+
+        .card-header-custom .badge-live {
+            background: var(--success-soft);
+            color: var(--success);
+            font-weight: 700;
+            font-size: 0.72rem;
+            padding: 6px 16px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
             gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
         .card-header-custom .badge-live .dot {
             width: 8px;
             height: 8px;
-            background: #1a8b5c;
+            background: var(--success);
             border-radius: 50%;
             display: inline-block;
             animation: pulse-dot 1.6s infinite;
@@ -146,216 +296,468 @@
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        /* Cards de logs */
+        /* Botón limpiar */
+        .btn-clear-logs {
+            border-radius: 60px;
+            padding: 8px 20px;
+            font-weight: 700;
+            font-size: 0.82rem;
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
+            background: transparent;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 40px;
+        }
+        .btn-clear-logs:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(220,53,69,0.4);
+        }
+
+        /* ============================================================
+           LOGS
+           ============================================================ */
         .log-item {
-            background: white;
-            border-radius: 16px;
-            padding: 14px 18px;
-            margin-bottom: 8px;
-            border-left: 5px solid #d0d8e3;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            transition: all 0.15s ease;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 5px solid var(--border-strong);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
+            animation: fadeInUp 0.3s ease-out backwards;
         }
         .log-item:hover {
-            background: #fafcff;
+            background: var(--bg-tertiary);
             transform: translateX(4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: var(--shadow-md);
         }
         .log-item .log-content {
             flex: 1;
-            min-width: 180px;
+            min-width: 200px;
         }
-        .log-item .log-content .log-user {
-            font-weight: 700;
-            color: #0b1e33;
-            font-size: 0.95rem;
-        }
-        .log-item .log-content .log-action {
-            font-weight: 600;
-            color: #2a4a7a;
-        }
-        .log-item .log-content .log-entity {
-            font-weight: 600;
-            color: #0b1e33;
-        }
-        .log-item .log-content .log-desc {
-            font-size: 0.8rem;
-            color: #6b7b8f;
-            display: block;
-            margin-top: 2px;
-        }
-        .log-item .log-date {
-            font-size: 0.75rem;
-            color: #8a9bb0;
-            font-weight: 500;
-            white-space: nowrap;
+        .log-item .log-content .log-line {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 4px;
+            font-size: 0.92rem;
+            line-height: 1.5;
         }
-        .log-item .log-date i {
-            font-size: 0.8rem;
+        .log-item .log-content .log-user {
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .log-item .log-content .log-action {
+            font-weight: 700;
+        }
+        .log-item .log-content .log-entity {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .log-item .log-content .log-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 6px;
+            padding-left: 2px;
+        }
+        .log-item .log-date {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 40px;
         }
 
         /* Colores por acción */
-        .log-create { border-left-color: #1a8b5c; }
-        .log-update { border-left-color: #2a6df4; }
-        .log-delete { border-left-color: #dc3545; }
-        .log-login { border-left-color: #f5b342; }
-        .log-logout { border-left-color: #6f42c1; }
-        .log-error { border-left-color: #dc3545; }
+        .log-create { border-left-color: var(--success); }
+        .log-update { border-left-color: var(--accent-primary); }
+        .log-delete { border-left-color: var(--danger); }
+        .log-login { border-left-color: var(--warning); }
+        .log-logout { border-left-color: var(--purple); }
+        .log-error { border-left-color: var(--danger); }
 
-        .log-create .log-action { color: #1a8b5c; }
-        .log-update .log-action { color: #2a6df4; }
-        .log-delete .log-action { color: #dc3545; }
+        .log-create .log-action { color: var(--success); }
+        .log-update .log-action { color: var(--accent-primary); }
+        .log-delete .log-action { color: var(--danger); }
         .log-login .log-action { color: #b7791f; }
-        .log-logout .log-action { color: #6f42c1; }
-        .log-error .log-action { color: #dc3545; }
+        [data-theme="dark"] .log-login .log-action { color: var(--warning); }
+        .log-logout .log-action { color: var(--purple); }
+        .log-error .log-action { color: var(--danger); }
 
-        /* Badge de acción */
+        /* Action badges */
         .action-badge {
-            font-size: 0.55rem;
-            font-weight: 700;
-            padding: 2px 10px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 3px 10px;
             border-radius: 40px;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
-            background: #eef3fa;
-            color: #4a5b6e;
-            margin-left: 6px;
+            letter-spacing: 0.05em;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
         }
-        .action-badge.create { background: #e3f5ee; color: #1a8b5c; }
-        .action-badge.update { background: #e3effa; color: #2a6df4; }
-        .action-badge.delete { background: #fde8e6; color: #dc3545; }
-        .action-badge.login { background: #fdf3e0; color: #b7791f; }
-        .action-badge.logout { background: #ede7f5; color: #6f42c1; }
-        .action-badge.error { background: #fde8e6; color: #dc3545; }
+        .action-badge.create { background: var(--success-soft); color: var(--success); }
+        .action-badge.update { background: var(--info-soft); color: var(--accent-primary); }
+        .action-badge.delete { background: var(--danger-soft); color: var(--danger); }
+        .action-badge.login { background: var(--warning-soft); color: #b7791f; }
+        [data-theme="dark"] .action-badge.login { color: var(--warning); }
+        .action-badge.logout { background: var(--purple-soft); color: var(--purple); }
+        .action-badge.error { background: var(--danger-soft); color: var(--danger); }
 
-        /* Loading overlay */
-        .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
+        /* ============================================================
+           MODALES MODERNOS
+           ============================================================ */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 22px 28px 12px 28px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 600;
+            padding: 10px 24px;
+            min-height: 44px;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-warning .modal-title,
+        .modal-header.header-info .modal-title { color: white; }
+
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* ============================================================
+           FORMULARIOS
+           ============================================================ */
+        .form-control {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 52px;
+        }
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-label {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ============================================================
+           SPINNER OVERLAY
+           ============================================================ */
+        .spinner-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
             justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
             text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
         }
         .spinner-box .spinner-border {
             width: 3rem;
             height: 3rem;
-            color: #2a6df4;
+            color: var(--accent-primary);
+            border-width: 3px;
         }
         .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
-            margin-bottom: 0;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
+            margin-bottom: 4px;
         }
         .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
-            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
         }
 
-        /* Estado vacío */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           EMPTY STATE
+           ============================================================ */
+        .empty-state { text-align: center; padding: 60px 20px; }
         .empty-state i {
-            font-size: 3.5rem;
-            color: #d0d8e3;
-            margin-bottom: 12px;
+            font-size: 4rem;
+            color: var(--text-light);
+            margin-bottom: 16px;
+            display: block;
+            opacity: 0.6;
         }
         .empty-state h5 {
-            color: #0b1e33;
-            font-weight: 600;
+            color: var(--text-primary);
+            font-weight: 800;
+            margin-bottom: 8px;
+            font-size: 1.15rem;
         }
         .empty-state p {
-            color: #8a9bb0;
-            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin: 0;
         }
 
-        /* Responsive */
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        .skeleton-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-soft);
+            border-left: 5px solid var(--border-soft);
+        }
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 30%; }
+        .skeleton-line.medium { width: 60%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .card-modern { margin-left: 16px; margin-right: 16px; }
+        }
+
         @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header h1 i { font-size: 1.4rem; }
-            .card-modern { padding: 18px; }
-            .log-item { padding: 12px 14px; flex-direction: column; align-items: stretch; }
-            .log-item .log-date { margin-top: 4px; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header {
+                padding: 18px 20px;
+                border-radius: 20px;
+                margin-bottom: 16px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .badge-count { font-size: 0.75rem; padding: 6px 16px; }
+            .card-modern { padding: 18px 16px; border-radius: 20px; }
+            .card-header-custom { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .card-header-custom .d-flex { width: 100%; justify-content: space-between; }
+            .log-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .log-item .log-date {
+                align-self: flex-start;
+            }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
         }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-            .page-header,.card-modern{margin-left:16px; margin-right:16px;}
+
+        @media (max-width: 480px) {
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header {
+                margin: 0 12px 12px 12px;
+                border-radius: 16px;
+                padding: 14px 16px;
+            }
+            .page-header .badge-count {
+                width: 100%;
+                justify-content: center;
+            }
+            .card-modern { margin: 0 12px; padding: 16px 14px; }
+            .log-item { padding: 12px 14px; border-radius: 14px; }
+            .log-item .log-content .log-line { font-size: 0.85rem; }
+            .log-item .log-content .log-desc { font-size: 0.76rem; }
+            .log-item .log-date { font-size: 0.72rem; padding: 5px 10px; }
+            .action-badge { font-size: 0.55rem; padding: 2px 8px; }
+            .btn-clear-logs { width: 100%; justify-content: center; }
+            .spinner-box { padding: 30px 28px; }
         }
-        @media (max-width: 768px){
-            .container{padding-left:0; padding-right:0;}
-            .page-header{padding:18px; border-radius:20px; margin:0 12px 16px 12px; flex-direction:column; align-items:flex-start;}
-            .page-header h1{font-size:1.3rem;} .page-header h1 i{font-size:1.4rem;}
-            .card-modern{padding:18px; border-radius:20px; margin:0 12px;}
-            .card-header-custom{flex-direction:column; align-items:flex-start; gap:8px;}
-            .card-header-custom > div{width:100%; display:flex; justify-content:space-between;}
-            .log-item{padding:12px 14px; flex-direction:column; align-items:stretch;}
-            .log-item .log-date{margin-top:4px;}
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
-        @media (max-width: 480px){
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .page-header{margin:0 10px 12px 10px; border-radius:16px; padding:14px;}
-            .page-header .badge-count{width:100%; text-align:center; display:flex; justify-content:center;}
-            .card-modern{margin:0 10px; padding:14px; border-radius:16px;}
-            .log-item{padding:10px 12px; border-radius:12px;}
-            .log-item .log-content .log-user{font-size:0.85rem;}
-            .log-item .log-content .log-desc{font-size:0.75rem;}
-            .action-badge{font-size:0.5rem; padding:2px 8px;}
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
         }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
     </style>
 </head>
 <body>
 
-<!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
-    <i class="bi bi-arrow-left"></i> Menú Principal
-</a>
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
 
 <div class="container">
 
-    <!-- Header -->
+    <!-- ENCABEZADO -->
     <div class="page-header">
-        <h1>
-            <i class="bi bi-list-check"></i> Bitácora de Actividades
-        </h1>
+        <h1><i class="bi bi-list-check"></i> Bitácora de Actividades</h1>
         <span class="badge-count" id="logCounter">
             <i class="bi bi-database"></i> <span id="logCountNumber">0</span> registros
         </span>
     </div>
 
-    <!-- Tarjeta principal -->
+    <!-- CARD PRINCIPAL -->
     <div class="card-modern">
         <div class="card-header-custom">
             <h5><i class="bi bi-clock-history"></i> Últimas 100 actividades</h5>
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-outline-danger btn-sm" onclick="openClearModal()" style="border-radius:20px;padding:4px 14px;">
-                    <i class="bi bi-trash3 me-2"></i>Limpiar Bitácora
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button class="btn-clear-logs" onclick="openClearModal()" type="button">
+                    <i class="bi bi-trash3"></i> Limpiar Bitácora
                 </button>
                 <span class="badge-live">
                     <span class="dot"></span> En vivo
@@ -369,25 +771,34 @@
 
 </div>
 
-
 <!-- ================================================== -->
 <!-- MODAL DE CONTRASEÑA PARA LIMPIAR -->
 <!-- ================================================== -->
-<div class="modal fade" id="clearPasswordModal" tabindex="-1">
+<div class="modal fade modal-modern" id="clearPasswordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:20px;border:none;">
-            <div class="modal-header bg-danger text-white" style="border-radius:20px 20px 0 0;">
-                <h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Verificar Identidad</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--danger),var(--danger-hover));">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-shield-lock-fill"></i> Verificar Identidad
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p class="text-muted">Ingresa tu contraseña de administrador para continuar:</p>
-                <input type="password" id="clearPasswordInput" class="form-control form-control-lg" placeholder="Contraseña..." autocomplete="off">
-                <div id="clearPasswordError" class="text-danger mt-2" style="display:none;"></div>
+                <p class="text-muted mb-3">Ingresa tu contraseña de administrador para continuar:</p>
+                <label class="form-label" for="clearPasswordInput">
+                    <i class="bi bi-key-fill"></i> Contraseña
+                </label>
+                <input type="password" id="clearPasswordInput" class="form-control"
+                       placeholder="Tu contraseña..." autocomplete="current-password" maxlength="200">
+                <div id="clearPasswordError" class="text-danger mt-2 fw-semibold" style="display:none;">
+                    <i class="bi bi-x-circle-fill"></i> Contraseña incorrecta
+                </div>
             </div>
-            <div class="modal-footer border-0">
+            <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="confirmClearBtn">Continuar</button>
+                <button type="button" class="btn btn-danger" id="confirmClearBtn">
+                    <i class="bi bi-check2"></i> Continuar
+                </button>
             </div>
         </div>
     </div>
@@ -396,23 +807,32 @@
 <!-- ================================================== -->
 <!-- MODAL DE CONFIRMACIÓN -->
 <!-- ================================================== -->
-<div class="modal fade" id="confirmClearModal" tabindex="-1">
+<div class="modal fade modal-modern" id="confirmClearModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:20px;border:none;">
-            <div class="modal-header bg-warning text-dark" style="border-radius:20px 20px 0 0;">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Limpieza</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--warning),var(--warning-hover));">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Confirmar Limpieza
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <div class="alert alert-danger">
-                    <strong>⚠️ ADVERTENCIA:</strong> Se eliminarán <strong>TODOS</strong> los registros de la bitácora.
-                    Esta acción <strong>no se puede deshacer</strong>.
+                <div class="alert alert-danger d-flex align-items-start gap-2 mb-3">
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size:1.3rem;margin-top:2px;"></i>
+                    <div>
+                        <strong>Zona crítica</strong><br>
+                        <small>Se eliminarán <strong>TODOS</strong> los registros de la bitácora. Esta acción no se puede deshacer.</small>
+                    </div>
                 </div>
-                <p>¿Estás completamente seguro de que deseas continuar?</p>
+                <p class="mb-0">¿Estás completamente seguro de que deseas continuar?</p>
             </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>
-                <button type="button" class="btn btn-danger btn-lg" id="confirmDeleteBtn">🗑️ Eliminar Todo</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="bi bi-trash3"></i> Eliminar Todo
+                </button>
             </div>
         </div>
     </div>
@@ -421,61 +841,169 @@
 <!-- ================================================== -->
 <!-- MODAL DE NOTIFICACIÓN -->
 <!-- ================================================== -->
-<div class="modal fade" id="notificationModal" tabindex="-1">
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:20px;border:none;">
+        <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
-            <div class="modal-footer border-0">
+            <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ================================================== -->
-<!-- LOADING OVERLAY MODERNO -->
-<!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay" style="display:none;">
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
-        <h5>Cargando registros</h5>
-        <p>Un momento, por favor.</p>
+        <h5 id="loadingTitle">Cargando registros</h5>
+        <p id="loadingText">Un momento, por favor.</p>
     </div>
 </div>
 
-<!-- ================================================== -->
-<!-- SCRIPTS -->
-<!-- ================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+'use strict';
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (!e || typeof e.key !== 'string') return;
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst) inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading(title = 'Cargando registros', text = 'Un momento, por favor.') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
 }
 
 function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('loadingOverlay').classList.remove('active');
 }
 
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function showNotification(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
+    modal.show();
+}
+
+/* ============================================================
+   SKELETON LOADER
+   ============================================================ */
+function mostrarSkeletonLogs() {
+    const container = document.getElementById('logsContainer');
+    let html = '';
+    for (let i = 0; i < 5; i++) {
+        html += `<div class="skeleton-item" style="animation-delay:${i * 0.05}s;">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+        </div>`;
+    }
+    container.innerHTML = html;
+}
+
+/* ============================================================
+   CARGAR LOGS
+   ============================================================ */
 async function loadLogs() {
-    showLoading();
+    mostrarSkeletonLogs();
 
     try {
-        const response = await fetch('/api/activity/logs');
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
 
-        if (!response.ok) {
-            throw new Error('HTTP ' + response.status);
-        }
+        const response = await fetch('/api/activity/logs', { signal: controller.signal });
+        clearTimeout(tId);
+
+        if (!response.ok) throw new Error('HTTP ' + response.status);
 
         const logs = await response.json();
 
         const container = document.getElementById('logsContainer');
         container.innerHTML = '';
 
-        // Actualizar contador
         const count = Array.isArray(logs) ? logs.length : 0;
         document.getElementById('logCountNumber').textContent = count;
 
@@ -485,9 +1013,7 @@ async function loadLogs() {
                     <i class="bi bi-inbox"></i>
                     <h5>No hay registros</h5>
                     <p>Todavía no se han registrado actividades en el sistema.</p>
-                </div>
-            `;
-            hideLoading();
+                </div>`;
             return;
         }
 
@@ -509,165 +1035,167 @@ async function loadLogs() {
             error: 'error'
         };
 
-        logs.forEach(log => {
-            const actionLabel = actionLabels[log.action] || log.action;
+        let html = '';
+        logs.forEach((log, idx) => {
+            const action = escapeHTML(log.action || '');
+            const actionLabel = actionLabels[log.action] || action;
             const badgeClass = actionBadgeLabels[log.action] || '';
+            const user = escapeHTML(log.user || 'Desconocido');
+            const entity = escapeHTML(log.entity || '');
+            const description = log.description ? escapeHTML(log.description) : '';
+            const date = escapeHTML(log.date || '');
 
-            const card = document.createElement('div');
-            card.className = `log-item log-${log.action}`;
-            card.innerHTML = `
-                <div class="log-content">
-                    <div>
-                        <span class="log-user">${log.user}</span>
-                        <span class="log-action">${actionLabel}</span>
-                        <span class="log-entity">${log.entity}</span>
-                        <span class="action-badge ${badgeClass}">${log.action}</span>
+            html += `
+                <div class="log-item log-${action}" style="animation-delay:${Math.min(idx * 0.02, 0.5)}s;">
+                    <div class="log-content">
+                        <div class="log-line">
+                            <span class="log-user">${user}</span>
+                            <span class="log-action">${actionLabel}</span>
+                            ${entity ? `<span class="log-entity">${entity}</span>` : ''}
+                            <span class="action-badge ${badgeClass}">${action}</span>
+                        </div>
+                        ${description ? `<span class="log-desc">${description}</span>` : ''}
                     </div>
-                    ${log.description ? `<span class="log-desc">${log.description}</span>` : ''}
-                </div>
-                <div class="log-date">
-                    <i class="bi bi-clock"></i> ${log.date}
-                </div>
-            `;
-            container.appendChild(card);
+                    <div class="log-date">
+                        <i class="bi bi-clock"></i> ${date}
+                    </div>
+                </div>`;
         });
+
+        container.innerHTML = html;
 
     } catch (e) {
         const container = document.getElementById('logsContainer');
+        let msg = 'Error de conexión. Verifica tu red e intenta de nuevo.';
+        if (e.name === 'AbortError') msg = 'La carga tardó demasiado. Intenta de nuevo.';
+
         container.innerHTML = `
             <div class="alert alert-danger d-flex align-items-center gap-3" style="border-radius:16px;border:none;">
-                <i class="bi bi-exclamation-triangle fs-4"></i>
+                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
                 <div>
                     <strong>Error al cargar</strong><br>
-                    <span class="text-muted small">${e.message}</span>
+                    <span class="text-muted small">${escapeHTML(msg)}</span>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
-
-    hideLoading();
 }
 
-// ==================================================
-// FUNCIONES PARA LIMPIAR BITÁCORA
-// ==================================================
-
-let clearPasswordVerified = false;
-
-function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
-    const header = document.getElementById('notificationHeader');
-    const titleEl = document.getElementById('notificationTitle');
-    const bodyEl = document.getElementById('notificationBody');
-    header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
-    modal.show();
-}
+/* ============================================================
+   LIMPIAR BITÁCORA
+   ============================================================ */
+let clearPasswordSaved = '';
 
 function openClearModal() {
     document.getElementById('clearPasswordInput').value = '';
     document.getElementById('clearPasswordError').style.display = 'none';
-    clearPasswordVerified = false;
-    new bootstrap.Modal(document.getElementById('clearPasswordModal')).show();
+    clearPasswordSaved = '';
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('clearPasswordModal')).show();
 }
 
-let clearPasswordSaved = '';
-
-document.getElementById('confirmClearBtn').addEventListener('click', async () => {
+document.getElementById('confirmClearBtn').addEventListener('click', async function () {
     const password = document.getElementById('clearPasswordInput').value;
     const errorEl = document.getElementById('clearPasswordError');
-    
+    const btn = this;
+
     if (!password) {
-        errorEl.textContent = 'Ingresa tu contraseña';
+        errorEl.innerHTML = '<i class="bi bi-x-circle-fill"></i> Ingresa tu contraseña';
         errorEl.style.display = 'block';
         return;
     }
-    
+
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner" style="border-color:rgba(255,255,255,0.4);"></span> Verificando...';
+
     const formData = new FormData();
     formData.append('password', password);
-    
+
     try {
         const response = await fetch('/api/activity/clear', {
             method: 'POST',
             body: formData
         });
-        
+
         const result = await response.json();
-        
+
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+
         if (!result.success) {
-            errorEl.textContent = result.message || 'Error al verificar';
+            errorEl.innerHTML = `<i class="bi bi-x-circle-fill"></i> ${escapeHTML(result.message || 'Error al verificar')}`;
             errorEl.style.display = 'block';
             return;
         }
-        
-        // Guardar la contraseña para usarla después
+
         clearPasswordSaved = password;
-        
-        // Cerrar modal de contraseña
         bootstrap.Modal.getInstance(document.getElementById('clearPasswordModal')).hide();
-        
-        // Limpiar input visual
         document.getElementById('clearPasswordInput').value = '';
-        
-        // Mostrar modal de confirmación
-        new bootstrap.Modal(document.getElementById('confirmClearModal')).show();
-        
+
+        setTimeout(() => {
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmClearModal')).show();
+        }, 350);
+
     } catch (error) {
-        errorEl.textContent = 'Error de conexión';
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+        errorEl.innerHTML = `<i class="bi bi-x-circle-fill"></i> ${escapeHTML(error.message)}`;
         errorEl.style.display = 'block';
     }
 });
 
-document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-    // Usar la contraseña guardada
+document.getElementById('clearPasswordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        document.getElementById('confirmClearBtn').click();
+    }
+});
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async function () {
     const password = clearPasswordSaved;
-    
+
     if (!password) {
         showNotification('Error', '<p>Contraseña no disponible. Intenta de nuevo.</p>', 'error');
         return;
     }
-    
-    // Cerrar modal de confirmación
+
     bootstrap.Modal.getInstance(document.getElementById('confirmClearModal')).hide();
-    
-    showLoading();
-    
+
+    showLoading('Limpiando bitácora...', 'Eliminando registros, por favor espera.');
+
     const formData = new FormData();
     formData.append('password', password);
-    
+
     try {
         const response = await fetch('/api/activity/clear', {
             method: 'POST',
             body: formData
         });
-        
+
         const result = await response.json();
-        
+
         hideLoading();
-        
+
         if (result.success) {
-            showNotification(
-                'Bitácora Limpiada',
-                `<p>${result.message}</p><p class="text-muted">Se conserva el registro de esta limpieza.</p>`,
-                'success'
-            );
+            showNotification('Bitácora Limpiada',
+                `<p>${escapeHTML(result.message || 'Los registros se eliminaron.')}</p>
+                 <p class="text-muted small mb-0">Se conserva el registro de esta limpieza.</p>`,
+                'success');
             loadLogs();
         } else {
-            showNotification('Error', `<p>${result.message}</p>`, 'error');
+            showNotification('Error', `<p>${escapeHTML(result.message || 'Error')}</p>`, 'error');
         }
-        
+
     } catch (error) {
         hideLoading();
-        showNotification('Error', `<p>${error.message}</p>`, 'error');
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
     }
 });
 
-// Iniciar carga
-loadLogs();
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    loadLogs();
+});
 </script>
 </body>
 </html>
