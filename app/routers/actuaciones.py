@@ -193,7 +193,16 @@ async def get_case_actuaciones(court_case_id: int, db: Session = Depends(get_db)
         "id": court_case.id,
         "num_exp_tribunal": court_case.num_exp_tribunal,
         "tribunal": court_case.tribunal,
+        "secretaria": getattr(court_case, "secretaria", None),
+        "folio_tribunal": getattr(court_case, "folio_tribunal", None),
+        "fecha_presentacion": (
+            court_case.fecha_presentacion.strftime("%d/%m/%Y")
+            if getattr(court_case, "fecha_presentacion", None) else None
+        ),
         "status": court_case.status,
+        "actor_nombre": getattr(court_case, "actor_nombre", None),
+        "actor2_nombre": getattr(court_case, "actor2_nombre", None),
+        "demandado_nombre": getattr(court_case, "demandado_nombre", None),
         "actuaciones": actuaciones_data,
     }
 

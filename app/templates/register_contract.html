@@ -891,6 +891,285 @@
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+                /* ============================================================ */
+        /* HEADER DEL CLIENTE REDISEÑADO                                */
+        /* ============================================================ */
+        .client-header-modern {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(26,139,92,0.04));
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-primary);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .client-avatar-large {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.4);
+        }
+        .client-info-block { flex: 1; min-width: 220px; }
+        .client-name-large {
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+            letter-spacing: -0.02em;
+        }
+        .client-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 8px;
+            width: 100%;
+        }
+        .client-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: 1px solid var(--border-soft);
+            min-width: 0;
+            overflow: hidden;
+        }
+        .client-meta-item i {
+            color: var(--accent-primary);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .client-meta-item .meta-lbl {
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            flex-shrink: 0;
+        }
+        .client-meta-item .meta-val {
+            flex: 1;
+            min-width: 0;
+            text-align: right;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.78rem;
+            letter-spacing: 0.01em;
+        }
+
+        /* ============================================================ */
+        /* WIZARD STEPPER                                               */
+        /* ============================================================ */
+        .wizard-stepper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 28px;
+            padding: 0 8px;
+        }
+        .wizard-stepper .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .wizard-stepper .step-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-soft);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .wizard-stepper .step-circle .step-check { display: none; font-size: 1.1rem; }
+        .wizard-stepper .step-item.active .step-circle {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.5);
+        }
+        .wizard-stepper .step-item.completed .step-circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        .wizard-stepper .step-item.completed .step-circle .step-num { display: none; }
+        .wizard-stepper .step-item.completed .step-circle .step-check { display: block; }
+        .wizard-stepper .step-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            transition: color 0.3s;
+        }
+        .wizard-stepper .step-item.active .step-label { color: var(--accent-primary); }
+        .wizard-stepper .step-item.completed .step-label { color: var(--success); }
+        .wizard-stepper .step-line {
+            flex: 1;
+            height: 3px;
+            background: var(--border-soft);
+            margin: 0 6px 22px 6px;
+            border-radius: 3px;
+            transition: background 0.4s;
+            max-width: 100px;
+        }
+        .wizard-stepper .step-line.completed { background: var(--success); }
+
+        /* ============================================================ */
+        /* WIZARD STEPS                                                 */
+        /* ============================================================ */
+        .wizard-step {
+            display: none;
+            animation: wizardFadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .wizard-step.active { display: block; }
+        @keyframes wizardFadeIn {
+            from { opacity: 0; transform: translateX(16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ============================================================ */
+        /* WIZARD NAVEGACIÓN                                            */
+        /* ============================================================ */
+        .wizard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-wizard-next,
+        .btn-wizard-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            min-height: 52px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s var(--transition-bounce);
+        }
+        .btn-wizard-next {
+            background: var(--accent-dark);
+            color: white;
+            margin-left: auto;
+        }
+        .btn-wizard-next:hover:not(:disabled) {
+            background: var(--accent-dark-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.4);
+        }
+        .btn-wizard-next:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: var(--text-light);
+        }
+        .btn-wizard-back {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border-strong);
+        }
+        .btn-wizard-back:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* ============================================================ */
+        /* RESUMEN DEL WIZARD                                           */
+        /* ============================================================ */
+        .wizard-summary { display: flex; flex-direction: column; gap: 14px; }
+        .ws-block {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            border-left: 4px solid var(--accent-primary);
+        }
+        .ws-block.green { border-left-color: var(--success); }
+        .ws-block.warning { border-left-color: var(--warning); }
+        .ws-block.red { border-left-color: var(--danger); }
+        .ws-block-title {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ws-block-title i { color: var(--accent-primary); font-size: 1rem; }
+        .ws-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 0.88rem;
+            border-bottom: 1px dashed var(--border-soft);
+            gap: 12px;
+        }
+        .ws-row:last-child { border-bottom: none; }
+        .ws-row .ws-lbl { color: var(--text-muted); font-weight: 500; }
+        .ws-row .ws-val {
+            color: var(--text-primary);
+            font-weight: 700;
+            text-align: right;
+            word-break: break-word;
+        }
+        .ws-row .ws-val.money { font-variant-numeric: tabular-nums; }
+        .ws-row .ws-val.green { color: var(--success); }
+        .ws-row .ws-val.red { color: var(--danger); }
+        .ws-row .ws-val.warning { color: var(--warning); }
+
+        /* Responsive del wizard */
+        @media (max-width: 768px) {
+            .wizard-stepper { margin-bottom: 20px; }
+            .wizard-stepper .step-circle { width: 36px; height: 36px; font-size: 0.8rem; }
+            .wizard-stepper .step-label { font-size: 0.6rem; }
+            .wizard-stepper .step-line { margin-bottom: 20px; }
+            .wizard-nav { flex-direction: column-reverse; }
+            .btn-wizard-next, .btn-wizard-back { width: 100%; }
+            .client-header-modern { padding: 16px; gap: 14px; }
+            .client-avatar-large { width: 48px; height: 48px; font-size: 1.5rem; }
+            .client-name-large { font-size: 1.1rem; }
+            .client-meta-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .wizard-stepper .step-circle { width: 32px; height: 32px; font-size: 0.75rem; }
+            .wizard-stepper .step-label { font-size: 0.55rem; }
+        }
     </style>
 </head>
 <body>
@@ -933,192 +1212,265 @@
     <!-- FORMULARIO DE CONTRATACIÓN -->
     <div id="contractFormContainer" class="contract-form-container" style="display:none;margin-top:1.5rem;">
         <div class="card-glass">
-            <div class="client-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
-                <div>
-                    <h5 id="clientNameDisplay" class="fw-bold mb-1"></h5>
-                    <div class="client-meta text-muted small" id="clientInfoDisplay"></div>
+            <div class="client-header-modern" id="clientHeaderModern">
+                <div class="client-avatar-large">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="client-info-block">
+                    <h4 class="client-name-large" id="clientNameDisplay"></h4>
+                    <div class="client-meta-grid" id="clientInfoDisplay"></div>
                 </div>
             </div>
-            <hr>
 
-            <form id="contractForm" enctype="multipart/form-data" novalidate>
-                <input type="hidden" id="clientId" name="client_id">
+                       <form id="contractForm" enctype="multipart/form-data" novalidate>
 
-                <!-- SECCIÓN 1: TIPO DE SERVICIO -->
-                <div class="form-section">
-                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
-                        <i class="bi bi-briefcase text-primary"></i> Detalles del Servicio
-                    </h6>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label" for="service_type">
-                                Tipo de Servicio <span class="required">*</span>
-                            </label>
-                            <select name="service_type" id="service_type" class="form-select" required>
-                                <option value="">Selecciona...</option>
-                                <option value="asesoria">Asesoría Jurídica</option>
-                                <option value="juicio">Inicio de Juicio</option>
-                                <option value="escrito">Elaboración de Escrito</option>
-                                <option value="contestacion">Contestación de Demanda</option>
-                                <option value="diligencia">Diligenciar Oficio/Exhorto</option>
-                            </select>
-                            <div class="invalid-feedback">Selecciona el tipo de servicio</div>
-                        </div>
-
-                        <div class="col-md-6" id="juicioContainer" style="display:none;">
-                            <label class="form-label" for="tipo_juicio">
-                                Tipo de Juicio <span class="required">*</span>
-                            </label>
-                            <select name="tipo_juicio" id="tipo_juicio" class="form-select">
-                                <option value="">Selecciona...</option>
-                                <option value="Divorcio Bilateral">Divorcio Bilateral</option>
-                                <option value="Divorcio Unilateral">Divorcio Unilateral</option>
-                                <option value="Sucesorio Testamentario">Sucesorio Testamentario</option>
-                                <option value="Sucesorio Intestamentario">Sucesorio Intestamentario</option>
-                                <option value="Convenio">Convenio</option>
-                                <option value="Alimentos">Alimentos</option>
-                                <option value="Custodia">Custodia</option>
-                                <option value="Perdida de la Patria Potestad">Pérdida de la Patria Potestad</option>
-                                <option value="Convivencia">Convivencia</option>
-                                <option value="Otro">Otro</option>
-                            </select>
-                            <div class="invalid-feedback">Selecciona el tipo de juicio</div>
-                        </div>
-
-                        <div class="col-12" id="juicioOtroContainer" style="display:none;">
-                            <label class="form-label" for="tipo_juicio_otro">
-                                Especificar Tipo de Juicio <span class="required">*</span>
-                            </label>
-                            <input type="text" name="tipo_juicio_otro" id="tipo_juicio_otro"
-                                   class="form-control" autocomplete="off"
-                                   placeholder="Ej: Juicio de amparo indirecto" maxlength="120">
-                            <div class="invalid-feedback">Especifica el tipo de juicio</div>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label" for="specific_detail">
-                                Detalle del Servicio
-                            </label>
-                            <input type="text" name="specific_detail" id="specific_detail"
-                                   class="form-control" autocomplete="off"
-                                   placeholder="Ej: Divorcio Unilateral, Convenio de custodia compartida, etc."
-                                   maxlength="200">
-                        </div>
+                <!-- ═══════════════════════════════════════════════════════
+                     STEPPER VISUAL
+                     ═══════════════════════════════════════════════════════ -->
+                <div class="wizard-stepper" id="wizardStepper">
+                    <div class="step-item" data-step="1">
+                        <div class="step-circle"><span class="step-num">1</span><i class="bi bi-check-lg step-check"></i></div>
+                        <div class="step-label">Servicio</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item" data-step="2">
+                        <div class="step-circle"><span class="step-num">2</span><i class="bi bi-check-lg step-check"></i></div>
+                        <div class="step-label">Costo</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item" data-step="3">
+                        <div class="step-circle"><span class="step-num">3</span><i class="bi bi-check-lg step-check"></i></div>
+                        <div class="step-label">Pago</div>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item" data-step="4">
+                        <div class="step-circle"><span class="step-num">4</span><i class="bi bi-check-lg step-check"></i></div>
+                        <div class="step-label">Confirmar</div>
                     </div>
                 </div>
 
-                <!-- SECCIÓN 2: COSTO Y PAGO -->
-                <div class="form-section">
-                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
-                        <i class="bi bi-cash-coin text-success"></i> Costo y Anticipo
-                    </h6>
+                <!-- ═══════════════════════════════════════════════════════
+                     PASO 1: SERVICIO
+                     ═══════════════════════════════════════════════════════ -->
+                <div class="wizard-step active" data-step="1">
+                    <div class="form-section">
+                        <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                            <i class="bi bi-briefcase text-primary"></i> Detalles del Servicio
+                        </h6>
 
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label" for="total_cost">
-                                Costo Total <span class="required">*</span>
-                            </label>
-                            <input type="text" name="total_cost" id="total_cost"
-                                   class="form-control form-control-lg"
-                                   required autocomplete="off" placeholder="$0.00"
-                                   inputmode="decimal" maxlength="14"
-                                   style="font-size:1.2rem; font-weight:700; text-align:right;">
-                            <div class="invalid-feedback">El costo total es obligatorio</div>
-                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label" for="service_type">
+                                    Tipo de Servicio <span class="required">*</span>
+                                </label>
+                                <select name="service_type" id="service_type" class="form-select" required>
+                                    <option value="">Selecciona...</option>
+                                    <option value="asesoria">Asesoría Jurídica</option>
+                                    <option value="juicio">Inicio de Juicio</option>
+                                    <option value="escrito">Elaboración de Escrito</option>
+                                    <option value="contestacion">Contestación de Demanda</option>
+                                    <option value="diligencia">Diligenciar Oficio/Exhorto</option>
+                                </select>
+                                <div class="invalid-feedback">Selecciona el tipo de servicio</div>
+                            </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label" for="payment_amount">
-                                Monto a Pagar (Anticipo) <span class="required">*</span>
-                            </label>
-                            <input type="text" name="payment_amount" id="payment_amount"
-                                   class="form-control form-control-lg"
-                                   autocomplete="off" placeholder="$0.00" value=""
-                                   inputmode="decimal" maxlength="14"
-                                   style="font-size:1.2rem; font-weight:700; text-align:right;">
-                            <div class="invalid-feedback">El anticipo es obligatorio</div>
-                        </div>
-                    </div>
+                            <div class="col-md-6" id="juicioContainer" style="display:none;">
+                                <label class="form-label" for="tipo_juicio">
+                                    Tipo de Juicio <span class="required">*</span>
+                                </label>
+                                <select name="tipo_juicio" id="tipo_juicio" class="form-select">
+                                    <option value="">Selecciona...</option>
+                                    <option value="Divorcio Bilateral">Divorcio Bilateral</option>
+                                    <option value="Divorcio Unilateral">Divorcio Unilateral</option>
+                                    <option value="Sucesorio Testamentario">Sucesorio Testamentario</option>
+                                    <option value="Sucesorio Intestamentario">Sucesorio Intestamentario</option>
+                                    <option value="Convenio">Convenio</option>
+                                    <option value="Alimentos">Alimentos</option>
+                                    <option value="Custodia">Custodia</option>
+                                    <option value="Perdida de la Patria Potestad">Pérdida de la Patria Potestad</option>
+                                    <option value="Convivencia">Convivencia</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <div class="invalid-feedback">Selecciona el tipo de juicio</div>
+                            </div>
 
-                    <!-- Aviso de pago mínimo -->
-                    <div class="payment-notice info" id="paymentNotice" style="display:none;">
-                        <i class="bi bi-info-circle-fill"></i>
-                        <div>
-                            El anticipo mínimo es del <strong>50%</strong> del costo total: <strong id="minPaymentAmount">$0.00</strong>
-                        </div>
-                    </div>
+                            <div class="col-12" id="juicioOtroContainer" style="display:none;">
+                                <label class="form-label" for="tipo_juicio_otro">
+                                    Especificar Tipo de Juicio <span class="required">*</span>
+                                </label>
+                                <input type="text" name="tipo_juicio_otro" id="tipo_juicio_otro"
+                                       class="form-control" autocomplete="off"
+                                       placeholder="Ej: Juicio de amparo indirecto" maxlength="120">
+                                <div class="invalid-feedback">Especifica el tipo de juicio</div>
+                            </div>
 
-                    <!-- Restante -->
-                    <div class="remaining-alert" id="remainingDisplay" style="display:none;">
-                        <span><i class="bi bi-wallet2 me-2"></i><strong>Restante por pagar:</strong></span>
-                        <span class="remaining-amount" id="remainingAmount">$0.00</span>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN 3: FORMA DE PAGO -->
-                <div class="form-section">
-                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
-                        <i class="bi bi-credit-card text-warning"></i> Forma de Pago
-                    </h6>
-
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label" for="payment_method">
-                                Forma de Pago <span class="required">*</span>
-                            </label>
-                            <select name="payment_method" id="payment_method" class="form-select" required>
-                                <option value="">Selecciona...</option>
-                                <option value="efectivo">💵 Efectivo</option>
-                                <option value="deposito">🏦 Depósito</option>
-                                <option value="transferencia">💳 Transferencia</option>
-                                <option value="ninguno">Sin pago por ahora</option>
-                            </select>
-                            <div class="invalid-feedback">Selecciona la forma de pago</div>
-                        </div>
-
-                        <div class="col-md-6" id="receiverContainer" style="display:none;">
-                            <label class="form-label" for="receiver_name">
-                                Recibió (efectivo) <span class="required">*</span>
-                            </label>
-                            <input type="text" name="receiver_name" id="receiver_name"
-                                   class="form-control" autocomplete="off"
-                                   placeholder="Nombre de quien recibe" maxlength="100">
-                            <div class="invalid-feedback">Indica quién recibió</div>
+                            <div class="col-12">
+                                <label class="form-label" for="specific_detail">
+                                    Detalle del Servicio (opcional)
+                                </label>
+                                <input type="text" name="specific_detail" id="specific_detail"
+                                       class="form-control" autocomplete="off"
+                                       placeholder="Ej: Divorcio Unilateral, Convenio de custodia compartida, etc."
+                                       maxlength="200">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Comprobante -->
-                    <div class="col-12 mt-4" id="receiptContainer" style="display:none;">
-                        <label class="form-label mb-3">
-                            <i class="bi bi-paperclip"></i> Comprobante de Pago
-                            <span class="required">*</span>
-                        </label>
-
-                        <button type="button" class="upload-receipt-btn" id="uploadReceiptBtn">
-                            <span class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></span>
-                            <span class="upload-label">
-                                <span id="uploadReceiptText">Subir comprobante</span>
-                                <small id="uploadReceiptSub">PDF, JPG o PNG · máx. 25 MB</small>
-                            </span>
+                    <div class="wizard-nav">
+                        <span></span>
+                        <button type="button" class="btn-wizard-next" data-next="2" disabled>
+                            Siguiente <i class="bi bi-arrow-right"></i>
                         </button>
-
-                        <input type="file" name="receipt_file" id="receipt_file"
-                               accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
-                        <div class="invalid-feedback d-block" id="receiptFeedback" style="display:none !important;">
-                            Adjunta el comprobante
-                        </div>
                     </div>
                 </div>
 
-                <!-- ACCIONES -->
-                <div class="d-flex justify-content-between align-items-center mt-4 gap-3 flex-wrap">
-                    <button type="button" class="btn-clear" onclick="limpiarFormulario()">
-                        <i class="bi bi-eraser"></i> Limpiar
-                    </button>
-                    <button type="submit" class="btn-submit" id="submitBtn">
-                        <i class="bi bi-check2"></i> <span>Registrar Contratación</span>
-                    </button>
+                <!-- ═══════════════════════════════════════════════════════
+                     PASO 2: COSTO Y ANTICIPO
+                     ═══════════════════════════════════════════════════════ -->
+                <div class="wizard-step" data-step="2">
+                    <div class="form-section">
+                        <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                            <i class="bi bi-cash-coin text-success"></i> Costo y Anticipo
+                        </h6>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label" for="total_cost">
+                                    Costo Total <span class="required">*</span>
+                                </label>
+                                <input type="text" name="total_cost" id="total_cost"
+                                       class="form-control form-control-lg"
+                                       required autocomplete="off" placeholder="$0.00"
+                                       inputmode="decimal" maxlength="14"
+                                       style="font-size:1.2rem; font-weight:700; text-align:right;">
+                                <div class="invalid-feedback">El costo total es obligatorio</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="payment_amount">
+                                    Monto a Pagar (Anticipo) <span class="required">*</span>
+                                </label>
+                                <input type="text" name="payment_amount" id="payment_amount"
+                                       class="form-control form-control-lg"
+                                       autocomplete="off" placeholder="$0.00" value=""
+                                       inputmode="decimal" maxlength="14"
+                                       style="font-size:1.2rem; font-weight:700; text-align:right;">
+                                <div class="invalid-feedback">El anticipo es obligatorio</div>
+                            </div>
+                        </div>
+
+                        <div class="payment-notice info" id="paymentNotice" style="display:none;">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <div>
+                                El anticipo mínimo es del <strong>50%</strong> del costo total: <strong id="minPaymentAmount">$0.00</strong>
+                            </div>
+                        </div>
+
+                        <div class="remaining-alert" id="remainingDisplay" style="display:none;">
+                            <span><i class="bi bi-wallet2 me-2"></i><strong>Restante por pagar:</strong></span>
+                            <span class="remaining-amount" id="remainingAmount">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="wizard-nav">
+                        <button type="button" class="btn-wizard-back" data-back="1">
+                            <i class="bi bi-arrow-left"></i> Atrás
+                        </button>
+                        <button type="button" class="btn-wizard-next" data-next="3" disabled>
+                            Siguiente <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
+
+                <!-- ═══════════════════════════════════════════════════════
+                     PASO 3: FORMA DE PAGO
+                     ═══════════════════════════════════════════════════════ -->
+                <div class="wizard-step" data-step="3">
+                    <div class="form-section">
+                        <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                            <i class="bi bi-credit-card text-warning"></i> Forma de Pago
+                        </h6>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label" for="payment_method">
+                                    Forma de Pago <span class="required">*</span>
+                                </label>
+                                <select name="payment_method" id="payment_method" class="form-select" required>
+                                    <option value="">Selecciona...</option>
+                                    <option value="efectivo">💵 Efectivo</option>
+                                    <option value="deposito">🏦 Depósito</option>
+                                    <option value="transferencia">💳 Transferencia</option>
+
+                                </select>
+                                <div class="invalid-feedback">Selecciona la forma de pago</div>
+                            </div>
+
+                            <div class="col-md-6" id="receiverContainer" style="display:none;">
+                                <label class="form-label" for="receiver_name">
+                                    Recibió (efectivo) <span class="required">*</span>
+                                </label>
+                                <input type="text" name="receiver_name" id="receiver_name"
+                                       class="form-control" autocomplete="off"
+                                       placeholder="Nombre de quien recibe" maxlength="100">
+                                <div class="invalid-feedback">Indica quién recibió</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-4" id="receiptContainer" style="display:none;">
+                            <label class="form-label mb-3">
+                                <i class="bi bi-paperclip"></i> Comprobante de Pago
+                                <span class="required">*</span>
+                            </label>
+
+                            <button type="button" class="upload-receipt-btn" id="uploadReceiptBtn">
+                                <span class="upload-icon"><i class="bi bi-cloud-arrow-up"></i></span>
+                                <span class="upload-label">
+                                    <span id="uploadReceiptText">Subir comprobante</span>
+                                    <small id="uploadReceiptSub">PDF, JPG o PNG · máx. 25 MB</small>
+                                </span>
+                            </button>
+
+                            <input type="file" name="receipt_file" id="receipt_file"
+                                   accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+                            <div class="invalid-feedback d-block" id="receiptFeedback" style="display:none !important;">
+                                Adjunta el comprobante
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-nav">
+                        <button type="button" class="btn-wizard-back" data-back="2">
+                            <i class="bi bi-arrow-left"></i> Atrás
+                        </button>
+                        <button type="button" class="btn-wizard-next" data-next="4" disabled>
+                            Siguiente <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════════════
+                     PASO 4: RESUMEN Y CONFIRMACIÓN
+                     ═══════════════════════════════════════════════════════ -->
+                <div class="wizard-step" data-step="4">
+                    <div class="form-section">
+                        <h6 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                            <i class="bi bi-clipboard-check text-primary"></i> Resumen de la Contratación
+                        </h6>
+
+                        <div id="wizardSummary" class="wizard-summary"></div>
+                    </div>
+
+                    <div class="wizard-nav">
+                        <button type="button" class="btn-wizard-back" data-back="3">
+                            <i class="bi bi-arrow-left"></i> Atrás
+                        </button>
+                        <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                            <i class="bi bi-check2"></i> <span>Registrar Contratación</span>
+                        </button>
+                    </div>
+                </div>
+
             </form>
         </div>
     </div>
@@ -1502,7 +1854,7 @@ paymentAmountInput.addEventListener('focus', function () {
 totalCostInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         e.preventDefault();
-        this.blur();
+        totalCostInput.blur();
         paymentAmountInput.focus();
     }
 });
@@ -1675,6 +2027,9 @@ function mostrarPreviewFile(url, filename) {
         document.getElementById('uploadReceiptSub').textContent = filename;
         document.getElementById('receipt_file').classList.remove('is-invalid');
 
+        // Notificar al wizard para revalidar el paso actual
+        document.getElementById('contractForm').dispatchEvent(new Event('input', { bubbles: true }));
+
         showNotification('Comprobante confirmado',
             `<p>El archivo <strong>${escapeHTML(filename)}</strong> se adjuntará al registrar.</p>`, 'success');
     });
@@ -1687,6 +2042,7 @@ function mostrarPreviewFile(url, filename) {
         modal.hide();
         document.getElementById('receipt_file').value = '';
         resetFile();
+        document.getElementById('contractForm').dispatchEvent(new Event('input', { bubbles: true }));
     });
 
     modalEl.addEventListener('hidden.bs.modal', function onHidden() {
@@ -1863,8 +2219,50 @@ function mostrarSkeleton() {
     c.innerHTML = html;
 }
 
+/* ============================================================
+   RESET SILENCIOSO DEL FORMULARIO (al hacer nueva búsqueda)
+   ============================================================ */
+function resetearContratacionSilencioso() {
+    const form = document.getElementById('contractForm');
+    if (form) form.reset();
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    fileAccepted = false;
+    selectedClientId = null;
+
+    document.getElementById('contractFormContainer').style.display = 'none';
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('remainingDisplay').style.display = 'none';
+    document.getElementById('paymentNotice').style.display = 'none';
+    document.getElementById('receiverContainer').style.display = 'none';
+    document.getElementById('receiptContainer').style.display = 'none';
+    document.getElementById('juicioContainer').style.display = 'none';
+    document.getElementById('juicioOtroContainer').style.display = 'none';
+
+    resetFile();
+
+    // Reiniciar wizard al paso 1
+    document.querySelectorAll('.wizard-step').forEach(s => {
+        s.classList.toggle('active', s.dataset.step === '1');
+    });
+    document.querySelectorAll('#wizardStepper .step-item').forEach(item => {
+        const n = parseInt(item.dataset.step, 10);
+        item.classList.toggle('active', n === 1);
+        item.classList.remove('completed');
+    });
+    document.querySelectorAll('#wizardStepper .step-line').forEach(line => {
+        line.classList.remove('completed');
+    });
+    const submitBtn = document.getElementById('submitBtn');
+    if (submitBtn) submitBtn.disabled = true;
+    document.querySelectorAll('.btn-wizard-next').forEach(b => b.disabled = true);
+}
+
 async function realizarBusqueda() {
     const term = searchInput.value.trim().toUpperCase();
+
+    // Limpiar formulario antes de una nueva búsqueda
+    resetearContratacionSilencioso();
 
     if (!term) {
         showNotification('Búsqueda vacía', '<p>Ingresa un término de búsqueda.</p>', 'warning');
@@ -1982,12 +2380,11 @@ async function loadClientDetails(clientId) {
         document.getElementById('clientNameDisplay').innerHTML =
             `<i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${escapeHTML(client.nombre_completo)}`;
         document.getElementById('clientInfoDisplay').innerHTML = `
-            <strong>CURP:</strong> ${escapeHTML(client.curp || '—')} ·
-            <strong>Tel:</strong> ${escapeHTML(client.telefono || '—')} ·
-            <strong>Exp:</strong> ${escapeHTML(client.expediente_interno || '—')} ·
-            <strong>Folio:</strong> ${escapeHTML(client.folio_registro || '—')}
+            <div class="client-meta-item"><i class="bi bi-person-vcard"></i><span class="meta-lbl">CURP</span><span class="meta-val">${escapeHTML(client.curp || '—')}</span></div>
+            <div class="client-meta-item"><i class="bi bi-telephone"></i><span class="meta-lbl">Tel</span><span class="meta-val">${escapeHTML(client.telefono || '—')}</span></div>
+            <div class="client-meta-item"><i class="bi bi-folder"></i><span class="meta-lbl">Exp</span><span class="meta-val">${escapeHTML(client.expediente_interno || '—')}</span></div>
+            <div class="client-meta-item"><i class="bi bi-tag"></i><span class="meta-lbl">Folio</span><span class="meta-val">${escapeHTML(client.folio_registro || '—')}</span></div>
         `;
-        document.getElementById('clientId').value = client.id;
         selectedClientId = client.id;
 
         document.getElementById('contractFormContainer').scrollIntoView({ behavior: 'smooth' });
@@ -2232,6 +2629,228 @@ window.addEventListener('beforeunload', (e) => {
         e.returnValue = '';
     }
 });
+
+/* ============================================================
+   WIZARD DE CONTRATACIÓN — 4 PASOS
+   ============================================================ */
+(function() {
+    'use strict';
+
+    const form = document.getElementById('contractForm');
+    if (!form) return;
+
+    const steps = Array.from(document.querySelectorAll('.wizard-step'));
+    const stepItems = Array.from(document.querySelectorAll('#wizardStepper .step-item'));
+    const stepLines = Array.from(document.querySelectorAll('#wizardStepper .step-line'));
+    let currentStep = 1;
+
+    /* ------------------------------------------------------------
+       MOSTRAR UN PASO
+       ------------------------------------------------------------ */
+    function goToStep(n) {
+        currentStep = n;
+
+        steps.forEach(s => {
+            const stepNum = parseInt(s.dataset.step, 10);
+            s.classList.toggle('active', stepNum === n);
+        });
+
+        stepItems.forEach(item => {
+            const stepNum = parseInt(item.dataset.step, 10);
+            item.classList.toggle('active', stepNum === n);
+            item.classList.toggle('completed', stepNum < n);
+        });
+
+        stepLines.forEach((line, idx) => {
+            line.classList.toggle('completed', (idx + 1) < n);
+        });
+
+        if (n === 4) renderSummary();
+
+        // Scroll suave al inicio del formulario
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ------------------------------------------------------------
+       VALIDAR UN PASO
+       ------------------------------------------------------------ */
+    function isStepValid(n) {
+        if (n === 1) {
+            const st = document.getElementById('service_type').value;
+            if (!st) return false;
+
+            if (st === 'juicio' || st === 'contestacion') {
+                const tj = document.getElementById('tipo_juicio').value;
+                if (!tj) return false;
+                if (tj === 'Convenio' || tj === 'Otro') {
+                    if (!document.getElementById('tipo_juicio_otro').value.trim()) return false;
+                }
+            }
+            return true;
+        }
+
+        if (n === 2) {
+            const total = safeNumber(document.getElementById('total_cost').value.replace(/[^0-9.]/g, ''));
+            const payment = safeNumber(document.getElementById('payment_amount').value.replace(/[^0-9.]/g, ''));
+            if (total <= 0 || payment < 0) return false;
+            if (payment < (total / 2)) return false;
+            if (payment > total) return false;
+            return true;
+        }
+
+        if (n === 3) {
+            const method = document.getElementById('payment_method').value;
+            if (!method) return false;
+
+            if (method === 'efectivo') {
+                if (!document.getElementById('receiver_name').value.trim()) return false;
+            }
+            if (method === 'deposito' || method === 'transferencia') {
+                if (!fileAccepted) return false;
+            }
+            return true;
+        }
+
+        if (n === 4) {
+            return isStepValid(1) && isStepValid(2) && isStepValid(3);
+        }
+
+        return false;
+    }
+
+    /* ------------------------------------------------------------
+       ACTUALIZAR ESTADO DE LOS BOTONES "SIGUIENTE"
+       ------------------------------------------------------------ */
+    function refreshNavButtons() {
+        document.querySelectorAll('.btn-wizard-next').forEach(btn => {
+            const next = parseInt(btn.dataset.next, 10);
+            const prev = next - 1;
+            btn.disabled = !isStepValid(prev);
+        });
+
+        // El submit del paso 4 solo se habilita si todo está OK
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = !isStepValid(4);
+        }
+    }
+
+    /* ------------------------------------------------------------
+       RENDER DEL RESUMEN (PASO 4)
+       ------------------------------------------------------------ */
+    function renderSummary() {
+        const stMap = {
+            asesoria: 'Asesoría Jurídica',
+            juicio: 'Inicio de Juicio',
+            escrito: 'Elaboración de Escrito',
+            contestacion: 'Contestación de Demanda',
+            diligencia: 'Diligenciar Oficio/Exhorto',
+        };
+        const pmMap = {
+            efectivo: 'Efectivo',
+            deposito: 'Depósito',
+            transferencia: 'Transferencia',
+        };
+
+        const st = document.getElementById('service_type').value;
+        const tj = document.getElementById('tipo_juicio').value;
+        const tjo = document.getElementById('tipo_juicio_otro').value;
+        const sd = document.getElementById('specific_detail').value;
+        const total = safeNumber(document.getElementById('total_cost').value.replace(/[^0-9.]/g, ''));
+        const payment = safeNumber(document.getElementById('payment_amount').value.replace(/[^0-9.]/g, ''));
+        const remaining = total - payment;
+        const pm = document.getElementById('payment_method').value;
+        const rn = document.getElementById('receiver_name').value;
+        const rf = document.getElementById('receipt_file').files[0];
+
+        const summary = document.getElementById('wizardSummary');
+
+        const servicioTipo = stMap[st] || st;
+        const juicioTipo = tj === 'Otro' || tj === 'Convenio' ? tjo : tj;
+
+        summary.innerHTML = `
+            <div class="ws-block">
+                <div class="ws-block-title"><i class="bi bi-briefcase-fill"></i> Servicio</div>
+                <div class="ws-row"><span class="ws-lbl">Tipo de servicio</span><span class="ws-val">${escapeHTML(servicioTipo)}</span></div>
+                ${juicioTipo ? `<div class="ws-row"><span class="ws-lbl">Tipo de juicio</span><span class="ws-val">${escapeHTML(juicioTipo)}</span></div>` : ''}
+                ${sd ? `<div class="ws-row"><span class="ws-lbl">Detalle</span><span class="ws-val">${escapeHTML(sd)}</span></div>` : ''}
+            </div>
+
+            <div class="ws-block green">
+                <div class="ws-block-title"><i class="bi bi-cash-coin"></i> Costo y Anticipo</div>
+                <div class="ws-row"><span class="ws-lbl">Costo total</span><span class="ws-val money">${formatMoney(total)}</span></div>
+                <div class="ws-row"><span class="ws-lbl">Anticipo</span><span class="ws-val money green">${formatMoney(payment)}</span></div>
+                <div class="ws-row"><span class="ws-lbl">Saldo pendiente</span><span class="ws-val money ${remaining > 0 ? 'red' : 'green'}">${formatMoney(remaining)}</span></div>
+            </div>
+
+            <div class="ws-block warning">
+                <div class="ws-block-title"><i class="bi bi-credit-card-fill"></i> Forma de Pago</div>
+                <div class="ws-row"><span class="ws-lbl">Método</span><span class="ws-val">${escapeHTML(pmMap[pm] || pm)}</span></div>
+                ${rn ? `<div class="ws-row"><span class="ws-lbl">Recibió</span><span class="ws-val">${escapeHTML(rn)}</span></div>` : ''}
+                ${rf ? `<div class="ws-row"><span class="ws-lbl">Comprobante</span><span class="ws-val">${escapeHTML(rf.name)}</span></div>` : ''}
+            </div>
+        `;
+    }
+
+    /* ------------------------------------------------------------
+       EVENTOS: SIGUIENTE / ATRÁS
+       ------------------------------------------------------------ */
+    document.querySelectorAll('.btn-wizard-next').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const next = parseInt(btn.dataset.next, 10);
+            const prev = next - 1;
+            if (isStepValid(prev)) {
+                goToStep(next);
+            }
+        });
+    });
+
+    document.querySelectorAll('.btn-wizard-back').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const back = parseInt(btn.dataset.back, 10);
+            goToStep(back);
+        });
+    });
+
+    /* ------------------------------------------------------------
+       REVALIDAR AL CAMBIAR CUALQUIER INPUT
+       ------------------------------------------------------------ */
+    form.addEventListener('input', refreshNavButtons);
+    form.addEventListener('change', refreshNavButtons);
+
+    /* ------------------------------------------------------------
+       HOOKS EN FUNCIONES EXISTENTES
+       ------------------------------------------------------------ */
+    // (Los hooks de accept/reject se manejan directamente vía dispatchEvent en mostrarPreviewFile)
+
+    // Después de recibir archivo desde QR → revalidar
+    const qrModal = document.getElementById('qrModal');
+    if (qrModal) {
+        qrModal.addEventListener('hidden.bs.modal', () => {
+            setTimeout(refreshNavButtons, 400);
+        });
+    }
+
+    // Cuando se carga el cliente → reiniciar wizard al paso 1
+    const clientFormContainer = document.getElementById('contractFormContainer');
+    if (clientFormContainer) {
+        const observer = new MutationObserver(() => {
+            if (clientFormContainer.style.display === 'block') {
+                goToStep(1);
+                refreshNavButtons();
+            }
+        });
+        observer.observe(clientFormContainer, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    /* ------------------------------------------------------------
+       INICIALIZACIÓN
+       ------------------------------------------------------------ */
+    goToStep(1);
+    refreshNavButtons();
+
+    console.log('✅ Wizard de contratación cargado (4 pasos)');
+})();
 </script>
 </body>
 </html>

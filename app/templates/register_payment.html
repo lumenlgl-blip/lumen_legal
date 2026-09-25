@@ -1012,6 +1012,166 @@
         #accionesFormulario {
             padding-top: .5rem;
         }
+
+        /* ============================================================ */
+        /* HEADER DEL CLIENTE — TARJETAS                                */
+        /* ============================================================ */
+        .client-header-modern {
+            display: flex; align-items: center; gap: 20px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(26,139,92,0.04));
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-primary);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .client-avatar-large {
+            width: 60px; height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.4);
+        }
+        .client-info-block { flex: 1; min-width: 220px; }
+        .client-name-large {
+            font-weight: 800; font-size: 1.35rem;
+            color: var(--text-primary); margin: 0 0 10px 0;
+            letter-spacing: -0.02em;
+        }
+        .client-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 8px; width: 100%;
+        }
+        .client-meta-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 40px;
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--text-primary);
+            border: 1px solid var(--border-soft);
+            min-width: 0; overflow: hidden;
+        }
+        .client-meta-item i { color: var(--accent-primary); font-size: 0.9rem; flex-shrink: 0; }
+        .client-meta-item .meta-lbl {
+            color: var(--text-muted); font-weight: 500;
+            font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.03em; flex-shrink: 0;
+        }
+        .client-meta-item .meta-val {
+            flex: 1; min-width: 0; text-align: right;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.78rem; letter-spacing: 0.01em;
+        }
+
+        /* ============================================================ */
+        /* BANNER CONTRATO SELECCIONADO                                 */
+        /* ============================================================ */
+        .selected-contract-banner {
+            display: none;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(245,179,66,0.15), rgba(245,179,66,0.05));
+            border: 2px solid var(--warning);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 16px;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        [data-theme="dark"] .selected-contract-banner {
+            background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));
+        }
+        .selected-contract-banner.show { display: flex; }
+        .selected-contract-banner .sc-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: var(--warning); color: #0b1e33;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
+            box-shadow: 0 6px 16px -4px rgba(245,179,66,0.5);
+        }
+        .selected-contract-banner .sc-body { flex: 1; min-width: 0; }
+        .selected-contract-banner .sc-lbl {
+            font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.05em; font-weight: 700;
+            color: #8a6d00; margin-bottom: 4px;
+        }
+        [data-theme="dark"] .selected-contract-banner .sc-lbl { color: var(--warning); }
+        .selected-contract-banner .sc-title {
+            font-weight: 800; font-size: 1.05rem;
+            color: var(--text-primary); margin-bottom: 2px;
+        }
+        .selected-contract-banner .sc-meta {
+            font-size: 0.82rem; color: var(--text-secondary);
+        }
+        .selected-contract-banner .sc-amount {
+            font-size: 1.2rem; font-weight: 800;
+            color: var(--danger);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        /* ============================================================ */
+        /* WIZARD STEPPER                                               */
+        /* ============================================================ */
+        .wizard-stepper {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0; margin-bottom: 28px; padding: 0 8px;
+        }
+        .wizard-stepper .step-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 6px; flex-shrink: 0;
+        }
+        .wizard-stepper .step-circle {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-soft);
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .wizard-stepper .step-circle .step-check { display: none; font-size: 1.1rem; }
+        .wizard-stepper .step-item.active .step-circle {
+            background: var(--accent-primary); border-color: var(--accent-primary);
+            color: white; transform: scale(1.1);
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.5);
+        }
+        .wizard-stepper .step-item.completed .step-circle {
+            background: var(--success); border-color: var(--success); color: white;
+        }
+        .wizard-stepper .step-item.completed .step-circle .step-num { display: none; }
+        .wizard-stepper .step-item.completed .step-circle .step-check { display: block; }
+        .wizard-stepper .step-label {
+            font-size: 0.7rem; font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .wizard-stepper .step-item.active .step-label { color: var(--accent-primary); }
+        .wizard-stepper .step-item.completed .step-label { color: var(--success); }
+        .wizard-stepper .step-line {
+            flex: 1; height: 3px;
+            background: var(--border-soft);
+            margin: 0 6px 22px 6px;
+            border-radius: 3px; transition: background 0.4s;
+            max-width: 100px;
+        }
+        .wizard-stepper .step-line.completed { background: var(--success); }
+
+        @media (max-width: 768px) {
+            .wizard-stepper .step-circle { width: 36px; height: 36px; font-size: 0.8rem; }
+            .wizard-stepper .step-label { font-size: 0.6rem; }
+            .wizard-stepper .step-line { margin-bottom: 20px; }
+            .client-header-modern { padding: 16px; gap: 14px; }
+            .client-avatar-large { width: 48px; height: 48px; font-size: 1.5rem; }
+            .client-name-large { font-size: 1.1rem; }
+            .client-meta-grid { grid-template-columns: 1fr; }
+            .selected-contract-banner { flex-wrap: wrap; }
+            .selected-contract-banner .sc-amount { width: 100%; text-align: right; }
+        }
     </style>
 </head>
 <body>
@@ -1050,21 +1210,59 @@
 
     <div id="paymentFormContainer" class="payment-form-container" style="display:none;">
         <div class="card-glass">
-            <div class="client-header d-flex justify-content-between align-items-start flex-wrap gap-3 mb-2">
-                <div>
-                    <h5 id="clientNameDisplay" class="fw-bold mb-1"></h5>
-                    <div class="client-meta text-muted small" id="clientInfoDisplay"></div>
+
+            <!-- STEPPER -->
+            <div class="wizard-stepper" id="wizardStepper">
+                <div class="step-item" data-step="1">
+                    <div class="step-circle"><span class="step-num">1</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Cliente</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="2">
+                    <div class="step-circle"><span class="step-num">2</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Contrato</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="3">
+                    <div class="step-circle"><span class="step-num">3</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Pago</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="4">
+                    <div class="step-circle"><span class="step-num">4</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Comprobante</div>
                 </div>
             </div>
-            <hr>
+
+            <!-- HEADER CLIENTE (TARJETAS) -->
+            <div class="client-header-modern">
+                <div class="client-avatar-large">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="client-info-block">
+                    <h4 class="client-name-large" id="clientNameDisplay"></h4>
+                    <div class="client-meta-grid" id="clientInfoDisplay"></div>
+                </div>
+            </div>
+
             <div class="contracts-section-title fw-bold mb-3">
                 <i class="bi bi-exclamation-triangle text-danger me-2"></i>Contratos con Deuda
             </div>
             <div id="contractsContainer"></div>
             <hr>
-
             <form id="paymentForm" enctype="multipart/form-data" novalidate>
                 <input type="hidden" id="contractId" name="contract_id">
+
+                <!-- BANNER CONTRATO SELECCIONADO -->
+                <div class="selected-contract-banner" id="selectedContractBanner">
+                    <div class="sc-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
+                    <div class="sc-body">
+                        <div class="sc-lbl">Contrato seleccionado</div>
+                        <div class="sc-title" id="scTitle">—</div>
+                        <div class="sc-meta" id="scMeta">—</div>
+                    </div>
+                    <div class="sc-amount" id="scAmount">—</div>
+                </div>
 
                 <!-- SECCIÓN 1: DATOS DEL PAGO (oculta hasta seleccionar contrato) -->
                 <div class="form-section" id="datosPagoSection" style="display:none;">
@@ -1700,6 +1898,7 @@ function mostrarPreviewComprobante(url, filename, mimeType) {
         document.getElementById('uploadReceiptText').textContent = '✓ Comprobante adjuntado';
         document.getElementById('uploadReceiptSub').textContent = filename;
         document.getElementById('receipt_file').classList.remove('is-invalid');
+        if (typeof window.__updateWizard === 'function') window.__updateWizard();
 
         showNotification('Comprobante confirmado',
             `<p>El archivo <strong>${escapeHTML(filename)}</strong> se adjuntará al registrar el pago.</p>`,
@@ -1715,6 +1914,7 @@ function mostrarPreviewComprobante(url, filename, mimeType) {
         modal.hide();
         document.getElementById('receipt_file').value = '';
         resetearBotonComprobante();
+        if (typeof window.__updateWizard === 'function') window.__updateWizard();
     });
 
     // Reset al cerrar sin aceptar
@@ -1916,8 +2116,40 @@ function mostrarSkeletonResultados() {
     container.innerHTML = html;
 }
 
+/* ============================================================
+   RESET SILENCIOSO (para nueva búsqueda)
+   ============================================================ */
+function resetearPagoSilencioso() {
+    const form = document.getElementById('paymentForm');
+    if (form) form.reset();
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    fileAccepted = false;
+    selectedContractId = null;
+    currentSaldo = 0;
+    currentContractTotal = 0;
+
+    document.getElementById('paymentFormContainer').style.display = 'none';
+    document.getElementById('receiverContainer').style.display = 'none';
+    document.getElementById('receiptContainer').style.display = 'none';
+    document.getElementById('paymentSummary').style.display = 'none';
+    document.getElementById('liquidatedCard').classList.remove('show');
+    document.getElementById('datosPagoSection').style.display = 'none';
+    document.getElementById('recepcionSection').style.display = 'none';
+    document.getElementById('accionesFormulario').style.display = 'none';
+    document.getElementById('selectedContractBanner')?.classList.remove('show');
+
+    resetearComprobante();
+
+    window.__wizardClientLoaded = false;
+    if (typeof window.__updateWizard === 'function') window.__updateWizard();
+}
+
 async function realizarBusqueda() {
     const searchTerm = searchInput.value.trim().toUpperCase();
+
+    // Limpiar formulario si hay algo cargado de la búsqueda anterior
+    resetearPagoSilencioso();
 
     if (!searchTerm) {
         showNotification('Búsqueda vacía',
@@ -2076,14 +2308,19 @@ function loadClientFromData(clientId) {
     formContainer.style.display = 'block';
 
     document.getElementById('clientNameDisplay').innerHTML =
-        `<i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${escapeHTML(client.nombre_completo || 'Sin nombre')}`;
+        escapeHTML(client.nombre_completo || 'Sin nombre');
 
     document.getElementById('clientInfoDisplay').innerHTML = `
-        <strong>CURP:</strong> ${escapeHTML(client.curp || '—')} ·
-        <strong>Tel:</strong> ${escapeHTML(client.telefono || '—')} ·
-        <strong>Exp:</strong> ${escapeHTML(client.expediente_interno || '—')} ·
-        <strong>Folio:</strong> ${escapeHTML(client.folio_registro || '—')}
+        <div class="client-meta-item"><i class="bi bi-person-vcard"></i><span class="meta-lbl">CURP</span><span class="meta-val">${escapeHTML(client.curp || '—')}</span></div>
+        <div class="client-meta-item"><i class="bi bi-telephone"></i><span class="meta-lbl">Tel</span><span class="meta-val">${escapeHTML(client.telefono || '—')}</span></div>
+        <div class="client-meta-item"><i class="bi bi-folder"></i><span class="meta-lbl">Exp</span><span class="meta-val">${escapeHTML(client.expediente_interno || '—')}</span></div>
+        <div class="client-meta-item"><i class="bi bi-tag"></i><span class="meta-lbl">Folio</span><span class="meta-val">${escapeHTML(client.folio_registro || '—')}</span></div>
     `;
+
+    // Marcar paso 1 del wizard
+    window.__wizardClientLoaded = true;
+    document.getElementById('selectedContractBanner')?.classList.remove('show');
+    if (typeof window.__updateWizard === 'function') window.__updateWizard();
 
     const contractsContainer = document.getElementById('contractsContainer');
     contractsContainer.innerHTML = '';
@@ -2170,14 +2407,28 @@ function loadClientFromData(clientId) {
             paymentAmountEl.value = '';
             paymentAmountEl.classList.remove('is-invalid');
 
+            // === BANNER DESTACADO DEL CONTRATO ===
+            const srv = (contract.servicio || 'Servicio').toString();
+            const tj = contract.tipo_juicio ? ' · ' + contract.tipo_juicio : '';
+            const exp = contract.court_case && contract.court_case.num_exp_tribunal
+                        ? ' · Exp: ' + contract.court_case.num_exp_tribunal : '';
+            document.getElementById('scTitle').textContent = srv;
+            document.getElementById('scMeta').textContent =
+                (contract.detalle ? contract.detalle + ' · ' : '') +
+                'Pagado: ' + formatMoney(contract.pagado) +
+                tj + exp;
+            document.getElementById('scAmount').textContent = 'Saldo: ' + formatMoney(currentSaldo);
+            document.getElementById('selectedContractBanner').classList.add('show');
+
             actualizarResumenPago(0);
 
-            // 👇 AQUÍ SE MUESTRAN LAS SECCIONES AL SELECCIONAR CONTRATO
+            // Mostrar secciones
             document.getElementById('datosPagoSection').style.display = 'block';
             document.getElementById('recepcionSection').style.display = 'block';
             document.getElementById('accionesFormulario').style.display = 'flex';
 
-            // Scroll suave al monto
+            if (typeof window.__updateWizard === 'function') window.__updateWizard();
+
             paymentAmountEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             setTimeout(() => paymentAmountEl.focus(), 300);
         });
@@ -2451,6 +2702,84 @@ window.addEventListener('beforeunload', (e) => {
         e.returnValue = '';
     }
 });
+
+/* ============================================================
+   WIZARD PASO A PASO — 4 PASOS
+   ============================================================ */
+(function() {
+    'use strict';
+
+    const stepItems = Array.from(document.querySelectorAll('#wizardStepper .step-item'));
+    const stepLines = Array.from(document.querySelectorAll('#wizardStepper .step-line'));
+    const form = document.getElementById('paymentForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function isStepDone(n) {
+        if (n === 1) return !!window.__wizardClientLoaded;
+        if (n === 2) return !!selectedContractId;
+        if (n === 3) {
+            const amount = safeNumber(paymentAmountEl.value.replace(/[^0-9.]/g, ''));
+            if (amount <= 0) return false;
+            if (amount > currentSaldo) return false;
+            const method = document.getElementById('payment_method').value;
+            return !!method;
+        }
+        if (n === 4) {
+            if (!isStepDone(3)) return false;
+            const method = document.getElementById('payment_method').value;
+            if (method === 'efectivo') {
+                return document.getElementById('receiver_name').value.trim().length > 0;
+            }
+            if (method === 'deposito' || method === 'transferencia') {
+                return !!fileAccepted;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    function currentStep() {
+        for (let i = 1; i <= 4; i++) {
+            if (!isStepDone(i)) return i;
+        }
+        return 4;
+    }
+
+    window.__updateWizard = function updateWizard() {
+        const active = currentStep();
+
+        stepItems.forEach(item => {
+            const n = parseInt(item.dataset.step, 10);
+            item.classList.toggle('completed', isStepDone(n) && n < active);
+            item.classList.toggle('active', n === active);
+        });
+
+        stepLines.forEach((line, idx) => {
+            line.classList.toggle('completed', isStepDone(idx + 1) && (idx + 1) < active);
+        });
+
+        if (submitBtn) {
+            const allDone = isStepDone(1) && isStepDone(2) && isStepDone(3) && isStepDone(4);
+            submitBtn.disabled = !allDone;
+            submitBtn.style.opacity = allDone ? '1' : '0.55';
+            submitBtn.style.cursor = allDone ? 'pointer' : 'not-allowed';
+        }
+    };
+
+    if (form) {
+        form.addEventListener('input', () => window.__updateWizard());
+        form.addEventListener('change', () => window.__updateWizard());
+    }
+
+    document.getElementById('receiptPreviewModal')?.addEventListener('hidden.bs.modal', () => {
+        setTimeout(() => window.__updateWizard(), 150);
+    });
+    document.getElementById('qrModal')?.addEventListener('hidden.bs.modal', () => {
+        setTimeout(() => window.__updateWizard(), 200);
+    });
+
+    window.__updateWizard();
+})();
 </script>
 </body>
 </html>

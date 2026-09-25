@@ -884,6 +884,67 @@
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* ============================================================ */
+        /* HEADER DEL CLIENTE — TARJETAS                                */
+        /* ============================================================ */
+        .client-header-modern {
+            display: flex; align-items: center; gap: 20px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(26,139,92,0.04));
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-primary);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .client-avatar-large {
+            width: 60px; height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.4);
+        }
+        .client-info-block { flex: 1; min-width: 220px; }
+        .client-name-large {
+            font-weight: 800; font-size: 1.35rem;
+            color: var(--text-primary); margin: 0 0 10px 0;
+            letter-spacing: -0.02em;
+        }
+        .client-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 8px; width: 100%;
+        }
+        .client-meta-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 40px;
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--text-primary);
+            border: 1px solid var(--border-soft);
+            min-width: 0; overflow: hidden;
+        }
+        .client-meta-item i { color: var(--accent-primary); font-size: 0.9rem; flex-shrink: 0; }
+        .client-meta-item .meta-lbl {
+            color: var(--text-muted); font-weight: 500;
+            font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.03em; flex-shrink: 0;
+        }
+        .client-meta-item .meta-val {
+            flex: 1; min-width: 0; text-align: right;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.78rem; letter-spacing: 0.01em;
+        }
+        @media (max-width: 768px) {
+            .client-header-modern { padding: 16px; gap: 14px; }
+            .client-avatar-large { width: 48px; height: 48px; font-size: 1.5rem; }
+            .client-name-large { font-size: 1.1rem; }
+            .client-meta-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -1266,6 +1327,9 @@ async function loadClientDetail(clientId) {
 
         hideLoading();
 
+        // Ocultar resultados y la búsqueda para que solo quede el detalle
+        document.getElementById('resultsContainer').innerHTML = '';
+
         const container = document.getElementById('clientContent');
         document.getElementById('clientDetailContainer').style.display = 'block';
 
@@ -1276,18 +1340,20 @@ async function loadClientDetail(clientId) {
         const folio = escapeHTML(client.folio_registro || '—');
 
         container.innerHTML = `
-            <div class="client-header">
-                <div>
-                    <h4><i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${nombre}</h4>
-                    <div class="client-meta">
-                        <span><i class="bi bi-person-badge"></i> ${curp}</span>
-                        <span><i class="bi bi-telephone"></i> ${tel}</span>
-                        <span><i class="bi bi-folder"></i> Exp. ${exp}</span>
-                        <span><i class="bi bi-tag"></i> ${folio}</span>
+            <div class="client-header-modern">
+                <div class="client-avatar-large">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="client-info-block">
+                    <h4 class="client-name-large">${nombre}</h4>
+                    <div class="client-meta-grid">
+                        <div class="client-meta-item"><i class="bi bi-person-vcard"></i><span class="meta-lbl">CURP</span><span class="meta-val">${curp}</span></div>
+                        <div class="client-meta-item"><i class="bi bi-telephone"></i><span class="meta-lbl">Tel</span><span class="meta-val">${tel}</span></div>
+                        <div class="client-meta-item"><i class="bi bi-folder"></i><span class="meta-lbl">Exp</span><span class="meta-val">${exp}</span></div>
+                        <div class="client-meta-item"><i class="bi bi-tag"></i><span class="meta-lbl">Folio</span><span class="meta-val">${folio}</span></div>
                     </div>
                 </div>
             </div>
-            <hr>
             <div id="contractsContainer"></div>
         `;
 

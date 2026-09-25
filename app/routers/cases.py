@@ -18,7 +18,7 @@ router = APIRouter(prefix="/cases", tags=["Cases"])
 # HELPERS
 # ============================================================
 def get_cases_for_client(client_id: int, db: Session):
-    """Obtiene los casos del cliente."""
+    """Obtiene los casos del cliente (con partes del juicio)."""
     contracts = db.query(Contract).filter(Contract.client_id == client_id).all()
     cases_data = []
     for contract in contracts:
@@ -34,6 +34,9 @@ def get_cases_for_client(client_id: int, db: Session):
                     "status": court_case.status,
                     "fecha_presentacion": court_case.fecha_presentacion.strftime("%d/%m/%Y"),
                     "contract_id": contract.id,
+                    # 👇 NUEVOS
+                    "actor_nombre": court_case.actor_nombre or "",
+                    "demandado_nombre": court_case.demandado_nombre or "",
                 }
             )
     return cases_data

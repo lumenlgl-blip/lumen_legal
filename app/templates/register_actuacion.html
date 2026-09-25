@@ -1049,6 +1049,215 @@
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* ============================================================ */
+        /* HEADER DEL EXPEDIENTE — TARJETAS                             */
+        /* ============================================================ */
+        .case-header-modern {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 22px 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.08), rgba(245,179,66,0.06));
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-primary);
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+        .case-avatar-large {
+            width: 64px; height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.4);
+        }
+        .case-info-block { flex: 1; min-width: 240px; }
+        .case-number-large {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .case-number-large .exp-lbl {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent-primary);
+            background: rgba(42,109,244,0.1);
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+        .case-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+            width: 100%;
+        }
+        .case-meta-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: 1px solid var(--border-soft);
+            min-width: 0;
+        }
+        .case-meta-item i {
+            color: var(--accent-primary);
+            font-size: 1rem;
+            flex-shrink: 0;
+            width: 18px;
+            text-align: center;
+        }
+        .case-meta-item .meta-lbl {
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+        .case-meta-item .meta-val {
+            flex: 1;
+            min-width: 0;
+            color: var(--text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .case-meta-item .meta-val.mono {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Pill de estatus con color según valor */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+        .status-pill.s-iniciado  { background: var(--info-soft);    color: var(--info); }
+        .status-pill.s-activo    { background: var(--success-soft); color: var(--success); }
+        .status-pill.s-concluido { background: var(--success-soft); color: var(--success); }
+        .status-pill.s-suspendido{ background: var(--warning-soft); color: #8a6d00; }
+        .status-pill.s-archivado { background: var(--border-soft);  color: var(--text-muted); }
+        .status-pill.s-default   { background: rgba(42,109,244,0.1); color: var(--accent-primary); }
+
+        [data-theme="dark"] .status-pill.s-suspendido { color: var(--warning); }
+
+        /* Item estatus hereda el color de su pill */
+        .case-meta-item.is-status { padding-right: 10px; }
+
+        /* ============================================================ */
+        /* PARTES DEL JUICIO                                            */
+        /* ============================================================ */
+        .case-partes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+            width: 100%;
+        }
+        @media (max-width: 640px) {
+            .case-partes-grid { grid-template-columns: 1fr; }
+        }
+        .parte-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-primary);
+            min-width: 0;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+        .parte-card:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+        }
+        .parte-card.actor1 { border-left-color: var(--accent-primary); }
+        .parte-card.actor2 { border-left-color: var(--info); }
+        .parte-card.demandado { border-left-color: var(--danger); }
+
+        .parte-avatar {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+            color: white;
+            margin-top: 2px;
+        }
+        .parte-card.actor1 .parte-avatar {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+        }
+        .parte-card.actor2 .parte-avatar {
+            background: linear-gradient(135deg, var(--info), var(--accent-primary));
+        }
+        .parte-card.demandado .parte-avatar {
+            background: linear-gradient(135deg, var(--danger), var(--danger-hover));
+        }
+
+        .parte-body {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .parte-rol {
+            font-size: 0.66rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 3px;
+        }
+        .parte-card.actor1 .parte-rol { color: var(--accent-primary); }
+        .parte-card.actor2 .parte-rol { color: var(--info); }
+        .parte-card.demandado .parte-rol { color: var(--danger); }
+
+        .parte-nombre {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.35;
+            /* Permitir que el texto se envuelva en varias líneas
+               sin salirse de la tarjeta */
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .case-partes-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .case-header-modern { padding: 16px; gap: 14px; }
+            .case-avatar-large { width: 52px; height: 52px; font-size: 1.6rem; }
+            .case-number-large { font-size: 1.15rem; }
+            .case-meta-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -1097,16 +1306,17 @@
     <!-- DETALLE DEL EXPEDIENTE -->
     <div id="caseDetailContainer" class="case-detail-container">
         <div class="case-detail-card">
-            <div class="case-detail-header">
-                <div>
-                    <h4 id="caseTitle">
-                        <i class="bi bi-folder2-open"></i>
-                    </h4>
-                    <div class="case-info" id="caseInfo"></div>
+            <div class="case-header-modern">
+                <div class="case-avatar-large">
+                    <i class="bi bi-folder2-open"></i>
                 </div>
-                <span class="badge-custom badge-info">
-                    <i class="bi bi-clock-history"></i> Actualizado
-                </span>
+                <div class="case-info-block">
+                    <h4 class="case-number-large" id="caseNumberDisplay">
+                        <span class="exp-lbl">Expediente</span>
+                        <span id="caseNumberValue">—</span>
+                    </h4>
+                    <div class="case-meta-grid" id="caseInfoDisplay"></div>
+                </div>
             </div>
 
             <!-- FORMULARIO NUEVA ACTUACIÓN -->
@@ -1543,8 +1753,38 @@ searchInput.addEventListener('keydown', function (e) {
 
 searchBtn.addEventListener('click', realizarBusqueda);
 
+/* ============================================================
+   RESET SILENCIOSO (al iniciar nueva búsqueda)
+   ============================================================ */
+function resetearExpedienteSilencioso() {
+    const form = document.getElementById('actuacionForm');
+    if (form) form.reset();
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    fileValidated = false;
+    currentCaseId = null;
+
+    document.getElementById('caseDetailContainer').style.display = 'none';
+    document.getElementById('resultsContainer').innerHTML = '';
+
+    resetFile();
+
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+
+    const countEl = document.getElementById('actuacionesCount');
+    if (countEl) countEl.textContent = '0';
+    const actCont = document.getElementById('actuacionesContainer');
+    if (actCont) actCont.innerHTML = '';
+}
+
 async function realizarBusqueda() {
     const term = searchInput.value.trim().toUpperCase();
+
+    // Limpiar todo el formulario / detalle antes de nueva búsqueda
+    resetearExpedienteSilencioso();
 
     if (!term) {
         showNotification('Búsqueda vacía', '<p>Ingresa un término de búsqueda.</p>', 'warning');
@@ -1683,10 +1923,6 @@ function showCaseSelection(client) {
         });
     }
 
-    html += `<button class="btn btn-outline-secondary mt-3" onclick="searchAgain()" style="border-radius:60px;padding:10px 22px;font-weight:600;" type="button">
-        <i class="bi bi-arrow-left"></i> Nueva búsqueda
-    </button>`;
-
     container.innerHTML = html;
 
     container.querySelectorAll('.select-case').forEach(btn => {
@@ -1717,17 +1953,93 @@ async function loadCaseDetail(caseId) {
         hideLoading();
 
         currentCaseId = caseId;
+
+        // Ocultar resultados de búsqueda y lista de casos
+        document.getElementById('resultsContainer').innerHTML = '';
+
         const detailContainer = document.getElementById('caseDetailContainer');
         detailContainer.style.display = 'block';
 
-        const numExp = escapeHTML(caseData.num_exp_tribunal || '—');
+        const numExp  = escapeHTML(caseData.num_exp_tribunal || '—');
         const tribunal = escapeHTML(caseData.tribunal || '—');
-        const status = escapeHTML(caseData.status || 'N/A');
+        const status  = escapeHTML(caseData.status || 'N/A');
 
-        document.getElementById('caseTitle').innerHTML =
-            `<i class="bi bi-folder2-open"></i> Expediente: ${numExp}`;
-        document.getElementById('caseInfo').innerHTML =
-            `<strong>Tribunal:</strong> ${tribunal} · <strong>Estatus:</strong> ${status}`;
+        // Número de expediente destacado
+        document.getElementById('caseNumberValue').textContent = numExp;
+
+        // Pill de estatus con color según valor
+        const statusKey = String(caseData.status || '').toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/\s+/g, '');
+        const statusClass = ['iniciado','activo','concluido','suspendido','archivado'].includes(statusKey)
+            ? 's-' + statusKey : 's-default';
+        const statusLabel = status.toUpperCase();
+
+        // Detectar partes del juicio
+        const actor1    = caseData.actor_nombre        || caseData.actor    || '';
+        const actor2    = caseData.actor2_nombre       || caseData.actor2   || '';
+        const demandado = caseData.demandado_nombre    || caseData.demandado || '';
+
+        // Detectar si es bilateral (sin demandado pero con 2 actores)
+        const esBilateral = !demandado && !!actor2;
+
+        let partesHTML = '';
+        if (actor1 || actor2 || demandado) {
+            partesHTML = '<div class="case-partes-grid">';
+
+            // Actor(es)
+            if (actor1) {
+                partesHTML += `
+                    <div class="parte-card actor1">
+                        <div class="parte-avatar"><i class="bi bi-person-fill"></i></div>
+                        <div class="parte-body">
+                            <div class="parte-rol">${esBilateral ? 'Primer Actor' : 'Actor'}</div>
+                            <div class="parte-nombre" title="${escapeHTML(actor1)}">${escapeHTML(actor1)}</div>
+                        </div>
+                    </div>`;
+            }
+            if (actor2) {
+                partesHTML += `
+                    <div class="parte-card actor2">
+                        <div class="parte-avatar"><i class="bi bi-person-fill"></i></div>
+                        <div class="parte-body">
+                            <div class="parte-rol">${esBilateral ? 'Segundo Actor' : 'Segundo Actor'}</div>
+                            <div class="parte-nombre" title="${escapeHTML(actor2)}">${escapeHTML(actor2)}</div>
+                        </div>
+                    </div>`;
+            }
+            // Demandado
+            if (demandado) {
+                partesHTML += `
+                    <div class="parte-card demandado">
+                        <div class="parte-avatar"><i class="bi bi-person-dash-fill"></i></div>
+                        <div class="parte-body">
+                            <div class="parte-rol">Demandado(a)</div>
+                            <div class="parte-nombre" title="${escapeHTML(demandado)}">${escapeHTML(demandado)}</div>
+                        </div>
+                    </div>`;
+            }
+            partesHTML += '</div>';
+        }
+
+        document.getElementById('caseInfoDisplay').innerHTML = `
+            <div class="case-meta-item">
+                <i class="bi bi-bank"></i>
+                <span class="meta-lbl">Tribunal</span>
+                <span class="meta-val">${tribunal}</span>
+            </div>
+            <div class="case-meta-item is-status">
+                <i class="bi bi-activity"></i>
+                <span class="meta-lbl">Estatus</span>
+                <span class="meta-val">
+                    <span class="status-pill ${statusClass}">
+                        <i class="bi bi-circle-fill" style="font-size:0.5rem;"></i>
+                        ${statusLabel}
+                    </span>
+                </span>
+            </div>
+        ` + partesHTML;
+
         document.getElementById('courtCaseId').value = caseId;
 
         renderActuaciones(caseData.actuaciones || []);

@@ -1,223 +1,1028 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
     <title>Usuarios · Lumen Legal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        body { background: #f2f5fb; padding-top: 20px; padding-bottom: 40px; }
-
-        /* Botón menú */
-        .btn-menu-modern {
-            position: fixed; top: 24px; left: 24px; z-index: 1050;
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px; padding: 10px 22px;
-            font-weight: 600; color: #0b1e33;
-            transition: all 0.2s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: 8px;
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.82);
+            --surface-glass-strong: rgba(255,255,255,0.96);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #d0d8e3;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --warning-text: #7a5a1a;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --purple: #6f42c1;
+            --purple-soft: #ede7fe;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .btn-menu-modern:hover { background: white; box-shadow: 0 12px 28px rgba(0,0,0,0.08); transform: translateY(-2px); color: #0b1e33; }
 
-        /* Header */
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --warning-text: #fbbf24;
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167,139,250,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ============================================================
+           THEME TOGGLE
+           ============================================================ */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1050;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg);
+            color: var(--accent-primary);
+        }
+
+        /* ============================================================
+           BOTÓN MENÚ
+           ============================================================ */
+        .btn-menu {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1050;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 60px;
+            padding: 12px 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+        }
+        .btn-menu:hover {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            color: var(--accent-primary);
+        }
+
+        /* ============================================================
+           LAYOUT
+           ============================================================ */
+        .container { max-width: 1200px; }
+
         .page-header {
-            background: rgba(255,255,255,0.7); backdrop-filter: blur(4px);
-            border-radius: 28px; padding: 24px 28px; margin-bottom: 28px;
-            border: 1px solid rgba(255,255,255,0.5);
-            box-shadow: 0 20px 48px -12px rgba(0,20,40,0.06);
-            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            animation: slideDown 0.5s ease-out;
         }
-        .page-header h1 { font-weight: 700; font-size: 1.8rem; color: #0b1e33; margin: 0; display: flex; align-items: center; gap: 12px; }
-        .page-header h1 i { color: #2a6df4; font-size: 2rem; }
-        .page-header .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-        .page-header .header-actions .btn { border-radius: 60px; padding: 8px 20px; font-weight: 600; font-size: 0.85rem; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-header h1 {
+            font-weight: 800;
+            font-size: 1.85rem;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .page-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .page-header .header-actions .btn {
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all var(--transition-normal);
+        }
+        .page-header .header-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .page-header .header-actions .btn-primary {
+            background: var(--accent-dark);
+            border: none;
+        }
+        .page-header .header-actions .btn-primary:hover {
+            background: var(--accent-dark-hover);
+        }
+        .page-header .header-actions .btn-outline-danger {
+            border: 1.5px solid var(--danger);
+            color: var(--danger);
+        }
+        .page-header .header-actions .btn-outline-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
 
-        /* Tarjeta */
+        /* ============================================================
+           CARD MODERN
+           ============================================================ */
         .card-modern {
-            background: rgba(255,255,255,0.8); backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.5); border-radius: 24px;
-            padding: 24px 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.4s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card-modern .card-header-custom {
-            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-            padding-bottom: 16px; border-bottom: 2px solid #eef3fa; margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 18px;
+            border-bottom: 2px solid var(--border-soft);
+            margin-bottom: 20px;
         }
-        .card-modern .card-header-custom h5 { font-weight: 700; color: #0b1e33; margin: 0; font-size: 1rem; }
-        .card-modern .card-header-custom h5 i { color: #2a6df4; margin-right: 8px; }
-        .card-modern .card-header-custom .badge-count { background: #0b1e33; color: white; font-weight: 600; padding: 4px 14px; border-radius: 40px; font-size: 0.7rem; }
+        .card-modern .card-header-custom h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-modern .card-header-custom h5 i { color: var(--accent-primary); }
+        .card-modern .card-header-custom .badge-count {
+            background: var(--accent-dark);
+            color: white;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-        /* Tabla */
-        .table-modern { font-size: 0.85rem; margin: 0; }
-        .table-modern thead { background: #f8faff; border-bottom: 2px solid #eef3fa; }
-        .table-modern thead th { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: #4a5b6e; padding: 10px 12px; border: none; }
-        .table-modern tbody td { padding: 10px 12px; vertical-align: middle; border-bottom: 1px solid #edf2f9; color: #1e293b; }
-        .table-modern tbody tr:hover { background: rgba(42,109,244,0.02); }
+        /* ============================================================
+           TABLA
+           ============================================================ */
+        .table-responsive { border-radius: var(--radius-md); }
+
+        .table-modern {
+            font-size: 0.85rem;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+        .table-modern thead {
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--border-soft);
+        }
+        .table-modern thead th {
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 12px 14px;
+            border: none;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .table-modern tbody td {
+            padding: 12px 14px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-soft);
+            color: var(--text-primary);
+            background: transparent;
+        }
+        .table-modern tbody tr { transition: background-color var(--transition-fast); }
+        .table-modern tbody tr:hover { background: var(--bg-tertiary); }
         .table-modern tbody tr:last-child td { border-bottom: none; }
 
-        /* Badges */
-        .badge-role { padding: 4px 14px; border-radius: 40px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
-        .badge-role.admin { background: #0b1e33; color: white; }
-        .badge-role.operador { background: #e2edff; color: #1f4f9e; }
-        .badge-role.consultor { background: #e3f5ee; color: #1a8b5c; }
+        /* Fuerza colores de texto en dark mode para filas del backend */
+        [data-theme="dark"] .table-modern tbody td {
+            color: var(--text-primary) !important;
+            background: transparent !important;
+        }
+        [data-theme="dark"] .table-modern tbody tr {
+            background: transparent !important;
+        }
+        [data-theme="dark"] .table-modern tbody tr:hover {
+            background: var(--bg-tertiary) !important;
+        }
+        /* Texto que venga en negrita o colores hardcoded del backend */
+        [data-theme="dark"] .table-modern tbody td * {
+            color: inherit;
+        }
 
-        .badge-status { padding: 3px 12px; border-radius: 40px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; }
-        .badge-status.active { background: #e3f5ee; color: #1a8b5c; }
-        .badge-status.inactive { background: #eef2f6; color: #4a5b6e; }
-
-        /* 📌 PERMISSION BADGES REDISEÑADOS */
-        .permission-badge {
-            display: inline-block;
-            padding: 2px 12px;
+        /* ============================================================
+           BADGES
+           ============================================================ */
+        .badge-role {
+            padding: 5px 14px;
             border-radius: 40px;
-            font-size: 0.6rem;
-            font-weight: 600;
-            margin: 1px 3px;
-            border: 1px solid transparent;
-            background: #eef2f6;
-            color: #2a3a4e;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            letter-spacing: 0.04em;
+        }
+        .badge-role.admin {
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent-dark-hover));
+            color: white;
+        }
+        .badge-role.operador { background: var(--info-soft); color: var(--accent-primary); }
+        .badge-role.consultor { background: var(--success-soft); color: var(--success); }
+
+        .badge-status {
+            padding: 5px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            letter-spacing: 0.04em;
+        }
+        .badge-status.active { background: var(--success-soft); color: var(--success); }
+        .badge-status.inactive { background: var(--danger-soft); color: var(--danger); }
+
+        /* ============================================================
+           PERMISSION BADGES
+           ============================================================ */
+        .permission-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin: 2px 3px 2px 0;
+            transition: all var(--transition-fast);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
         }
         .permission-badge:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-sm);
         }
-        .permission-badge.clients { background: #dbeafe; color: #1e40af; border-color: #93bbfc; }
-        .permission-badge.contracts { background: #fef3c7; color: #92400e; border-color: #fbbf24; }
-        .permission-badge.cases { background: #e0e7ff; color: #3730a3; border-color: #818cf8; }
-        .permission-badge.payments { background: #d1fae5; color: #065f46; border-color: #34d399; }
-        .permission-badge.actuaciones { background: #fce4ec; color: #9a1f3e; border-color: #f06292; }
-        .permission-badge.consult { background: #e8f5e9; color: #2e7d32; border-color: #81c784; }
-        .permission-badge.agenda { background: #f3e5f5; color: #6a1b9a; border-color: #ce93d8; }
-        .permission-badge.dashboard { background: #e3f2fd; color: #0d47a1; border-color: #64b5f6; }
-        .permission-badge.audit { background: #f5f5f5; color: #424242; border-color: #bdbdbd; }
-        .permission-badge.all { background: #0b1e33; color: white; border-color: #0b1e33; }
+        .permission-badge.clients { background: rgba(42,109,244,0.12); color: var(--accent-primary); }
+        .permission-badge.contracts { background: var(--warning-soft); color: var(--warning-text); }
+        .permission-badge.cases { background: var(--purple-soft); color: var(--purple); }
+        .permission-badge.payments { background: var(--success-soft); color: var(--success); }
+        .permission-badge.actuaciones { background: rgba(220,53,69,0.12); color: var(--danger); }
+        .permission-badge.consult { background: rgba(26,139,92,0.12); color: var(--success); }
+        .permission-badge.agenda { background: var(--purple-soft); color: var(--purple); }
+        .permission-badge.dashboard { background: var(--info-soft); color: var(--accent-primary); }
+        .permission-badge.audit { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .permission-badge.all {
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent-dark-hover));
+            color: white;
+        }
 
-/* Botones acción */
-.btn-action {
-    border-radius: 40px;
-    padding: 4px 12px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    transition: all 0.2s;
-    border: none;
-    margin: 2px 2px;
-}
-.btn-action i { margin-right: 3px; }
-.btn-action.reset-password { background: rgba(245,179,66,0.12); color: #b7791f; }
-.btn-action.reset-password:hover { background: #f5b342; color: white; }
-.btn-action.edit-permissions { background: rgba(42,109,244,0.08); color: #2a6df4; }
-.btn-action.edit-permissions:hover { background: #2a6df4; color: white; }
-.btn-action.edit-user { background: rgba(42,109,244,0.08); color: #2a6df4; }
-.btn-action.edit-user:hover { background: #2a6df4; color: white; }
-.btn-action.toggle-status { background: rgba(220,53,69,0.08); color: #b12a2a; }
-.btn-action.toggle-status:hover { background: #dc3545; color: white; }
-.btn-action.toggle-status.unblock { background: rgba(26,139,92,0.08); color: #1a8b5c; }
-.btn-action.toggle-status.unblock:hover { background: #1a8b5c; color: white; }
-.btn-action.delete-user { background: rgba(220,53,69,0.08); color: #b12a2a; }
-.btn-action.delete-user:hover { background: #dc3545; color: white; }
+        /* ============================================================
+           ACTION BUTTONS (con espaciado garantizado)
+           ============================================================ */
+        /* Contenedor de botones (si el backend lo tiene) */
+        .action-buttons {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            justify-content: flex-end;
+        }
 
-        /* Modales modernos */
-        .modal-modern .modal-content { border-radius: 28px; border: none; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2); overflow: hidden; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); }
-        .modal-modern .modal-header { border-bottom: none; padding: 20px 28px 8px 28px; }
-        .modal-modern .modal-header .modal-title { font-weight: 700; color: #0b1e33; }
-        .modal-modern .modal-body { padding: 16px 28px 24px; }
-        .modal-modern .modal-footer { border-top: none; padding: 8px 28px 24px; }
-        .modal-modern .form-control { border-radius: 16px; border: 1.5px solid #e9edf4; padding: 14px 18px; font-size: 0.95rem; background: rgba(255,255,255,0.6); transition: all 0.2s; }
-        .modal-modern .form-control:focus { border-color: #2a6df4; box-shadow: 0 0 0 4px rgba(42,109,244,0.08); background: white; }
-        .modal-modern .form-label { font-weight: 600; font-size: 0.85rem; color: #1e293b; margin-bottom: 4px; }
+        /* Estilos base para botones de acción — se aplican SIN importar
+           si están dentro de .action-buttons o no */
+        .table-modern .btn-action,
+        .table-modern .action-buttons > .btn,
+        .table-modern .action-buttons > button.btn,
+        .table-modern .action-buttons > a.btn,
+        /* Fallback: cualquier botón pequeño dentro de la celda de acciones */
+        .table-modern td:last-child > button.btn,
+        .table-modern td:last-child > a.btn {
+            border-radius: 40px !important;
+            padding: 6px 14px !important;
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            transition: all var(--transition-normal) !important;
+            border: 1px solid transparent !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 4px !important;
+            min-height: 32px !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+            background: var(--bg-tertiary) !important;
+            color: var(--text-secondary) !important;
+            text-decoration: none !important;
+            margin: 3px 2px !important;   /* ← espaciado obligatorio */
+            line-height: 1.2 !important;
+            vertical-align: middle !important;
+        }
 
-        .permission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 16px; background: rgba(255,255,255,0.4); border-radius: 16px; padding: 14px 18px; border: 1px solid #edf2f9; }
-        .permission-grid .form-check { padding: 4px 0; }
-        .permission-grid .form-check-input { border-radius: 4px; border: 1.5px solid #d0d8e3; cursor: pointer; }
-        .permission-grid .form-check-input:checked { background-color: #2a6df4; border-color: #2a6df4; }
-        .permission-grid .form-check-label { font-size: 0.8rem; color: #1e293b; cursor: pointer; }
+        .table-modern .btn-action:hover,
+        .table-modern .action-buttons > .btn:hover,
+        .table-modern .action-buttons > button.btn:hover,
+        .table-modern .action-buttons > a.btn:hover,
+        .table-modern td:last-child > button.btn:hover,
+        .table-modern td:last-child > a.btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: var(--shadow-sm) !important;
+        }
 
-        /* Loading overlay */
-        .spinner-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,30,51,0.4); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; }
-        .spinner-box { background: white; padding: 36px 48px; border-radius: 32px; text-align: center; box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2); }
-        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: #2a6df4; }
-        .spinner-box h5 { font-weight: 700; color: #0b1e33; margin-top: 12px; }
-        .spinner-box p { color: #6b7b8f; font-size: 0.85rem; }
+        /* Colores por tipo de acción */
+        .btn-action.reset-password,
+        .action-buttons .btn-warning,
+        .action-buttons .reset-password,
+        .table-modern td:last-child > .btn-warning {
+            background: var(--warning-soft) !important;
+            color: var(--warning-text) !important;
+            border-color: rgba(245,179,66,0.3) !important;
+        }
+        .btn-action.reset-password:hover,
+        .action-buttons .btn-warning:hover,
+        .action-buttons .reset-password:hover,
+        .table-modern td:last-child > .btn-warning:hover {
+            background: var(--warning) !important;
+            color: #0b1e33 !important;
+        }
 
-        /* Responsive */
+        .btn-action.edit-permissions,
+        .action-buttons .btn-info,
+        .action-buttons .edit-permissions,
+        .table-modern td:last-child > .btn-info {
+            background: var(--info-soft) !important;
+            color: var(--accent-primary) !important;
+            border-color: rgba(42,109,244,0.2) !important;
+        }
+        .btn-action.edit-permissions:hover,
+        .action-buttons .btn-info:hover,
+        .action-buttons .edit-permissions:hover,
+        .table-modern td:last-child > .btn-info:hover {
+            background: var(--accent-primary) !important;
+            color: white !important;
+        }
+
+        .btn-action.edit-user,
+        .action-buttons .btn-primary,
+        .action-buttons .edit-user,
+        .table-modern td:last-child > .btn-primary {
+            background: var(--info-soft) !important;
+            color: var(--accent-primary) !important;
+            border-color: rgba(42,109,244,0.2) !important;
+        }
+        .btn-action.edit-user:hover,
+        .action-buttons .btn-primary:hover,
+        .action-buttons .edit-user:hover,
+        .table-modern td:last-child > .btn-primary:hover {
+            background: var(--accent-primary) !important;
+            color: white !important;
+        }
+
+        .btn-action.toggle-status,
+        .action-buttons .btn-danger,
+        .action-buttons .toggle-status,
+        .table-modern td:last-child > .btn-danger {
+            background: var(--danger-soft) !important;
+            color: var(--danger) !important;
+            border-color: rgba(220,53,69,0.2) !important;
+        }
+        .btn-action.toggle-status:hover,
+        .action-buttons .btn-danger:hover,
+        .action-buttons .toggle-status:hover,
+        .table-modern td:last-child > .btn-danger:hover {
+            background: var(--danger) !important;
+            color: white !important;
+        }
+
+        .btn-action.toggle-status.unblock,
+        .action-buttons .btn-success,
+        .action-buttons .toggle-status.unblock,
+        .table-modern td:last-child > .btn-success {
+            background: var(--success-soft) !important;
+            color: var(--success) !important;
+            border-color: rgba(26,139,92,0.2) !important;
+        }
+        .btn-action.toggle-status.unblock:hover,
+        .action-buttons .btn-success:hover,
+        .action-buttons .toggle-status.unblock:hover,
+        .table-modern td:last-child > .btn-success:hover {
+            background: var(--success) !important;
+            color: white !important;
+        }
+
+        .btn-action.delete-user,
+        .action-buttons .delete-user,
+        .table-modern td:last-child > .btn-outline-danger {
+            background: var(--danger-soft) !important;
+            color: var(--danger) !important;
+            border-color: rgba(220,53,69,0.2) !important;
+        }
+        .btn-action.delete-user:hover,
+        .action-buttons .delete-user:hover,
+        .table-modern td:last-child > .btn-outline-danger:hover {
+            background: var(--danger) !important;
+            color: white !important;
+        }
+
+        /* La celda de acciones: layout flex para separar botones */
+        .table-modern td:last-child {
+            text-align: right;
+        }
+
+        /* ============================================================
+           MODALES
+           ============================================================ */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 22px 28px 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-modern .modal-body {
+            padding: 18px 28px 24px;
+            color: var(--text-primary);
+            background: transparent;
+        }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: transparent;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px;
+            font-weight: 700;
+            padding: 10px 24px;
+            min-height: 44px;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        /* Headers de modales con gradientes */
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-dark { background: linear-gradient(135deg, var(--accent-dark), var(--accent-dark-hover)); }
+
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-info .modal-title,
+        .modal-header.header-dark .modal-title { color: white; }
+        .modal-header.header-warning .modal-title { color: #0b1e33; }
+
+        /* El botón close siempre visible sobre cualquier header */
+        .modal-header.header-warning .btn-close { filter: none; }
+
+        /* ============================================================
+           NOTIFICACIÓN
+           ============================================================ */
+        .notification-icon {
+            font-size: 3.5rem;
+            text-align: center;
+            display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+
+        /* ============================================================
+           FORM FIELDS
+           ============================================================ */
+        .form-field {
+            margin-bottom: 22px;
+        }
+        .form-field .field-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            padding-left: 2px;
+        }
+        .form-field .field-label .required {
+            color: var(--danger);
+        }
+        .form-field .form-control,
+        .form-field .form-select {
+            width: 100%;
+            height: 54px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
+            padding: 0 18px;
+            font-size: 0.95rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            outline: none;
+        }
+        .form-field .form-control::placeholder {
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        .form-field .form-control:focus,
+        .form-field .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        .form-field .form-control.is-invalid {
+            border-color: var(--danger);
+        }
+        .form-field .field-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            padding-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-field .field-hint i { font-size: 0.8rem; }
+
+        .user-info-box {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1rem;
+            border: 1px solid var(--border-soft);
+        }
+
+        /* ============================================================
+           PERMISSION GRID
+           ============================================================ */
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            border: 1px solid var(--border-soft);
+        }
+        .permission-grid .perm-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border-soft);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            min-height: 52px;
+        }
+        .permission-grid .perm-checkbox:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+        .permission-grid .perm-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid var(--border-strong);
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: var(--accent-primary);
+            margin: 0;
+        }
+        .permission-grid .perm-checkbox input[type="checkbox"]:checked {
+            border-color: var(--accent-primary);
+        }
+        .permission-grid .perm-checkbox label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            flex: 1;
+        }
+        .permission-grid .perm-checkbox label i {
+            color: var(--accent-primary);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================================
+           SPINNER
+           ============================================================ */
+        .spinner-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .spinner-box {
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
+        }
+        .spinner-box .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        .spinner-box h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 16px;
+        }
+        .spinner-box p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+        }
+
+        .btn-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .card-modern { margin-left: 16px; margin-right: 16px; }
+        }
+
         @media (max-width: 768px) {
-            .page-header h1 { font-size: 1.3rem; }
-            .page-header { flex-direction: column; align-items: stretch; text-align: center; }
-            .page-header .header-actions { justify-content: center; }
-            .card-modern { padding: 16px; }
+            .container { padding-left: 12px; padding-right: 12px; }
+            .page-header {
+                padding: 20px;
+                border-radius: 20px;
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .page-header h1 { font-size: 1.4rem; justify-content: center; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .page-header .header-actions { justify-content: center; width: 100%; }
+            .page-header .header-actions .btn { flex: 1; justify-content: center; }
+            .card-modern { padding: 18px 16px; border-radius: 20px; }
+            .card-modern .card-header-custom { flex-direction: column; align-items: flex-start; }
+
+            /* Tabla → Cards */
+            .table-modern thead { display: none; }
+            .table-modern, .table-modern tbody, .table-modern tr, .table-modern td {
+                display: block;
+                width: 100%;
+            }
+            .table-modern tbody tr {
+                background: var(--bg-secondary);
+                border: 1px solid var(--border-soft);
+                border-radius: var(--radius-md);
+                padding: 14px;
+                margin-bottom: 12px;
+                box-shadow: var(--shadow-sm);
+            }
+            .table-modern tbody td {
+                border: none;
+                padding: 8px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                gap: 12px;
+            }
+            .table-modern tbody td::before {
+                content: attr(data-label);
+                font-weight: 800;
+                font-size: 0.68rem;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                letter-spacing: 0.04em;
+                text-align: left;
+                flex-shrink: 0;
+            }
+
+            /* La celda de acciones se convierte en bloque */
+            .table-modern tbody td:last-child {
+                display: block;
+                text-align: left;
+                margin-top: 10px;
+                padding-top: 12px;
+                border-top: 1px solid var(--border-soft);
+            }
+            .table-modern tbody td:last-child::before { display: none; }
+
+            /* Botones en grid 2 columnas */
+            .table-modern tbody td:last-child .action-buttons {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                width: 100%;
+                justify-content: stretch;
+            }
+            .table-modern tbody td:last-child .action-buttons > .btn,
+            .table-modern tbody td:last-child .action-buttons > button.btn,
+            .table-modern tbody td:last-child .action-buttons > a.btn {
+                width: 100% !important;
+                justify-content: center !important;
+                margin: 0 !important;
+            }
+
+            /* Fallback: si NO hay .action-buttons, botones directos en grid */
+            .table-modern tbody td:last-child > .btn-action,
+            .table-modern tbody td:last-child > button.btn,
+            .table-modern tbody td:last-child > a.btn {
+                width: calc(50% - 4px) !important;
+                margin: 4px 2px !important;
+                display: inline-flex !important;
+                justify-content: center !important;
+            }
+
             .permission-grid { grid-template-columns: 1fr; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-            .table-modern { font-size: 0.75rem; }
-            .table-modern thead th { font-size: 0.6rem; padding: 6px 8px; }
-            .table-modern tbody td { padding: 6px 8px; }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
         }
+
         @media (max-width: 480px) {
-            .page-header .header-actions .btn { font-size: 0.75rem; padding: 6px 14px; }
-            .table-modern { font-size: 0.65rem; }
-            .btn-action { font-size: 0.6rem; padding: 3px 8px; }
-        }
-                /* ========== ADAPTACIÓN MÓVIL - TABLA A CARDS ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px;}
-        }
-        @media (max-width: 768px){
-            .page-header{padding:18px; border-radius:20px; flex-direction:column; align-items:flex-start;}
-            .page-header h1{font-size:1.3rem;}
-            .card-modern{padding:14px; border-radius:18px;}
-            .card-modern .card-header-custom{flex-direction:column; align-items:flex-start;}
-            .table-responsive{border:none;}
-            /* Tabla -> Cards en móvil */
-            .table-modern thead{display:none;}
-            .table-modern, .table-modern tbody, .table-modern tr, .table-modern td{display:block; width:100%;}
-            .table-modern tbody tr{
-                background:white; border:1px solid #edf2f9; border-radius:16px; padding:12px; margin-bottom:10px;
-                box-shadow:0 2px 8px rgba(0,0,0,0.03);
+            .btn-menu {
+                width: calc(100% - 32px);
+                margin: 0 16px 12px 16px;
+                justify-content: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
             }
-            .table-modern tbody td{
-                border:none; padding:4px 0; display:flex; justify-content:space-between; align-items:center; text-align:right;
-            }
-            .table-modern tbody td::before{
-                content:attr(data-label); font-weight:700; font-size:0.65rem; text-transform:uppercase; color:#4a5b6e; text-align:left;
-            }
-            .table-modern tbody td:nth-child(1)::before{content:"ID";}
-            .table-modern tbody td:nth-child(2)::before{content:"Nombre";}
-            .table-modern tbody td:nth-child(3)::before{content:"Email";}
-            .table-modern tbody td:nth-child(4)::before{content:"Rol";}
-            .table-modern tbody td:nth-child(5)::before{content:"Estado";}
-            .table-modern tbody td:nth-child(6)::before{content:"Permisos";}
-            .table-modern tbody td:nth-child(7)::before{content:"Acciones";}
-            .table-modern tbody td:last-child{flex-direction:column; align-items:stretch; margin-top:8px; padding-top:8px; border-top:1px solid #eef3fa;}
-            .table-modern tbody td:last-child::before{display:none;}
-            .permission-grid{grid-template-columns:1fr 1fr;}
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header { margin: 0 12px 14px 12px; border-radius: 16px; padding: 16px 14px; }
+            .page-header h1 { font-size: 1.15rem; }
+            .page-header h1 i { font-size: 1.3rem; }
+            .card-modern { margin: 0 12px; padding: 14px 12px; border-radius: 16px; }
+            .card-modern .card-header-custom { padding-bottom: 14px; margin-bottom: 16px; }
+            .card-modern .card-header-custom h5 { font-size: 0.95rem; }
+            .badge-role, .badge-status { font-size: 0.6rem; padding: 4px 10px; }
+            .permission-badge { font-size: 0.6rem; padding: 3px 10px; }
+            .btn-action { font-size: 0.68rem !important; padding: 6px 10px !important; }
+            .permission-grid { padding: 12px; gap: 8px; }
+            .permission-grid .perm-checkbox { padding: 10px 12px; min-height: 48px; }
+            .spinner-box { padding: 30px 28px; }
+            .modal-modern .modal-header .modal-title { font-size: 0.98rem; }
         }
-        @media (max-width: 480px){
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .container{padding-left:10px; padding-right:10px;}
-            .page-header{margin:0 0 12px 0; border-radius:16px; padding:14px;}
-            .page-header h1{font-size:1.15rem;}
-            .page-header .header-actions{width:100%;}
-            .page-header .header-actions .btn{flex:1; justify-content:center; font-size:0.8rem;}
-            .card-modern{padding:10px; border-radius:16px;}
-            .btn-action{font-size:0.7rem; padding:6px 10px; width:100%; justify-content:center; display:flex;}
-            .permission-grid{grid-template-columns:1fr;}
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
+        :focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-soft);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
     </style>
 </head>
 <body>
 
-<!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
+<!-- ============================================================ -->
+<!-- THEME TOGGLE -->
+<!-- ============================================================ -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<!-- ============================================================ -->
+<!-- BOTÓN MENÚ -->
+<!-- ============================================================ -->
+<a href="/" class="btn-menu">
     <i class="bi bi-arrow-left"></i> Menú Principal
 </a>
 
 <div class="container">
 
-    <!-- Header -->
+    <!-- ============================================================ -->
+    <!-- HEADER -->
+    <!-- ============================================================ -->
     <div class="page-header">
         <h1>
             <i class="bi bi-people"></i> Gestión de Usuarios
@@ -232,7 +1037,9 @@
         </div>
     </div>
 
-    <!-- Tabla de usuarios -->
+    <!-- ============================================================ -->
+    <!-- TABLA DE USUARIOS -->
+    <!-- ============================================================ -->
     <div class="card-modern">
         <div class="card-header-custom">
             <h5><i class="bi bi-list-ul"></i> Usuarios Registrados</h5>
@@ -260,10 +1067,10 @@
 
 </div>
 
-<!-- ================================================== -->
+<!-- ============================================================ -->
 <!-- LOADING OVERLAY -->
-<!-- ================================================== -->
-<div id="loadingOverlay" class="spinner-overlay">
+<!-- ============================================================ -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
     <div class="spinner-box">
         <div class="spinner-border" role="status"></div>
         <h5>Procesando...</h5>
@@ -271,24 +1078,42 @@
     </div>
 </div>
 
-<!-- ================================================== -->
+<!-- ============================================================ -->
 <!-- MODAL RESTABLECER CONTRASEÑA -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="resetPasswordModal" tabindex="-1">
+<!-- ============================================================ -->
+<div class="modal fade modal-modern" id="resetPasswordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-key me-2"></i>Restablecer Contraseña</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header header-warning">
+                <h5 class="modal-title">
+                    <i class="bi bi-key-fill"></i> Restablecer Contraseña
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p>Nueva contraseña para: <strong id="resetUserName"></strong></p>
-                <input type="password" id="newPasswordInput" class="form-control form-control-lg"
-                       placeholder="Nueva contraseña (mínimo 8 caracteres)" autocomplete="off">
-                <small class="text-muted">La contraseña debe tener al menos 8 caracteres.</small>
+                <div class="form-field">
+                    <label class="field-label">
+                        <i class="bi bi-person-circle"></i> Usuario:
+                    </label>
+                    <div class="user-info-box">
+                        <span id="resetUserName"></span>
+                    </div>
+                </div>
+                <div class="form-field" style="margin-bottom:0;">
+                    <label class="field-label" for="newPasswordInput">
+                        <i class="bi bi-lock-fill"></i> Nueva Contraseña <span class="required">*</span>
+                    </label>
+                    <input type="password" id="newPasswordInput" class="form-control"
+                           placeholder="Mínimo 8 caracteres" autocomplete="new-password" maxlength="200">
+                    <div class="field-hint">
+                        <i class="bi bi-info-circle"></i> La contraseña debe tener al menos 8 caracteres
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
                 <button type="button" id="confirmResetBtn" class="btn btn-warning">
                     <i class="bi bi-check2"></i> Restablecer
                 </button>
@@ -297,33 +1122,77 @@
     </div>
 </div>
 
-<!-- ================================================== -->
+<!-- ============================================================ -->
 <!-- MODAL EDITAR PERMISOS -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="editPermissionsModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+<!-- ============================================================ -->
+<div class="modal fade modal-modern" id="editPermissionsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-gear me-2"></i>Editar Permisos</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header header-dark">
+                <h5 class="modal-title">
+                    <i class="bi bi-gear-fill"></i> Editar Permisos
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p>Permisos para: <strong id="editPermUserName"></strong></p>
+                <div class="form-field">
+                    <label class="field-label">
+                        <i class="bi bi-person-circle"></i> Permisos para:
+                    </label>
+                    <div class="user-info-box">
+                        <span id="editPermUserName"></span>
+                    </div>
+                </div>
                 <input type="hidden" id="editPermUserId">
-                <div class="permission-grid">
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="clients" id="edit_perm_clients"><label class="form-check-label" for="edit_perm_clients"><i class="bi bi-person me-1"></i>Clientes</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="contracts" id="edit_perm_contracts"><label class="form-check-label" for="edit_perm_contracts"><i class="bi bi-file-earmark-text me-1"></i>Contratos</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="cases" id="edit_perm_cases"><label class="form-check-label" for="edit_perm_cases"><i class="bi bi-folder me-1"></i>Expedientes</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="payments" id="edit_perm_payments"><label class="form-check-label" for="edit_perm_payments"><i class="bi bi-cash me-1"></i>Pagos</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="actuaciones" id="edit_perm_actuaciones"><label class="form-check-label" for="edit_perm_actuaciones"><i class="bi bi-file-pdf me-1"></i>Actuaciones</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="consult" id="edit_perm_consult"><label class="form-check-label" for="edit_perm_consult"><i class="bi bi-search me-1"></i>Consultas</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="agenda" id="edit_perm_agenda"><label class="form-check-label" for="edit_perm_agenda"><i class="bi bi-calendar-event me-1"></i>Agenda</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="dashboard" id="edit_perm_dashboard"><label class="form-check-label" for="edit_perm_dashboard"><i class="bi bi-speedometer2 me-1"></i>Dashboard</label></div>
-                    <div class="form-check"><input class="form-check-input" type="checkbox" value="audit" id="edit_perm_audit"><label class="form-check-label" for="edit_perm_audit"><i class="bi bi-clipboard-data me-1"></i>Auditoría</label></div>
+
+                <div class="form-field" style="margin-bottom:0;">
+                    <label class="field-label">
+                        <i class="bi bi-shield-check"></i> Selecciona los permisos
+                    </label>
+                    <div class="permission-grid">
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="clients" id="edit_perm_clients">
+                            <label for="edit_perm_clients"><i class="bi bi-person"></i> Clientes</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="contracts" id="edit_perm_contracts">
+                            <label for="edit_perm_contracts"><i class="bi bi-file-earmark-text"></i> Contratos</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="cases" id="edit_perm_cases">
+                            <label for="edit_perm_cases"><i class="bi bi-folder"></i> Expedientes</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="payments" id="edit_perm_payments">
+                            <label for="edit_perm_payments"><i class="bi bi-cash"></i> Pagos</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="actuaciones" id="edit_perm_actuaciones">
+                            <label for="edit_perm_actuaciones"><i class="bi bi-file-pdf"></i> Actuaciones</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="consult" id="edit_perm_consult">
+                            <label for="edit_perm_consult"><i class="bi bi-search"></i> Consultas</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="agenda" id="edit_perm_agenda">
+                            <label for="edit_perm_agenda"><i class="bi bi-calendar-event"></i> Agenda</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="dashboard" id="edit_perm_dashboard">
+                            <label for="edit_perm_dashboard"><i class="bi bi-speedometer2"></i> Dashboard</label>
+                        </div>
+                        <div class="perm-checkbox">
+                            <input type="checkbox" value="audit" id="edit_perm_audit">
+                            <label for="edit_perm_audit"><i class="bi bi-clipboard-data"></i> Auditoría</label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
                 <button type="button" id="savePermissionsBtn" class="btn btn-primary">
                     <i class="bi bi-check2"></i> Guardar Permisos
                 </button>
@@ -332,35 +1201,61 @@
     </div>
 </div>
 
-<!-- ================================================== -->
+<!-- ============================================================ -->
 <!-- MODAL EDITAR USUARIO -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="editUserModal" tabindex="-1">
+<!-- ============================================================ -->
+<div class="modal fade modal-modern" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#0b1e33;">
-                <h5 class="modal-title text-white"><i class="bi bi-pencil me-2"></i>Editar Usuario</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header header-dark">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil-square"></i> Editar Usuario
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p>Editando usuario: <strong id="editUserNameDisplay"></strong></p>
+                <div class="form-field">
+                    <label class="field-label">
+                        <i class="bi bi-person-circle"></i> Usuario a editar:
+                    </label>
+                    <div class="user-info-box">
+                        <span id="editUserNameDisplay"></span>
+                    </div>
+                </div>
                 <input type="hidden" id="editUserId">
-                <div class="mb-3">
-                    <label class="form-label">Nombre Completo</label>
-                    <input type="text" id="editFullName" class="form-control form-control-lg" placeholder="Nombre completo">
+
+                <div class="form-field">
+                    <label class="field-label" for="editFullName">
+                        <i class="bi bi-person"></i> Nombre Completo <span class="required">*</span>
+                    </label>
+                    <input type="text" id="editFullName" class="form-control"
+                           placeholder="Nombre completo del usuario" maxlength="120">
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="editEmail" class="form-control form-control-lg" placeholder="email@ejemplo.com">
+
+                <div class="form-field">
+                    <label class="field-label" for="editEmail">
+                        <i class="bi bi-envelope"></i> Email <span class="required">*</span>
+                    </label>
+                    <input type="email" id="editEmail" class="form-control"
+                           placeholder="usuario@ejemplo.com" maxlength="120">
                 </div>
-                <hr>
-                <div class="mb-3">
-                    <label class="form-label">🔐 Contraseña de Administrador (para confirmar cambios)</label>
-                    <input type="password" id="editAdminPassword" class="form-control form-control-lg" placeholder="Tu contraseña de admin...">
+
+                <div class="form-field" style="margin-bottom:0;">
+                    <label class="field-label" for="editAdminPassword">
+                        <i class="bi bi-shield-lock-fill"></i> Contraseña de Administrador <span class="required">*</span>
+                    </label>
+                    <input type="password" id="editAdminPassword" class="form-control"
+                           placeholder="Tu contraseña de administrador..."
+                           maxlength="200" autocomplete="current-password">
+                    <div class="field-hint">
+                        <i class="bi bi-info-circle"></i> Requerida para confirmar los cambios
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
                 <button type="button" id="saveEditUserBtn" class="btn btn-primary">
                     <i class="bi bi-check2"></i> Guardar Cambios
                 </button>
@@ -369,26 +1264,82 @@
     </div>
 </div>
 
-<!-- ================================================== -->
-<!-- MODAL CONFIRMAR CONTRASEÑA PARA ACCIONES -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="confirmPasswordModal" tabindex="-1">
+<!-- ============================================================ -->
+<!-- MODAL CONFIRMAR CONTRASEÑA -->
+<!-- ============================================================ -->
+<div class="modal fade modal-modern" id="confirmPasswordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Confirmar Identidad</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header header-warning">
+                <h5 class="modal-title">
+                    <i class="bi bi-shield-lock-fill"></i> Confirmar Identidad
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <p id="confirmPasswordMessage">Ingresa tu contraseña de administrador para confirmar esta acción:</p>
-                <input type="password" id="adminPasswordInput" class="form-control form-control-lg" placeholder="Tu contraseña...">
+                <div class="form-field">
+                    <p id="confirmPasswordMessage" style="color:var(--text-secondary);font-weight:600;margin-bottom:14px;">
+                        Ingresa tu contraseña de administrador para confirmar esta acción:
+                    </p>
+                    <label class="field-label" for="adminPasswordInput">
+                        <i class="bi bi-key-fill"></i> Contraseña <span class="required">*</span>
+                    </label>
+                    <input type="password" id="adminPasswordInput" class="form-control"
+                           placeholder="Tu contraseña de administrador..."
+                           autocomplete="current-password" maxlength="200">
+                </div>
                 <input type="hidden" id="confirmActionType">
                 <input type="hidden" id="confirmActionId">
                 <input type="hidden" id="confirmActionData">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
                 <button type="button" id="confirmPasswordBtn" class="btn btn-danger">
+                    <i class="bi bi-shield-check"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL NOTIFICACIONES -->
+<!-- ============================================================ -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODAL CONFIRMACIÓN -->
+<!-- ============================================================ -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-warning">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Confirmación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
                     <i class="bi bi-check2"></i> Confirmar
                 </button>
             </div>
@@ -396,347 +1347,518 @@
     </div>
 </div>
 
-<!-- ================================================== -->
-<!-- MODAL NOTIFICACIONES -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" id="notificationHeader">
-                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="notificationBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ================================================== -->
-<!-- MODAL CONFIRMACIÓN -->
-<!-- ================================================== -->
-<div class="modal fade modal-modern" id="confirmModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-warning me-2"></i>Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="confirmBody"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success" id="confirmBtn">Confirmar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// FUNCIONES GLOBALES
-// ============================================================
+'use strict';
 
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (!e || typeof e.key !== 'string') return;
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+});
+
+/* ============================================================
+   LOADING
+   ============================================================ */
 function showLoading() {
-    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.getElementById('loadingOverlay').classList.add('active');
 }
 
 function hideLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
+    document.getElementById('loadingOverlay').classList.remove('active');
 }
 
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
 function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     const header = document.getElementById('notificationHeader');
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
+
     header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
     modal.show();
 }
 
 function showConfirm(title, bodyHTML, onConfirm) {
-    const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-    document.getElementById('confirmBody').innerHTML = bodyHTML;
-    document.getElementById('confirmBtn').onclick = function() { modal.hide(); setTimeout(onConfirm, 300); };
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        setTimeout(onConfirm, 300);
+    });
     modal.show();
 }
 
+/* ============================================================
+   CONTAR USUARIOS
+   ============================================================ */
 let currentResetUserId = null;
 
-// Contar usuarios
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const rows = document.querySelectorAll('#usersTableBody tr');
     document.getElementById('userCount').textContent = rows.length;
 });
 
-// ============================================================
-// RESTABLECER CONTRASEÑA
-// ============================================================
+/* ============================================================
+   RESTABLECER CONTRASEÑA
+   ============================================================ */
 document.querySelectorAll('.reset-password').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         currentResetUserId = this.dataset.id;
-        document.getElementById('resetUserName').textContent = this.dataset.name;
+        document.getElementById('resetUserName').textContent = this.dataset.name || '';
         document.getElementById('newPasswordInput').value = '';
-        new bootstrap.Modal(document.getElementById('resetPasswordModal')).show();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('resetPasswordModal')).show();
     });
 });
 
-document.getElementById('confirmResetBtn').addEventListener('click', async () => {
+document.getElementById('confirmResetBtn').addEventListener('click', async function () {
     const newPassword = document.getElementById('newPasswordInput').value;
+
     if (!newPassword || newPassword.length < 8) {
-        showNotification('Contraseña inválida', '<p>La contraseña debe tener al menos 8 caracteres.</p>', 'warning');
+        showNotification('Contraseña inválida',
+            '<p>La contraseña debe tener al menos <strong>8 caracteres</strong>.</p>', 'warning');
+        document.getElementById('newPasswordInput').focus();
         return;
     }
 
-    bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal')).hide();
+    bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal'))?.hide();
 
     setTimeout(() => {
-        showConfirm('Restablecer Contraseña', '<p>¿Estás seguro de restablecer la contraseña de este usuario?</p>', async function() {
-            showLoading();
-            const formData = new FormData();
-            formData.append('new_password', newPassword);
-            try {
-                const response = await fetch(`/auth/reset-password/${currentResetUserId}`, { method: 'POST', body: formData });
-                hideLoading();
-                if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al restablecer'}</p>`, 'error'); return; }
-                showNotification('Contraseña Restablecida', '<p>La contraseña se restableció correctamente.</p>', 'success');
-                setTimeout(() => location.reload(), 1500);
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', `<p>${error.message}</p>`, 'error');
+        showConfirm('Restablecer Contraseña',
+            '<p>¿Estás seguro de restablecer la contraseña de este usuario?</p>',
+            async function () {
+                showLoading();
+                const formData = new FormData();
+                formData.append('new_password', newPassword);
+
+                try {
+                    const response = await fetch(`/auth/reset-password/${currentResetUserId}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    hideLoading();
+
+                    if (!response.ok) {
+                        let errMsg = 'Error al restablecer';
+                        try { const e = await response.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                        showNotification('Error', `<p>${escapeHTML(errMsg)}</p>`, 'error');
+                        return;
+                    }
+
+                    showNotification('Contraseña Restablecida',
+                        '<p>La contraseña se restableció correctamente.</p>', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } catch (error) {
+                    hideLoading();
+                    showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+                }
             }
-        });
+        );
     }, 300);
 });
 
-// ============================================================
-// EDITAR PERMISOS
-// ============================================================
+/* ============================================================
+   EDITAR PERMISOS
+   ============================================================ */
 document.querySelectorAll('.edit-permissions').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const userId = this.dataset.id;
-        const name = this.dataset.name;
+        const name = this.dataset.name || '';
         const permissions = this.dataset.permissions || '';
+
         document.getElementById('editPermUserId').value = userId;
         document.getElementById('editPermUserName').textContent = name;
-        document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+
+        document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+
         if (permissions === 'all') {
-            document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => { cb.checked = true; });
-        } else {
+            document.querySelectorAll('#editPermissionsModal input[type="checkbox"]').forEach(cb => {
+                cb.checked = true;
+            });
+        } else if (permissions) {
             permissions.split(',').forEach(perm => {
                 const cb = document.getElementById('edit_perm_' + perm.trim());
                 if (cb) cb.checked = true;
             });
         }
-        new bootstrap.Modal(document.getElementById('editPermissionsModal')).show();
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('editPermissionsModal')).show();
     });
 });
 
-document.getElementById('savePermissionsBtn').addEventListener('click', async () => {
+document.getElementById('savePermissionsBtn').addEventListener('click', async function () {
     const userId = document.getElementById('editPermUserId').value;
     const selectedPermissions = [];
-    document.querySelectorAll('#editPermissionsModal input[type="checkbox"]:checked').forEach(cb => { selectedPermissions.push(cb.value); });
+    document.querySelectorAll('#editPermissionsModal input[type="checkbox"]:checked').forEach(cb => {
+        selectedPermissions.push(cb.value);
+    });
+
+    const btn = this;
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner"></span> Guardando...';
+
+    showLoading();
+
     const formData = new FormData();
     formData.append('permissions', selectedPermissions.join(','));
-    showLoading();
+
     try {
-        const response = await fetch(`/auth/update-permissions/${userId}`, { method: 'POST', body: formData });
+        const response = await fetch(`/auth/update-permissions/${userId}`, {
+            method: 'POST',
+            body: formData
+        });
         hideLoading();
-        if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al actualizar permisos'}</p>`, 'error'); return; }
-        bootstrap.Modal.getInstance(document.getElementById('editPermissionsModal')).hide();
-        showNotification('Permisos Actualizados', '<p>Los permisos se actualizaron correctamente.</p>', 'success');
-        const sessionResponse = await fetch('/auth/check-session');
-        const sessionData = await sessionResponse.json();
-        if (sessionData.authenticated && sessionData.user_id == userId) {
-            await fetch('/auth/refresh-permissions', { method: 'POST' });
+
+        if (!response.ok) {
+            let errMsg = 'Error al actualizar permisos';
+            try { const e = await response.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+            showNotification('Error', `<p>${escapeHTML(errMsg)}</p>`, 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+            return;
         }
+
+        bootstrap.Modal.getInstance(document.getElementById('editPermissionsModal'))?.hide();
+        showNotification('Permisos Actualizados',
+            '<p>Los permisos se actualizaron correctamente.</p>', 'success');
+
+        try {
+            const sessionResponse = await fetch('/auth/check-session');
+            const sessionData = await sessionResponse.json();
+            if (sessionData.authenticated && sessionData.user_id == userId) {
+                await fetch('/auth/refresh-permissions', { method: 'POST' });
+            }
+        } catch (_) {}
+
         setTimeout(() => location.reload(), 1500);
+
     } catch (error) {
         hideLoading();
-        showNotification('Error', `<p>${error.message}</p>`, 'error');
+        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
     }
 });
 
-// ============================================================
-// EDITAR USUARIO
-// ============================================================
+/* ============================================================
+   EDITAR USUARIO
+   ============================================================ */
 document.querySelectorAll('.edit-user').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const userId = this.dataset.id;
-        const userName = this.dataset.name;
-        const userEmail = this.dataset.email;
+        const userName = this.dataset.name || '';
+        const userEmail = this.dataset.email || '';
+
         document.getElementById('editUserId').value = userId;
         document.getElementById('editUserNameDisplay').textContent = userName;
         document.getElementById('editFullName').value = userName;
         document.getElementById('editEmail').value = userEmail;
         document.getElementById('editAdminPassword').value = '';
-        new bootstrap.Modal(document.getElementById('editUserModal')).show();
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('editUserModal')).show();
     });
 });
 
-document.getElementById('saveEditUserBtn').addEventListener('click', async () => {
+document.getElementById('saveEditUserBtn').addEventListener('click', async function () {
     const userId = document.getElementById('editUserId').value;
     const fullName = document.getElementById('editFullName').value.trim();
     const email = document.getElementById('editEmail').value.trim();
     const adminPassword = document.getElementById('editAdminPassword').value;
+    const btn = this;
+
     if (!fullName || !email) {
-        showNotification('Campos incompletos', '<p>Completa todos los campos.</p>', 'warning');
+        showNotification('Campos incompletos',
+            '<p>Completa todos los campos.</p>', 'warning');
         return;
     }
     if (!adminPassword) {
-        showNotification('Contraseña requerida', '<p>Ingresa tu contraseña de administrador.</p>', 'warning');
+        showNotification('Contraseña requerida',
+            '<p>Ingresa tu contraseña de administrador.</p>', 'warning');
+        document.getElementById('editAdminPassword').focus();
         return;
     }
-    bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+
+    bootstrap.Modal.getInstance(document.getElementById('editUserModal'))?.hide();
+
     setTimeout(() => {
-        showConfirm('Confirmar Edición', `<p>¿Estás seguro de actualizar los datos de <strong>${fullName}</strong>?</p>`, async function() {
-            showLoading();
-            const formData = new FormData();
-            formData.append('full_name', fullName);
-            formData.append('email', email);
-            formData.append('admin_password', adminPassword);
-            try {
-                const response = await fetch(`/auth/edit-user/${userId}`, { method: 'PUT', body: formData });
-                hideLoading();
-                if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al actualizar'}</p>`, 'error'); return; }
-                showNotification('Usuario Actualizado', `<p>${fullName} actualizado correctamente.</p>`, 'success');
-                setTimeout(() => location.reload(), 1500);
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', `<p>${error.message}</p>`, 'error');
+        showConfirm('Confirmar Edición',
+            `<p>¿Estás seguro de actualizar los datos de <strong>${escapeHTML(fullName)}</strong>?</p>`,
+            async function () {
+                const originalHTML = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="btn-spinner"></span> Guardando...';
+
+                showLoading();
+
+                const formData = new FormData();
+                formData.append('full_name', fullName);
+                formData.append('email', email);
+                formData.append('admin_password', adminPassword);
+
+                try {
+                    const response = await fetch(`/auth/edit-user/${userId}`, {
+                        method: 'PUT',
+                        body: formData
+                    });
+                    hideLoading();
+
+                    if (!response.ok) {
+                        let errMsg = 'Error al actualizar';
+                        try { const e = await response.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                        showNotification('Error', `<p>${escapeHTML(errMsg)}</p>`, 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = originalHTML;
+                        return;
+                    }
+
+                    showNotification('Usuario Actualizado',
+                        `<p>${escapeHTML(fullName)} actualizado correctamente.</p>`, 'success');
+                    setTimeout(() => location.reload(), 1500);
+
+                } catch (error) {
+                    hideLoading();
+                    showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                }
             }
-        });
+        );
     }, 300);
 });
 
-// ============================================================
-// BLOQUEAR / DESBLOQUEAR USUARIO
-// ============================================================
+/* ============================================================
+   BLOQUEAR / DESBLOQUEAR USUARIO
+   ============================================================ */
 document.querySelectorAll('.toggle-status').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const userId = this.dataset.id;
-        const userName = this.dataset.name;
+        const userName = this.dataset.name || '';
         const action = this.dataset.action;
+
         document.getElementById('confirmActionId').value = userId;
         document.getElementById('confirmActionType').value = 'toggle';
         document.getElementById('confirmActionData').value = action;
-        document.getElementById('confirmPasswordMessage').textContent = 
-            `Ingresa tu contraseña de administrador para ${action} al usuario ${userName}:`;
+        document.getElementById('confirmPasswordMessage').textContent =
+            `Ingresa tu contraseña de administrador para ${action} al usuario "${userName}":`;
         document.getElementById('adminPasswordInput').value = '';
-        new bootstrap.Modal(document.getElementById('confirmPasswordModal')).show();
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmPasswordModal')).show();
     });
 });
 
-// ============================================================
-// ELIMINAR USUARIO
-// ============================================================
+/* ============================================================
+   ELIMINAR USUARIO
+   ============================================================ */
 document.querySelectorAll('.delete-user').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         const userId = this.dataset.id;
-        const userName = this.dataset.name;
+        const userName = this.dataset.name || '';
+
         document.getElementById('confirmActionId').value = userId;
         document.getElementById('confirmActionType').value = 'delete';
         document.getElementById('confirmActionData').value = userName;
-        document.getElementById('confirmPasswordMessage').textContent = 
-            `⚠️ ¡ADVERTENCIA! Estás a punto de ELIMINAR PERMANENTEMENTE al usuario ${userName}. Esta acción no se puede deshacer. Ingresa tu contraseña de administrador para confirmar:`;
+        document.getElementById('confirmPasswordMessage').textContent =
+            `⚠️ ¡ADVERTENCIA! Estás a punto de ELIMINAR PERMANENTEMENTE al usuario "${userName}". Esta acción no se puede deshacer. Ingresa tu contraseña de administrador para confirmar:`;
         document.getElementById('adminPasswordInput').value = '';
-        new bootstrap.Modal(document.getElementById('confirmPasswordModal')).show();
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('confirmPasswordModal')).show();
     });
 });
 
-// ============================================================
-// CONFIRMAR CONTRASEÑA PARA ACCIONES
-// ============================================================
-document.getElementById('confirmPasswordBtn').addEventListener('click', async () => {
+/* ============================================================
+   CONFIRMAR CONTRASEÑA PARA ACCIONES
+   ============================================================ */
+document.getElementById('confirmPasswordBtn').addEventListener('click', async function () {
     const password = document.getElementById('adminPasswordInput').value;
     const actionType = document.getElementById('confirmActionType').value;
     const userId = document.getElementById('confirmActionId').value;
     const actionData = document.getElementById('confirmActionData').value;
+
     if (!password) {
-        showNotification('Contraseña requerida', '<p>Ingresa tu contraseña de administrador.</p>', 'warning');
+        showNotification('Contraseña requerida',
+            '<p>Ingresa tu contraseña de administrador.</p>', 'warning');
+        document.getElementById('adminPasswordInput').focus();
         return;
     }
-    bootstrap.Modal.getInstance(document.getElementById('confirmPasswordModal')).hide();
+
+    bootstrap.Modal.getInstance(document.getElementById('confirmPasswordModal'))?.hide();
+
     const formData = new FormData();
     formData.append('admin_password', password);
 
     if (actionType === 'toggle') {
         const action = actionData;
         const actionText = action === 'bloquear' ? 'bloquear' : 'desbloquear';
+
         setTimeout(() => {
-            showConfirm(`Confirmar ${actionText}`, `<p>¿Estás seguro de ${actionText} a este usuario?</p>`, async function() {
-                showLoading();
-                try {
-                    const response = await fetch(`/auth/toggle-user-status/${userId}`, { method: 'POST', body: formData });
-                    hideLoading();
-                    if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al cambiar estado'}</p>`, 'error'); return; }
-                    const result = await response.json();
-                    showNotification('Usuario Actualizado', `<p>${result.message}</p>`, 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } catch (error) {
-                    hideLoading();
-                    showNotification('Error', `<p>${error.message}</p>`, 'error');
+            showConfirm(`Confirmar ${actionText}`,
+                `<p>¿Estás seguro de <strong>${actionText}</strong> a este usuario?</p>`,
+                async function () {
+                    showLoading();
+                    try {
+                        const response = await fetch(`/auth/toggle-user-status/${userId}`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        hideLoading();
+
+                        if (!response.ok) {
+                            let errMsg = 'Error al cambiar estado';
+                            try { const e = await response.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                            showNotification('Error', `<p>${escapeHTML(errMsg)}</p>`, 'error');
+                            return;
+                        }
+
+                        const result = await response.json();
+                        showNotification('Usuario Actualizado',
+                            `<p>${escapeHTML(result.message || '')}</p>`, 'success');
+                        setTimeout(() => location.reload(), 1500);
+
+                    } catch (error) {
+                        hideLoading();
+                        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+                    }
                 }
-            });
+            );
         }, 300);
+
     } else if (actionType === 'delete') {
         const userName = actionData;
+
         setTimeout(() => {
-            showConfirm(`⚠️ ELIMINAR USUARIO`, `
-                <div class="alert alert-danger">
+            showConfirm('⚠️ ELIMINAR USUARIO',
+                `<div class="alert alert-danger" style="border-radius:14px;border:none;">
                     <strong>¡ADVERTENCIA EXTREMA!</strong><br>
                     Estás a punto de eliminar <strong>PERMANENTEMENTE</strong> al usuario:
-                    <h5 class="mt-2">${userName}</h5>
+                    <h5 class="mt-2 mb-2">${escapeHTML(userName)}</h5>
                     <p class="mb-0">Esta acción <strong>NO se puede deshacer</strong>.</p>
-                </div>
-            `, async function() {
-                showLoading();
-                try {
-                    const response = await fetch(`/auth/delete-user/${userId}`, { method: 'DELETE', body: formData });
-                    hideLoading();
-                    if (!response.ok) { const error = await response.json(); showNotification('Error', `<p>${error.detail || 'Error al eliminar'}</p>`, 'error'); return; }
-                    const result = await response.json();
-                    showNotification('Usuario Eliminado', `<p>${result.message}</p>`, 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } catch (error) {
-                    hideLoading();
-                    showNotification('Error', `<p>${error.message}</p>`, 'error');
+                </div>`,
+                async function () {
+                    showLoading();
+                    try {
+                        const response = await fetch(`/auth/delete-user/${userId}`, {
+                            method: 'DELETE',
+                            body: formData
+                        });
+                        hideLoading();
+
+                        if (!response.ok) {
+                            let errMsg = 'Error al eliminar';
+                            try { const e = await response.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                            showNotification('Error', `<p>${escapeHTML(errMsg)}</p>`, 'error');
+                            return;
+                        }
+
+                        const result = await response.json();
+                        showNotification('Usuario Eliminado',
+                            `<p>${escapeHTML(result.message || '')}</p>`, 'success');
+                        setTimeout(() => location.reload(), 1500);
+
+                    } catch (error) {
+                        hideLoading();
+                        showNotification('Error', `<p>${escapeHTML(error.message)}</p>`, 'error');
+                    }
                 }
-            });
+            );
         }, 300);
     }
 });
 
-// ============================================================
-// ENTER PARA CONFIRMAR CONTRASEÑA
-// ============================================================
+/* ============================================================
+   ENTER PARA CONFIRMAR
+   ============================================================ */
 document.getElementById('adminPasswordInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
+        e.preventDefault();
         document.getElementById('confirmPasswordBtn').click();
     }
 });
 
-// ============================================================
-// ENTER PARA CONFIRMAR EDICIÓN
-// ============================================================
 document.getElementById('editAdminPassword').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
+        e.preventDefault();
         document.getElementById('saveEditUserBtn').click();
     }
 });
 
-// ============================================================
-// ENTER PARA RESTABLECER CONTRASEÑA
-// ============================================================
 document.getElementById('newPasswordInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
+        e.preventDefault();
         document.getElementById('confirmResetBtn').click();
     }
 });

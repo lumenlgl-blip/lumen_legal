@@ -706,62 +706,251 @@
         }
 
         /* ============================================================
-           LOADING OVERLAY
+           LOADING OVERLAY — REDISEÑADO
            ============================================================ */
         .loading-overlay {
             position: fixed;
             inset: 0;
-            background: var(--accent-dark);
+            background: linear-gradient(135deg, #0b1e33 0%, #1a3b6b 50%, #2a6df4 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease-in-out infinite;
             z-index: 9999;
-            display: none;  /* ⬅️ OCULTO POR DEFECTO */
+            display: none;
             align-items: center;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
         .loading-overlay.active {
             display: flex;
             opacity: 1;
             visibility: visible;
         }
 
+        /* Overlay decorativo radial */
+        .loading-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.3) 100%);
+            pointer-events: none;
+        }
+
+        /* Partículas flotantes dentro del loading */
+        .loading-overlay::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.3) 50%, transparent 50%),
+                radial-gradient(2px 2px at 80% 40%, rgba(122,169,255,0.4) 50%, transparent 50%),
+                radial-gradient(3px 3px at 30% 80%, rgba(245,179,66,0.3) 50%, transparent 50%),
+                radial-gradient(2px 2px at 60% 70%, rgba(255,255,255,0.2) 50%, transparent 50%),
+                radial-gradient(2px 2px at 90% 90%, rgba(122,169,255,0.3) 50%, transparent 50%),
+                radial-gradient(2px 2px at 45% 15%, rgba(245,179,66,0.35) 50%, transparent 50%),
+                radial-gradient(2px 2px at 15% 55%, rgba(255,255,255,0.25) 50%, transparent 50%);
+            background-size: 100% 100%;
+            animation: particlesPulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes particlesPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
         .loading-content {
             text-align: center;
-            animation: fadeInUp 0.5s ease-out;
+            animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
         }
+
+        /* ---------- Logo con shimmer + glow ---------- */
         .loading-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 16px;
-            background: var(--bg-secondary);
-            border-radius: 20px;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 24px;
+            background: white;
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: pulseLogo 1.5s infinite ease-in-out;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            animation: logoPulse 2.2s ease-in-out infinite;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.35),
+                0 0 0 1px rgba(255,255,255,0.1),
+                inset 0 -3px 8px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Shimmer diagonal sobre el logo */
+        .loading-logo::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.9),
+                transparent
+            );
+            transform: rotate(25deg);
+            animation: logoShimmer 3.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes logoShimmer {
+            0% { left: -60%; }
+            60%, 100% { left: 160%; }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);
+            }
+            50% {
+                transform: scale(1.06);
+                box-shadow:
+                    0 28px 80px rgba(42,109,244,0.55),
+                    0 0 60px rgba(122,169,255,0.4),
+                    0 0 0 1px rgba(255,255,255,0.15);
+            }
+        }
+
         .loading-logo img {
-            width: 55px;
+            width: 75px;
             height: auto;
-            border-radius: 12px;
+            border-radius: 14px;
+            position: relative;
+            z-index: 1;
         }
-        .loading-spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255,255,255,0.15);
+
+        /* ---------- Título y subtítulo ---------- */
+        .loading-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin: 0 0 4px 0;
+            background: linear-gradient(135deg, #ffffff, #dbeafe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 10px rgba(122,169,255,0.3));
+        }
+
+        .loading-subtitle {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            margin: 0 0 28px 0;
+        }
+
+        /* ---------- Barra de progreso ---------- */
+        .loading-progress {
+            width: 100%;
+            max-width: 260px;
+            height: 5px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 5px;
+            margin: 0 auto 16px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .loading-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--gold) 0%, #ffd700 50%, var(--gold) 100%);
+            background-size: 200% 100%;
+            border-radius: 5px;
+            animation:
+                progressLoad 4s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                progressShine 2s linear infinite;
+            box-shadow:
+                0 0 16px rgba(245,179,66,0.7),
+                0 0 32px rgba(245,179,66,0.3);
+        }
+
+        @keyframes progressLoad {
+            0% { width: 0%; }
+            12% { width: 8%; }
+            28% { width: 25%; }
+            45% { width: 42%; }
+            62% { width: 62%; }
+            80% { width: 82%; }
+            95% { width: 96%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes progressShine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ---------- Texto de estado ---------- */
+        .loading-text {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Puntos animados del texto */
+        .loading-text .dots {
+            display: inline-block;
+            min-width: 20px;
+            text-align: left;
+        }
+
+        /* Spinner pequeño junto al texto (opcional) */
+        .loading-text .mini-spinner {
+            width: 10px;
+            height: 10px;
+            border: 2px solid rgba(255,255,255,0.15);
             border-top-color: var(--gold);
             border-radius: 50%;
-            margin: 0 auto;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.7s linear infinite;
+            display: none;
         }
-        .loading-text {
-            color: white;
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-top: 14px;
-            letter-spacing: -0.01em;
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .loading-logo {
+                width: 90px;
+                height: 90px;
+                border-radius: 22px;
+                margin-bottom: 20px;
+            }
+            .loading-logo img { width: 60px; border-radius: 12px; }
+            .loading-title { font-size: 1.25rem; }
+            .loading-subtitle { font-size: 0.78rem; margin-bottom: 24px; }
+            .loading-progress { max-width: 220px; height: 4px; }
+            .loading-text { font-size: 0.68rem; }
         }
 
         /* ============================================================
@@ -1257,14 +1446,30 @@
 </button>
 
 <!-- LOADING OVERLAY -->
-<div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite">
+<div class="loading-overlay" id="loadingOverlay" role="status" aria-live="polite" aria-label="Accediendo al sistema">
     <div class="loading-content">
+
+        <!-- Logo del despacho con shimmer + glow -->
         <div class="loading-logo">
             <img src="/static/img/logo.jpeg" alt="Lumen Legal"
-                 onerror="this.style.display='none'; this.parentElement.innerHTML='⚖'; this.parentElement.style.fontSize='35px';">
+                 onerror="this.style.display='none'; this.parentElement.innerHTML='⚖'; this.parentElement.style.fontSize='48px'; this.parentElement.style.color='#0b1e33';">
         </div>
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Accediendo al sistema...</div>
+
+        <!-- Título y subtítulo -->
+        <h2 class="loading-title">Lumen Legal</h2>
+        <p class="loading-subtitle">Sistema de Gestión Jurídica</p>
+
+        <!-- Barra de progreso animada -->
+        <div class="loading-progress">
+            <div class="loading-progress-fill"></div>
+        </div>
+
+        <!-- Texto de estado con dots animados -->
+        <div class="loading-text">
+            <span>Accediendo al sistema</span>
+            <span class="dots" id="loadingDots">...</span>
+        </div>
+
     </div>
 </div>
 
@@ -1525,6 +1730,8 @@ function escapeHTML(str) {
    ============================================================ */
 let loadingTimeoutId = null;
 
+let loadingDotsInterval = null;
+
 function showLoading() {
     const overlay = document.getElementById('loadingOverlay');
     if (!overlay) return;
@@ -1536,6 +1743,18 @@ function showLoading() {
     overlay.style.opacity = '1';
     overlay.style.visibility = 'visible';
     overlay.style.pointerEvents = 'auto';
+
+    // Animación de dots en el texto de estado
+    const dotsEl = document.getElementById('loadingDots');
+    if (dotsEl) {
+        let i = 0;
+        const states = ['', '.', '..', '...'];
+        if (loadingDotsInterval) clearInterval(loadingDotsInterval);
+        loadingDotsInterval = setInterval(() => {
+            i = (i + 1) % states.length;
+            dotsEl.textContent = states[i];
+        }, 400);
+    }
 
     // Timeout de seguridad: si el server tarda >20s, ocultar
     loadingTimeoutId = setTimeout(() => {
@@ -1552,6 +1771,10 @@ function hideLoading() {
         clearTimeout(loadingTimeoutId);
         loadingTimeoutId = null;
     }
+    if (loadingDotsInterval) {
+        clearInterval(loadingDotsInterval);
+        loadingDotsInterval = null;
+    }
 
     overlay.classList.remove('active');
     overlay.style.opacity = '0';
@@ -1560,7 +1783,7 @@ function hideLoading() {
 
     setTimeout(() => {
         overlay.style.display = 'none';
-    }, 400);
+    }, 500);
 }
 
 // Exponer global

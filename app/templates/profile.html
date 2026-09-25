@@ -7,361 +7,804 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
+<style>
+    /* ============================================================
+       VARIABLES DE TEMA
+       ============================================================ */
+    :root {
+        --bg-primary: #f2f5fb;
+        --bg-secondary: #ffffff;
+        --bg-tertiary: #f8fafc;
+        --surface-glass: rgba(255,255,255,0.82);
+        --surface-glass-strong: rgba(255,255,255,0.96);
+        --border-subtle: rgba(255,255,255,0.5);
+        --border-soft: #e9edf4;
+        --border-strong: #d0d8e3;
+        --text-primary: #0b1e33;
+        --text-secondary: #4a5b6e;
+        --text-muted: #6b7b8f;
+        --text-light: #8a9bb0;
+        --accent-primary: #2a6df4;
+        --accent-primary-hover: #1a5ad4;
+        --accent-light: #7aa9ff;
+        --accent-dark: #0b1e33;
+        --accent-dark-hover: #1a3b6b;
+        --success: #1a8b5c;
+        --success-hover: #0e6b46;
+        --success-soft: #d1fae5;
+        --warning: #f5b342;
+        --warning-hover: #e6a030;
+        --warning-soft: #fdf3e0;
+        --danger: #dc3545;
+        --danger-hover: #b02a37;
+        --danger-soft: #fee9e7;
+        --info: #1f6f9e;
+        --info-soft: #e3effa;
+        --purple: #6f42c1;
+        --purple-soft: #ede7fe;
+        --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+        --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+        --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+        --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --radius-lg: 24px;
+        --radius-xl: 28px;
+        --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
 
-        body {
-            background: #f2f5fb;
-            padding-top: 20px;
-            padding-bottom: 40px;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
+    [data-theme="dark"] {
+        --bg-primary: #0a1523;
+        --bg-secondary: #111d2e;
+        --bg-tertiary: #16243a;
+        --surface-glass: rgba(22,36,58,0.75);
+        --surface-glass-strong: rgba(22,36,58,0.92);
+        --border-subtle: rgba(255,255,255,0.08);
+        --border-soft: #223147;
+        --border-strong: #2d3f5a;
+        --text-primary: #e8eef7;
+        --text-secondary: #b8c5d6;
+        --text-muted: #8a9bb0;
+        --text-light: #6b7b8f;
+        --accent-primary: #5b93ff;
+        --accent-primary-hover: #7aa9ff;
+        --accent-light: #a8c5ff;
+        --accent-dark: #5b93ff;
+        --accent-dark-hover: #7aa9ff;
+        --success: #34d399;
+        --success-hover: #10b981;
+        --success-soft: rgba(52,211,153,0.15);
+        --warning: #fbbf24;
+        --warning-hover: #f59e0b;
+        --warning-soft: rgba(251,191,36,0.15);
+        --danger: #f87171;
+        --danger-hover: #ef4444;
+        --danger-soft: rgba(248,113,113,0.15);
+        --info: #60a5fa;
+        --info-soft: rgba(96,165,250,0.15);
+        --purple: #a78bfa;
+        --purple-soft: rgba(167,139,250,0.15);
+        --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+        --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+        --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+        --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+    }
+
+    * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    body {
+        background: var(--bg-primary);
+        background-image:
+            radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+        padding: 20px 0 40px 0;
+        min-height: 100vh;
+        color: var(--text-primary);
+        transition: background-color var(--transition-normal), color var(--transition-normal);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 1050;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--surface-glass-strong);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        color: var(--text-primary);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+    }
+    .theme-toggle:hover {
+        transform: translateY(-2px) rotate(15deg);
+        box-shadow: var(--shadow-lg);
+        color: var(--accent-primary);
+    }
+
+    /* BOTÓN MENÚ */
+    .btn-menu {
+        position: fixed;
+        top: 24px;
+        left: 24px;
+        z-index: 1050;
+        background: var(--surface-glass-strong);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-subtle);
+        border-radius: 60px;
+        padding: 12px 24px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--shadow-md);
+        transition: all var(--transition-normal);
+    }
+    .btn-menu:hover {
+        background: var(--bg-secondary);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+        color: var(--accent-primary);
+    }
+
+    /* CONTAINER */
+    .profile-container {
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto;
+        padding: 0 16px;
+        animation: fadeInUp 0.5s ease-out;
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PROFILE CARD */
+    .profile-card {
+        background: var(--surface-glass);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: var(--radius-xl);
+        padding: 40px 36px 32px;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-subtle);
+        transition: box-shadow var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+    .profile-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-primary), var(--success), var(--warning));
+        background-size: 200% 100%;
+        animation: gradientSlide 4s ease infinite;
+    }
+    @keyframes gradientSlide {
+        0%, 100% { background-position: 0% 0%; }
+        50% { background-position: 100% 0%; }
+    }
+    .profile-card:hover { box-shadow: var(--shadow-xl); }
+
+    /* AVATAR */
+    .avatar-wrapper {
+        text-align: center;
+        margin-bottom: 16px;
+        position: relative;
+    }
+    .avatar-wrapper .avatar-icon {
+        font-size: 5rem;
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        padding: 8px;
+        display: inline-block;
+        filter: drop-shadow(0 4px 12px rgba(42,109,244,0.25));
+    }
+    .avatar-wrapper .avatar-badge {
+        position: absolute;
+        bottom: 0;
+        right: 50%;
+        transform: translateX(50%);
+        background: linear-gradient(135deg, var(--accent-dark), var(--accent-dark-hover));
+        color: white;
+        font-weight: 800;
+        font-size: 0.65rem;
+        padding: 5px 18px;
+        border-radius: 40px;
+        border: 2px solid var(--bg-secondary);
+        white-space: nowrap;
+        letter-spacing: 0.05em;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* NAME + ROLE */
+    .profile-name {
+        font-weight: 800;
+        font-size: 1.75rem;
+        color: var(--text-primary);
+        text-align: center;
+        letter-spacing: -0.02em;
+        margin-bottom: 4px;
+    }
+    .profile-role-wrap {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .profile-role {
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: var(--accent-primary);
+        background: var(--info-soft);
+        padding: 5px 18px;
+        border-radius: 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.02em;
+    }
+
+    /* INFO GRID */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 14px;
+        background: var(--bg-tertiary);
+        border-radius: var(--radius-md);
+        padding: 18px 20px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-soft);
+    }
+    .info-grid .info-item {
+        display: flex;
+        flex-direction: column;
+        padding: 4px 0;
+    }
+    .info-grid .info-item .label {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-light);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 3px;
+    }
+    .info-grid .info-item .value {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 0.88rem;
+        word-break: break-word;
+    }
+    .info-grid .info-item .value .badge-status {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 4px 14px;
+        border-radius: 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+    .badge-status.active { background: var(--success-soft); color: var(--success); }
+    .badge-status.inactive { background: var(--danger-soft); color: var(--danger); }
+    [data-theme="dark"] .badge-status.active { background: rgba(52,211,153,0.15); }
+
+    /* PERMISSIONS */
+    .permissions-section {
+        margin-bottom: 22px;
+    }
+    .permissions-section .perm-label {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .permissions-section .perm-label i { color: var(--accent-primary); }
+    .permission-tag {
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 40px;
+        background: var(--info-soft);
+        color: var(--accent-primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin: 3px 4px 3px 0;
+        transition: all var(--transition-fast);
+    }
+    .permission-tag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(42,109,244,0.2);
+    }
+    .permission-tag.all {
+        background: linear-gradient(135deg, var(--accent-dark), var(--accent-dark-hover));
+        color: white;
+    }
+
+    /* BUTTONS */
+    .btn-group-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 4px;
+    }
+    .btn-group-actions .btn {
+        border-radius: 60px;
+        padding: 14px 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        transition: all var(--transition-normal);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 48px;
+    }
+    .btn-group-actions .btn:hover {
+        transform: translateY(-2px);
+    }
+    .btn-group-actions .btn:active {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .btn-group-actions .btn-change {
+        background: linear-gradient(135deg, var(--warning), var(--warning-hover));
+        border: none;
+        color: #0b1e33;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-group-actions .btn-change::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.6s ease;
+    }
+    .btn-group-actions .btn-change:hover::before { left: 100%; }
+    .btn-group-actions .btn-change:hover {
+        box-shadow: 0 12px 28px -8px rgba(245,179,66,0.5);
+    }
+
+    .btn-group-actions .btn-back {
+        background: var(--bg-secondary);
+        border: 1.5px solid var(--border-soft);
+        color: var(--text-secondary);
+    }
+    .btn-group-actions .btn-back:hover {
+        background: var(--bg-tertiary);
+        border-color: var(--accent-primary);
+        color: var(--accent-primary);
+    }
+
+    .btn-group-actions .btn-logout {
+        background: linear-gradient(135deg, var(--danger), var(--danger-hover));
+        border: none;
+        color: white;
+    }
+    .btn-group-actions .btn-logout:hover {
+        box-shadow: 0 12px 28px -8px rgba(220,53,69,0.5);
+    }
+
+    .btn-group-actions .btn-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    /* MODALES */
+    .modal-modern .modal-content {
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        background: var(--surface-glass-strong);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        color: var(--text-primary);
+    }
+    .modal-modern .modal-header {
+        border-bottom: none;
+        padding: 22px 28px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .modal-modern .modal-header .modal-title {
+        font-weight: 800;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .modal-modern .modal-body { padding: 18px 28px 24px; }
+    .modal-modern .modal-footer {
+        border-top: 1px solid var(--border-soft);
+        padding: 16px 28px 22px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .modal-modern .modal-footer .btn {
+        border-radius: 60px;
+        font-weight: 700;
+        padding: 10px 24px;
+        min-height: 44px;
+    }
+
+    .modal.fade .modal-dialog {
+        transform: scale(0.92) translateY(20px);
+        opacity: 0;
+        transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+    }
+    .modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+    .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+    [data-theme="dark"] .btn-close-white { filter: none; }
+
+    .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+    .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+    .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+    .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+    .modal-header.header-success .modal-title,
+    .modal-header.header-error .modal-title,
+    .modal-header.header-warning .modal-title,
+    .modal-header.header-info .modal-title { color: white; }
+
+    .notification-icon {
+        font-size: 3.5rem;
+        text-align: center;
+        display: block;
+        margin: 8px 0 16px;
+        animation: popIn 0.5s var(--transition-bounce);
+    }
+    @keyframes popIn {
+        from { transform: scale(0); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .notification-icon.success { color: var(--success); }
+    .notification-icon.error { color: var(--danger); }
+    .notification-icon.warning { color: var(--warning); }
+    .notification-icon.info { color: var(--accent-primary); }
+
+    /* PASSWORD FIELDS */
+    .pwd-field {
+        margin-bottom: 20px;
+        position: relative;
+    }
+    .pwd-field .field-label {
+        font-weight: 700;
+        font-size: 0.82rem;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding-left: 2px;
+    }
+    .pwd-field .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .pwd-field .form-control {
+        width: 100%;
+        height: 54px;
+        border-radius: var(--radius-md);
+        border: 1.5px solid var(--border-soft);
+        padding: 0 52px 0 48px;
+        font-size: 1rem;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        transition: all var(--transition-fast);
+        outline: none;
+    }
+    .pwd-field .form-control::placeholder {
+        color: var(--text-light);
+        font-weight: 400;
+        font-size: 0.9rem;
+    }
+    .pwd-field .form-control:focus {
+        border-color: var(--accent-primary);
+        box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+    }
+    .pwd-field .form-control.is-invalid {
+        border-color: var(--danger);
+        box-shadow: 0 0 0 4px rgba(220,53,69,0.1);
+    }
+    .pwd-field .field-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        font-size: 1.1rem;
+        pointer-events: none;
+        z-index: 2;
+        transition: color var(--transition-fast);
+    }
+    .pwd-field .form-control:focus ~ .field-icon {
+        color: var(--accent-primary);
+    }
+    .pwd-field .pwd-toggle {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--text-light);
+        font-size: 1.05rem;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all var(--transition-fast);
+        z-index: 3;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .pwd-field .pwd-toggle:hover {
+        color: var(--accent-primary);
+        background: rgba(42,109,244,0.1);
+    }
+
+    /* STRENGTH METER */
+    .strength-meter {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .strength-bar {
+        flex: 1;
+        height: 6px;
+        border-radius: 6px;
+        background: var(--border-soft);
+        overflow: hidden;
+    }
+    .strength-bar-fill {
+        height: 100%;
+        width: 0%;
+        border-radius: 6px;
+        transition: width 0.3s ease, background-color 0.3s ease;
+        background: var(--border-soft);
+    }
+    .strength-bar-fill.weak { width: 33%; background: var(--danger); }
+    .strength-bar-fill.medium { width: 66%; background: var(--warning); }
+    .strength-bar-fill.strong { width: 100%; background: var(--success); }
+    .strength-label {
+        font-size: 0.72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-light);
+        min-width: 60px;
+        text-align: right;
+        transition: color 0.3s ease;
+    }
+    .strength-label.weak { color: var(--danger); }
+    .strength-label.medium { color: var(--warning); }
+    .strength-label.strong { color: var(--success); }
+
+    /* PASSWORD REQUIREMENTS */
+    .password-requirements {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+    }
+    .password-requirements .req-item {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 40px;
+        background: var(--bg-tertiary);
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all var(--transition-normal);
+        border: 1px solid transparent;
+    }
+    .password-requirements .req-item.met {
+        background: var(--success-soft);
+        color: var(--success);
+        border-color: rgba(26,139,92,0.2);
+    }
+    [data-theme="dark"] .password-requirements .req-item.met {
+        background: rgba(52,211,153,0.15);
+    }
+
+    /* ERROR MESSAGE */
+    .pwd-error {
+        display: none;
+        align-items: flex-start;
+        gap: 10px;
+        background: var(--danger-soft);
+        color: var(--danger);
+        padding: 12px 14px;
+        border-radius: 12px;
+        margin-top: 16px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        line-height: 1.4;
+        animation: fadeInUp 0.3s ease-out;
+    }
+    [data-theme="dark"] .pwd-error {
+        background: rgba(248,113,113,0.15);
+    }
+    .pwd-error.show { display: flex; }
+    .pwd-error i {
+        flex-shrink: 0;
+        font-size: 1.1rem;
+        margin-top: 1px;
+    }
+
+    /* SPINNER */
+    .spinner-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(11,30,51,0.5);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+    }
+    .spinner-overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .spinner-box {
+        background: var(--bg-secondary);
+        padding: 40px 52px;
+        border-radius: var(--radius-xl);
+        text-align: center;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--border-subtle);
+        animation: popIn 0.4s var(--transition-bounce);
+        max-width: 90vw;
+    }
+    .spinner-box .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        color: var(--accent-primary);
+        border-width: 3px;
+    }
+    .spinner-box h5 {
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-top: 16px;
+    }
+    .spinner-box p {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        margin-bottom: 0;
+    }
+
+    .btn-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255,255,255,0.4);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+        .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+        .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+        body { padding-top: 12px; align-items: flex-start; }
+    }
+
+    @media (max-width: 768px) {
+        .profile-container { max-width: 100%; padding: 0 16px; }
+        .profile-card { padding: 28px 22px; border-radius: 24px; }
+        .profile-name { font-size: 1.5rem; }
+        .info-grid { grid-template-columns: 1fr 1fr; padding: 16px 18px; gap: 10px 12px; }
+        .btn-group-actions .btn { padding: 14px 16px; font-size: 0.95rem; }
+        .modal-modern .modal-header { padding: 18px 20px 10px; }
+        .modal-modern .modal-body { padding: 14px 20px 20px; }
+        .modal-modern .modal-footer { padding: 12px 20px 18px; }
+    }
+
+    @media (max-width: 480px) {
+        body { padding: 8px 0 20px 0; }
+        .btn-menu {
+            width: calc(100% - 32px);
+            margin: 0 16px 12px 16px;
             justify-content: center;
-        }
-
-        /* Botón menú */
-        .btn-menu-modern {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 1050;
-            background: rgba(255,255,255,0.7);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-            border-radius: 60px;
-            padding: 10px 22px;
-            font-weight: 600;
-            color: #0b1e33;
-            transition: all 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-menu-modern:hover {
-            background: white;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-            color: #0b1e33;
-        }
-
-        /* Contenedor principal */
-        .profile-container {
-            width: 100%;
-            max-width: 560px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        /* Tarjeta de perfil */
-        .profile-card {
-            background: rgba(255,255,255,0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 32px;
-            padding: 36px 32px 32px;
-            box-shadow: 0 24px 56px -16px rgba(0,20,40,0.16);
-            border: 1px solid rgba(255,255,255,0.5);
-            transition: box-shadow 0.2s;
-        }
-        .profile-card:hover {
-            box-shadow: 0 32px 72px -20px rgba(0,20,40,0.2);
-        }
-
-        /* Avatar */
-        .avatar-wrapper {
-            text-align: center;
-            margin-bottom: 12px;
-            position: relative;
-        }
-        .avatar-wrapper .avatar-icon {
-            font-size: 5rem;
-            color: #2a6df4;
-            background: rgba(42,109,244,0.06);
-            border-radius: 50%;
-            padding: 8px;
-            display: inline-block;
-            border: 3px solid rgba(42,109,244,0.12);
-        }
-        .avatar-wrapper .avatar-badge {
-            position: absolute;
-            bottom: 8px;
-            right: 50%;
-            transform: translateX(50%);
-            background: #0b1e33;
-            color: white;
-            font-weight: 700;
-            font-size: 0.65rem;
-            padding: 4px 16px;
-            border-radius: 40px;
-            border: 2px solid white;
-            white-space: nowrap;
-        }
-
-        .profile-name {
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: #0b1e33;
-            text-align: center;
-            letter-spacing: -0.02em;
-            margin-bottom: 2px;
-        }
-        .profile-role {
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #2a6df4;
-            background: rgba(42,109,244,0.08);
-            padding: 4px 16px;
-            border-radius: 40px;
-            display: inline-block;
-            margin: 0 auto 16px;
-        }
-
-        /* Información del perfil */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px 16px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 16px;
-            padding: 14px 18px;
-            margin-bottom: 16px;
-        }
-        .info-grid .info-item {
-            display: flex;
-            flex-direction: column;
-            padding: 4px 0;
-        }
-        .info-grid .info-item .label {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: #8a9bb0;
-            font-weight: 600;
-        }
-        .info-grid .info-item .value {
-            font-weight: 600;
-            color: #0b1e33;
-            font-size: 0.85rem;
-            word-break: break-word;
-        }
-        .info-grid .info-item .value .badge-status {
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 2px 12px;
-            border-radius: 40px;
-        }
-        .badge-status.active { background: #e3f5ee; color: #1a8b5c; }
-        .badge-status.inactive { background: #eef2f6; color: #4a5b6e; }
-
-        /* Permisos */
-        .permissions-section {
-            margin-bottom: 16px;
-        }
-        .permissions-section .perm-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #4a5b6e;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 6px;
-            display: block;
-        }
-        .permission-tag {
-            font-size: 0.6rem;
-            font-weight: 600;
-            padding: 3px 12px;
-            border-radius: 40px;
-            background: #eef3fa;
-            color: #4a5b6e;
-            display: inline-block;
-            margin: 2px 3px;
-        }
-        .permission-tag.all {
-            background: #0b1e33;
-            color: white;
-        }
-
-        /* Botones */
-        .btn-group-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 4px;
-        }
-        .btn-group-actions .btn {
-            border-radius: 60px;
-            padding: 12px 20px;
-            font-weight: 700;
+            border-radius: 14px;
+            padding: 10px 16px;
             font-size: 0.9rem;
-            transition: all 0.25s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
-        .btn-group-actions .btn:hover {
-            transform: translateY(-2px);
-        }
-        .btn-group-actions .btn-change {
-            background: #f5b342;
-            border: none;
-            color: #0b1e33;
-        }
-        .btn-group-actions .btn-change:hover {
-            background: #e6a030;
-            box-shadow: 0 8px 20px -8px rgba(245,179,66,0.3);
-        }
+        .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+        .profile-container { padding: 0 12px; }
+        .profile-card { padding: 22px 16px; border-radius: 20px; }
+        .avatar-wrapper .avatar-icon { font-size: 3.5rem; }
+        .profile-name { font-size: 1.3rem; }
+        .info-grid { grid-template-columns: 1fr; gap: 10px; border-radius: 14px; padding: 14px; }
+        .btn-group-actions { gap: 10px; }
+        .btn-group-actions .btn-row { grid-template-columns: 1fr; }
+        .permission-tag { font-size: 0.62rem; padding: 4px 10px; }
+        .pwd-field .form-control { height: 50px; font-size: 16px; padding: 0 48px 0 44px; }
+        .pwd-field .field-icon { left: 15px; font-size: 1rem; }
+        .pwd-field .pwd-toggle { right: 6px; width: 38px; height: 38px; }
+        .spinner-box { padding: 30px 28px; }
+    }
 
-        .btn-group-actions .btn-back {
-            background: rgba(255,255,255,0.6);
-            border: 1px solid #e9edf4;
-            color: #4a5b6e;
+    /* ACCESIBILIDAD */
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
-        .btn-group-actions .btn-back:hover {
-            background: white;
-            border-color: #cbd9ed;
-        }
-        .btn-group-actions .btn-logout {
-            background: #dc3545;
-            border: none;
-            color: white;
-        }
-        .btn-group-actions .btn-logout:hover {
-            background: #b12a2a;
-            box-shadow: 0 8px 20px -8px rgba(220,53,69,0.3);
-        }
-
-        .btn-group-actions .btn-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        /* Modales modernos */
-        .modal-modern .modal-content {
-            border-radius: 28px;
-            border: none;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
-        }
-        .modal-modern .modal-header {
-            border-bottom: none;
-            padding: 20px 28px 8px 28px;
-        }
-        .modal-modern .modal-header .modal-title {
-            font-weight: 700;
-            color: #0b1e33;
-        }
-        .modal-modern .modal-body {
-            padding: 16px 28px 24px;
-        }
-        .modal-modern .modal-footer {
-            border-top: none;
-            padding: 8px 28px 24px;
-        }
-        .modal-modern .form-control {
-            border-radius: 16px;
-            border: 1.5px solid #e9edf4;
-            padding: 14px 18px;
-            font-size: 0.95rem;
-            background: rgba(255,255,255,0.6);
-            transition: all 0.2s;
-            height: 54px;
-        }
-        .modal-modern .form-control:focus {
-            border-color: #2a6df4;
-            box-shadow: 0 0 0 4px rgba(42,109,244,0.08);
-            background: white;
-        }
-        .modal-modern .form-label {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #4a5b6e;
-        }
-
-        /* Loading */
-        .spinner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11,30,51,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .spinner-box {
-            background: white;
-            padding: 36px 48px;
-            border-radius: 32px;
-            text-align: center;
-            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.2);
-        }
-        .spinner-box .spinner-border {
-            width: 3rem;
-            height: 3rem;
-            color: #2a6df4;
-        }
-        .spinner-box h5 {
-            font-weight: 700;
-            color: #0b1e33;
-            margin-top: 12px;
-        }
-        .spinner-box p {
-            color: #6b7b8f;
-            font-size: 0.85rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .profile-card { padding: 24px 20px; }
-            .profile-name { font-size: 1.3rem; }
-            .info-grid { grid-template-columns: 1fr; gap: 2px; }
-            .btn-group-actions .btn-row { grid-template-columns: 1fr; }
-            .avatar-wrapper .avatar-icon { font-size: 3.5rem; }
-            .btn-menu-modern { padding: 8px 16px; font-size: 0.85rem; top: 16px; left: 16px; }
-        }
-                /* ========== ADAPTACIÓN MÓVIL - SOLO RESPONSIVE ========== */
-        @media (max-width: 992px){
-            .btn-menu-modern{position:relative; top:auto; left:auto; margin:0 0 16px 16px;}
-            body{padding-top:12px; align-items:flex-start;}
-        }
-        @media (max-width: 768px){
-            .profile-container{max-width:100%; padding:0 16px;}
-            .profile-card{padding:28px 20px; border-radius:24px;}
-            .profile-name{font-size:1.4rem;}
-            .info-grid{grid-template-columns:1fr 1fr; padding:12px 14px;}
-            .btn-group-actions .btn{padding:12px 16px; font-size:16px;}
-        }
-        @media (max-width: 480px){
-            body{padding:8px 0 20px 0;}
-            .btn-menu-modern{width:calc(100% - 20px); margin:0 10px 12px 10px; justify-content:center; border-radius:14px;}
-            .profile-container{padding:0 10px;}
-            .profile-card{padding:20px 14px; border-radius:18px; margin:0;}
-            .avatar-wrapper .avatar-icon{font-size:3.2rem;}
-            .profile-name{font-size:1.2rem;}
-            .info-grid{grid-template-columns:1fr; gap:2px; border-radius:12px;}
-            .btn-group-actions{gap:10px;}
-            .btn-group-actions .btn-row{grid-template-columns:1fr;}
-            .permission-tag{font-size:0.55rem; padding:2px 8px;}
-        }
-    </style>
+    }
+    :focus-visible {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+    }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+        background: var(--border-soft);
+        border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+</style>
 </head>
 <body>
 
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
 <!-- Botón menú -->
-<a href="/" class="btn-menu-modern">
+<a href="/" class="btn-menu">
     <i class="bi bi-arrow-left"></i> Menú Principal
 </a>
 
@@ -451,57 +894,111 @@
 
 </div>
 
-<!-- ================================================== -->
+         <!-- ================================================== -->
 <!-- MODAL CAMBIAR CONTRASEÑA -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="changePasswordModal" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade modal-modern" id="changePasswordModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background:#fdf3e0;">
-                <h5 class="modal-title"><i class="bi bi-key me-2"></i>Cambiar Contraseña</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header header-warning">
+                <h5 class="modal-title" style="color:#0b1e33;">
+                    <i class="bi bi-key-fill"></i> Cambiar Contraseña
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Contraseña Actual <span class="text-danger">*</span></label>
-                    <input type="password" id="currentPassword" class="form-control form-control-lg"
-                           autocomplete="off" placeholder="Tu contraseña actual">
+
+                <!-- Contraseña Actual -->
+                <div class="pwd-field">
+                    <label class="field-label" for="currentPassword">
+                        <i class="bi bi-lock-fill"></i> Contraseña Actual <span style="color:var(--danger);">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="field-icon"><i class="bi bi-lock"></i></span>
+                        <input type="password" id="currentPassword" class="form-control"
+                               autocomplete="current-password"
+                               placeholder="Tu contraseña actual" maxlength="200">
+                        <button type="button" class="pwd-toggle" data-target="currentPassword" aria-label="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Nueva Contraseña <span class="text-danger">*</span></label>
-                    <input type="password" id="newPasswordProfile" class="form-control form-control-lg"
-                           autocomplete="off" placeholder="Mínimo 8 caracteres">
+
+                <!-- Nueva Contraseña -->
+                <div class="pwd-field">
+                    <label class="field-label" for="newPasswordProfile">
+                        <i class="bi bi-shield-lock-fill"></i> Nueva Contraseña <span style="color:var(--danger);">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="field-icon"><i class="bi bi-key"></i></span>
+                        <input type="password" id="newPasswordProfile" class="form-control"
+                               autocomplete="new-password"
+                               placeholder="Mínimo 8 caracteres" maxlength="200">
+                        <button type="button" class="pwd-toggle" data-target="newPasswordProfile" aria-label="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <!-- Barra de fortaleza -->
+                    <div class="strength-meter">
+                        <div class="strength-bar">
+                            <div class="strength-bar-fill" id="strengthBarFill"></div>
+                        </div>
+                        <span class="strength-label" id="strengthLabel">—</span>
+                    </div>
+                    <!-- Requisitos -->
+                    <div class="password-requirements" id="passwordReqs">
+                        <span class="req-item" data-req="length"><i class="bi bi-circle"></i> 8+ caracteres</span>
+                        <span class="req-item" data-req="upper"><i class="bi bi-circle"></i> Mayúscula</span>
+                        <span class="req-item" data-req="lower"><i class="bi bi-circle"></i> Minúscula</span>
+                        <span class="req-item" data-req="number"><i class="bi bi-circle"></i> Número</span>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Confirmar Nueva Contraseña <span class="text-danger">*</span></label>
-                    <input type="password" id="confirmNewPassword" class="form-control form-control-lg"
-                           autocomplete="off" placeholder="Repite la contraseña">
+
+                <!-- Confirmar Nueva Contraseña -->
+                <div class="pwd-field">
+                    <label class="field-label" for="confirmNewPassword">
+                        <i class="bi bi-shield-check"></i> Confirmar Nueva Contraseña <span style="color:var(--danger);">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="field-icon"><i class="bi bi-lock-fill"></i></span>
+                        <input type="password" id="confirmNewPassword" class="form-control"
+                               autocomplete="new-password"
+                               placeholder="Repite la contraseña" maxlength="200">
+                        <button type="button" class="pwd-toggle" data-target="confirmNewPassword" aria-label="Mostrar contraseña">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
                 </div>
-                <div id="passwordError" class="text-danger mt-2" style="display:none;font-size:0.9rem;"></div>
+
+                <!-- Mensaje de error -->
+                <div id="passwordError" class="pwd-error" role="alert"></div>
+
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
                 <button type="button" id="savePasswordBtn" class="btn btn-warning">
-                    <i class="bi bi-check2"></i> Guardar
+                    <i class="bi bi-check2"></i> Guardar Contraseña
                 </button>
             </div>
         </div>
     </div>
-</div>
+</div>                               <button class="dm-btn-link" onclick="openCaseDetail(${c.id})"><i class="bi bi-eye"></i> Ver</button>
 
 <!-- ================================================== -->
 <!-- MODAL NOTIFICACIONES -->
 <!-- ================================================== -->
-<div class="modal fade modal-modern" id="notificationModal" tabindex="-1">
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header" id="notificationHeader">
                 <h5 class="modal-title" id="notificationTitle">Notificación</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" id="notificationBody"></div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -520,58 +1017,221 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ============================================================
-// FUNCIONES ORIGINALES (SIN MODIFICAR LÓGICA)
-// ============================================================
+    'use strict';
 
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo de teclado "T"
+document.addEventListener('keydown', (e) => {
+    if (!e || typeof e.key !== 'string') return;
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst) inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
 function showNotification(title, bodyHTML, type = 'info') {
-    const modal = new bootstrap.Modal(document.getElementById('notificationModal'));
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
     const header = document.getElementById('notificationHeader');
     const titleEl = document.getElementById('notificationTitle');
     const bodyEl = document.getElementById('notificationBody');
+
     header.className = 'modal-header';
-    if (type === 'success') { header.classList.add('bg-success', 'text-white'); titleEl.textContent = '✅ ' + title; }
-    else if (type === 'error') { header.classList.add('bg-danger', 'text-white'); titleEl.textContent = '❌ ' + title; }
-    else if (type === 'warning') { header.classList.add('bg-warning', 'text-dark'); titleEl.textContent = '⚠️ ' + title; }
-    else { header.classList.add('bg-primary', 'text-white'); titleEl.textContent = 'ℹ️ ' + title; }
-    bodyEl.innerHTML = bodyHTML;
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
     modal.show();
 }
 
-function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
-function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
 
-document.getElementById('savePasswordBtn').addEventListener('click', async () => {
+/* ============================================================
+   TOGGLE VISIBILIDAD DE CONTRASEÑA
+   ============================================================ */
+document.querySelectorAll('.pwd-toggle').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const targetId = this.dataset.target;
+        const input = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+        if (!input || !icon) return;
+
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        icon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
+        this.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    });
+});
+
+/* ============================================================
+   MEDIDOR DE FORTALEZA
+   ============================================================ */
+const newPasswordInput = document.getElementById('newPasswordProfile');
+const strengthBarFill = document.getElementById('strengthBarFill');
+const strengthLabel = document.getElementById('strengthLabel');
+const passwordReqs = document.getElementById('passwordReqs');
+
+function evaluarFortaleza(val) {
+    return {
+        length: val.length >= 8,
+        upper: /[A-Z]/.test(val),
+        lower: /[a-z]/.test(val),
+        number: /[0-9]/.test(val)
+    };
+}
+
+newPasswordInput?.addEventListener('input', function () {
+    const val = this.value;
+    const reqs = evaluarFortaleza(val);
+
+    // Actualizar badges
+    passwordReqs?.querySelectorAll('.req-item').forEach(item => {
+        const req = item.dataset.req;
+        const met = reqs[req];
+        item.classList.toggle('met', met);
+        const icon = item.querySelector('i');
+        if (icon) icon.className = met ? 'bi bi-check-circle-fill' : 'bi bi-circle';
+    });
+
+    // Calcular fortaleza
+    const metCount = Object.values(reqs).filter(Boolean).length;
+
+    strengthBarFill?.classList.remove('weak', 'medium', 'strong');
+    strengthLabel?.classList.remove('weak', 'medium', 'strong');
+
+    if (val.length === 0) {
+        if (strengthBarFill) strengthBarFill.style.width = '0%';
+        if (strengthLabel) strengthLabel.textContent = '—';
+    } else if (metCount <= 1) {
+        strengthBarFill?.classList.add('weak');
+        strengthLabel?.classList.add('weak');
+        if (strengthLabel) strengthLabel.textContent = 'Débil';
+    } else if (metCount <= 3) {
+        strengthBarFill?.classList.add('medium');
+        strengthLabel?.classList.add('medium');
+        if (strengthLabel) strengthLabel.textContent = 'Media';
+    } else {
+        strengthBarFill?.classList.add('strong');
+        strengthLabel?.classList.add('strong');
+        if (strengthLabel) strengthLabel.textContent = 'Fuerte';
+    }
+});
+
+/* ============================================================
+   CAMBIO DE CONTRASEÑA
+   ============================================================ */
+const errorEl = document.getElementById('passwordError');
+
+function mostrarError(msg) {
+    if (!errorEl) return;
+    errorEl.innerHTML = `<i class="bi bi-exclamation-triangle-fill"></i> <span>${msg}</span>`;
+    errorEl.classList.add('show');
+}
+
+function ocultarError() {
+    if (errorEl) errorEl.classList.remove('show');
+}
+
+document.getElementById('savePasswordBtn').addEventListener('click', async function () {
     const currentPassword = document.getElementById('currentPassword').value;
     const newPassword = document.getElementById('newPasswordProfile').value;
     const confirmPassword = document.getElementById('confirmNewPassword').value;
-    const errorEl = document.getElementById('passwordError');
+    const btn = this;
 
+    ocultarError();
+
+    // Validaciones
     if (!currentPassword) {
-        errorEl.textContent = 'Ingresa tu contraseña actual';
-        errorEl.style.display = 'block';
+        mostrarError('Ingresa tu contraseña actual');
+        document.getElementById('currentPassword').classList.add('is-invalid');
         return;
     }
+    document.getElementById('currentPassword').classList.remove('is-invalid');
 
     if (!newPassword || newPassword.length < 8) {
-        errorEl.textContent = 'La nueva contraseña debe tener al menos 8 caracteres';
-        errorEl.style.display = 'block';
+        mostrarError('La nueva contraseña debe tener al menos 8 caracteres');
+        newPasswordInput.classList.add('is-invalid');
+        newPasswordInput.focus();
         return;
     }
+    newPasswordInput.classList.remove('is-invalid');
 
     if (newPassword !== confirmPassword) {
-        errorEl.textContent = 'Las contraseñas no coinciden';
-        errorEl.style.display = 'block';
+        mostrarError('Las contraseñas no coinciden');
+        document.getElementById('confirmNewPassword').classList.add('is-invalid');
+        document.getElementById('confirmNewPassword').focus();
         return;
     }
+    document.getElementById('confirmNewPassword').classList.remove('is-invalid');
 
     if (newPassword === currentPassword) {
-        errorEl.textContent = 'La nueva contraseña no puede ser igual a la anterior';
-        errorEl.style.display = 'block';
+        mostrarError('La nueva contraseña no puede ser igual a la anterior');
+        newPasswordInput.classList.add('is-invalid');
         return;
     }
 
-    errorEl.style.display = 'none';
+    // Bloquear botón
+    const originalHTML = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-spinner" style="border-color:rgba(11,30,51,0.3);border-top-color:#0b1e33;"></span> Guardando...';
+
     showLoading();
 
     const formData = new FormData();
@@ -579,31 +1239,64 @@ document.getElementById('savePasswordBtn').addEventListener('click', async () =>
     formData.append('new_password', newPassword);
 
     try {
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch('/auth/change-password-auth', {
             method: 'POST',
-            body: formData
+            body: formData,
+            signal: controller.signal
         });
+        clearTimeout(tId);
 
         hideLoading();
 
         if (!response.ok) {
-            const error = await response.json();
-            errorEl.textContent = error.detail || 'Error al cambiar contraseña';
-            errorEl.style.display = 'block';
+            let errMsg = 'Error al cambiar contraseña';
+            try {
+                const error = await response.json();
+                if (error.detail) errMsg = error.detail;
+            } catch (_) {}
+            mostrarError(errMsg);
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
             return;
         }
 
-        bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
-        showNotification('Contraseña Actualizada', '<p>Tu contraseña se cambió correctamente.</p>', 'success');
+        bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'))?.hide();
+        showNotification('¡Contraseña Actualizada!',
+            '<p>Tu contraseña se cambió correctamente.</p>', 'success');
 
+        // Limpiar campos
         document.getElementById('currentPassword').value = '';
         document.getElementById('newPasswordProfile').value = '';
         document.getElementById('confirmNewPassword').value = '';
+        if (strengthBarFill) strengthBarFill.style.width = '0%';
+        if (strengthLabel) { strengthLabel.textContent = '—'; strengthLabel.className = 'strength-label'; }
+        passwordReqs?.querySelectorAll('.req-item').forEach(item => {
+            item.classList.remove('met');
+            const icon = item.querySelector('i');
+            if (icon) icon.className = 'bi bi-circle';
+        });
 
     } catch (error) {
         hideLoading();
-        errorEl.textContent = 'Error de conexión';
-        errorEl.style.display = 'block';
+        let msg = error.message || 'Error desconocido';
+        if (error.name === 'AbortError') msg = 'La operación tardó demasiado. Verifica tu conexión.';
+        mostrarError(msg);
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHTML;
+    }
+});
+
+// Enter en confirmar dispara guardar
+document.getElementById('confirmNewPassword')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('savePasswordBtn')?.click();
     }
 });
 </script>

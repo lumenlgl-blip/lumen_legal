@@ -861,6 +861,247 @@
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* ============================================================ */
+        /* HEADER DEL CLIENTE — TARJETAS                                */
+        /* ============================================================ */
+        .client-header-modern {
+            display: flex; align-items: center; gap: 20px;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.06), rgba(26,139,92,0.04));
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-primary);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .client-avatar-large {
+            width: 60px; height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-dark));
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(42,109,244,0.4);
+        }
+        .client-info-block { flex: 1; min-width: 220px; }
+        .client-name-large {
+            font-weight: 800; font-size: 1.35rem;
+            color: var(--text-primary); margin: 0 0 10px 0;
+            letter-spacing: -0.02em;
+        }
+        .client-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 8px; width: 100%;
+        }
+        .client-meta-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border-radius: 40px;
+            font-size: 0.8rem; font-weight: 600;
+            color: var(--text-primary);
+            border: 1px solid var(--border-soft);
+            min-width: 0; overflow: hidden;
+        }
+        .client-meta-item i { color: var(--accent-primary); font-size: 0.9rem; flex-shrink: 0; }
+        .client-meta-item .meta-lbl {
+            color: var(--text-muted); font-weight: 500;
+            font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.03em; flex-shrink: 0;
+        }
+        .client-meta-item .meta-val {
+            flex: 1; min-width: 0; text-align: right;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.78rem; letter-spacing: 0.01em;
+        }
+
+        /* ============================================================ */
+        /* BANNER EXPEDIENTE SELECCIONADO                              */
+        /* ============================================================ */
+        .selected-case-banner {
+            display: none;
+            padding: 18px 22px;
+            background: linear-gradient(135deg, rgba(245,179,66,0.15), rgba(245,179,66,0.05));
+            border: 2px solid var(--warning);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.4s ease-out;
+        }
+        [data-theme="dark"] .selected-case-banner {
+            background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,191,36,0.05));
+        }
+        .selected-case-banner.show { display: flex; }
+        .selected-case-banner .sc-icon {
+            width: 52px; height: 52px; border-radius: 14px;
+            background: var(--warning); color: #0b1e33;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
+            box-shadow: 0 6px 16px -4px rgba(245,179,66,0.5);
+        }
+        .selected-case-banner .sc-body { flex: 1; min-width: 0; }
+        .selected-case-banner .sc-lbl {
+            font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.05em; font-weight: 700;
+            color: #8a6d00; margin-bottom: 4px;
+        }
+        [data-theme="dark"] .selected-case-banner .sc-lbl { color: var(--warning); }
+        .selected-case-banner .sc-title {
+            font-weight: 800; font-size: 1.05rem;
+            color: var(--text-primary); margin-bottom: 2px;
+        }
+        .selected-case-banner .sc-meta {
+            font-size: 0.82rem; color: var(--text-secondary);
+        }
+        .selected-case-banner .sc-status {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 6px 14px;
+            border-radius: 40px;
+            white-space: nowrap;
+        }
+
+        /* ============================================================ */
+        /* PARTES DEL JUICIO                                            */
+        /* ============================================================ */
+        .case-partes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        @media (max-width: 640px) {
+            .case-partes-grid { grid-template-columns: 1fr; }
+        }
+        .parte-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-primary);
+            min-width: 0;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+        .parte-card:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-tertiary);
+            transform: translateX(3px);
+        }
+        .parte-card.actor1 { border-left-color: var(--accent-primary); }
+        .parte-card.actor2 { border-left-color: var(--info); }
+        .parte-card.demandado { border-left-color: var(--danger); }
+
+        .parte-avatar {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+            color: white;
+            margin-top: 2px;
+        }
+        .parte-card.actor1 .parte-avatar {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+        }
+        .parte-card.actor2 .parte-avatar {
+            background: linear-gradient(135deg, var(--info), var(--accent-primary));
+        }
+        .parte-card.demandado .parte-avatar {
+            background: linear-gradient(135deg, var(--danger), var(--danger-hover));
+        }
+
+        .parte-body { flex: 1; min-width: 0; overflow: hidden; }
+        .parte-rol {
+            font-size: 0.66rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 3px;
+        }
+        .parte-card.actor1 .parte-rol { color: var(--accent-primary); }
+        .parte-card.actor2 .parte-rol { color: var(--info); }
+        .parte-card.demandado .parte-rol { color: var(--danger); }
+
+        .parte-nombre {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.35;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        /* ============================================================ */
+        /* WIZARD STEPPER                                               */
+        /* ============================================================ */
+        .wizard-stepper {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0; margin-bottom: 28px; padding: 0 8px;
+        }
+        .wizard-stepper .step-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 6px; flex-shrink: 0;
+        }
+        .wizard-stepper .step-circle {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-soft);
+            color: var(--text-muted);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .wizard-stepper .step-circle .step-check { display: none; font-size: 1.1rem; }
+        .wizard-stepper .step-item.active .step-circle {
+            background: var(--warning); border-color: var(--warning);
+            color: #0b1e33; transform: scale(1.1);
+            box-shadow: 0 8px 20px -6px rgba(245,179,66,0.5);
+        }
+        .wizard-stepper .step-item.completed .step-circle {
+            background: var(--success); border-color: var(--success); color: white;
+        }
+        .wizard-stepper .step-item.completed .step-circle .step-num { display: none; }
+        .wizard-stepper .step-item.completed .step-circle .step-check { display: block; }
+        .wizard-stepper .step-label {
+            font-size: 0.7rem; font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .wizard-stepper .step-item.active .step-label { color: var(--warning); }
+        .wizard-stepper .step-item.completed .step-label { color: var(--success); }
+        .wizard-stepper .step-line {
+            flex: 1; height: 3px;
+            background: var(--border-soft);
+            margin: 0 6px 22px 6px;
+            border-radius: 3px; transition: background 0.4s;
+            max-width: 100px;
+        }
+        .wizard-stepper .step-line.completed { background: var(--success); }
+
+        @media (max-width: 768px) {
+            .wizard-stepper .step-circle { width: 36px; height: 36px; font-size: 0.8rem; }
+            .wizard-stepper .step-label { font-size: 0.6rem; }
+            .wizard-stepper .step-line { margin-bottom: 20px; }
+            .client-header-modern { padding: 16px; gap: 14px; }
+            .client-avatar-large { width: 48px; height: 48px; font-size: 1.5rem; }
+            .client-name-large { font-size: 1.1rem; }
+            .client-meta-grid { grid-template-columns: 1fr; }
+            .selected-case-banner { padding: 14px 16px; gap: 12px; }
+            .selected-case-banner .sc-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+            .selected-case-banner .sc-title { font-size: 0.95rem; }
+        }
     </style>
 </head>
 <body>
@@ -903,12 +1144,49 @@
     <!-- FORMULARIO DE ACTUALIZACIÓN -->
     <div id="updateFormContainer" class="update-form-container">
         <div class="card-glass">
-            <div class="case-header-detail">
-                <div>
-                    <h5 id="caseTitle"><i class="bi bi-folder2-open"></i></h5>
-                    <div class="case-meta" id="caseInfo"></div>
+
+            <!-- STEPPER -->
+            <div class="wizard-stepper" id="wizardStepper">
+                <div class="step-item" data-step="1">
+                    <div class="step-circle"><span class="step-num">1</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Cliente</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="2">
+                    <div class="step-circle"><span class="step-num">2</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Expediente</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="3">
+                    <div class="step-circle"><span class="step-num">3</span><i class="bi bi-check-lg step-check"></i></div>
+                    <div class="step-label">Estatus</div>
                 </div>
             </div>
+
+            <!-- HEADER CLIENTE (TARJETAS) -->
+            <div class="client-header-modern" id="clientHeaderModern">
+                <div class="client-avatar-large">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div class="client-info-block">
+                    <h4 class="client-name-large" id="clientNameDisplay">—</h4>
+                    <div class="client-meta-grid" id="clientInfoDisplay"></div>
+                </div>
+            </div>
+
+            <!-- BANNER EXPEDIENTE SELECCIONADO -->
+            <div class="selected-case-banner" id="selectedCaseBanner">
+                <div class="sc-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
+                <div class="sc-body">
+                    <div class="sc-lbl">Expediente seleccionado</div>
+                    <div class="sc-title" id="scTitle">—</div>
+                    <div class="sc-meta" id="scMeta">—</div>
+                </div>
+                <div class="sc-status status-badge-modern" id="scStatus">—</div>
+            </div>
+
+            <!-- PARTES DEL JUICIO -->
+            <div id="partesContainer"></div>
 
             <form id="updateForm" novalidate>
                 <input type="hidden" id="courtCaseId" name="court_case_id">
@@ -1164,8 +1442,32 @@ searchInput.addEventListener('keydown', function (e) {
 
 searchBtn.addEventListener('click', realizarBusqueda);
 
+/* ============================================================
+   RESET SILENCIOSO (al iniciar nueva búsqueda)
+   ============================================================ */
+function resetearEstatusSilencioso() {
+    const form = document.getElementById('updateForm');
+    if (form) form.reset();
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+
+    window.__wizardClientLoaded = false;
+    window.__wizardCaseLoaded = false;
+    window.__currentClient = null;
+
+    document.getElementById('updateFormContainer').style.display = 'none';
+    document.getElementById('resultsContainer').innerHTML = '';
+    document.getElementById('selectedCaseBanner')?.classList.remove('show');
+    document.getElementById('partesContainer').innerHTML = '';
+    window.__currentPartes = null;
+
+    if (typeof window.__updateWizard === 'function') window.__updateWizard();
+}
+
 async function realizarBusqueda() {
     const term = searchInput.value.trim().toUpperCase();
+
+    // Limpiar todo antes de nueva búsqueda
+    resetearEstatusSilencioso();
 
     if (!term) {
         showNotification('Búsqueda vacía',
@@ -1307,6 +1609,8 @@ function showCaseSelection(client) {
                                 data-tribunal="${escapeHTML(caso.tribunal || '')}"
                                 data-exp="${expTribunal}"
                                 data-status="${status}"
+                                data-actor="${escapeHTML(caso.actor_nombre || '')}"
+                                data-demandado="${escapeHTML(caso.demandado_nombre || '')}"
                                 type="button">
                             <i class="bi bi-pencil"></i> Actualizar
                         </button>
@@ -1323,6 +1627,31 @@ function showCaseSelection(client) {
 
     container.querySelectorAll('.update-status').forEach(btn => {
         btn.addEventListener('click', function () {
+            // Guardar datos del cliente para mostrarlos en el header
+            window.__currentClient = {
+                nombre: client.nombre_completo || 'Sin nombre',
+                curp: client.curp || '—',
+                telefono: client.telefono || '—',
+                expediente_interno: client.expediente_interno || '—',
+                folio_registro: client.folio_registro || '—'
+            };
+            // Guardar datos de las partes del juicio
+            // El backend guarda "Actor1 / Actor2" en un solo campo cuando es bilateral
+            const actorRaw = this.dataset.actor || '';
+            let actorA = actorRaw, actorB = '';
+            if (actorRaw.includes(' / ')) {
+                const [a, b] = actorRaw.split(' / ');
+                actorA = (a || '').trim();
+                actorB = (b || '').trim();
+            }
+            window.__currentPartes = {
+                actor: actorA,
+                actor2: actorB,
+                demandado: this.dataset.demandado || ''
+            };
+            // Ocultar la lista de expedientes
+            document.getElementById('resultsContainer').innerHTML = '';
+            // Cargar el formulario
             loadUpdateForm(
                 this.dataset.id,
                 this.dataset.tribunal,
@@ -1348,15 +1677,81 @@ function loadUpdateForm(caseId, tribunal, expTribunal, currentStatus) {
     container.style.display = 'block';
 
     document.getElementById('courtCaseId').value = caseId;
-    document.getElementById('caseTitle').innerHTML =
-        `<i class="bi bi-folder2-open"></i> Expediente: ${escapeHTML(expTribunal)}`;
+
+    // === TARJETAS DEL CLIENTE ===
+    const cli = window.__currentClient || {};
+    document.getElementById('clientNameDisplay').textContent = cli.nombre || '—';
+    document.getElementById('clientInfoDisplay').innerHTML = `
+        <div class="client-meta-item"><i class="bi bi-person-vcard"></i><span class="meta-lbl">CURP</span><span class="meta-val">${escapeHTML(cli.curp || '—')}</span></div>
+        <div class="client-meta-item"><i class="bi bi-telephone"></i><span class="meta-lbl">Tel</span><span class="meta-val">${escapeHTML(cli.telefono || '—')}</span></div>
+        <div class="client-meta-item"><i class="bi bi-folder"></i><span class="meta-lbl">Exp</span><span class="meta-val">${escapeHTML(cli.expediente_interno || '—')}</span></div>
+        <div class="client-meta-item"><i class="bi bi-tag"></i><span class="meta-lbl">Folio</span><span class="meta-val">${escapeHTML(cli.folio_registro || '—')}</span></div>
+    `;
+
+    // === BANNER DEL EXPEDIENTE SELECCIONADO ===
+    document.getElementById('scTitle').textContent = 'Expediente ' + (expTribunal || '—');
+    document.getElementById('scMeta').textContent = tribunal || 'Tribunal no especificado';
 
     const statusLabel = (currentStatus || '—').replace(/_/g, ' ').toUpperCase();
-    document.getElementById('caseInfo').innerHTML =
-        `<strong>Tribunal:</strong> ${escapeHTML(tribunal || 'N/A')} · <strong>Estatus actual:</strong> ${escapeHTML(statusLabel)}`;
+    const statusClass = `status-${currentStatus || 'inactivo'}`;
+    const scStatus = document.getElementById('scStatus');
+    scStatus.className = 'sc-status status-badge-modern ' + statusClass;
+    scStatus.textContent = statusLabel;
+
+    document.getElementById('selectedCaseBanner').classList.add('show');
+
+    // === PARTES DEL JUICIO ===
+    const partes = window.__currentPartes || {};
+    const actor     = partes.actor || '';
+    const actor2    = partes.actor2 || '';
+    const demandado = partes.demandado || '';
+    const esBilateral = !demandado && !!actor2;
+
+    let partesHTML = '';
+    if (actor || actor2 || demandado) {
+        partesHTML = '<div class="case-partes-grid">';
+
+        if (actor) {
+            partesHTML += `
+                <div class="parte-card actor1">
+                    <div class="parte-avatar"><i class="bi bi-person-fill"></i></div>
+                    <div class="parte-body">
+                        <div class="parte-rol">${esBilateral ? 'Primer Actor' : 'Actor'}</div>
+                        <div class="parte-nombre">${escapeHTML(actor)}</div>
+                    </div>
+                </div>`;
+        }
+        if (actor2) {
+            partesHTML += `
+                <div class="parte-card actor2">
+                    <div class="parte-avatar"><i class="bi bi-person-fill"></i></div>
+                    <div class="parte-body">
+                        <div class="parte-rol">Segundo Actor</div>
+                        <div class="parte-nombre">${escapeHTML(actor2)}</div>
+                    </div>
+                </div>`;
+        }
+        if (demandado) {
+            partesHTML += `
+                <div class="parte-card demandado">
+                    <div class="parte-avatar"><i class="bi bi-person-dash-fill"></i></div>
+                    <div class="parte-body">
+                        <div class="parte-rol">Demandado(a)</div>
+                        <div class="parte-nombre">${escapeHTML(demandado)}</div>
+                    </div>
+                </div>`;
+        }
+        partesHTML += '</div>';
+    }
+    document.getElementById('partesContainer').innerHTML = partesHTML;
 
     document.getElementById('newStatus').value = currentStatus || '';
     document.getElementById('newStatus').classList.remove('is-invalid');
+
+    // === WIZARD: marcar pasos 1 y 2 completos ===
+    window.__wizardClientLoaded = true;
+    window.__wizardCaseLoaded = true;
+    if (typeof window.__updateWizard === 'function') window.__updateWizard();
 
     setTimeout(() => {
         document.getElementById('newStatus').focus();
@@ -1474,6 +1869,56 @@ document.addEventListener('DOMContentLoaded', () => {
     searchBtn.disabled = false;
     setTimeout(() => searchInput?.focus(), 400);
 });
+
+/* ============================================================
+   WIZARD PASO A PASO — 3 PASOS
+   ============================================================ */
+(function() {
+    'use strict';
+
+    const stepItems = Array.from(document.querySelectorAll('#wizardStepper .step-item'));
+    const stepLines = Array.from(document.querySelectorAll('#wizardStepper .step-line'));
+    const selectStatus = document.getElementById('newStatus');
+
+    function isStepDone(n) {
+        if (n === 1) return !!window.__wizardClientLoaded;
+        if (n === 2) return !!window.__wizardCaseLoaded;
+        if (n === 3) {
+            if (!isStepDone(1) || !isStepDone(2)) return false;
+            const val = selectStatus ? selectStatus.value : '';
+            // Consideramos el paso 3 completado al elegir un estatus válido
+            return !!val;
+        }
+        return false;
+    }
+
+    function currentStep() {
+        for (let i = 1; i <= 3; i++) {
+            if (!isStepDone(i)) return i;
+        }
+        return 3;
+    }
+
+    window.__updateWizard = function updateWizard() {
+        const active = currentStep();
+
+        stepItems.forEach(item => {
+            const n = parseInt(item.dataset.step, 10);
+            item.classList.toggle('completed', isStepDone(n) && n < active);
+            item.classList.toggle('active', n === active);
+        });
+
+        stepLines.forEach((line, idx) => {
+            line.classList.toggle('completed', isStepDone(idx + 1) && (idx + 1) < active);
+        });
+    };
+
+    if (selectStatus) {
+        selectStatus.addEventListener('change', () => window.__updateWizard());
+    }
+
+    window.__updateWizard();
+})();
 </script>
 </body>
 </html>

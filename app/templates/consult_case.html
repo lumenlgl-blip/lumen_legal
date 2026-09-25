@@ -1419,8 +1419,53 @@ searchInput.addEventListener('keydown', function (e) {
 
 searchBtn.addEventListener('click', realizarBusqueda);
 
+/* ============================================================
+   RESET SILENCIOSO (al iniciar nueva búsqueda)
+   ============================================================ */
+function resetearConsultaSilencioso() {
+    // Ocultar el detalle del expediente anterior
+    const detailContainer = document.getElementById('caseDetailContainer');
+    if (detailContainer) {
+        detailContainer.style.display = 'none';
+        detailContainer.classList.remove('fade-in', 'fade-out');
+    }
+    const caseContent = document.getElementById('caseContent');
+    if (caseContent) caseContent.innerHTML = '';
+
+    // Limpiar la lista de resultados
+    const resultsContainer = document.getElementById('resultsContainer');
+    if (resultsContainer) {
+        resultsContainer.classList.remove('fade-in', 'fade-out');
+        resultsContainer.innerHTML = '';
+    }
+
+    // Resetear el estado global
+    currentData = null;
+    currentAction = null;
+
+    // Limpiar iframe / modales abiertos por si acaso
+    const pdfPreview = document.getElementById('pdfPreview');
+    if (pdfPreview) pdfPreview.src = 'about:blank';
+    const fullCaseFrame = document.getElementById('fullCasePreviewFrame');
+    if (fullCaseFrame) {
+        fullCaseFrame.src = 'about:blank';
+        fullCaseFrame.style.display = 'none';
+    }
+    const fullCaseLoader = document.getElementById('modalGeneratingLoader');
+    if (fullCaseLoader) fullCaseLoader.classList.remove('hidden');
+
+    // Detener polling QR si estaba activo
+    if (qrPollingInterval) {
+        clearInterval(qrPollingInterval);
+        qrPollingInterval = null;
+    }
+}
+
 async function realizarBusqueda() {
     const term = searchInput.value.trim().toUpperCase();
+
+    // Limpiar todo antes de nueva búsqueda
+    resetearConsultaSilencioso();
 
     if (!term) {
         showNotification('Búsqueda vacía',

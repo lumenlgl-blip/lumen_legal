@@ -2,240 +2,617 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33">
     <title>Lumen Legal · Iniciando</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ============================================================
+           RESET
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
-            background: linear-gradient(135deg, #0b1e33 0%, #1a3b6b 50%, #2a6df4 100%);
-            min-height: 100vh;
+            background: linear-gradient(135deg, #0b1e33 0%, #1a3b6b 45%, #2a6df4 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 12s ease-in-out infinite;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow: hidden;
+            color: white;
             position: relative;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
         }
 
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Overlay oscuro decorativo */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, transparent 0%, rgba(0,0,0,0.25) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ============================================================
+           LOADER CONTAINER
+           ============================================================ */
         .loader-container {
             text-align: center;
-            animation: fadeIn 1.2s ease;
+            animation: fadeInUp 0.9s var(--transition-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
             z-index: 10;
+            padding: 20px;
+            max-width: 480px;
+            width: 100%;
         }
 
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: scale(0.94) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ============================================================
+           LOGO CON EFECTOS
+           ============================================================ */
         .loader-logo {
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 24px;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 28px;
             background: white;
-            border-radius: 28px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: pulseLogo 2s infinite ease-in-out;
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.35),
+                0 0 0 1px rgba(255,255,255,0.1),
+                inset 0 -3px 8px rgba(0,0,0,0.05);
+            animation: pulseLogo 2.2s ease-in-out infinite;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Shimmer diagonal */
+        .loader-logo::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.9),
+                transparent
+            );
+            transform: rotate(25deg);
+            animation: shimmer 3.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { left: -60%; }
+            60%, 100% { left: 160%; }
         }
 
         .loader-logo img {
-            width: 75px;
+            width: 80px;
             height: auto;
+            border-radius: 16px;
+            position: relative;
+            z-index: 1;
         }
 
         .loader-logo .fallback-icon {
-            font-size: 45px;
+            font-size: 48px;
+            position: relative;
+            z-index: 1;
         }
 
+        @keyframes pulseLogo {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow:
+                    0 28px 80px rgba(42,109,244,0.55),
+                    0 0 60px rgba(122,169,255,0.4),
+                    0 0 0 1px rgba(255,255,255,0.15);
+            }
+        }
+
+        /* ============================================================
+           TÍTULOS
+           ============================================================ */
         .loader-title {
-            color: white;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
             margin-bottom: 6px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #ffffff, #dbeafe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
+            50% { filter: drop-shadow(0 0 20px rgba(122,169,255,0.4)); }
         }
 
         .loader-subtitle {
-            color: rgba(255,255,255,0.65);
-            font-size: 1rem;
-            font-weight: 300;
-            margin-bottom: 24px;
+            color: rgba(255,255,255,0.7);
+            font-size: 1.02rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            margin-bottom: 32px;
         }
 
+        /* ============================================================
+           BARRA DE CARGA
+           ============================================================ */
         .loader-bar {
-            width: 280px;
-            height: 4px;
+            width: 300px;
+            max-width: 100%;
+            height: 5px;
             background: rgba(255,255,255,0.12);
-            border-radius: 4px;
+            border-radius: 5px;
             margin: 0 auto;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
         }
 
         .loader-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #f5b342, #ffd700);
-            border-radius: 4px;
-            animation: loadProgress 6s ease-in-out forwards;
-            box-shadow: 0 0 12px rgba(245,179,66,0.6);
-        }
-
-        .loader-status {
-            color: rgba(255,255,255,0.45);
-            font-size: 0.75rem;
-            margin-top: 14px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            font-weight: 400;
-        }
-
-        .loader-dots {
-            display: inline-block;
-            min-width: 24px;
-            text-align: left;
-        }
-
-        /* Animaciones */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulseLogo {
-            0%, 100% { transform: scale(1); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-            50% { transform: scale(1.04); box-shadow: 0 24px 80px rgba(42,109,244,0.5); }
+            background: linear-gradient(90deg, #f5b342 0%, #ffd700 50%, #f5b342 100%);
+            background-size: 200% 100%;
+            border-radius: 5px;
+            animation:
+                loadProgress 4s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+                barShine 2s linear infinite;
+            box-shadow:
+                0 0 16px rgba(245,179,66,0.7),
+                0 0 32px rgba(245,179,66,0.3);
         }
 
         @keyframes loadProgress {
             0% { width: 0%; }
-            15% { width: 10%; }
-            35% { width: 30%; }
-            55% { width: 50%; }
-            75% { width: 72%; }
+            12% { width: 8%; }
+            28% { width: 25%; }
+            45% { width: 42%; }
+            62% { width: 62%; }
+            80% { width: 82%; }
+            95% { width: 96%; }
             100% { width: 100%; }
         }
 
-        /* Partículas de fondo */
-        .particle {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: rgba(255,255,255,0.12);
+        @keyframes barShine {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ============================================================
+           ESTADO + HINT
+           ============================================================ */
+        .loader-status {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.78rem;
+            margin-top: 18px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 20px;
+        }
+
+        .loader-dots {
+            display: inline-block;
+            min-width: 22px;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        /* Estado de "verificando sesión" */
+        .loader-status.verifying {
+            color: #f5b342;
+        }
+
+        .loader-status.verifying .loader-dots { display: none; }
+
+        .loader-status.verifying::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(245,179,66,0.3);
+            border-top-color: #f5b342;
             border-radius: 50%;
-            animation: float 12s infinite linear;
-            z-index: 1;
+            animation: spin 0.7s linear infinite;
+            margin-right: 4px;
         }
 
-        .particle:nth-child(1) { left: 8%; animation-duration: 14s; }
-        .particle:nth-child(2) { left: 18%; animation-duration: 18s; animation-delay: 2s; }
-        .particle:nth-child(3) { left: 28%; animation-duration: 16s; animation-delay: 4s; }
-        .particle:nth-child(4) { left: 45%; animation-duration: 20s; animation-delay: 1s; }
-        .particle:nth-child(5) { left: 62%; animation-duration: 15s; animation-delay: 3s; }
-        .particle:nth-child(6) { left: 75%; animation-duration: 17s; animation-delay: 5s; }
-        .particle:nth-child(7) { left: 88%; animation-duration: 13s; animation-delay: 2s; }
-        .particle:nth-child(8) { left: 35%; animation-duration: 19s; animation-delay: 6s; }
-        .particle:nth-child(9) { left: 55%; animation-duration: 16s; animation-delay: 4s; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes float {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        /* ============================================================
+           HINT: TOCA PARA CONTINUAR
+           ============================================================ */
+        .tap-hint {
+            margin-top: 28px;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.4);
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            animation: hintPulse 2.5s ease-in-out infinite;
+            transition: opacity 0.3s ease;
         }
 
-        /* Responsive */
+        .tap-hint i {
+            font-size: 0.9rem;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.35; }
+            50% { opacity: 0.85; }
+        }
+
+        /* Ocultar hint cuando se está verificando */
+        body.is-verifying .tap-hint { opacity: 0; }
+
+        /* ============================================================
+           PARTÍCULAS
+           ============================================================ */
+        .particles-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -10px;
+            width: 5px;
+            height: 5px;
+            background: rgba(122,169,255,0.4);
+            border-radius: 50%;
+            animation: floatUp 14s linear infinite;
+            box-shadow: 0 0 8px rgba(122,169,255,0.5);
+        }
+
+        .particle.gold {
+            background: rgba(245,179,66,0.5);
+            box-shadow: 0 0 10px rgba(245,179,66,0.6);
+        }
+
+        .particle:nth-child(1)  { left: 5%;  animation-duration: 13s; animation-delay: 0s;   width: 3px; height: 3px; }
+        .particle:nth-child(2)  { left: 15%; animation-duration: 17s; animation-delay: 2s;   width: 6px; height: 6px; }
+        .particle:nth-child(3)  { left: 25%; animation-duration: 15s; animation-delay: 4s;   width: 4px; height: 4px; }
+        .particle:nth-child(4)  { left: 38%; animation-duration: 20s; animation-delay: 1s;   width: 7px; height: 7px; }
+        .particle:nth-child(5)  { left: 50%; animation-duration: 14s; animation-delay: 3s;   width: 5px; height: 5px; }
+        .particle:nth-child(6)  { left: 62%; animation-duration: 18s; animation-delay: 5s;   width: 4px; height: 4px; }
+        .particle:nth-child(7)  { left: 72%; animation-duration: 12s; animation-delay: 2s;   width: 6px; height: 6px; }
+        .particle:nth-child(8)  { left: 82%; animation-duration: 16s; animation-delay: 6s;   width: 3px; height: 3px; }
+        .particle:nth-child(9)  { left: 92%; animation-duration: 19s; animation-delay: 4s;   width: 5px; height: 5px; }
+        .particle:nth-child(10) { left: 30%; animation-duration: 15s; animation-delay: 7s;   width: 4px; height: 4px; }
+        .particle:nth-child(11) { left: 55%; animation-duration: 17s; animation-delay: 8s;   width: 6px; height: 6px; }
+        .particle:nth-child(12) { left: 78%; animation-duration: 14s; animation-delay: 3.5s; width: 3px; height: 3px; }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0.8;
+            }
+            90% {
+                transform: translateY(-95vh) scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-105vh) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .loader-logo {
+                width: 105px;
+                height: 105px;
+                border-radius: 26px;
+                margin-bottom: 24px;
+            }
+            .loader-logo img { width: 68px; }
+            .loader-logo .fallback-icon { font-size: 42px; }
+
+            .loader-title { font-size: 2rem; }
+            .loader-subtitle { font-size: 0.95rem; margin-bottom: 26px; }
+
+            .loader-bar { width: 260px; }
+        }
+
         @media (max-width: 480px) {
-            .loader-logo { width: 85px; height: 85px; border-radius: 22px; }
-            .loader-logo img { width: 55px; }
-            .loader-logo .fallback-icon { font-size: 35px; }
-            .loader-title { font-size: 1.6rem; }
-            .loader-subtitle { font-size: 0.85rem; }
-            .loader-bar { width: 210px; }
-            .loader-status { font-size: 0.65rem; }
+            .loader-container { padding: 16px; }
+
+            .loader-logo {
+                width: 90px;
+                height: 90px;
+                border-radius: 22px;
+                margin-bottom: 20px;
+            }
+            .loader-logo img { width: 58px; border-radius: 12px; }
+            .loader-logo .fallback-icon { font-size: 36px; }
+
+            .loader-title { font-size: 1.65rem; }
+            .loader-subtitle { font-size: 0.85rem; margin-bottom: 22px; }
+
+            .loader-bar { width: 220px; height: 4px; }
+
+            .loader-status { font-size: 0.68rem; }
+            .tap-hint { font-size: 0.65rem; margin-top: 22px; }
+        }
+
+        /* Landscape en móvil */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .loader-logo {
+                width: 70px;
+                height: 70px;
+                border-radius: 18px;
+                margin-bottom: 12px;
+            }
+            .loader-logo img { width: 45px; }
+            .loader-logo .fallback-icon { font-size: 28px; }
+
+            .loader-title { font-size: 1.4rem; }
+            .loader-subtitle { font-size: 0.8rem; margin-bottom: 16px; }
+
+            .loader-bar { width: 220px; height: 3px; }
+
+            .loader-status { font-size: 0.65rem; margin-top: 10px; }
+            .tap-hint { margin-top: 14px; font-size: 0.6rem; }
+        }
+
+        /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .loader-bar-fill {
+                width: 100% !important;
+            }
+        }
+
+        /* Focus visible (aunque no hay elementos focusables, por si se agrega) */
+        :focus-visible {
+            outline: 2px solid #f5b342;
+            outline-offset: 3px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Partículas decorativas -->
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
+    <!-- ============================================================ -->
+    <!-- PARTÍCULAS DE FONDO -->
+    <!-- ============================================================ -->
+    <div class="particles-layer" aria-hidden="true">
+        <div class="particle gold"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle gold"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle gold"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle gold"></div>
+        <div class="particle"></div>
+    </div>
 
-    <div class="loader-container">
-        <!-- Logo con fallback -->
+    <!-- ============================================================ -->
+    <!-- LOADER -->
+    <!-- ============================================================ -->
+    <div class="loader-container" role="status" aria-live="polite" aria-label="Iniciando sistema">
+        <!-- Logo con fallback a emoji -->
         <div class="loader-logo">
-            <img src="/static/img/logo.jpeg" alt="Lumen Legal" 
-                 onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=fallback-icon>⚖️</span>';">
+            <img src="/static/img/logo.jpeg" alt="Lumen Legal"
+                 onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','<span class=&quot;fallback-icon&quot;>⚖️</span>');">
         </div>
 
         <h1 class="loader-title">Lumen Legal</h1>
         <p class="loader-subtitle">Sistema de Gestión Jurídica</p>
 
-        <div class="loader-bar">
+        <!-- Barra de progreso -->
+        <div class="loader-bar" aria-hidden="true">
             <div class="loader-bar-fill"></div>
         </div>
 
-        <p class="loader-status">
-            Iniciando sistema<span class="loader-dots">...</span>
+        <!-- Estado dinámico -->
+        <p class="loader-status" id="loaderStatus">
+            <span id="statusText">Iniciando sistema</span>
+            <span class="loader-dots" id="loaderDots">...</span>
+        </p>
+
+        <!-- Hint para saltar -->
+        <p class="tap-hint" id="tapHint">
+            <i class="bi bi-hand-index-thumb"></i>
+            <span>Toca para continuar</span>
         </p>
     </div>
 
-    <!-- Redirección automática con verificación de sesión -->
+    <!-- ============================================================ -->
+    <!-- SCRIPT -->
+    <!-- ============================================================ -->
     <script>
-        const dots = document.querySelector('.loader-dots');
+        'use strict';
+
+        /* ============================================================
+           ESTADO
+           ============================================================ */
+        let redirecting = false;
+        let hintTimer = null;
+        let dotsTimer = null;
+
+        const dots = document.getElementById('loaderDots');
+        const statusText = document.getElementById('statusText');
+        const loaderStatus = document.getElementById('loaderStatus');
         const dotStates = ['', '.', '..', '...'];
         let dotIndex = 0;
 
-        // Animación de puntos
-        setInterval(() => {
-            dotIndex = (dotIndex + 1) % dotStates.length;
-            dots.textContent = dotStates[dotIndex];
-        }, 400);
+        /* ============================================================
+           ANIMACIÓN DE PUNTOS
+           ============================================================ */
+        function startDotsAnimation() {
+            if (dotsTimer) clearInterval(dotsTimer);
+            dotsTimer = setInterval(() => {
+                dotIndex = (dotIndex + 1) % dotStates.length;
+                dots.textContent = dotStates[dotIndex];
+            }, 400);
+        }
 
-        // Redirección después de 6 segundos
-        setTimeout(() => {
-            fetch('/auth/check-session')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.authenticated) {
-                        window.location.href = '/';
-                    } else {
-                        window.location.href = '/auth/login';
-                    }
-                })
-                .catch(() => {
-                    window.location.href = '/auth/login';
+        function stopDotsAnimation() {
+            if (dotsTimer) {
+                clearInterval(dotsTimer);
+                dotsTimer = null;
+            }
+        }
+
+        startDotsAnimation();
+
+        /* ============================================================
+           REDIRECCIÓN CON VERIFICACIÓN DE SESIÓN
+           ============================================================ */
+        async function checkSessionAndRedirect() {
+            if (redirecting) return;
+            redirecting = true;
+
+            // Cambiar estado visual
+            body_setVerifying();
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                const response = await fetch('/auth/check-session', {
+                    signal: controller.signal,
+                    credentials: 'same-origin'
                 });
-        }, 6000);
+                clearTimeout(timeoutId);
 
-        // Si el usuario hace clic, redirigir inmediatamente
+                if (!response.ok) throw new Error('Error en respuesta de sesión');
+
+                const data = await response.json();
+
+                if (data && data.authenticated) {
+                    window.location.href = '/';
+                } else {
+                    window.location.href = '/auth/login';
+                }
+            } catch (error) {
+                // Si falla o timeout, ir a login
+                window.location.href = '/auth/login';
+            }
+        }
+
+        function body_setVerifying() {
+            document.body.classList.add('is-verifying');
+            if (statusText) statusText.textContent = 'Verificando sesión';
+            loaderStatus?.classList.add('verifying');
+            stopDotsAnimation();
+        }
+
+        /* ============================================================
+           REDIRECCIÓN AUTOMÁTICA (4s)
+           ============================================================ */
+        const autoRedirectTimer = setTimeout(checkSessionAndRedirect, 4000);
+
+        /* ============================================================
+           SKIP: Click en cualquier parte
+           ============================================================ */
         document.body.addEventListener('click', () => {
-            fetch('/auth/check-session')
-                .then(r => r.json())
-                .then(data => {
-                    if (data.authenticated) {
-                        window.location.href = '/';
-                    } else {
-                        window.location.href = '/auth/login';
-                    }
-                })
-                .catch(() => {
-                    window.location.href = '/auth/login';
-                });
+            clearTimeout(autoRedirectTimer);
+            checkSessionAndRedirect();
+        }, { once: true });
+
+        /* ============================================================
+           SKIP: Enter, Espacio o Escape
+           ============================================================ */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+                e.preventDefault();
+                clearTimeout(autoRedirectTimer);
+                checkSessionAndRedirect();
+            }
+        }, { once: true });
+
+        /* ============================================================
+           PAGESHOW: Si el usuario vuelve con "atrás", redirigir
+           ============================================================ */
+        window.addEventListener('pageshow', (e) => {
+            if (e.persisted && !redirecting) {
+                checkSessionAndRedirect();
+            }
+        });
+
+        /* ============================================================
+           OCULTAR HINT DESPUÉS DE 3S
+           ============================================================ */
+        hintTimer = setTimeout(() => {
+            const hint = document.getElementById('tapHint');
+            if (hint && !redirecting) {
+                hint.style.opacity = '0';
+            }
+        }, 3500);
+
+        /* ============================================================
+           CLEANUP
+           ============================================================ */
+        window.addEventListener('beforeunload', () => {
+            if (dotsTimer) clearInterval(dotsTimer);
+            if (hintTimer) clearTimeout(hintTimer);
+            if (autoRedirectTimer) clearTimeout(autoRedirectTimer);
         });
     </script>
 </body>
