@@ -960,6 +960,17 @@
             </div>
             {% endif %}
 
+            {% if "formatos" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/formatos" class="feature-card-modern">
+                    <div class="icon-wrap text-primary"><i class="bi bi-file-earmark-word"></i></div>
+                    <div class="card-title">Formatos de Demanda</div>
+                    <div class="card-desc">Biblioteca de escritos legales</div>
+                    <span class="badge-status">Activo</span>
+                </a>
+            </div>
+            {% endif %}
+
             {% if "audit" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/backup/" class="feature-card-modern">

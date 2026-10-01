@@ -198,7 +198,7 @@ app.add_middleware(AuthMiddleware)
 # ============================================================
 from app.routers import (
     health, clients, cases, contracts, payments,
-    actuaciones, auth, agenda, dashboard, audit, activity, backup
+    actuaciones, auth, agenda, dashboard, audit, activity, formatos, backup
 )
 
 app.include_router(health.router, prefix="/api")
@@ -212,6 +212,7 @@ app.include_router(dashboard.router, prefix="/api")
 app.include_router(audit.router, prefix="/api")
 app.include_router(activity.router, prefix="/api")
 app.include_router(backup.router, prefix="/api")
+app.include_router(formatos.router, prefix="/api")
 app.include_router(auth.router)
 
 
@@ -252,7 +253,7 @@ async def root(request: Request):
         user_permissions = [
             "clients", "contracts", "cases", "payments",
             "actuaciones", "consult", "agenda", "dashboard",
-            "audit", "admin"
+            "audit", "admin", "formatos"
         ]
     else:
         user_permissions = user.permissions.split(",") if user.permissions else []

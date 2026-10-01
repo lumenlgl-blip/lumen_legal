@@ -193,3 +193,28 @@ class Backup(Base):
     created_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, index=True)
     notes = Column(Text, nullable=True)
+    
+    
+class FormatoDemanda(Base):
+    __tablename__ = "formatos_demanda"
+
+    id = Column(Integer, primary_key=True, index=True)
+    firm_id = Column(Integer, ForeignKey("firms.id"), nullable=False, index=True)
+
+    titulo = Column(String(200), nullable=False)
+    descripcion = Column(Text, nullable=True)
+    resumen_ia = Column(Text, nullable=True)
+    palabras_clave = Column(String(500), nullable=True)
+    tipo_juicio = Column(String(100), nullable=True)
+    contenido_texto = Column(Text, nullable=True)   # ← NUEVO: texto completo del DOCX
+
+    archivo_key = Column(String(500), nullable=False)
+    archivo_nombre_original = Column(String(300), nullable=True)
+    archivo_peso_bytes = Column(Integer, nullable=True)
+
+    descargas = Column(Integer, default=0, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    uploaded_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    firm = relationship("Firm", backref="formatos_demanda")

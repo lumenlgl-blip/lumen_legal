@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0b1e33" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a1523" media="(prefers-color-scheme: dark)">
+    <title>Formatos de Demanda · Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- mammoth.js + jszip para vista previa de DOCX -->
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js" defer></script>
+    <style>
+        /* ============================================================
+           VARIABLES DE TEMA
+           ============================================================ */
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.82);
+            --surface-glass-strong: rgba(255,255,255,0.95);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #d0d8e3;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-light: #7aa9ff;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --warning-text: #7a5a1a;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --purple: #6f42c1;
+            --purple-soft: #ede7fe;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.78);
+            --surface-glass-strong: rgba(22,36,58,0.94);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-light: #a8c5ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-hover: #10b981;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-hover: #f59e0b;
+            --warning-soft: rgba(251,191,36,0.15);
+            --warning-text: #fbbf24;
+            --danger: #f87171;
+            --danger-hover: #ef4444;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167,139,250,0.15);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px -12px rgba(0,0,0,0.5);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.6);
+        }
+
+        * { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px 0;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* THEME TOGGLE */
+        .theme-toggle {
+            position: fixed; top: 24px; right: 24px; z-index: 1050;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; box-shadow: var(--shadow-md); cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-lg); color: var(--accent-primary);
+        }
+
+        /* BTN MENU */
+        .btn-menu {
+            position: fixed; top: 24px; left: 24px; z-index: 1050;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 60px; padding: 12px 24px;
+            font-weight: 600; color: var(--text-primary); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: var(--shadow-md); transition: all var(--transition-normal);
+        }
+        .btn-menu:hover {
+            background: var(--bg-secondary); box-shadow: var(--shadow-lg);
+            transform: translateY(-2px); color: var(--accent-primary);
+        }
+
+        /* LAYOUT */
+        .container { max-width: 1200px; }
+
+        .page-header {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px; margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+            animation: slideDown 0.5s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-header h1 {
+            font-weight: 800; font-size: 1.85rem; color: var(--text-primary);
+            letter-spacing: -0.025em; margin: 0;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .page-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--success));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header .subtitle {
+            color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;
+        }
+        .page-header .header-badge {
+            background: var(--accent-dark); color: white;
+            font-weight: 600; padding: 8px 20px; border-radius: 40px;
+            font-size: 0.8rem;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+
+        /* SMART SEARCH */
+        .smart-search-card {
+            background: linear-gradient(135deg, rgba(42,109,244,0.08), rgba(111,66,193,0.06));
+            border: 1.5px solid rgba(42,109,244,0.15);
+            border-radius: var(--radius-lg);
+            padding: 22px 26px; margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.4s ease-out;
+        }
+        [data-theme="dark"] .smart-search-card {
+            background: linear-gradient(135deg, rgba(91,147,255,0.08), rgba(167,139,250,0.05));
+            border-color: rgba(91,147,255,0.2);
+        }
+        .smart-search-title {
+            font-weight: 800; font-size: 1rem; color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .smart-search-title i {
+            background: linear-gradient(135deg, var(--accent-primary), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; font-size: 1.3rem;
+        }
+        .smart-search-hint {
+            font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;
+        }
+        .smart-search-hint em {
+            color: var(--accent-primary); font-style: normal; font-weight: 600;
+        }
+        .smart-search-row {
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .smart-search-row .form-control {
+            flex: 1; min-width: 220px;
+        }
+        .smart-search-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--purple));
+            border: none; border-radius: 60px; padding: 14px 26px;
+            font-weight: 700; color: white;
+            transition: all var(--transition-normal);
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 8px; min-height: 56px; white-space: nowrap;
+        }
+        .smart-search-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -8px rgba(42,109,244,0.5);
+        }
+        .smart-search-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .analisis-card {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            padding: 20px 24px;
+            background: linear-gradient(135deg, rgba(111,66,193,0.10), rgba(42,109,244,0.06));
+            border: 1.5px solid rgba(111,66,193,0.25);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            animation: fadeInUp 0.4s ease-out;
+        }
+        [data-theme="dark"] .analisis-card {
+            background: linear-gradient(135deg, rgba(167,139,250,0.10), rgba(91,147,255,0.05));
+            border-color: rgba(167,139,250,0.3);
+        }
+        .analisis-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--purple), #a78bfa);
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; flex-shrink: 0;
+            box-shadow: 0 8px 20px -6px rgba(111,66,193,0.5);
+        }
+        .analisis-body { flex: 1; min-width: 0; }
+        .analisis-lbl {
+            font-size: 0.7rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--purple); margin-bottom: 6px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .analisis-text {
+            font-size: 0.92rem; line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-wrap; overflow-wrap: anywhere;
+        }
+        .analisis-meta {
+            margin-top: 10px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .analisis-reindex {
+            background: rgba(111,66,193,0.1);
+            border: none;
+            border-radius: 40px;
+            padding: 8px 14px;
+            color: var(--purple);
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px;
+            transition: all var(--transition-normal);
+            flex-shrink: 0;
+            min-height: 36px;
+        }
+        .analisis-reindex:hover {
+            background: var(--purple);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Score + razón en cada tarjeta */
+        .format-score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            background: linear-gradient(135deg, var(--success), var(--success-hover));
+            color: white;
+            box-shadow: 0 4px 12px -4px rgba(26,139,92,0.4);
+        }
+        .format-score-badge.medium {
+            background: linear-gradient(135deg, var(--warning), var(--warning-hover));
+            color: #0b1e33;
+            box-shadow: 0 4px 12px -4px rgba(245,179,66,0.4);
+        }
+        .format-razon {
+            font-size: 0.82rem;
+            line-height: 1.55;
+            color: var(--text-secondary);
+            background: linear-gradient(135deg, rgba(111,66,193,0.08), rgba(111,66,193,0.03));
+            border-left: 3px solid var(--purple);
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin: 8px 0 4px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        [data-theme="dark"] .format-razon {
+            background: linear-gradient(135deg, rgba(167,139,250,0.12), rgba(167,139,250,0.04));
+        }
+        .razon-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--purple);
+            font-weight: 800;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .razon-header i {
+            font-size: 0.95rem;
+        }
+        .razon-texto {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+        .razon-seccion {
+            border-radius: 8px;
+            padding: 8px 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-soft);
+        }
+        .razon-seccion.cumple {
+            border-left: 3px solid var(--success);
+        }
+        .razon-seccion.faltantes {
+            border-left: 3px solid var(--warning);
+        }
+        .razon-seccion.conflictos {
+            border-left: 3px solid var(--danger);
+        }
+        .razon-lbl {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .razon-seccion.cumple .razon-lbl { color: var(--success); }
+        .razon-seccion.faltantes .razon-lbl { color: var(--warning-text); }
+        .razon-seccion.conflictos .razon-lbl { color: var(--danger); }
+        .razon-seccion ul {
+            margin: 0;
+            padding-left: 18px;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .razon-seccion ul li {
+            margin-bottom: 2px;
+        }
+
+        .keywords-display {
+            margin-top: 14px; padding: 10px 16px;
+            background: var(--bg-secondary);
+            border-radius: 40px; font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            border: 1px solid var(--border-soft);
+        }
+        .keywords-display i { color: var(--accent-primary); }
+        .keyword-chip {
+            background: var(--info-soft); color: var(--accent-primary);
+            font-weight: 700; padding: 3px 12px; border-radius: 40px;
+            font-size: 0.72rem;
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 12px; margin-bottom: 18px; flex-wrap: wrap;
+        }
+        .toolbar .toolbar-actions {
+            display: flex; gap: 10px; flex-wrap: wrap;
+        }
+        .btn-toolbar {
+            border-radius: 60px; padding: 12px 24px;
+            font-weight: 700; font-size: 0.88rem;
+            min-height: 48px;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all var(--transition-normal);
+            border: none; cursor: pointer;
+        }
+        .btn-toolbar:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-toolbar-primary {
+            background: var(--accent-dark); color: white;
+        }
+        .btn-toolbar-primary:hover { background: var(--accent-dark-hover); }
+        .btn-toolbar-ghost {
+            background: var(--bg-secondary); color: var(--text-secondary);
+            border: 1.5px solid var(--border-soft);
+        }
+        .btn-toolbar-ghost:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .btn-toolbar-success {
+            background: linear-gradient(135deg, var(--success), var(--success-hover));
+            color: white;
+        }
+
+        /* SEARCH SIMPLE */
+        .search-simple {
+            display: flex; gap: 8px; flex: 1; max-width: 400px;
+        }
+        .search-simple .form-control { min-height: 48px; padding: 12px 18px; }
+        .search-simple .btn-search-simple {
+            background: var(--bg-secondary); color: var(--text-secondary);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 60px; padding: 12px 20px;
+            font-weight: 700; min-height: 48px;
+            display: inline-flex; align-items: center; gap: 6px;
+            cursor: pointer; transition: all var(--transition-normal);
+        }
+        .search-simple .btn-search-simple:hover {
+            background: var(--accent-primary); color: white;
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        /* FORMAT CARDS GRID */
+        .formats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 8px;
+        }
+        @media (max-width: 640px) {
+            .formats-grid { grid-template-columns: 1fr; }
+        }
+
+        .format-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-soft);
+            border-left: 4px solid var(--accent-primary);
+            padding: 18px 20px;
+            transition: all var(--transition-normal);
+            animation: fadeInUp 0.3s ease-out backwards;
+            display: flex; flex-direction: column; gap: 12px;
+            min-width: 0;
+        }
+        .format-card:hover {
+            border-color: var(--accent-primary);
+            border-left-color: var(--accent-primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        .format-card-header {
+            display: flex; align-items: flex-start; gap: 12px;
+            min-width: 0;
+        }
+        .format-icon {
+            width: 46px; height: 46px; border-radius: 12px;
+            background: linear-gradient(135deg, var(--info-soft), rgba(42,109,244,0.06));
+            color: var(--accent-primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        [data-theme="dark"] .format-icon {
+            background: linear-gradient(135deg, rgba(91,147,255,0.15), rgba(91,147,255,0.05));
+        }
+        .format-info { flex: 1; min-width: 0; }
+        .format-title {
+            font-weight: 800; font-size: 0.98rem; color: var(--text-primary);
+            line-height: 1.3; margin-bottom: 4px;
+            overflow-wrap: anywhere;
+        }
+        .format-tipo {
+            font-size: 0.7rem; font-weight: 800;
+            background: var(--info-soft); color: var(--accent-primary);
+            padding: 3px 10px; border-radius: 40px;
+            display: inline-flex; align-items: center; gap: 4px;
+            text-transform: uppercase; letter-spacing: 0.03em;
+        }
+        .format-resumen {
+            font-size: 0.82rem; color: var(--text-secondary);
+            line-height: 1.5;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            border-left: 3px solid var(--purple);
+            overflow-wrap: anywhere;
+        }
+        [data-theme="dark"] .format-resumen { background: rgba(255,255,255,0.03); }
+        .format-resumen .ia-tag {
+            font-size: 0.62rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--purple), #a78bfa);
+            color: white; padding: 2px 8px; border-radius: 40px;
+            display: inline-flex; align-items: center; gap: 3px;
+            margin-right: 6px; vertical-align: middle;
+        }
+        .format-keywords {
+            display: flex; flex-wrap: wrap; gap: 4px;
+        }
+        .format-keywords .kw {
+            font-size: 0.68rem; font-weight: 700;
+            background: var(--bg-tertiary); color: var(--text-muted);
+            padding: 3px 10px; border-radius: 40px;
+            border: 1px solid var(--border-soft);
+        }
+        .format-meta {
+            font-size: 0.72rem; color: var(--text-muted);
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+        }
+        .format-meta span {
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .format-actions {
+            display: flex; gap: 6px; flex-wrap: wrap;
+            padding-top: 4px;
+            border-top: 1px dashed var(--border-soft);
+            margin-top: auto;
+        }
+        .btn-format-action {
+            flex: 1; min-width: 0;
+            border-radius: 40px; padding: 8px 12px;
+            font-weight: 700; font-size: 0.72rem;
+            display: inline-flex; align-items: center; justify-content: center;
+            gap: 4px; border: none; cursor: pointer;
+            transition: all var(--transition-normal);
+            white-space: nowrap;
+        }
+        .btn-format-action:hover { transform: translateY(-2px); }
+        .btn-format-action.preview {
+            background: var(--info-soft); color: var(--accent-primary);
+        }
+        .btn-format-action.preview:hover { background: var(--accent-primary); color: white; }
+        .btn-format-action.download {
+            background: var(--success-soft); color: var(--success);
+        }
+        .btn-format-action.download:hover { background: var(--success); color: white; }
+        .btn-format-action.edit {
+            background: var(--warning-soft); color: var(--warning-text);
+        }
+        .btn-format-action.edit:hover { background: var(--warning); color: #0b1e33; }
+        .btn-format-action.replace {
+            background: var(--purple-soft); color: var(--purple);
+        }
+        .btn-format-action.replace:hover { background: var(--purple); color: white; }
+        .btn-format-action.delete {
+            background: var(--danger-soft); color: var(--danger);
+        }
+        .btn-format-action.delete:hover { background: var(--danger); color: white; }
+
+        /* FORM CONTROLS */
+        .form-control, .form-select {
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
+            padding: 14px 18px;
+            font-size: 0.95rem;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            min-height: 52px;
+        }
+        .form-control::placeholder { color: var(--text-light); }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            outline: none;
+        }
+        .form-control.is-invalid { border-color: var(--danger); }
+        .form-label {
+            font-weight: 700; font-size: 0.82rem;
+            color: var(--text-secondary); margin-bottom: 6px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .form-label .required { color: var(--danger); }
+
+        /* DROP ZONE */
+        .drop-zone {
+            border: 2px dashed var(--border-strong);
+            border-radius: var(--radius-md);
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            background: var(--bg-tertiary);
+            position: relative;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(42,109,244,0.04);
+            transform: translateY(-2px);
+        }
+        .drop-zone .dz-icon {
+            font-size: 3rem; color: var(--text-light);
+            margin-bottom: 8px; display: block;
+            transition: all var(--transition-normal);
+        }
+        .drop-zone:hover .dz-icon { color: var(--accent-primary); transform: scale(1.08); }
+        .drop-zone .dz-title {
+            font-weight: 700; color: var(--text-primary);
+            font-size: 0.95rem; margin-bottom: 4px;
+        }
+        .drop-zone .dz-sub {
+            font-size: 0.8rem; color: var(--text-muted);
+        }
+        .drop-zone .dz-file-name {
+            margin-top: 10px; font-size: 0.82rem; font-weight: 700;
+            color: var(--success);
+            display: none;
+            align-items: center; justify-content: center; gap: 6px;
+        }
+        .drop-zone .dz-file-name.show { display: flex; }
+
+        /* MODAL GENERAL */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl);
+            overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none;
+            padding: 22px 28px 12px 28px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-modern .modal-header .modal-title {
+            font-weight: 800; font-size: 1.1rem;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px; flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px; font-weight: 700;
+            padding: 10px 24px; min-height: 44px;
+            transition: all var(--transition-normal);
+        }
+        .modal-modern .modal-footer .btn:hover { transform: translateY(-1px); }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px); opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog {
+            transform: scale(1) translateY(0); opacity: 1;
+        }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .modal-header.header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .modal-header.header-error { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .modal-header.header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .modal-header.header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .modal-header.header-purple { background: linear-gradient(135deg, var(--purple), #8b5cf6); }
+        .modal-header.header-success .modal-title,
+        .modal-header.header-error .modal-title,
+        .modal-header.header-info .modal-title,
+        .modal-header.header-purple .modal-title { color: white; }
+        .modal-header.header-warning .modal-title { color: #0b1e33; }
+        .modal-header.header-warning .btn-close { filter: none; }
+
+        .notification-icon {
+            font-size: 3.5rem; text-align: center; display: block;
+            margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info { color: var(--accent-primary); }
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* DOCX PREVIEW */
+        .docx-wrapper {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            max-width: 100%;
+            overflow-wrap: anywhere;
+        }
+        [data-theme="dark"] .docx-wrapper { background: #1a1a1a; }
+        .docx-content {
+            font-family: 'Times New Roman', 'Georgia', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #222;
+            overflow-wrap: anywhere;
+        }
+        [data-theme="dark"] .docx-content { color: #e0e0e0; }
+        .docx-content h1 { font-size: 1.6rem; font-weight: 700; margin: 1em 0 .5em; }
+        .docx-content h2 { font-size: 1.3rem; font-weight: 700; margin: 1em 0 .5em; }
+        .docx-content h3 { font-size: 1.15rem; font-weight: 700; margin: 1em 0 .5em; }
+        .docx-content p  { margin: 0 0 .8em; text-align: justify; }
+        .docx-content table { width: 100%; border-collapse: collapse; margin: 1em 0; }
+        .docx-content td, .docx-content th { border: 1px solid #ccc; padding: 6px 10px; }
+        .docx-content ul, .docx-content ol { padding-left: 2em; margin: 1em 0; }
+        [data-theme="dark"] .docx-content td,
+        [data-theme="dark"] .docx-content th { border-color: #444; }
+
+        .preview-container {
+            max-height: 65vh;
+            overflow-y: auto;
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: var(--radius-md);
+        }
+
+        /* ============================================================ */
+        /* LOADER PDF (vista previa)                                     */
+        /* ============================================================ */
+        .pdf-loader-icon {
+            width: 84px;
+            height: 84px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.10), rgba(42,109,244,0.03));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px -8px rgba(42,109,244,0.3);
+        }
+        [data-theme="dark"] .pdf-loader-icon {
+            background: linear-gradient(135deg, rgba(91,147,255,0.15), rgba(91,147,255,0.05));
+        }
+        .pdf-loader-icon .spinner-border {
+            width: 2.8rem;
+            height: 2.8rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        #pdfLoadingState h5 {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.01em;
+        }
+        .pdf-loading-text {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin: 0 0 22px 0;
+            max-width: 400px;
+            text-align: center;
+        }
+        .pdf-progress-track {
+            width: 320px;
+            max-width: 80vw;
+            height: 8px;
+            background: var(--border-soft);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+            position: relative;
+        }
+        .pdf-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-light));
+            border-radius: 6px;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 12px rgba(42,109,244,0.5);
+        }
+        .pdf-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: pdfProgressShine 1.5s linear infinite;
+        }
+        @keyframes pdfProgressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .pdf-progress-percent {
+            margin-top: 12px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.02em;
+        }
+        @media (max-width: 480px) {
+            .pdf-loader-icon { width: 68px; height: 68px; border-radius: 20px; }
+            .pdf-loader-icon .spinner-border { width: 2.2rem; height: 2.2rem; }
+            #pdfLoadingState h5 { font-size: 1rem; }
+            .pdf-loading-text { font-size: 0.82rem; }
+            .pdf-progress-track { width: 240px; }
+        }
+
+        /* ============================================================ */
+        /* SÍNTESIS IA (modal Ver)                                       */
+        /* ============================================================ */
+        .sintesis-content {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 22px 26px;
+            font-size: 0.9rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+            max-height: 60vh;
+            overflow-y: auto;
+            border-left: 4px solid var(--purple);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            box-shadow: inset 0 0 0 1px var(--border-soft);
+        }
+        [data-theme="dark"] .sintesis-content {
+            background: rgba(255,255,255,0.03);
+        }
+        .sintesis-content::selection {
+            background: var(--purple);
+            color: white;
+        }
+
+        /* EMPTY STATE */
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-state i {
+            font-size: 4rem; color: var(--text-light);
+            margin-bottom: 16px; display: block; opacity: 0.6;
+        }
+        .empty-state h5 {
+            color: var(--text-primary); font-weight: 800;
+            margin-bottom: 6px; font-size: 1.15rem;
+        }
+        .empty-state p { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+
+        /* SKELETON */
+        .skeleton-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            border: 1px solid var(--border-soft);
+            min-height: 200px;
+        }
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, var(--border-soft) 0%, rgba(42,109,244,0.08) 50%, var(--border-soft) 100%);
+            background-size: 200% 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 40%; }
+        .skeleton-line.medium { width: 65%; }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* SPINNER OVERLAY */
+        .spinner-overlay {
+            position: fixed; inset: 0;
+            background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 9999; display: none;
+            align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .spinner-box {
+            background: var(--bg-secondary);
+            padding: 40px 52px;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
+        }
+        .spinner-box .spinner-border {
+            width: 3rem; height: 3rem;
+            color: var(--accent-primary); border-width: 3px;
+        }
+        .spinner-box h5 {
+            font-weight: 800; color: var(--text-primary);
+            margin-top: 16px; margin-bottom: 4px;
+        }
+        .spinner-box p {
+            color: var(--text-muted); font-size: 0.88rem;
+            margin-bottom: 0; max-width: 320px;
+        }
+
+        .btn-spinner {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* RESPONSIVE */
+        @media (max-width: 992px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px 16px; }
+            .theme-toggle { top: 16px; right: 16px; width: 44px; height: 44px; }
+            body { padding-top: 12px; }
+            .page-header, .smart-search-card, .toolbar, .formats-grid, #resultsInfo {
+                margin-left: 16px; margin-right: 16px;
+            }
+        }
+        @media (max-width: 768px) {
+            .container { padding-left: 0; padding-right: 0; max-width: 100%; }
+            .page-header { padding: 18px 20px; border-radius: 20px; }
+            .page-header h1 { font-size: 1.4rem; }
+            .page-header h1 i { font-size: 1.6rem; }
+            .smart-search-card { padding: 18px; border-radius: 18px; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .toolbar .toolbar-actions { width: 100%; }
+            .toolbar .toolbar-actions .btn-toolbar { flex: 1; justify-content: center; }
+            .search-simple { max-width: 100%; }
+            .smart-search-row { flex-direction: column; }
+            .smart-search-btn { width: 100%; }
+            .modal-modern .modal-header { padding: 18px 20px 10px; }
+            .modal-modern .modal-body { padding: 14px 20px 20px; }
+            .modal-modern .modal-footer { padding: 12px 20px 18px; }
+            .docx-wrapper { padding: 20px 18px; }
+            .docx-content { font-size: 11pt; }
+            .preview-container { max-height: 55vh; padding: 10px; }
+        }
+        @media (max-width: 480px) {
+            .btn-menu {
+                width: calc(100% - 32px); margin: 0 16px 12px 16px;
+                justify-content: center; border-radius: 14px;
+                padding: 10px 16px; font-size: 0.9rem;
+            }
+            .theme-toggle { top: 12px; right: 12px; width: 42px; height: 42px; }
+            .page-header { margin: 0 12px 14px 12px; border-radius: 16px; padding: 16px; }
+            .smart-search-card { margin: 0 12px 14px 12px; padding: 14px; }
+            .toolbar, .formats-grid, #resultsInfo { margin: 0 12px 14px 12px; }
+            .format-actions { gap: 4px; }
+            .btn-format-action { font-size: 0.68rem; padding: 7px 8px; }
+            .spinner-box { padding: 30px 28px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        :focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-soft); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+    </style>
+</head>
+<body>
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar tema" title="Cambiar tema claro/oscuro">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
+
+<div class="container">
+
+    <!-- ENCABEZADO -->
+    <div class="page-header">
+        <div>
+            <h1><i class="bi bi-file-earmark-word"></i> Formatos de Demanda</h1>
+            <div class="subtitle">Biblioteca de documentos legales reutilizables</div>
+        </div>
+        <span class="header-badge"><i class="bi bi-stars"></i> Con IA</span>
+    </div>
+
+    <!-- BÚSQUEDA INTELIGENTE -->
+    <div class="smart-search-card">
+        <div class="smart-search-title">
+            <i class="bi bi-magic"></i> Búsqueda inteligente
+        </div>
+        <div class="smart-search-hint">
+            Escribe con tus palabras qué tipo de demanda buscas.
+            Ej: <em>"demanda unilateral por edictos y sin hijos"</em>, <em>"sucesorio sin testamento"</em>.
+        </div>
+        <div class="smart-search-row">
+            <input type="text" id="smartSearchInput" class="form-control"
+                   placeholder="Ej: divorcio unilateral sin hijos por edictos..."
+                   autocomplete="off" maxlength="200">
+            <button type="button" class="smart-search-btn" id="smartSearchBtn">
+                <i class="bi bi-stars"></i> Buscar con IA
+            </button>
+        </div>
+        <div class="keywords-display" id="keywordsDisplay" style="display:none;">
+            <i class="bi bi-funnel-fill"></i>
+            <span>Busqué por:</span>
+            <span id="keywordsList"></span>
+        </div>
+    </div>
+
+
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+        <div class="search-simple">
+            <input type="text" id="searchInput" class="form-control"
+                   placeholder="Buscar por título o descripción..." autocomplete="off">
+            <button type="button" class="btn-search-simple" id="searchBtn">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <div class="toolbar-actions">
+            <button type="button" class="btn-toolbar btn-toolbar-ghost" id="reindexBtn" title="Reindexar formatos sin contenido">
+                <i class="bi bi-arrow-repeat"></i> Reindexar
+            </button>
+            <button type="button" class="btn-toolbar btn-toolbar-ghost" id="refreshBtn">
+                <i class="bi bi-symmetry-vertical"></i> Actualizar
+            </button>
+            <button type="button" class="btn-toolbar btn-toolbar-primary" id="uploadNewBtn">
+                <i class="bi bi-cloud-upload"></i> Nuevo Formato
+            </button>
+        </div>
+    </div>
+
+    <!-- INFO RESULTADOS -->
+    <div id="resultsInfo" style="margin-bottom:14px; display:none;">
+        <span class="keywords-display" style="display:inline-flex;">
+            <i class="bi bi-list-check"></i>
+            <span id="resultsCountText">0 formatos</span>
+        </span>
+    </div>
+
+    <!-- GRID DE FORMATOS -->
+    <div class="formats-grid" id="formatsGrid"></div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+        <i class="bi bi-folder2-open"></i>
+        <h5>No hay formatos</h5>
+        <p>Sube tu primer formato de demanda usando el botón "Nuevo Formato".</p>
+    </div>
+
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: NOTIFICACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: CONFIRMACIÓN -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-warning">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill"></i> Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: SUBIR FORMATO -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="uploadModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header header-info">
+                <h5 class="modal-title"><i class="bi bi-cloud-upload-fill"></i> Subir Nuevo Formato</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label" for="uploadTitulo">
+                            <i class="bi bi-type"></i> Título del Formato <span class="required">*</span>
+                        </label>
+                        <input type="text" id="uploadTitulo" class="form-control"
+                               placeholder="Ej: Divorcio Unilateral con Hijos" maxlength="200" autocomplete="off">
+                        <div class="invalid-feedback">El título es obligatorio</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="uploadDescripcion">
+                            <i class="bi bi-text-paragraph"></i> Descripción (opcional)
+                        </label>
+                        <textarea id="uploadDescripcion" class="form-control" rows="3"
+                                  placeholder="Breve descripción del formato. Si lo dejas vacío, la IA generará una automáticamente desde el documento."
+                                  maxlength="500"></textarea>
+                        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:6px;">
+                            <i class="bi bi-magic"></i> La IA analizará el documento y creará un resumen + palabras clave automáticamente.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-file-earmark-word"></i> Archivo (.docx o .doc) <span class="required">*</span>
+                        </label>
+                        <div class="drop-zone" id="uploadDropZone">
+                            <i class="bi bi-cloud-arrow-up dz-icon"></i>
+                            <div class="dz-title">Haz clic o arrastra el archivo aquí</div>
+                            <div class="dz-sub">Archivos .docx o .doc · máx. 15 MB</div>
+                            <div class="dz-file-name" id="uploadFileName"></div>
+                            <input type="file" id="uploadFile" accept=".docx,.doc" style="display:none;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="uploadSubmitBtn">
+                    <i class="bi bi-cloud-upload"></i> Subir y Analizar con IA
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: EDITAR FORMATO -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="editModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-warning">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Formato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" novalidate>
+                    <input type="hidden" id="editId">
+                    <div class="mb-3">
+                        <label class="form-label" for="editTitulo">
+                            <i class="bi bi-type"></i> Título <span class="required">*</span>
+                        </label>
+                        <input type="text" id="editTitulo" class="form-control" maxlength="200">
+                        <div class="invalid-feedback">El título es obligatorio</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="editDescripcion">
+                            <i class="bi bi-text-paragraph"></i> Descripción
+                        </label>
+                        <textarea id="editDescripcion" class="form-control" rows="4" maxlength="500"></textarea>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);">
+                        <i class="bi bi-info-circle"></i> El resumen IA y las palabras clave no se pueden editar manualmente. Se regeneran al reemplazar el archivo.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" id="editSubmitBtn">
+                    <i class="bi bi-check2"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: REEMPLAZAR ARCHIVO -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="replaceModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-purple">
+                <h5 class="modal-title"><i class="bi bi-arrow-repeat"></i> Reemplazar Archivo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="replaceForm" novalidate>
+                    <input type="hidden" id="replaceId">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-file-earmark-text"></i> Formato actual
+                        </label>
+                        <input type="text" id="replaceTitleDisplay" class="form-control" readonly
+                               style="background:var(--bg-tertiary);cursor:not-allowed;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-file-earmark-word"></i> Nuevo archivo (.docx o .doc) <span class="required">*</span>
+                        </label>
+                        <div class="drop-zone" id="replaceDropZone">
+                            <i class="bi bi-arrow-repeat dz-icon"></i>
+                            <div class="dz-title">Haz clic o arrastra el nuevo archivo</div>
+                            <div class="dz-sub">Archivos .docx o .doc · máx. 15 MB</div>
+                            <div class="dz-file-name" id="replaceFileName"></div>
+                            <input type="file" id="replaceFile" accept=".docx,.doc" style="display:none;">
+                        </div>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);">
+                        <i class="bi bi-magic"></i> Al reemplazar, la IA volverá a analizar el nuevo documento y actualizará el resumen y las palabras clave.
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" id="replaceSubmitBtn">
+                    <i class="bi bi-arrow-repeat"></i> Reemplazar y Reanalizar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: SÍNTESIS IA -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="sintesisModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header header-purple">
+                <h5 class="modal-title">
+                    <i class="bi bi-stars"></i> <span id="sintesisTitle">Síntesis del Formato</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="sintesis-content" id="sintesisContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" id="verPreviewBtn">
+                    <i class="bi bi-eye-fill"></i> Vista previa del formato
+                </button>
+                <button type="button" class="btn btn-success" id="descargarDesdeSintesisBtn">
+                    <i class="bi bi-download"></i> Descargar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: VISTA PREVIA PDF -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-info">
+                <h5 class="modal-title">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> <span id="pdfPreviewTitle">Vista previa del formato</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0" style="background:var(--bg-tertiary);">
+                <div style="position:relative; min-height:75vh;">
+                    <div id="pdfLoadingState" style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--bg-tertiary); z-index:10;">
+                        <div class="pdf-loader-icon">
+                            <div class="spinner-border" role="status"></div>
+                        </div>
+                        <h5 id="pdfLoadingTitle">Cargando archivo a vista previa</h5>
+                        <p id="pdfLoadingText" class="pdf-loading-text">Convirtiendo el documento con LibreOffice...</p>
+                        <div class="pdf-progress-track">
+                            <div class="pdf-progress-fill" id="pdfProgressFill"></div>
+                        </div>
+                        <span class="pdf-progress-percent" id="pdfProgressPercent">0%</span>
+                    </div>
+                    <iframe id="pdfPreviewFrame" style="width:100%; height:75vh; border:none; display:none;"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-success" id="pdfPreviewDownloadBtn">
+                    <i class="bi bi-download"></i> Descargar original (.docx)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL: VISTA PREVIA ANTIGUA (queda por compatibilidad, oculta) -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="previewModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" style="display:none !important;">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-info">
+                <h5 class="modal-title">
+                    <i class="bi bi-eye-fill"></i> <span id="previewTitle">Vista Previa</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0" style="background:var(--bg-tertiary);">
+                <div class="preview-container" id="previewContainer">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-3 text-muted">Cargando vista previa...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cerrar
+                </button>
+                <button type="button" class="btn btn-success" id="previewDownloadBtn">
+                    <i class="bi bi-download"></i> Descargar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- LOADING OVERLAY -->
+<!-- ================================================== -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5 id="loadingTitle">Procesando...</h5>
+        <p id="loadingText">Por favor espera un momento.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+'use strict';
+
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+let currentFormats = [];
+let currentPreviewId = null;
+let isSubmitting = false;
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function formatBytes(bytes) {
+    if (!bytes || bytes < 1024) return (bytes || 0) + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+
+/* ============================================================
+   TEMA CLARO / OSCURO
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst) inst.hide();
+        });
+    }
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+});
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading(title = 'Procesando...', text = 'Por favor espera.') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function showNotification(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyHTML;
+    modal.show();
+}
+
+/* ============================================================
+   MODAL CONFIRMACIÓN
+   ============================================================ */
+function showConfirm(title, bodyHTML, onConfirm) {
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        setTimeout(onConfirm, 300);
+    });
+    modal.show();
+}
+
+/* ============================================================
+   CARGAR FORMATOS
+   ============================================================ */
+async function cargarFormatos(query = '') {
+    const grid = document.getElementById('formatsGrid');
+    const empty = document.getElementById('emptyState');
+    const info = document.getElementById('resultsInfo');
+    info.style.display = 'none';
+
+    // Skeleton
+    grid.innerHTML = Array(6).fill(`
+        <div class="skeleton-card">
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-line medium"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line"></div>
+        </div>`).join('');
+    empty.style.display = 'none';
+
+    try {
+        const url = query ? `/api/formatos/list?q=${encodeURIComponent(query)}` : '/api/formatos/list';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Error al cargar formatos');
+        currentFormats = await res.json();
+        renderFormatos(currentFormats);
+    } catch (err) {
+        grid.innerHTML = `
+            <div class="empty-state" style="grid-column:1/-1;">
+                <i class="bi bi-wifi-off" style="color:var(--danger);"></i>
+                <h5>Error al cargar</h5>
+                <p>${escapeHTML(err.message)}</p>
+            </div>`;
+    }
+}
+
+function renderFormatos(formatos) {
+    const grid = document.getElementById('formatsGrid');
+    const empty = document.getElementById('emptyState');
+    const info = document.getElementById('resultsInfo');
+
+    if (!Array.isArray(formatos) || formatos.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+        info.style.display = 'none';
+        return;
+    }
+
+    empty.style.display = 'none';
+    document.getElementById('resultsCountText').textContent =
+        `${formatos.length} formato${formatos.length !== 1 ? 's' : ''}`;
+    info.style.display = 'block';
+
+    grid.innerHTML = formatos.map((f, idx) => {
+        const titulo = escapeHTML(f.titulo || 'Sin título');
+        const resumen = escapeHTML(f.resumen_ia || f.descripcion || 'Sin descripción');
+        const tipo = escapeHTML(f.tipo_juicio || '');
+        const keywords = (f.palabras_clave || '').split(',').map(k => k.trim()).filter(Boolean).slice(0, 5);
+        const descargas = f.descargas || 0;
+        const updated = escapeHTML(f.updated_at || f.created_at || '');
+        const archivo = escapeHTML(f.archivo_nombre_original || '');
+
+        const score = f.score ? Number(f.score) : 0;
+        const razon = f.razon ? escapeHTML(f.razon) : '';
+        const cumple = Array.isArray(f.cumple) ? f.cumple.filter(Boolean) : [];
+        const faltantes = Array.isArray(f.faltantes) ? f.faltantes.filter(Boolean) : [];
+        const conflictos = Array.isArray(f.conflictos) ? f.conflictos.filter(Boolean) : [];
+        const tieneScore = score > 0;
+
+        return `
+            <div class="format-card" style="animation-delay:${idx * 0.04}s;">
+                <div class="format-card-header">
+                    <div class="format-icon"><i class="bi bi-file-earmark-word-fill"></i></div>
+                    <div class="format-info">
+                        <div class="format-title">${titulo}</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; align-items:center;">
+                            ${tipo ? `<span class="format-tipo"><i class="bi bi-briefcase"></i> ${tipo}</span>` : ''}
+                            ${tieneScore ? `<span class="format-score-badge ${score < 70 ? 'medium' : ''}"><i class="bi bi-stars"></i> ${score}% afinidad</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                ${razon || cumple.length || faltantes.length || conflictos.length ? `
+                    <div class="format-razon">
+                        <div class="razon-header">
+                            <i class="bi bi-lightbulb-fill"></i>
+                            <span>Por qué sirve</span>
+                        </div>
+                        ${razon ? `<div class="razon-texto">${razon}</div>` : ''}
+                        ${cumple.length ? `
+                            <div class="razon-seccion cumple">
+                                <span class="razon-lbl"><i class="bi bi-check2-circle"></i> Cumple</span>
+                                <ul>${cumple.map(c => `<li>${escapeHTML(c)}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                        ${faltantes.length ? `
+                            <div class="razon-seccion faltantes">
+                                <span class="razon-lbl"><i class="bi bi-tools"></i> Requiere ajuste</span>
+                                <ul>${faltantes.map(f => `<li>${escapeHTML(f)}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                        ${conflictos.length ? `
+                            <div class="razon-seccion conflictos">
+                                <span class="razon-lbl"><i class="bi bi-exclamation-triangle-fill"></i> Conflictos</span>
+                                <ul>${conflictos.map(c => `<li>${escapeHTML(c)}</li>`).join('')}</ul>
+                            </div>
+                        ` : ''}
+                    </div>
+                ` : ''}
+
+                <div class="format-meta">
+                    <span><i class="bi bi-download"></i> ${descargas} descarga${descargas !== 1 ? 's' : ''}</span>
+                    ${archivo ? `<span title="${archivo}"><i class="bi bi-paperclip"></i> ${archivo.length > 18 ? archivo.substring(0, 18) + '…' : archivo}</span>` : ''}
+                    <span><i class="bi bi-clock"></i> ${updated}</span>
+                </div>
+
+                <div class="format-actions">
+                    <button class="btn-format-action preview" data-action="preview" data-id="${f.id}" type="button">
+                        <i class="bi bi-eye"></i> Ver síntesis
+                    </button>
+                    <button class="btn-format-action download" data-action="download" data-id="${f.id}" type="button">
+                        <i class="bi bi-download"></i> Bajar
+                    </button>
+                    <button class="btn-format-action edit" data-action="edit" data-id="${f.id}" type="button">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button class="btn-format-action replace" data-action="replace" data-id="${f.id}" type="button">
+                        <i class="bi bi-arrow-repeat"></i> Cambiar
+                    </button>
+                    <button class="btn-format-action delete" data-action="delete" data-id="${f.id}" type="button">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Bind eventos
+    grid.querySelectorAll('[data-action]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = parseInt(btn.dataset.id, 10);
+            const action = btn.dataset.action;
+            const formato = currentFormats.find(f => f.id === id);
+            if (!formato) return;
+            if (action === 'preview') abrirSintesis(formato);
+            else if (action === 'download') descargarFormato(formato);
+            else if (action === 'edit') abrirEditModal(formato);
+            else if (action === 'replace') abrirReplaceModal(formato);
+            else if (action === 'delete') confirmarEliminar(formato);
+        });
+    });
+}
+
+/* ============================================================
+   BÚSQUEDA SIMPLE
+   ============================================================ */
+document.getElementById('searchBtn').addEventListener('click', () => {
+    const q = document.getElementById('searchInput').value.trim();
+    cargarFormatos(q);
+});
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const q = document.getElementById('searchInput').value.trim();
+        cargarFormatos(q);
+    }
+});
+
+/* ============================================================
+   BÚSQUEDA INTELIGENTE (IA)
+   ============================================================ */
+document.getElementById('smartSearchBtn').addEventListener('click', realizarSmartSearch);
+document.getElementById('smartSearchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); realizarSmartSearch(); }
+});
+
+async function realizarSmartSearch() {
+    const consulta = document.getElementById('smartSearchInput').value.trim();
+    const keywordsDisplay = document.getElementById('keywordsDisplay');
+
+    if (!consulta || consulta.length < 3) {
+        showNotification('Búsqueda muy corta',
+            '<p>Escribe al menos 3 caracteres describiendo la demanda que buscas.</p>', 'warning');
+        return;
+    }
+
+    showLoading('Buscando con IA...', 'La IA está leyendo el contenido de todos los formatos. Esto puede tardar 20-40 segundos.');
+
+    try {
+        const fd = new FormData();
+        fd.append('consulta', consulta);
+
+        const controller = new AbortController();
+        const tId = setTimeout(() => controller.abort(), 90000);
+
+        const res = await fetch('/api/formatos/smart-search', {
+            method: 'POST',
+            body: fd,
+            signal: controller.signal
+        });
+        clearTimeout(tId);
+        hideLoading();
+
+        if (!res.ok) throw new Error('Error al buscar');
+
+        const data = await res.json();
+        const resultados = data.resultados || [];
+
+        // Ocultar keywords (ya no las usamos)
+        keywordsDisplay.style.display = 'none';
+
+        if (resultados.length === 0) {
+            const grid = document.getElementById('formatsGrid');
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column:1/-1;">
+                    <i class="bi bi-search"></i>
+                    <h5>Sin coincidencias útiles</h5>
+                    <p>La IA no encontró formatos que sirvan para tu caso. Prueba describirlo de otra forma o sube un formato nuevo.</p>
+                </div>`;
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('resultsInfo').style.display = 'none';
+            return;
+        }
+
+        renderFormatos(resultados);
+    } catch (err) {
+        hideLoading();
+        let msg = err.message || 'Error al buscar';
+        if (err.name === 'AbortError') msg = 'La búsqueda con IA tardó demasiado. Intenta con menos formatos o una consulta más simple.';
+        showNotification('Error al buscar', `<p>${escapeHTML(msg)}</p>`, 'error');
+    }
+}
+
+// ── Botón reindexar ────────────────────────────────────────
+document.getElementById('reindexBtn')?.addEventListener('click', async () => {
+    showConfirm(
+        'Reindexar formatos',
+        `<p>Esto leerá el contenido de los formatos que aún no tienen texto indexado.</p>
+         <p class="text-muted small mb-0">Puede tardar varios minutos si tienes muchos formatos viejos.</p>`,
+        async () => {
+            showLoading('Reindexando...', 'Extrayendo texto de los formatos pendientes.');
+            try {
+                const res = await fetch('/api/formatos/reindex', { method: 'POST' });
+                hideLoading();
+                if (!res.ok) throw new Error('Error al reindexar');
+                const data = await res.json();
+                showNotification('Reindexado completo',
+                    `<p>Se procesaron <strong>${data.procesados}</strong> formatos correctamente.</p>
+                     ${data.errores > 0 ? `<p class="text-warning mb-0"><i class="bi bi-exclamation-triangle me-1"></i> ${data.errores} con errores (archivos corruptos o sin texto).</p>` : ''}`,
+                    'success');
+                // Refrescar búsqueda si hay algo escrito
+                const q = document.getElementById('smartSearchInput').value.trim();
+                if (q) realizarSmartSearch();
+            } catch (err) {
+                hideLoading();
+                showNotification('Error al reindexar', `<p>${escapeHTML(err.message)}</p>`, 'error');
+            }
+        }
+    );
+});
+
+/* ============================================================
+   ACTUALIZAR LISTA
+   ============================================================ */
+document.getElementById('refreshBtn').addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('smartSearchInput').value = '';
+    document.getElementById('keywordsDisplay').style.display = 'none';
+    cargarFormatos();
+});
+
+/* ============================================================
+   SUBIR FORMATO
+   ============================================================ */
+const uploadModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadModal'));
+const uploadDropZone = document.getElementById('uploadDropZone');
+const uploadFileInput = document.getElementById('uploadFile');
+let uploadSelectedFile = null;
+
+document.getElementById('uploadNewBtn').addEventListener('click', () => {
+    document.getElementById('uploadTitulo').value = '';
+    document.getElementById('uploadDescripcion').value = '';
+    document.getElementById('uploadFileName').classList.remove('show');
+    document.getElementById('uploadTitulo').classList.remove('is-invalid');
+    uploadSelectedFile = null;
+    uploadFileInput.value = '';
+    uploadModal.show();
+});
+
+uploadDropZone.addEventListener('click', () => uploadFileInput.click());
+uploadDropZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadDropZone.classList.add('dragover'); });
+uploadDropZone.addEventListener('dragleave', () => uploadDropZone.classList.remove('dragover'));
+uploadDropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadDropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) manejarArchivoUpload(e.dataTransfer.files[0]);
+});
+uploadFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) manejarArchivoUpload(e.target.files[0]);
+});
+
+function manejarArchivoUpload(file) {
+    const validExts = /\.(docx|doc)$/i;
+    if (!validExts.test(file.name)) {
+        showNotification('Formato no válido', '<p>Solo se aceptan archivos <strong>.docx</strong> o <strong>.doc</strong>.</p>', 'error');
+        uploadFileInput.value = '';
+        return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+        showNotification('Archivo muy grande',
+            `<p>El archivo pesa <strong>${(file.size / 1024 / 1024).toFixed(1)} MB</strong>.<br>El límite es 15 MB.</p>`, 'error');
+        uploadFileInput.value = '';
+        return;
+    }
+    if (file.size === 0) {
+        showNotification('Archivo vacío', '<p>El archivo está vacío.</p>', 'error');
+        uploadFileInput.value = '';
+        return;
+    }
+
+    uploadSelectedFile = file;
+    const nameEl = document.getElementById('uploadFileName');
+    nameEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${escapeHTML(file.name)} (${formatBytes(file.size)})`;
+    nameEl.classList.add('show');
+}
+
+document.getElementById('uploadSubmitBtn').addEventListener('click', async () => {
+    if (isSubmitting) return;
+
+    const titulo = document.getElementById('uploadTitulo').value.trim();
+    const descripcion = document.getElementById('uploadDescripcion').value.trim();
+
+    if (!titulo) {
+        document.getElementById('uploadTitulo').classList.add('is-invalid');
+        showNotification('Título requerido', '<p>Escribe un título para el formato.</p>', 'warning');
+        return;
+    }
+    document.getElementById('uploadTitulo').classList.remove('is-invalid');
+
+    if (!uploadSelectedFile) {
+        showNotification('Archivo requerido', '<p>Selecciona un archivo .docx o .doc.</p>', 'warning');
+        return;
+    }
+
+    isSubmitting = true;
+    uploadModal.hide();
+
+    setTimeout(() => {
+        showConfirm('Subir formato',
+            `<p>¿Subir y analizar con IA el formato <strong>${escapeHTML(titulo)}</strong>?</p>
+             <div class="alert alert-info mt-2 mb-0 small">
+                <i class="bi bi-magic me-1"></i> La IA analizará el contenido y generará el resumen automáticamente.
+             </div>`,
+            async () => {
+                showLoading('Subiendo y analizando...', 'La IA está leyendo el documento. Esto puede tardar 10-30 segundos.');
+
+                const fd = new FormData();
+                fd.append('titulo', titulo);
+                fd.append('descripcion', descripcion);
+                fd.append('file', uploadSelectedFile);
+
+                try {
+                    const controller = new AbortController();
+                    const tId = setTimeout(() => controller.abort(), 90000);
+
+                    const res = await fetch('/api/formatos/upload', {
+                        method: 'POST', body: fd, signal: controller.signal
+                    });
+                    clearTimeout(tId);
+                    hideLoading();
+
+                    if (!res.ok) {
+                        let errMsg = 'Error al subir el formato.';
+                        try { const e = await res.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                        throw new Error(errMsg);
+                    }
+
+                    const result = await res.json();
+                    const iaOk = result.ia_disponible;
+                    const textoOk = result.texto_extraido !== false;
+
+                    let iaBlock;
+                    if (!textoOk) {
+                        iaBlock = `<div class="alert alert-warning mt-2 mb-0 small">
+                            <i class="bi bi-file-earmark-x me-1"></i>
+                            <strong>No se pudo leer el contenido del documento.</strong><br>
+                            Esto suele pasar con archivos creados en Google Docs, WPS Office o versiones raras de Word.
+                            El formato se guardó, pero <strong>deberás escribir la descripción manualmente</strong> con el botón Editar.
+                        </div>`;
+                    } else if (iaOk) {
+                        iaBlock = `<div class="alert alert-success mt-2 mb-0 small">
+                            <i class="bi bi-stars me-1"></i> <strong>IA:</strong> ${escapeHTML(result.resumen_ia || 'Resumen generado')}
+                        </div>`;
+                    } else {
+                        iaBlock = `<div class="alert alert-warning mt-2 mb-0 small">
+                            <i class="bi bi-exclamation-triangle me-1"></i> La IA no pudo generar el resumen. Puedes editarlo manualmente.
+                        </div>`;
+                    }
+
+                    showNotification('¡Formato subido!',
+                        `<p>El formato <strong>${escapeHTML(titulo)}</strong> se guardó correctamente.</p>${iaBlock}`,
+                        'success');
+
+                    isSubmitting = false;
+                    cargarFormatos();
+                } catch (err) {
+                    hideLoading();
+                    let msg = err.message || 'Error desconocido';
+                    if (err.name === 'AbortError') msg = 'La operación tardó demasiado. Verifica tu conexión.';
+                    showNotification('Error al subir', `<p>${escapeHTML(msg)}</p>`, 'error');
+                    isSubmitting = false;
+                }
+            }
+        );
+        isSubmitting = false;
+    }, 400);
+});
+
+/* ============================================================
+   EDITAR FORMATO
+   ============================================================ */
+const editModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('editModal'));
+
+function abrirEditModal(formato) {
+    document.getElementById('editId').value = formato.id;
+    document.getElementById('editTitulo').value = formato.titulo || '';
+    document.getElementById('editDescripcion').value = formato.descripcion || '';
+    document.getElementById('editTitulo').classList.remove('is-invalid');
+    editModal.show();
+}
+
+document.getElementById('editSubmitBtn').addEventListener('click', async () => {
+    if (isSubmitting) return;
+    const id = document.getElementById('editId').value;
+    const titulo = document.getElementById('editTitulo').value.trim();
+    const descripcion = document.getElementById('editDescripcion').value.trim();
+
+    if (!titulo) {
+        document.getElementById('editTitulo').classList.add('is-invalid');
+        showNotification('Título requerido', '<p>El título no puede estar vacío.</p>', 'warning');
+        return;
+    }
+
+    isSubmitting = true;
+    editModal.hide();
+
+    setTimeout(() => {
+        showConfirm('Guardar cambios',
+            `<p>¿Guardar los cambios en <strong>${escapeHTML(titulo)}</strong>?</p>`,
+            async () => {
+                showLoading('Guardando cambios...', 'Actualizando información.');
+                const fd = new FormData();
+                fd.append('titulo', titulo);
+                fd.append('descripcion', descripcion);
+
+                try {
+                    const res = await fetch(`/api/formatos/update/${id}`, { method: 'PUT', body: fd });
+                    hideLoading();
+
+                    if (!res.ok) {
+                        let errMsg = 'Error al actualizar.';
+                        try { const e = await res.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                        throw new Error(errMsg);
+                    }
+
+                    showNotification('Actualizado',
+                        '<p>El formato se actualizó correctamente.</p>', 'success');
+                    isSubmitting = false;
+                    cargarFormatos();
+                } catch (err) {
+                    hideLoading();
+                    showNotification('Error', `<p>${escapeHTML(err.message)}</p>`, 'error');
+                    isSubmitting = false;
+                }
+            }
+        );
+        isSubmitting = false;
+    }, 400);
+});
+
+/* ============================================================
+   REEMPLAZAR ARCHIVO
+   ============================================================ */
+const replaceModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('replaceModal'));
+const replaceDropZone = document.getElementById('replaceDropZone');
+const replaceFileInput = document.getElementById('replaceFile');
+let replaceSelectedFile = null;
+
+function abrirReplaceModal(formato) {
+    document.getElementById('replaceId').value = formato.id;
+    document.getElementById('replaceTitleDisplay').value = formato.titulo || '';
+    document.getElementById('replaceFileName').classList.remove('show');
+    replaceSelectedFile = null;
+    replaceFileInput.value = '';
+    replaceModal.show();
+}
+
+replaceDropZone.addEventListener('click', () => replaceFileInput.click());
+replaceDropZone.addEventListener('dragover', (e) => { e.preventDefault(); replaceDropZone.classList.add('dragover'); });
+replaceDropZone.addEventListener('dragleave', () => replaceDropZone.classList.remove('dragover'));
+replaceDropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    replaceDropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) manejarArchivoReplace(e.dataTransfer.files[0]);
+});
+replaceFileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) manejarArchivoReplace(e.target.files[0]);
+});
+
+function manejarArchivoReplace(file) {
+    const validExts = /\.(docx|doc)$/i;
+    if (!validExts.test(file.name)) {
+        showNotification('Formato no válido', '<p>Solo se aceptan archivos .docx o .doc.</p>', 'error');
+        replaceFileInput.value = '';
+        return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+        showNotification('Archivo muy grande', '<p>El límite es 15 MB.</p>', 'error');
+        replaceFileInput.value = '';
+        return;
+    }
+    replaceSelectedFile = file;
+    const nameEl = document.getElementById('replaceFileName');
+    nameEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${escapeHTML(file.name)} (${formatBytes(file.size)})`;
+    nameEl.classList.add('show');
+}
+
+document.getElementById('replaceSubmitBtn').addEventListener('click', async () => {
+    if (isSubmitting) return;
+    const id = document.getElementById('replaceId').value;
+    const titulo = document.getElementById('replaceTitleDisplay').value;
+
+    if (!replaceSelectedFile) {
+        showNotification('Archivo requerido', '<p>Selecciona el nuevo archivo .docx o .doc.</p>', 'warning');
+        return;
+    }
+
+    isSubmitting = true;
+    replaceModal.hide();
+
+    setTimeout(() => {
+        showConfirm('Reemplazar archivo',
+            `<p>¿Reemplazar el archivo de <strong>${escapeHTML(titulo)}</strong>?</p>
+             <div class="alert alert-warning mt-2 mb-0 small">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                El archivo anterior será eliminado permanentemente y la IA volverá a analizar el nuevo documento.
+             </div>`,
+            async () => {
+                showLoading('Reemplazando archivo...', 'Subiendo el nuevo archivo y reanalizando con IA.');
+                const fd = new FormData();
+                fd.append('file', replaceSelectedFile);
+
+                try {
+                    const controller = new AbortController();
+                    const tId = setTimeout(() => controller.abort(), 90000);
+
+                    const res = await fetch(`/api/formatos/update/${id}`, {
+                        method: 'PUT', body: fd, signal: controller.signal
+                    });
+                    clearTimeout(tId);
+                    hideLoading();
+
+                    if (!res.ok) {
+                        let errMsg = 'Error al reemplazar.';
+                        try { const e = await res.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                        throw new Error(errMsg);
+                    }
+
+                    showNotification('¡Reemplazado!',
+                        '<p>El archivo fue reemplazado y la IA actualizó el resumen.</p>', 'success');
+                    isSubmitting = false;
+                    cargarFormatos();
+                } catch (err) {
+                    hideLoading();
+                    let msg = err.message || 'Error desconocido';
+                    if (err.name === 'AbortError') msg = 'La operación tardó demasiado.';
+                    showNotification('Error', `<p>${escapeHTML(msg)}</p>`, 'error');
+                    isSubmitting = false;
+                }
+            }
+        );
+        isSubmitting = false;
+    }, 400);
+});
+
+/* ============================================================
+   ELIMINAR FORMATO
+   ============================================================ */
+function confirmarEliminar(formato) {
+    showConfirm('Eliminar formato',
+        `<p>¿Estás seguro de eliminar <strong>${escapeHTML(formato.titulo)}</strong>?</p>
+         <div class="alert alert-danger mt-2 mb-0 small">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            Esta acción <strong>no se puede deshacer</strong>. El archivo y el registro se borrarán permanentemente.
+         </div>`,
+        async () => {
+            showLoading('Eliminando...', 'Borrando el formato del sistema.');
+            try {
+                const res = await fetch(`/api/formatos/delete/${formato.id}`, { method: 'DELETE' });
+                hideLoading();
+
+                if (!res.ok) {
+                    let errMsg = 'Error al eliminar.';
+                    try { const e = await res.json(); if (e.detail) errMsg = e.detail; } catch (_) {}
+                    throw new Error(errMsg);
+                }
+
+                showNotification('Formato eliminado',
+                    `<p>El formato <strong>${escapeHTML(formato.titulo)}</strong> fue eliminado.</p>`, 'success');
+                cargarFormatos();
+            } catch (err) {
+                hideLoading();
+                showNotification('Error', `<p>${escapeHTML(err.message)}</p>`, 'error');
+            }
+        }
+    );
+}
+
+/* ============================================================
+   DESCARGAR
+   ============================================================ */
+function descargarFormato(formato) {
+    // Abrimos en nueva pestaña; el endpoint incrementa el contador
+    // y registra en bitácora, luego redirige a la URL prefirmada de R2.
+    window.open(`/api/formatos/download/${formato.id}`, '_blank');
+    // Refrescar contador tras un momento
+    setTimeout(() => cargarFormatos(), 1500);
+}
+
+/* ============================================================
+   MODAL: VER SÍNTESIS IA
+   ============================================================ */
+let currentSintesisFormato = null;
+
+function abrirSintesis(formato) {
+    currentSintesisFormato = formato;
+
+    document.getElementById('sintesisTitle').textContent = formato.titulo || 'Síntesis del Formato';
+
+    const sintesis = (formato.resumen_ia || '').trim();
+    const container = document.getElementById('sintesisContent');
+
+    if (sintesis) {
+        // Preservar saltos de línea con textContent (evita XSS)
+        container.textContent = sintesis;
+        container.style.textAlign = 'left';
+    } else {
+        container.innerHTML = `
+            <div style="text-align:center; padding:24px 12px; color:var(--text-muted);">
+                <i class="bi bi-info-circle" style="font-size:2.5rem; opacity:0.5;"></i>
+                <p style="margin-top:12px; font-weight:600; color:var(--text-secondary);">
+                    Este formato no tiene síntesis generada
+                </p>
+                <p style="font-size:0.85rem;">
+                    Edita el formato y agrega una descripción, o reemplaza el archivo para que la IA
+                    vuelva a analizarlo.
+                </p>
+            </div>`;
+    }
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('sintesisModal')).show();
+}
+
+// Botón "Vista previa del formato" desde el modal de síntesis
+document.getElementById('verPreviewBtn').addEventListener('click', () => {
+    if (!currentSintesisFormato) return;
+    abrirPdfPreview(currentSintesisFormato);
+});
+
+// Botón "Descargar" desde el modal de síntesis
+document.getElementById('descargarDesdeSintesisBtn').addEventListener('click', () => {
+    if (!currentSintesisFormato) return;
+    window.open(`/api/formatos/download/${currentSintesisFormato.id}`, '_blank');
+    setTimeout(() => cargarFormatos(), 1500);
+});
+
+/* ============================================================
+   MODAL: VISTA PREVIA PDF (LibreOffice en el backend, sin temporales)
+   ============================================================ */
+let pdfProgressTimer = null;
+let pdfSafetyTimer = null;
+
+function abrirPdfPreview(formato) {
+    const frame = document.getElementById('pdfPreviewFrame');
+    const loader = document.getElementById('pdfLoadingState');
+    const progressFill = document.getElementById('pdfProgressFill');
+    const progressPercent = document.getElementById('pdfProgressPercent');
+    const loadingTitle = document.getElementById('pdfLoadingTitle');
+    const loadingText = document.getElementById('pdfLoadingText');
+
+    document.getElementById('pdfPreviewTitle').textContent =
+        formato.titulo || 'Vista previa del formato';
+
+    // Resetear el loader a su estado inicial
+    loader.innerHTML = `
+        <div class="pdf-loader-icon">
+            <div class="spinner-border" role="status"></div>
+        </div>
+        <h5 id="pdfLoadingTitle">Cargando archivo a vista previa</h5>
+        <p id="pdfLoadingText" class="pdf-loading-text">Convirtiendo el documento con LibreOffice...</p>
+        <div class="pdf-progress-track">
+            <div class="pdf-progress-fill" id="pdfProgressFill"></div>
+        </div>
+        <span class="pdf-progress-percent" id="pdfProgressPercent">0%</span>
+    `;
+    loader.style.display = 'flex';
+    frame.style.display = 'none';
+    frame.src = 'about:blank';
+
+    // Referencias actualizadas tras el reset
+    const newFill = document.getElementById('pdfProgressFill');
+    const newPercent = document.getElementById('pdfProgressPercent');
+    const newTitle = document.getElementById('pdfLoadingTitle');
+    const newText = document.getElementById('pdfLoadingText');
+
+    // Animación de progreso simulado (0% → 90%)
+    let currentProgress = 0;
+    if (pdfProgressTimer) clearInterval(pdfProgressTimer);
+    pdfProgressTimer = setInterval(() => {
+        // Va subiendo más lento conforme se acerca a 90%
+        const remaining = 90 - currentProgress;
+        const increment = Math.max(0.5, remaining * 0.08);
+        currentProgress = Math.min(90, currentProgress + increment);
+        if (newFill) newFill.style.width = currentProgress + '%';
+        if (newPercent) newPercent.textContent = Math.round(currentProgress) + '%';
+
+        // Mensajes que cambian según el progreso
+        if (newText) {
+            if (currentProgress < 30) {
+                newText.textContent = 'Descargando archivo desde el servidor...';
+            } else if (currentProgress < 70) {
+                newText.textContent = 'Convirtiendo el documento con LibreOffice...';
+            } else {
+                newText.textContent = 'Preparando vista previa...';
+            }
+        }
+    }, 250);
+
+    // Abrir modal
+    const modalEl = document.getElementById('pdfPreviewModal');
+    bootstrap.Modal.getOrCreateInstance(modalEl).show();
+
+    // Cargar el PDF
+    const url = `/api/formatos/preview-pdf/${formato.id}?t=${Date.now()}`;
+
+    setTimeout(() => {
+        frame.src = url;
+
+        frame.onload = function () {
+            // Forzar 100% y mostrar el PDF
+            if (pdfProgressTimer) {
+                clearInterval(pdfProgressTimer);
+                pdfProgressTimer = null;
+            }
+            if (newFill) newFill.style.width = '100%';
+            if (newPercent) newPercent.textContent = '100%';
+            if (newTitle) newTitle.textContent = '¡Listo!';
+            if (newText) newText.textContent = 'Mostrando vista previa...';
+
+            setTimeout(() => {
+                loader.style.display = 'none';
+                frame.style.display = 'block';
+            }, 350);
+        };
+
+        // Timeout de seguridad (si LibreOffice tarda >60s)
+        if (pdfSafetyTimer) clearTimeout(pdfSafetyTimer);
+        pdfSafetyTimer = setTimeout(() => {
+            if (loader.style.display !== 'none') {
+                if (pdfProgressTimer) {
+                    clearInterval(pdfProgressTimer);
+                    pdfProgressTimer = null;
+                }
+                loader.innerHTML = `
+                    <i class="bi bi-exclamation-triangle" style="font-size:2.5rem; color:var(--warning);"></i>
+                    <h5 style="margin-top:14px; color:var(--text-primary); font-weight:800;">
+                        La vista previa tardó demasiado
+                    </h5>
+                    <p style="color:var(--text-muted); font-size:0.88rem; margin:6px 0 16px;">
+                        Puede que LibreOffice esté ocupado o el documento sea muy grande.
+                    </p>
+                    <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('pdfPreviewDownloadBtn').click()">
+                        <i class="bi bi-download"></i> Descargar original (.docx)
+                    </button>
+                `;
+            }
+        }, 60000);
+    }, 300);
+}
+
+document.getElementById('pdfPreviewDownloadBtn').addEventListener('click', () => {
+    if (!currentSintesisFormato) return;
+    window.open(`/api/formatos/download/${currentSintesisFormato.id}`, '_blank');
+    setTimeout(() => cargarFormatos(), 1500);
+});
+
+// Limpiar iframe al cerrar el modal PDF
+document.getElementById('pdfPreviewModal').addEventListener('hidden.bs.modal', () => {
+    if (pdfProgressTimer) { clearInterval(pdfProgressTimer); pdfProgressTimer = null; }
+    if (pdfSafetyTimer) { clearTimeout(pdfSafetyTimer); pdfSafetyTimer = null; }
+
+    const frame = document.getElementById('pdfPreviewFrame');
+    frame.src = 'about:blank';
+    frame.style.display = 'none';
+});
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    cargarFormatos();
+});
+</script>
+</body>
+</html>
