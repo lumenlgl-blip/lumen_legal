@@ -9,6 +9,7 @@ Soporta:
   Excel:   .xls .xlsx .xlsm .xlsb .ods .ots
   PPT:     .ppt .pptx .pptm .pps .ppsx .odp .otp
 """
+
 import subprocess
 import os
 import shutil
@@ -84,10 +85,9 @@ def _get_soffice() -> str | None:
     return _SOFFICE_PATH
 
 
-WORD_EXTS  = (".doc", ".docx", ".docm", ".dot", ".dotx", ".dotm",
-              ".rtf", ".odt", ".ott")
+WORD_EXTS = (".doc", ".docx", ".docm", ".dot", ".dotx", ".dotm", ".rtf", ".odt", ".ott")
 EXCEL_EXTS = (".xls", ".xlsx", ".xlsm", ".xlsb", ".ods", ".ots")
-PPT_EXTS   = (".ppt", ".pptx", ".pptm", ".pps", ".ppsx", ".odp", ".otp")
+PPT_EXTS = (".ppt", ".pptx", ".pptm", ".pps", ".ppsx", ".odp", ".otp")
 OFFICE_EXTS = WORD_EXTS + EXCEL_EXTS + PPT_EXTS
 
 
@@ -113,14 +113,28 @@ def word_to_pdf(src_path: str) -> str | None:
         except OSError:
             pass
 
+    # ── Perfil de usuario escribible (crítico en Docker/Linux) ──
+    # LibreOffice necesita un HOME con permisos de escritura. En
+    # contenedores sin HOME o con HOME de solo lectura falla en
+    # silencio. Le damos un perfil temporal dedicado.
+    profile_dir = os.path.join(out_dir, ".lo_profile")
+    os.makedirs(profile_dir, exist_ok=True)
+
+    env = os.environ.copy()
+    env["HOME"] = profile_dir
+    env["TMPDIR"] = profile_dir
+
     cmd = [
         soffice,
+        f"-env:UserInstallation=file://{profile_dir}",
         "--headless",
         "--norestore",
         "--nologo",
         "--nofirststartwizard",
-        "--convert-to", "pdf",
-        "--outdir", out_dir,
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        out_dir,
         src_path,
     ]
 
@@ -133,7 +147,10 @@ def word_to_pdf(src_path: str) -> str | None:
             timeout=180,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            creationflags=subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0,
+            env=env,
+            creationflags=(
+                subprocess.CREATE_NO_WINDOW if platform.system() == "Windows" else 0
+            ),
         )
     except subprocess.TimeoutExpired:
         logger.error("LibreOffice tardó más de 180s.")
