@@ -6,8 +6,12 @@ from app.database import get_db
 from app.models.core import Client, ClientDocument, Contract, Payment, CourtCase
 from app.routers.auth import get_current_user
 from app.storage import (
-    upload_fileobj, upload_bytes, delete_file, get_file_url,
-    s3_client, R2_BUCKET,
+    upload_fileobj,
+    upload_bytes,
+    delete_file,
+    get_file_url,
+    s3_client,
+    R2_BUCKET,
 )
 import uuid
 from datetime import datetime
@@ -62,6 +66,7 @@ def convert_image_to_pdf(image_bytes: bytes) -> bytes:
 
         # ReportLab necesita un ImageReader, no un archivo en disco
         from reportlab.lib.utils import ImageReader
+
         c.drawImage(ImageReader(img), x, y, new_width, new_height)
         c.save()
 
@@ -108,9 +113,11 @@ def generate_client_pdf(client_data) -> bytes:
         folio=client_data.folio_registro,
         expediente_interno=client_data.expediente_interno,
         anio=anio,
-        fecha_registro=client_data.created_at.strftime("%d/%m/%Y %H:%M")
-        if client_data.created_at
-        else datetime.now().strftime("%d/%m/%Y %H:%M"),
+        fecha_registro=(
+            client_data.created_at.strftime("%d/%m/%Y %H:%M")
+            if client_data.created_at
+            else datetime.now().strftime("%d/%m/%Y %H:%M")
+        ),
         logo_base64=logo_base64,
     )
     return HTML(string=html_content).write_pdf()
@@ -140,9 +147,7 @@ def _mark_qr_used(temp_id: str, doc_type: str):
 
 def _list_qr_files(temp_id: str):
     """Lista las keys de archivos subidos para este temp_id (excluye .used)."""
-    response = s3_client.list_objects_v2(
-        Bucket=R2_BUCKET, Prefix=f"temp/{temp_id}/"
-    )
+    response = s3_client.list_objects_v2(Bucket=R2_BUCKET, Prefix=f"temp/{temp_id}/")
     files = []
     for obj in response.get("Contents", []):
         key = obj["Key"]
@@ -174,7 +179,7 @@ async def register_client(
     curp_file: UploadFile = File(...),
     ine_file: UploadFile = File(...),
     domicilio_file: UploadFile = File(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     # Validar CURP único
     existing = db.query(Client).filter(Client.curp == curp).first()
@@ -194,9 +199,9 @@ async def register_client(
     current_user = get_current_user(request, db)
     if not current_user:
         raise HTTPException(401, "No autenticado")
-    
+
     firm_id = current_user.firm_id
-    
+
     folio = generate_folio()
     expediente = get_next_internal_expediente(firm_id, db)
 
@@ -217,16 +222,16 @@ async def register_client(
     db.commit()
     db.refresh(new_client)
 
-  
     # Registrar en bitácora
     from app.models.core import ActivityLog
+
     log = ActivityLog(
         firm_id=current_user.firm_id,
         user_id=current_user.id,
         action="create",
         entity="Cliente",
         entity_id=new_client.id,
-        description=f"Registró al cliente {new_client.name} {new_client.paterno}"
+        description=f"Registró al cliente {new_client.name} {new_client.paterno}",
     )
     db.add(log)
 
@@ -513,7 +518,10 @@ async def delete_client(
     if not user:
         return {"success": False, "message": "No autenticado"}
     if user.role != "admin":
-        return {"success": False, "message": "Solo administradores pueden eliminar clientes"}
+        return {
+            "success": False,
+            "message": "Solo administradores pueden eliminar clientes",
+        }
     if not verify_password(password, user.hashed_password):
         return {"success": False, "message": "Contraseña incorrecta"}
 
@@ -541,7 +549,9 @@ async def delete_client(
     # ============================================================
     # 3. DOCUMENTOS del cliente (R2 + BD)
     # ============================================================
-    for doc in db.query(ClientDocument).filter(ClientDocument.client_id == client_id).all():
+    for doc in (
+        db.query(ClientDocument).filter(ClientDocument.client_id == client_id).all()
+    ):
         if doc.file_url and delete_file(doc.file_url):
             stats["archivos_r2"] += 1
         db.delete(doc)
@@ -553,24 +563,36 @@ async def delete_client(
     contracts = db.query(Contract).filter(Contract.client_id == client_id).all()
     for contract in contracts:
         # 4.1 Pagos (R2 + BD) — ⚠️ incluye receipt_pdf_url de R2
-        for payment in db.query(Payment).filter(Payment.contract_id == contract.id).all():
+        for payment in (
+            db.query(Payment).filter(Payment.contract_id == contract.id).all()
+        ):
             if payment.receipt_pdf_url and delete_file(payment.receipt_pdf_url):
                 stats["archivos_r2"] += 1
             db.delete(payment)
             stats["pagos"] += 1
 
         # 4.2 Expediente del contrato
-        court_case = db.query(CourtCase).filter(CourtCase.contract_id == contract.id).first()
+        court_case = (
+            db.query(CourtCase).filter(CourtCase.contract_id == contract.id).first()
+        )
         if court_case:
             # 4.2.1 Actuaciones (R2 + BD)
-            for act in db.query(Actuacion).filter(Actuacion.court_case_id == court_case.id).all():
+            for act in (
+                db.query(Actuacion)
+                .filter(Actuacion.court_case_id == court_case.id)
+                .all()
+            ):
                 if act.pdf_url and delete_file(act.pdf_url):
                     stats["archivos_r2"] += 1
                 db.delete(act)
                 stats["actuaciones"] += 1
 
             # 4.2.2 Agenda events vinculados al expediente
-            for ev in db.query(AgendaEvent).filter(AgendaEvent.court_case_id == court_case.id).all():
+            for ev in (
+                db.query(AgendaEvent)
+                .filter(AgendaEvent.court_case_id == court_case.id)
+                .all()
+            ):
                 db.delete(ev)
                 stats["agenda_events"] += 1
 
@@ -639,7 +661,144 @@ async def regenerate_constancia(client_id: int, db: Session = Depends(get_db)):
     return Response(
         content=pdf_bytes,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"inline; filename=constancia_{client.folio_registro}.pdf"},
+        headers={
+            "Content-Disposition": f"inline; filename=constancia_{client.folio_registro}.pdf"
+        },
+    )
+
+
+# ============================================================
+# CONSTANCIA DE UN CONTRATO ESPECÍFICO
+# ============================================================
+@router.get("/constancia-contrato/{contract_id}")
+async def constancia_contrato(
+    contract_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """
+    Genera la constancia de UN CONTRATO ESPECÍFICO.
+    Usa su propio template (constancia_contrato.html) para no
+    confundirse con la constancia de registro de cliente.
+    """
+    from app.models.core import ActivityLog
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    import os
+
+    user = get_current_user(request, db)
+    if not user:
+        raise HTTPException(401, "No autenticado")
+
+    # 1) Contrato
+    contract = (
+        db.query(Contract)
+        .filter(
+            Contract.id == contract_id,
+            Contract.firm_id == user.firm_id,
+        )
+        .first()
+    )
+    if not contract:
+        raise HTTPException(404, "Contrato no encontrado")
+
+    # 2) Cliente titular
+    client = db.query(Client).filter(Client.id == contract.client_id).first()
+    if not client:
+        raise HTTPException(404, "Cliente no encontrado")
+
+    # 3) Pagos del contrato
+    payments = (
+        db.query(Payment)
+        .filter(Payment.contract_id == contract.id)
+        .order_by(Payment.payment_date.asc())
+        .all()
+    )
+    total_pagado = float(sum(p.amount for p in payments)) if payments else 0.0
+    saldo = float(contract.total_cost) - total_pagado
+    ultimo_pago = payments[-1] if payments else None
+
+    # 4) Logo
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+
+    # 5) Render template DEDICADO de contrato
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/constancia_contrato.html")
+
+    anio = (
+        contract.created_at.strftime("%Y")
+        if contract.created_at
+        else datetime.now().strftime("%Y")
+    )
+
+    html_content = template.render(
+        # Cliente
+        nombre_completo=f"{client.name} {client.paterno} {client.materno or ''}",
+        curp=client.curp,
+        telefono=client.phone,
+        folio=client.folio_registro,
+        expediente_interno=client.expediente_interno,
+        logo_base64=logo_base64,
+        anio=anio,
+        # Contrato
+        contrato_id=contract.id,
+        servicio=contract.service_type or "Servicio",
+        tipo_juicio=contract.tipo_juicio_otro or contract.tipo_juicio or "",
+        detalle=contract.specific_detail or "",
+        costo_total=f"{float(contract.total_cost):,.2f}",
+        estatus="Liquidado" if saldo <= 0.01 else "Pendiente",
+        badge_class="badge-liquidado" if saldo <= 0.01 else "badge-pendiente",
+        fecha_contratacion=(
+            contract.created_at.strftime("%d/%m/%Y") if contract.created_at else ""
+        ),
+        # Pago
+        monto_pagado=f"{total_pagado:,.2f}" if total_pagado > 0 else "",
+        forma_pago=(
+            (
+                getattr(ultimo_pago, "payment_method", None)
+                or getattr(ultimo_pago, "forma_pago", None)
+                or getattr(ultimo_pago, "metodo_pago", None)
+                or "Efectivo"
+            )
+            if ultimo_pago
+            else ""
+        ),
+        fecha_pago=ultimo_pago.payment_date.strftime("%d/%m/%Y") if ultimo_pago else "",
+        recibio=user.full_name if ultimo_pago else "",
+        saldo_restante=f"{saldo:,.2f}",
+    )
+
+    pdf_bytes = HTML(string=html_content).write_pdf()
+
+    # 6) Bitácora
+    db.add(
+        ActivityLog(
+            firm_id=user.firm_id,
+            user_id=user.id,
+            action="reprint",
+            entity="Contract",
+            entity_id=contract.id,
+            description=(
+                f"Reimprimió constancia del contrato {contract.id} "
+                f"({contract.service_type}) de {client.name} {client.paterno}"
+            ),
+        )
+    )
+    db.commit()
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": (
+                f"inline; filename=constancia_contrato_{contract.id}.pdf"
+            )
+        },
     )
 
 

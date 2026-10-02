@@ -15,6 +15,7 @@ import os
 import shutil
 import platform
 import logging
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -120,13 +121,18 @@ def word_to_pdf(src_path: str) -> str | None:
     profile_dir = os.path.join(out_dir, ".lo_profile")
     os.makedirs(profile_dir, exist_ok=True)
 
+    # Path.as_uri() genera la URL correcta en Windows, Linux y Mac:
+    #   Windows → file:///C:/Users/.../profile
+    #   Linux   → file:///tmp/.../profile
+    profile_uri = Path(profile_dir).resolve().as_uri()
+
     env = os.environ.copy()
     env["HOME"] = profile_dir
     env["TMPDIR"] = profile_dir
 
     cmd = [
         soffice,
-        f"-env:UserInstallation=file://{profile_dir}",
+        f"-env:UserInstallation={profile_uri}",
         "--headless",
         "--norestore",
         "--nologo",

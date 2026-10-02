@@ -813,6 +813,55 @@
             background: var(--bg-tertiary);
         }
 
+        /* Wrapper del visor con loader superpuesto */
+        .pdf-viewer-wrap {
+            position: relative;
+            min-height: 75vh;
+            background: var(--bg-tertiary);
+        }
+        .pdf-viewer-loader {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            z-index: 10;
+            gap: 14px;
+        }
+        .pdf-viewer-loader.hidden { display: none; }
+        .pdf-viewer-spinner {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.10), rgba(42,109,244,0.03));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px -8px rgba(42,109,244,0.3);
+        }
+        .pdf-viewer-spinner .spinner-border {
+            width: 2rem;
+            height: 2rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        .pdf-viewer-text {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        .pdf-viewer-sub {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin: 0;
+        }
+        [data-theme="dark"] .pdf-viewer-spinner {
+            background: linear-gradient(135deg, rgba(91,147,255,0.15), rgba(91,147,255,0.05));
+        }
+
         .file-preview-frame {
             width: 100%;
             height: 60vh;
@@ -1466,7 +1515,16 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body p-0">
-                <iframe id="pdfPreview" class="modal-pdf-frame" title="Vista previa PDF"></iframe>
+                <div class="pdf-viewer-wrap">
+                    <div id="pdfViewerLoader" class="pdf-viewer-loader">
+                        <div class="pdf-viewer-spinner">
+                            <div class="spinner-border" role="status"></div>
+                        </div>
+                        <p class="pdf-viewer-text" id="pdfViewerText">Cargando documento...</p>
+                        <p class="pdf-viewer-sub" id="pdfViewerSub">Preparando vista previa, por favor espera.</p>
+                    </div>
+                    <iframe id="pdfPreview" class="modal-pdf-frame" title="Vista previa PDF" style="display:none;"></iframe>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -2100,15 +2158,12 @@ function renderActuaciones(actuaciones) {
 
     container.innerHTML = html;
 
-    // Preview handlers
+    // Preview handlers (con loader)
     container.querySelectorAll('.preview-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             const url = this.dataset.url;
             const filename = this.dataset.filename || 'documento.pdf';
-            document.getElementById('pdfPreview').src = url;
-            document.getElementById('downloadPdfLink').href = url;
-            document.getElementById('downloadPdfLink').download = filename;
-            bootstrap.Modal.getOrCreateInstance(document.getElementById('previewModal')).show();
+            abrirPdfConLoader(url, filename);
         });
     });
 
@@ -2126,6 +2181,86 @@ function renderActuaciones(actuaciones) {
             );
         });
     });
+}
+
+
+/* ============================================================
+   PREVIEW PDF CON LOADER
+   ============================================================ */
+let pdfViewerSafetyTimer = null;
+
+function abrirPdfConLoader(url, filename) {
+    if (!url) {
+        showNotification('Error', '<p>URL del documento no disponible.</p>', 'error');
+        return;
+    }
+
+    if (pdfViewerSafetyTimer) {
+        clearTimeout(pdfViewerSafetyTimer);
+        pdfViewerSafetyTimer = null;
+    }
+
+    const modalEl = document.getElementById('previewModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const iframe = document.getElementById('pdfPreview');
+    const loader = document.getElementById('pdfViewerLoader');
+    const loaderText = document.getElementById('pdfViewerText');
+    const loaderSub = document.getElementById('pdfViewerSub');
+
+    // Resetear todo
+    iframe.onload = null;
+    iframe.src = 'about:blank';
+    iframe.style.display = 'none';
+
+    loader.classList.remove('hidden');
+    if (loaderText) loaderText.textContent = 'Cargando documento...';
+    if (loaderSub) loaderSub.textContent = 'Preparando vista previa, por favor espera.';
+
+    document.getElementById('downloadPdfLink').href = url;
+    document.getElementById('downloadPdfLink').download = filename;
+
+    modal.show();
+
+    const startLoad = () => {
+        iframe.onload = function () {
+            if (pdfViewerSafetyTimer) {
+                clearTimeout(pdfViewerSafetyTimer);
+                pdfViewerSafetyTimer = null;
+            }
+
+            if (loaderText) loaderText.textContent = '¡Listo!';
+            if (loaderSub) loaderSub.textContent = 'Mostrando documento...';
+
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                iframe.style.display = 'block';
+            }, 250);
+        };
+
+        setTimeout(() => { iframe.src = url; }, 150);
+
+        pdfViewerSafetyTimer = setTimeout(() => {
+            if (!loader.classList.contains('hidden')) {
+                loader.innerHTML = `
+                    <i class="bi bi-exclamation-triangle" style="font-size:2.2rem; color:var(--warning);"></i>
+                    <p class="pdf-viewer-text" style="margin-top:8px;">El documento tardó demasiado</p>
+                    <p class="pdf-viewer-sub">Puede que el archivo sea muy grande o la conexión sea lenta.</p>
+                    <a href="${escapeHTML(url)}" download="${escapeHTML(filename)}" class="btn btn-outline-primary" style="border-radius:40px; font-weight:700;">
+                        <i class="bi bi-download"></i> Descargar directamente
+                    </a>
+                `;
+            }
+        }, 45000);
+    };
+
+    if (modalEl.classList.contains('show')) {
+        startLoad();
+    } else {
+        modalEl.addEventListener('shown.bs.modal', function once() {
+            modalEl.removeEventListener('shown.bs.modal', once);
+            startLoad();
+        });
+    }
 }
 
 async function deleteActuacion(actuacionId) {
@@ -2554,6 +2689,15 @@ document.getElementById('actuacionForm').addEventListener('submit', async (e) =>
 document.getElementById('previewModal').addEventListener('hidden.bs.modal', function () {
     const frame = document.getElementById('pdfPreview');
     frame.src = 'about:blank';
+    frame.style.display = 'none';
+
+    if (pdfViewerSafetyTimer) {
+        clearTimeout(pdfViewerSafetyTimer);
+        pdfViewerSafetyTimer = null;
+    }
+
+    const loader = document.getElementById('pdfViewerLoader');
+    if (loader) loader.classList.remove('hidden');
 });
 
 /* ============================================================

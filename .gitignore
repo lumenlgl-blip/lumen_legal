@@ -35,23 +35,18 @@ uploads/
 *.log
 
 # ============================================================
+# Backups locales (viven en R2, no en Git)
+# ============================================================
+storage/backups/
+storage/temp/
+storage/tmp/
+
+# ============================================================
 # Bases de datos locales (ya migramos a Supabase)
 # ============================================================
 *.db
 *.sqlite
 *.sqlite3
-
-# ============================================================
-# PDFs e imágenes generadas (los archivos viven en R2)
-# ============================================================
-*.pdf
-*.jpg
-*.jpeg
-*.png
-
-# ⚠️ EXCEPCIÓN: NO ignorar el logo ni imágenes estáticas del sistema
-!app/static/img/
-!app/static/img/**
 
 # ============================================================
 # Sistema operativo
@@ -66,6 +61,7 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+*.swo
 
 # ============================================================
 # Archivos de prueba (borrables)
@@ -74,6 +70,19 @@ create_admin.py
 test_*.py
 test_*.pdf
 test_*.html
-.env
-.env.*
-!.env.example
+
+# ============================================================
+# PDFs e imágenes generadas (viven en R2, no en Git)
+# ⚠️ EXCEPCIÓN: NO ignorar imágenes estáticas del sistema
+# ============================================================
+*.pdf
+!app/static/**/*.pdf
+!app/templates/**/*.pdf
+*.jpg
+*.jpeg
+*.png
+!app/static/img/
+!app/static/img/**
+!app/static/**/*.jpg
+!app/static/**/*.jpeg
+!app/static/**/*.png

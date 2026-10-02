@@ -595,6 +595,110 @@
             box-shadow: var(--shadow-md);
         }
 
+
+                /* ============================================================
+           MODAL: GENERANDO REPORTE/CONSTANCIA
+           ============================================================ */
+        .constancia-icon {
+            width: 82px;
+            height: 82px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(42,109,244,0.10), rgba(42,109,244,0.03));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 8px 24px -8px rgba(42,109,244,0.3);
+        }
+        [data-theme="dark"] .constancia-icon {
+            background: linear-gradient(135deg, rgba(91,147,255,0.15), rgba(91,147,255,0.05));
+        }
+        .constancia-icon .spinner-border {
+            width: 2.6rem;
+            height: 2.6rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        .constancia-title {
+            font-weight: 800;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            margin: 0 0 6px 0;
+        }
+        .constancia-sub {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0 0 22px 0;
+        }
+        .constancia-progress-track {
+            width: 100%;
+            max-width: 320px;
+            height: 8px;
+            background: var(--border-soft);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+        }
+        .constancia-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-light));
+            border-radius: 6px;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 12px rgba(42,109,244,0.5);
+        }
+        .constancia-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: constanciaShine 1.5s linear infinite;
+        }
+        @keyframes constanciaShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .constancia-progress-percent {
+            display: block;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--accent-primary);
+            font-variant-numeric: tabular-nums;
+        }
+        .constancia-status {
+            margin-top: 20px;
+            padding: 10px 16px;
+            background: var(--bg-tertiary);
+            border-radius: 40px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border-soft);
+            max-width: 100%;
+        }
+        .constancia-status i {
+            color: var(--accent-primary);
+            font-size: 0.95rem;
+        }
+        .constancia-status.success {
+            background: var(--success-soft);
+            color: var(--success);
+            border-color: transparent;
+        }
+        .constancia-status.success i { color: var(--success); }
+        .constancia-status.error {
+            background: var(--danger-soft);
+            color: var(--danger);
+            border-color: transparent;
+        }
+        .constancia-status.error i { color: var(--danger); }
+
         /* ============================================================
            SPINNER OVERLAY
            ============================================================ */
@@ -1029,6 +1133,31 @@
         <div class="spinner-border" role="status"></div>
         <h5>Cargando agenda...</h5>
         <p>Un momento, por favor.</p>
+    </div>
+</div>
+
+<!-- MODAL: GENERANDO REPORTE CON PROGRESO -->
+<div class="modal fade modal-modern" id="reporteProgressModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="max-width:460px;margin:0 auto;">
+            <div class="modal-body text-center" style="padding:40px 30px;">
+                <div class="constancia-icon">
+                    <div class="spinner-border" role="status"></div>
+                </div>
+                <h5 class="constancia-title" id="constanciaTitle">Generando reporte...</h5>
+                <p class="constancia-sub" id="constanciaSub">Preparando el documento PDF.</p>
+
+                <div class="constancia-progress-track">
+                    <div class="constancia-progress-fill" id="constanciaProgressFill"></div>
+                </div>
+                <span class="constancia-progress-percent" id="constanciaProgressPercent">0%</span>
+
+                <div class="constancia-status" id="constanciaStatus">
+                    <i class="bi bi-info-circle"></i>
+                    <span>Iniciando...</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1738,9 +1867,123 @@ function generarReporte() {
     const reportUserFilter = document.getElementById('reportUserFilter');
     if (reportUserFilter) userFilter = reportUserFilter.value;
 
-    showLoading();
-    window.open(`/api/agenda/report-pdf?periodo=${periodo}&filtro=${filtro}&user_filter=${userFilter}`, '_blank');
-    setTimeout(() => hideLoading(), 1500);
+    const url = `/api/agenda/report-pdf?periodo=${periodo}&filtro=${filtro}&user_filter=${userFilter}`;
+    const filename = `reporte_agenda_${periodo}.pdf`;
+
+    // Cerrar modal de reporte antes de mostrar el loader
+    const reportModal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+    if (reportModal) reportModal.hide();
+
+    setTimeout(() => {
+        generarReporteConProgreso(url, filename, periodo);
+    }, 350);
+}
+
+/* ============================================================
+   GENERAR REPORTE CON LOADER DE PROGRESO
+   ============================================================ */
+let reporteTimer = null;
+
+async function generarReporteConProgreso(url, filename, periodo) {
+    if (reporteTimer) { clearInterval(reporteTimer); reporteTimer = null; }
+
+    const modalEl = document.getElementById('reporteProgressModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const titleEl = document.getElementById('constanciaTitle');
+    const subEl = document.getElementById('constanciaSub');
+    const fill = document.getElementById('constanciaProgressFill');
+    const percent = document.getElementById('constanciaProgressPercent');
+    const statusEl = document.getElementById('constanciaStatus');
+
+    const periodoLabel = periodo === 'hoy' ? 'de hoy'
+        : periodo === 'semana' ? 'de la semana'
+        : 'del mes';
+
+    if (titleEl) titleEl.textContent = `Generando reporte ${periodoLabel}...`;
+    if (subEl) subEl.textContent = 'Preparando el documento PDF, por favor espera.';
+    if (fill) fill.style.width = '0%';
+    if (percent) percent.textContent = '0%';
+    if (statusEl) {
+        statusEl.className = 'constancia-status';
+        statusEl.innerHTML = '<i class="bi bi-hourglass-split"></i> <span>Conectando con el servidor...</span>';
+    }
+
+    modal.show();
+
+    // Animación de progreso simulado (0% → 90%)
+    let progress = 0;
+    reporteTimer = setInterval(() => {
+        const remaining = 90 - progress;
+        const increment = Math.max(0.5, remaining * 0.08);
+        progress = Math.min(90, progress + increment);
+        if (fill) fill.style.width = progress + '%';
+        if (percent) percent.textContent = Math.round(progress) + '%';
+
+        if (statusEl) {
+            const txt = statusEl.querySelector('span');
+            if (txt) {
+                if (progress < 30) txt.textContent = 'Recopilando eventos de la agenda...';
+                else if (progress < 60) txt.textContent = 'Generando el PDF...';
+                else if (progress < 85) txt.textContent = 'Aplicando formato y datos...';
+                else txt.textContent = 'Finalizando...';
+            }
+        }
+    }, 220);
+
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            let errMsg = 'Error al generar el reporte';
+            try {
+                const err = await response.json();
+                if (err.detail) errMsg = err.detail;
+            } catch (_) {}
+            throw new Error(errMsg);
+        }
+
+        const blob = await response.blob();
+
+        if (reporteTimer) { clearInterval(reporteTimer); reporteTimer = null; }
+        if (fill) fill.style.width = '100%';
+        if (percent) percent.textContent = '100%';
+        if (titleEl) titleEl.textContent = '¡Listo!';
+        if (subEl) subEl.textContent = 'Abriendo el reporte en una nueva pestaña...';
+        if (statusEl) {
+            statusEl.className = 'constancia-status success';
+            statusEl.innerHTML = '<i class="bi bi-check-circle-fill"></i> <span>Reporte generado correctamente</span>';
+        }
+
+        const blobUrl = URL.createObjectURL(blob);
+        window.open(blobUrl, '_blank');
+
+        setTimeout(() => {
+            modal.hide();
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+        }, 800);
+
+    } catch (error) {
+        if (reporteTimer) { clearInterval(reporteTimer); reporteTimer = null; }
+
+        if (fill) {
+            fill.style.width = '100%';
+            fill.style.background = 'linear-gradient(90deg, var(--danger), var(--danger-hover))';
+        }
+        if (percent) percent.textContent = '✗';
+        if (titleEl) titleEl.textContent = 'Error';
+        if (subEl) subEl.textContent = 'No se pudo generar el reporte.';
+        if (statusEl) {
+            statusEl.className = 'constancia-status error';
+            statusEl.innerHTML = `<i class="bi bi-x-circle-fill"></i> <span>${escapeHTML(error.message)}</span>`;
+        }
+
+        setTimeout(() => {
+            modal.hide();
+            setTimeout(() => {
+                if (fill) fill.style.background = 'linear-gradient(90deg, var(--accent-primary), var(--accent-light))';
+            }, 500);
+        }, 3000);
+    }
 }
 
 /* ============================================================

@@ -5,7 +5,14 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.database import get_db
 from app.models.core import Client, Contract, CourtCase, Actuacion, User
-from app.storage import upload_fileobj, upload_bytes, delete_file, get_file_url, s3_client, R2_BUCKET
+from app.storage import (
+    upload_fileobj,
+    upload_bytes,
+    delete_file,
+    get_file_url,
+    s3_client,
+    R2_BUCKET,
+)
 import uuid
 from datetime import datetime
 
@@ -32,7 +39,9 @@ def get_cases_for_client(client_id: int, db: Session):
                     "expediente_tribunal": court_case.num_exp_tribunal,
                     "tribunal": court_case.tribunal,
                     "status": court_case.status,
-                    "fecha_presentacion": court_case.fecha_presentacion.strftime("%d/%m/%Y"),
+                    "fecha_presentacion": court_case.fecha_presentacion.strftime(
+                        "%d/%m/%Y"
+                    ),
                     "contract_id": contract.id,
                     # 👇 NUEVOS
                     "actor_nombre": court_case.actor_nombre or "",
@@ -103,7 +112,8 @@ async def search_client(search_term: str = Form(...), db: Session = Depends(get_
 
     if not result:
         raise HTTPException(
-            404, "No se encontraron clientes con contrataciones pendientes de relacionar"
+            404,
+            "No se encontraron clientes con contrataciones pendientes de relacionar",
         )
 
     return result
@@ -140,7 +150,9 @@ async def get_client(client_id: int, db: Session = Depends(get_db)):
             "juicio": "Inicio de Juicio",
             "contestacion": "Contestación de Demanda",
         }
-        service_label = service_type_map.get(contract.service_type, contract.service_type)
+        service_label = service_type_map.get(
+            contract.service_type, contract.service_type
+        )
 
         tipo_juicio_display = contract.tipo_juicio or ""
         if contract.tipo_juicio_otro:
@@ -196,9 +208,7 @@ async def relate_case(
 
     # 2. Verificar que sea de tipo juicio/contestación y sin expediente aún
     if contract.service_type not in ("juicio", "contestacion"):
-        raise HTTPException(
-            400, "Este contrato no es de tipo juicio ni contestación"
-        )
+        raise HTTPException(400, "Este contrato no es de tipo juicio ni contestación")
 
     existing_case = (
         db.query(CourtCase).filter(CourtCase.contract_id == contract.id).first()
@@ -224,12 +234,16 @@ async def relate_case(
     acuse_key = f"expedientes/{client.folio_registro}/acuse_{uuid.uuid4().hex[:8]}.pdf"
     acuse_folder = acuse_key.rsplit("/", 1)[0]
     acuse_filename = acuse_key.rsplit("/", 1)[-1]
-    upload_bytes(acuse_content, acuse_folder, acuse_filename, content_type="application/pdf")
+    upload_bytes(
+        acuse_content, acuse_folder, acuse_filename, content_type="application/pdf"
+    )
 
     # Combinar dos actores si es divorcio bilateral
     actor_final = actor_nombre
     if actor2_nombre:
-        actor_final = f"{actor_nombre} / {actor2_nombre}" if actor_nombre else actor2_nombre
+        actor_final = (
+            f"{actor_nombre} / {actor2_nombre}" if actor_nombre else actor2_nombre
+        )
 
     # 7. Crear expediente
     new_case = CourtCase(
@@ -253,7 +267,12 @@ async def relate_case(
     actuacion_key = f"expedientes/{new_case.id}/actuacion_{uuid.uuid4().hex[:8]}.pdf"
     actuacion_folder = actuacion_key.rsplit("/", 1)[0]
     actuacion_filename = actuacion_key.rsplit("/", 1)[-1]
-    upload_bytes(acuse_content, actuacion_folder, actuacion_filename, content_type="application/pdf")
+    upload_bytes(
+        acuse_content,
+        actuacion_folder,
+        actuacion_filename,
+        content_type="application/pdf",
+    )
 
     new_actuacion = Actuacion(
         court_case_id=new_case.id,
@@ -269,6 +288,7 @@ async def relate_case(
 
     # 9. Bitácora
     from app.models.core import ActivityLog
+
     db.add(
         ActivityLog(
             firm_id=current_user.firm_id,
@@ -336,7 +356,9 @@ async def search_client_for_status(
     result = []
 
     for court_case in court_cases_by_exp:
-        contract = db.query(Contract).filter(Contract.id == court_case.contract_id).first()
+        contract = (
+            db.query(Contract).filter(Contract.id == court_case.contract_id).first()
+        )
         if contract and contract.client_id not in found_client_ids:
             found_client_ids.add(contract.client_id)
             client = db.query(Client).filter(Client.id == contract.client_id).first()
@@ -387,8 +409,14 @@ async def update_case_status(
         raise HTTPException(404, "Expediente no encontrado")
 
     valid_statuses = [
-        "iniciado", "terminado", "inactivo", "desistido",
-        "caducado", "revocado", "cliente_no_contesta", "otro",
+        "iniciado",
+        "terminado",
+        "inactivo",
+        "desistido",
+        "caducado",
+        "revocado",
+        "cliente_no_contesta",
+        "otro",
     ]
     if new_status not in valid_statuses:
         raise HTTPException(
@@ -450,7 +478,9 @@ async def search_client_for_consult(
     result = []
 
     for court_case in court_cases_by_exp:
-        contract = db.query(Contract).filter(Contract.id == court_case.contract_id).first()
+        contract = (
+            db.query(Contract).filter(Contract.id == court_case.contract_id).first()
+        )
         if contract and contract.client_id not in found_client_ids:
             found_client_ids.add(contract.client_id)
             client = db.query(Client).filter(Client.id == contract.client_id).first()
@@ -595,10 +625,13 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
     Genera un PDF unificado del expediente:
       1. Portada con datos generales + índice
       2. Cada actuación (PDF descargado de R2) pegada en orden cronológico
+
+    Usa pikepdf (basado en QPDF) que repara PDFs dañados automáticamente.
+    Si un PDF no se puede leer ni con pikepdf, se omite y se reporta.
     """
     from jinja2 import Environment, FileSystemLoader
     from weasyprint import HTML
-    from pypdf import PdfWriter, PdfReader
+    import pikepdf
     import base64
     import io
     import os
@@ -637,9 +670,9 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
             "tipo": act.tipo.upper(),
             "fecha": act.fecha_actuacion.strftime("%d/%m/%Y"),
             "descripcion": act.descripcion or "",
-            "subido_en": act.uploaded_at.strftime("%d/%m/%Y %H:%M")
-            if act.uploaded_at
-            else "",
+            "subido_en": (
+                act.uploaded_at.strftime("%d/%m/%Y %H:%M") if act.uploaded_at else ""
+            ),
         }
         for idx, act in enumerate(actuaciones)
     ]
@@ -666,11 +699,19 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
     portada_bytes = HTML(string=html_content).write_pdf()
 
     # ------------------------------------------------------------
-    # 2. Fusionar: portada + cada PDF de actuación (descargado de R2)
+    # 2. Fusionar con pikepdf (repara PDFs dañados automáticamente)
     # ------------------------------------------------------------
-    writer = PdfWriter()
-    writer.append(PdfReader(io.BytesIO(portada_bytes)))
+    pdf_final = pikepdf.Pdf.new()
 
+    # 2.1 Portada
+    try:
+        portada_pdf = pikepdf.open(io.BytesIO(portada_bytes))
+        pdf_final.pages.extend(portada_pdf.pages)
+    except Exception as e:
+        print(f"❌ No se pudo cargar la portada: {e}")
+        raise HTTPException(500, "Error al generar la portada del expediente")
+
+    # 2.2 Actuaciones
     adjuntadas = 0
     omitidas = 0
 
@@ -683,11 +724,16 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
             # Descargar de R2
             response = s3_client.get_object(Bucket=R2_BUCKET, Key=act.pdf_url)
             pdf_data = response["Body"].read()
+        except Exception as e:
+            print(f"⚠️ No se pudo descargar actuación #{act.id} ({act.pdf_url}): {e}")
+            omitidas += 1
+            continue
 
-            # Adjuntar al PDF final
-            writer.append(PdfReader(io.BytesIO(pdf_data)))
+        try:
+            # pikepdf repara el PDF automáticamente al abrirlo
+            pdf_act = pikepdf.open(io.BytesIO(pdf_data))
+            pdf_final.pages.extend(pdf_act.pages)
             adjuntadas += 1
-
         except Exception as e:
             print(f"⚠️ No se pudo adjuntar actuación #{act.id} ({act.pdf_url}): {e}")
             omitidas += 1
@@ -697,17 +743,130 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
     # 3. Escribir el resultado final
     # ------------------------------------------------------------
     output = io.BytesIO()
-    writer.write(output)
-    writer.close()
+    pdf_final.save(output)
     output.seek(0)
 
-    print(f"📄 PDF expediente {court_case.num_exp_tribunal}: "
-          f"{adjuntadas} actuaciones adjuntadas, {omitidas} omitidas")
+    print(
+        f"📄 PDF expediente {court_case.num_exp_tribunal}: "
+        f"{adjuntadas} actuaciones adjuntadas, {omitidas} omitidas"
+    )
 
     return Response(
         content=output.getvalue(),
         media_type="application/pdf",
         headers={
             "Content-Disposition": f"inline; filename=expediente_completo_{court_case.num_exp_tribunal}.pdf"
+        },
+    )
+
+
+# ============================================================
+# CONSTANCIA PDF DEL EXPEDIENTE (con loader en el frontend)
+# ============================================================
+@router.get("/constancia-expediente/{court_case_id}")
+async def get_constancia_expediente(court_case_id: int, db: Session = Depends(get_db)):
+    """
+    Genera un PDF de constancia del expediente:
+    - Datos del cliente
+    - Datos del expediente
+    - Partes del juicio
+    - Resumen y listado completo de actuaciones con fechas
+    """
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    import base64
+    import os
+    from datetime import datetime
+
+    court_case = db.query(CourtCase).filter(CourtCase.id == court_case_id).first()
+    if not court_case:
+        raise HTTPException(404, "Expediente no encontrado")
+
+    contract = db.query(Contract).filter(Contract.id == court_case.contract_id).first()
+    client = db.query(Client).filter(Client.id == contract.client_id).first()
+
+    # Actuaciones en orden cronológico
+    actuaciones = (
+        db.query(Actuacion)
+        .filter(Actuacion.court_case_id == court_case_id)
+        .order_by(Actuacion.fecha_actuacion.asc(), Actuacion.id.asc())
+        .all()
+    )
+
+    # Separar actores
+    actor1 = court_case.actor_nombre or ""
+    actor2 = ""
+    if "/" in actor1:
+        partes = actor1.split("/", 1)
+        actor1 = partes[0].strip()
+        actor2 = partes[1].strip()
+
+    # Fechas extremas
+    primera = actuaciones[0].fecha_actuacion.strftime("%d/%m/%Y") if actuaciones else ""
+    ultima = actuaciones[-1].fecha_actuacion.strftime("%d/%m/%Y") if actuaciones else ""
+
+    # Logo
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+
+    # Preparar lista de actuaciones
+    acts_data = [
+        {
+            "num": idx + 1,
+            "tipo": (act.tipo or "OTRO").upper(),
+            "fecha": act.fecha_actuacion.strftime("%d/%m/%Y"),
+            "descripcion": act.descripcion or "—",
+        }
+        for idx, act in enumerate(actuaciones)
+    ]
+
+    # Status key para CSS
+    status_key = (court_case.status or "iniciado").lower().replace(" ", "_")
+
+    # Render
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/constancia_expediente.html")
+
+    html_content = template.render(
+        logo_base64=logo_base64,
+        num_expediente=court_case.num_exp_tribunal,
+        folio_tribunal=court_case.folio_tribunal,
+        tribunal=court_case.tribunal,
+        secretaria=court_case.secretaria,
+        fecha_presentacion=court_case.fecha_presentacion.strftime("%d/%m/%Y"),
+        estatus=(court_case.status or "iniciado").upper(),
+        status_key=status_key,
+        actor=actor1,
+        actor2=actor2,
+        demandado=court_case.demandado_nombre or "",
+        nombre_completo=f"{client.name} {client.paterno} {client.materno or ''}",
+        curp=client.curp,
+        telefono=client.phone,
+        email=client.email or "N/A",
+        domicilio=client.address,
+        ocupacion=client.occupation,
+        expediente_interno=client.expediente_interno,
+        folio_registro=client.folio_registro,
+        total_actuaciones=len(actuaciones),
+        primera_actuacion=primera,
+        ultima_actuacion=ultima,
+        actuaciones=acts_data,
+        fecha_emision=datetime.now().strftime("%d/%m/%Y %H:%M"),
+        anio=datetime.now().strftime("%Y"),
+    )
+
+    pdf_bytes = HTML(string=html_content).write_pdf()
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": (
+                f"inline; filename=constancia_expediente_"
+                f"{court_case.num_exp_tribunal.replace('/', '_')}.pdf"
+            )
         },
     )

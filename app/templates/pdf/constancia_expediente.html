@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { size: letter; margin: 1.5cm; }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #1a2b4a;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #1a3b6b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .pdf-logo { width: 100px; height: auto; }
+        .pdf-header-info { text-align: right; }
+        .pdf-title { font-size: 20px; font-weight: bold; color: #1a3b6b; }
+        .pdf-subtitle { font-size: 12px; color: #6b7b8f; }
+        .pdf-section {
+            margin-top: 20px;
+            border: 1px solid #e0e5ec;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .pdf-section-title {
+            background: #1a3b6b;
+            color: white;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+        .pdf-table { width: 100%; border-collapse: collapse; }
+        .pdf-table td {
+            padding: 7px 15px;
+            border-bottom: 1px solid #eef2f7;
+            vertical-align: top;
+        }
+        .pdf-table td:first-child {
+            font-weight: bold;
+            width: 35%;
+            background: #f8fafc;
+            color: #4a5b6e;
+        }
+        .pdf-table tr:last-child td { border-bottom: none; }
+        .pdf-footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 9px;
+            color: #8a9bb0;
+            border-top: 1px solid #e0e5ec;
+            padding-top: 10px;
+        }
+        .pdf-firmas {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+        .pdf-firma { text-align: center; width: 200px; }
+        .pdf-firma-line {
+            border-top: 1px solid #1a2b4a;
+            margin-top: 40px;
+            padding-top: 5px;
+            font-size: 10px;
+            color: #6b7b8f;
+        }
+        .highlight { color: #2a6df4; font-weight: bold; }
+        .badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-iniciado { background: #e3effa; color: #1f6f9e; }
+        .badge-terminado { background: #e3f5e9; color: #1f8b4c; }
+        .badge-inactivo { background: #eef2f6; color: #3d4a5c; }
+        .badge-desistido { background: #fee9e7; color: #b12a2a; }
+        .badge-caducado { background: #ffedd5; color: #9b5e00; }
+        .badge-revocado { background: #ede7fe; color: #6f42c1; }
+        .badge-default { background: #eef2f6; color: #3d4a5c; }
+
+        /* Tabla de actuaciones */
+        .act-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+            margin-top: 8px;
+        }
+        .act-table thead {
+            background: #1a3b6b;
+            color: white;
+        }
+        .act-table thead th {
+            padding: 8px 10px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 10px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .act-table tbody tr {
+            border-bottom: 1px solid #eef2f7;
+        }
+        .act-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .act-table tbody td {
+            padding: 8px 10px;
+            vertical-align: top;
+            color: #1a2b4a;
+        }
+        .act-table .col-num {
+            width: 36px;
+            text-align: center;
+            font-weight: bold;
+            color: #2a6df4;
+        }
+        .act-table .col-fecha { width: 90px; white-space: nowrap; }
+        .act-table .col-tipo { width: 130px; font-weight: 600; }
+        .act-table .col-desc { color: #4a5b6e; }
+
+        .empty-acts {
+            text-align: center;
+            padding: 20px;
+            color: #8a9bb0;
+            font-style: italic;
+            font-size: 11px;
+        }
+
+        .resumen-box {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e3effa 100%);
+            border-left: 4px solid #2a6df4;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .resumen-item { text-align: center; }
+        .resumen-item .lbl {
+            font-size: 9px;
+            color: #6b7b8f;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .resumen-item .val {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a3b6b;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="pdf-header">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+        <div class="pdf-header-info">
+            <div class="pdf-title">LUMEN LEGAL</div>
+            <div class="pdf-subtitle">Constancia de Expediente</div>
+        </div>
+    </div>
+
+    <!-- TÍTULO -->
+    <div style="text-align:center; margin: 25px 0;">
+        <h1 style="color:#1a3b6b; font-size:20px; margin:0;">CONSTANCIA DE EXPEDIENTE</h1>
+        <p style="color:#6b7b8f; font-size:12px; margin:5px 0;">
+            Expediente N°: <span class="highlight">{{ num_expediente }}</span>
+            &nbsp;·&nbsp;
+            Emitida el {{ fecha_emision }}
+        </p>
+    </div>
+
+    <!-- DATOS DEL CLIENTE -->
+    <div class="pdf-section">
+        <div class="pdf-section-title">DATOS DEL CLIENTE</div>
+        <table class="pdf-table">
+            <tr><td>Nombre:</td><td>{{ nombre_completo }}</td></tr>
+            <tr><td>CURP:</td><td>{{ curp }}</td></tr>
+            <tr><td>Teléfono:</td><td>{{ telefono }}</td></tr>
+            <tr><td>Email:</td><td>{{ email }}</td></tr>
+            <tr><td>Domicilio:</td><td>{{ domicilio }}</td></tr>
+            <tr><td>Ocupación:</td><td>{{ ocupacion }}</td></tr>
+            <tr><td>Expediente Interno:</td><td>{{ expediente_interno }}</td></tr>
+            <tr><td>Folio Registro:</td><td>{{ folio_registro }}</td></tr>
+        </table>
+    </div>
+
+    <!-- DATOS DEL EXPEDIENTE -->
+    <div class="pdf-section">
+        <div class="pdf-section-title">DATOS DEL EXPEDIENTE</div>
+        <table class="pdf-table">
+            <tr><td>N° Expediente Tribunal:</td><td><strong>{{ num_expediente }}</strong></td></tr>
+            <tr><td>Folio Tribunal:</td><td>{{ folio_tribunal }}</td></tr>
+            <tr><td>Tribunal:</td><td>{{ tribunal }}</td></tr>
+            <tr><td>Secretaría:</td><td>{{ secretaria }}</td></tr>
+            <tr><td>Fecha Presentación:</td><td>{{ fecha_presentacion }}</td></tr>
+            <tr>
+                <td>Estatus:</td>
+                <td><span class="badge badge-{{ status_key }}">{{ estatus }}</span></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- PARTES DEL JUICIO -->
+    {% if actor or demandado or actor2 %}
+    <div class="pdf-section">
+        <div class="pdf-section-title">PARTES DEL JUICIO</div>
+        <table class="pdf-table">
+            {% if actor %}
+            <tr><td>{{ 'Primer Actor' if actor2 else 'Actor' }}:</td><td>{{ actor }}</td></tr>
+            {% endif %}
+            {% if actor2 %}
+            <tr><td>Segundo Actor:</td><td>{{ actor2 }}</td></tr>
+            {% endif %}
+            {% if demandado %}
+            <tr><td>Demandado(a):</td><td>{{ demandado }}</td></tr>
+            {% endif %}
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- RESUMEN -->
+    <div class="pdf-section">
+        <div class="pdf-section-title">RESUMEN DE ACTUACIONES</div>
+        <div style="padding: 15px;">
+            <div class="resumen-box">
+                <div class="resumen-item">
+                    <div class="lbl">Total de Actuaciones</div>
+                    <div class="val">{{ total_actuaciones }}</div>
+                </div>
+                <div class="resumen-item">
+                    <div class="lbl">Primera Actuación</div>
+                    <div class="val" style="font-size:13px;">{{ primera_actuacion or '—' }}</div>
+                </div>
+                <div class="resumen-item">
+                    <div class="lbl">Última Actuación</div>
+                    <div class="val" style="font-size:13px;">{{ ultima_actuacion or '—' }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LISTADO DE ACTUACIONES -->
+    <div class="pdf-section">
+        <div class="pdf-section-title">LISTADO DE ACTUACIONES REGISTRADAS</div>
+        {% if actuaciones %}
+        <table class="act-table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-fecha">Fecha</th>
+                    <th class="col-tipo">Tipo</th>
+                    <th class="col-desc">Descripción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for act in actuaciones %}
+                <tr>
+                    <td class="col-num">{{ act.num }}</td>
+                    <td class="col-fecha">{{ act.fecha }}</td>
+                    <td class="col-tipo">{{ act.tipo }}</td>
+                    <td class="col-desc">{{ act.descripcion }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-acts">
+            No hay actuaciones registradas en este expediente.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- FIRMAS -->
+    <div class="pdf-firmas">
+        <div class="pdf-firma">
+            <div class="pdf-firma-line">Firma del Abogado Responsable</div>
+        </div>
+        <div class="pdf-firma">
+            <div class="pdf-firma-line">Sello del Despacho</div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="pdf-footer">
+        Lumen Legal &copy; {{ anio }} - Documento generado electrónicamente.<br>
+        Aviso de Privacidad: Los datos aquí contenidos son confidenciales.
+    </div>
+</body>
+</html>

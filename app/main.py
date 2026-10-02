@@ -51,6 +51,7 @@ Base.metadata.create_all(bind=engine)
 # ============================================================
 import asyncio
 
+
 @app.on_event("startup")
 async def startup_tasks():
     """
@@ -86,66 +87,108 @@ async def startup_tasks():
         from app import backup_service as bs
 
         async def periodic_backup():
-            # Esperar 1 min al arranque para no bloquear startup
-            await asyncio.sleep(60)
+            """
+            Auto-backup con verificación del último respaldo creado.
+            Evita duplicados cuando el servidor se reinicia (por --reload
+            en dev o deploys en Render). Solo crea uno nuevo si ya pasó
+            el intervalo configurado desde el último automático.
+            """
+            from datetime import datetime, timedelta
+
+            # Margen inicial (evita dispararse en reinicios rápidos)
+            await asyncio.sleep(300)  # 5 minutos
+
+            intervalo = timedelta(days=settings.BACKUP_AUTO_EVERY_DAYS)
 
             while True:
+                segundos_espera = intervalo.total_seconds()
+
                 try:
                     db = SessionLocal()
                     try:
-                        admin = (
-                            db.query(core.User)
-                            .filter(core.User.role == "admin")
-                            .order_by(core.User.id.asc())
+                        # ── Verificar el último backup automático ──
+                        ultimo = (
+                            db.query(core.Backup)
+                            .filter(core.Backup.notes == "📅 Respaldo automático")
+                            .order_by(core.Backup.created_at.desc())
                             .first()
                         )
-                        admin_id = admin.id if admin else None
 
-                        print("🔄 Iniciando respaldo automático…")
-                        result = bs.generar_backup(
-                            db=db,
-                            user_id=admin_id,
-                            notes="📅 Respaldo automático",
-                        )
+                        ahora = datetime.utcnow()
+                        debe_ejecutar = True
 
-                        b = core.Backup(
-                            filename=result["filename"],
-                            stored_name=result["stored_name"],
-                            size=result["size"],
-                            sha256=result["sha256"],
-                            num_records=result["num_records"],
-                            num_files=result["num_files"],
-                            created_by=admin_id,
-                            notes="📅 Respaldo automático",
-                        )
-                        db.add(b)
-                        db.commit()
-                        print(
-                            f"✅ Backup automático: {b.filename} "
-                            f"({b.num_records} registros, {b.num_files} archivos)"
-                        )
+                        if ultimo and ultimo.created_at:
+                            transcurrido = ahora - ultimo.created_at
+                            if transcurrido < intervalo:
+                                restante = intervalo - transcurrido
+                                segundos_espera = restante.total_seconds()
+                                debe_ejecutar = False
+                                print(
+                                    f"⏭️  Backup automático omitido. Último: "
+                                    f"{ultimo.created_at.strftime('%d/%m/%Y %H:%M')} "
+                                    f"(hace {transcurrido}). Próximo en {restante}."
+                                )
 
-                        # Rotación: mantener solo los últimos N automáticos
-                        keep = settings.BACKUP_AUTO_KEEP
-                        if keep > 0:
-                            autos = (
-                                db.query(core.Backup)
-                                .filter(core.Backup.notes == "📅 Respaldo automático")
-                                .order_by(core.Backup.created_at.desc())
-                                .all()
+                        if debe_ejecutar:
+                            admin = (
+                                db.query(core.User)
+                                .filter(core.User.role == "admin")
+                                .order_by(core.User.id.asc())
+                                .first()
                             )
-                            for old in autos[keep:]:
-                                print(f"🗑️  Eliminando backup viejo: {old.filename}")
-                                bs.borrar_backup(db, old.id)
+                            admin_id = admin.id if admin else None
+
+                            print("🔄 Iniciando respaldo automático…")
+                            result = bs.generar_backup(
+                                db=db,
+                                user_id=admin_id,
+                                notes="📅 Respaldo automático",
+                            )
+
+                            b = core.Backup(
+                                filename=result["filename"],
+                                stored_name=result["stored_name"],
+                                size=result["size"],
+                                sha256=result["sha256"],
+                                num_records=result["num_records"],
+                                num_files=result["num_files"],
+                                created_by=admin_id,
+                                notes="📅 Respaldo automático",
+                            )
+                            db.add(b)
+                            db.commit()
+                            print(
+                                f"✅ Backup automático: {b.filename} "
+                                f"({b.num_records} registros, {b.num_files} archivos)"
+                            )
+
+                            # Rotación: mantener solo los últimos N automáticos
+                            keep = settings.BACKUP_AUTO_KEEP
+                            if keep > 0:
+                                autos = (
+                                    db.query(core.Backup)
+                                    .filter(
+                                        core.Backup.notes == "📅 Respaldo automático"
+                                    )
+                                    .order_by(core.Backup.created_at.desc())
+                                    .all()
+                                )
+                                for old in autos[keep:]:
+                                    print(
+                                        f"🗑️  Eliminando backup viejo: {old.filename}"
+                                    )
+                                    bs.borrar_backup(db, old.id)
+
+                            segundos_espera = intervalo.total_seconds()
 
                     finally:
                         db.close()
 
                 except Exception as e:
                     print(f"⚠️ Error en backup automático: {e}")
+                    segundos_espera = 3600  # Reintentar en 1h si falla
 
-                # Esperar N días hasta el siguiente
-                await asyncio.sleep(settings.BACKUP_AUTO_EVERY_DAYS * 24 * 3600)
+                await asyncio.sleep(segundos_espera)
 
         asyncio.create_task(periodic_backup())
         print(
@@ -190,6 +233,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         return await call_next(request)
 
+
 app.add_middleware(AuthMiddleware)
 
 
@@ -197,8 +241,19 @@ app.add_middleware(AuthMiddleware)
 # ROUTERS
 # ============================================================
 from app.routers import (
-    health, clients, cases, contracts, payments,
-    actuaciones, auth, agenda, dashboard, audit, activity, formatos, backup
+    health,
+    clients,
+    cases,
+    contracts,
+    payments,
+    actuaciones,
+    auth,
+    agenda,
+    dashboard,
+    audit,
+    activity,
+    formatos,
+    backup,
 )
 
 app.include_router(health.router, prefix="/api")
@@ -236,6 +291,7 @@ async def root(request: Request):
     # Refrescar usuario desde la BD
     from app.database import SessionLocal
     from app.models.core import User as UserModel
+
     db = SessionLocal()
     try:
         user = db.query(UserModel).filter(UserModel.id == user.id).first()
@@ -251,18 +307,25 @@ async def root(request: Request):
     # Determinar permisos
     if user.role == "admin" or user.permissions == "all":
         user_permissions = [
-            "clients", "contracts", "cases", "payments",
-            "actuaciones", "consult", "agenda", "dashboard",
-            "audit", "admin", "formatos"
+            "clients",
+            "contracts",
+            "cases",
+            "payments",
+            "actuaciones",
+            "consult",
+            "agenda",
+            "dashboard",
+            "audit",
+            "admin",
+            "formatos",
         ]
     else:
         user_permissions = user.permissions.split(",") if user.permissions else []
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "user": user,
-        "permissions": user_permissions
-    })
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "user": user, "permissions": user_permissions},
+    )
 
 
 # ============================================================
@@ -273,7 +336,9 @@ async def profile(request: Request):
     user = get_current_user(request)
     if not user:
         return RedirectResponse("/auth/login", status_code=302)
-    return templates.TemplateResponse("profile.html", {"request": request, "user": user})
+    return templates.TemplateResponse(
+        "profile.html", {"request": request, "user": user}
+    )
 
 
 # ============================================================
