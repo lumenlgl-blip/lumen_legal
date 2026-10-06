@@ -8,6 +8,7 @@ Genera un ZIP con:
   - database/*.json    → todas las tablas en JSON
   - storage/**         → todos los archivos de R2 (clientes, expedientes, etc.)
 """
+
 import os
 import json
 import uuid
@@ -21,6 +22,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import inspect, DateTime, Boolean
 
 from app.models import core
+from app.models.core import FormatoDemanda  # ← NUEVO
 from app.storage import s3_client, R2_BUCKET, get_bytes, list_objects, object_exists
 from app.config import settings
 
@@ -37,6 +39,7 @@ os.makedirs(os.path.join(BACKUPS_DIR, "_tmp"), exist_ok=True)
 TABLES_INSERT_ORDER = [
     "firms",
     "users",
+    "abogados",  # ← NUEVO (contratos dependen de esta)
     "clients",
     "client_documents",
     "contracts",
@@ -44,6 +47,7 @@ TABLES_INSERT_ORDER = [
     "payments",
     "actuaciones",
     "agenda_events",
+    "formatos_demanda",  # ← NUEVO
     "activity_logs",
     "backups",
 ]
@@ -53,6 +57,7 @@ TABLES_DELETE_ORDER = list(reversed(TABLES_INSERT_ORDER))
 TABLE_TO_MODEL = {
     "firms": core.Firm,
     "users": core.User,
+    "abogados": core.Abogado,  # ← NUEVO
     "clients": core.Client,
     "client_documents": core.ClientDocument,
     "contracts": core.Contract,
@@ -60,6 +65,7 @@ TABLE_TO_MODEL = {
     "payments": core.Payment,
     "actuaciones": core.Actuacion,
     "agenda_events": core.AgendaEvent,
+    "formatos_demanda": core.FormatoDemanda,  # ← NUEVO
     "activity_logs": core.ActivityLog,
     "backups": core.Backup,
 }
@@ -70,6 +76,7 @@ R2_BACKUP_PREFIXES = [
     "expedientes/",
     "pagos/",
     "contratos/",
+    "formatos_demanda/",  # ← NUEVO
 ]
 
 
@@ -124,9 +131,12 @@ def _parse_row(row: dict, column_types: dict) -> dict:
 # ============================================================
 # GENERAR BACKUP
 # ============================================================
-def generar_backup(db: Session, user_id: Optional[int] = None,
-                   notes: Optional[str] = None,
-                   progress_cb=None) -> dict:
+def generar_backup(
+    db: Session,
+    user_id: Optional[int] = None,
+    notes: Optional[str] = None,
+    progress_cb=None,
+) -> dict:
     """Exporta BD (JSON) + archivos de R2 en un ZIP. Sube a R2."""
     now = datetime.utcnow()
     timestamp = now.strftime("%Y%m%d_%H%M%S")
@@ -198,7 +208,9 @@ def generar_backup(db: Session, user_id: Optional[int] = None,
         # storage — descarga cada archivo de R2 y lo mete al ZIP
         for idx, key in enumerate(r2_files, 1):
             if progress_cb and idx % 20 == 0:
-                progress_cb(f"Empaquetando archivos: {idx}/{total_files}", idx, total_files)
+                progress_cb(
+                    f"Empaquetando archivos: {idx}/{total_files}", idx, total_files
+                )
             try:
                 data = get_bytes(key)
                 if data is None:
@@ -215,7 +227,9 @@ def generar_backup(db: Session, user_id: Optional[int] = None,
     r2_subido = False
     try:
         with open(out_path, "rb") as f:
-            s3_client.put_object(Bucket=R2_BUCKET, Key=f"backups/{stored_name}", Body=f.read())
+            s3_client.put_object(
+                Bucket=R2_BUCKET, Key=f"backups/{stored_name}", Body=f.read()
+            )
         r2_subido = True
         logger.info(f"⬆️  Backup subido a R2: backups/{stored_name} ({size} bytes)")
     except Exception as e:
@@ -238,11 +252,7 @@ def generar_backup(db: Session, user_id: Optional[int] = None,
 # LISTAR / BORRAR
 # ============================================================
 def listar_backups(db: Session):
-    return (
-        db.query(core.Backup)
-        .order_by(core.Backup.created_at.desc())
-        .all()
-    )
+    return db.query(core.Backup).order_by(core.Backup.created_at.desc()).all()
 
 
 def borrar_backup(db: Session, backup_id: int) -> bool:
@@ -316,11 +326,13 @@ def inspeccionar_backup(zip_path: str) -> dict:
             metadata_raw = zf.read("metadata.json").decode("utf-8")
             resultado["metadata"] = json.loads(metadata_raw)
         except KeyError:
-            raise ValueError("El ZIP no contiene metadata.json. No es un respaldo válido.")
+            raise ValueError(
+                "El ZIP no contiene metadata.json. No es un respaldo válido."
+            )
 
         for name in zf.namelist():
             if name.startswith("database/") and name.endswith(".json"):
-                table_name = name[len("database/"):-len(".json")]
+                table_name = name[len("database/") : -len(".json")]
                 try:
                     rows = json.loads(zf.read(name).decode("utf-8"))
                     if isinstance(rows, list):
@@ -339,7 +351,7 @@ def inspeccionar_backup(zip_path: str) -> dict:
                 except Exception:
                     pass
                 if len(resultado["archivos_incluidos"]) < 10:
-                    resultado["archivos_incluidos"].append(name[len("storage/"):])
+                    resultado["archivos_incluidos"].append(name[len("storage/") :])
 
     return resultado
 
@@ -365,7 +377,9 @@ def restaurar_backup_selectivo(
     if modo not in ("replace", "merge"):
         raise ValueError("Modo inválido. Usa 'replace' o 'merge'.")
 
-    tablas_seleccionadas = [t.strip() for t in (tablas_seleccionadas or []) if t.strip()]
+    tablas_seleccionadas = [
+        t.strip() for t in (tablas_seleccionadas or []) if t.strip()
+    ]
     if not tablas_seleccionadas:
         raise ValueError("Debes seleccionar al menos una tabla")
 
@@ -393,7 +407,10 @@ def restaurar_backup_selectivo(
         # PASO 1: Borrar (modo replace)
         if modo == "replace":
             for table_name in TABLES_DELETE_ORDER:
-                if table_name not in tablas_seleccionadas or table_name not in existing_tables:
+                if (
+                    table_name not in tablas_seleccionadas
+                    or table_name not in existing_tables
+                ):
                     continue
                 model_class = TABLE_TO_MODEL.get(table_name)
                 if model_class is None:
@@ -408,7 +425,9 @@ def restaurar_backup_selectivo(
 
         # PASO 2: Insertar
         tablas_ordenadas = [t for t in TABLES_INSERT_ORDER if t in tablas_seleccionadas]
-        tablas_ordenadas += [t for t in tablas_seleccionadas if t not in TABLES_INSERT_ORDER]
+        tablas_ordenadas += [
+            t for t in tablas_seleccionadas if t not in TABLES_INSERT_ORDER
+        ]
 
         total_tablas = len(tablas_ordenadas)
 
@@ -439,7 +458,11 @@ def restaurar_backup_selectivo(
 
             for row_data in rows:
                 try:
-                    if modo == "merge" and "id" in row_data and row_data["id"] is not None:
+                    if (
+                        modo == "merge"
+                        and "id" in row_data
+                        and row_data["id"] is not None
+                    ):
                         if db.query(model_class).get(row_data["id"]):
                             saltados += 1
                             continue
@@ -469,17 +492,18 @@ def restaurar_backup_selectivo(
                 progress_cb("Restaurando archivos adjuntos…", 0, 1)
 
             archivos_en_zip = [
-                n for n in all_names
-                if n.startswith("storage/") and not n.endswith("/")
+                n for n in all_names if n.startswith("storage/") and not n.endswith("/")
             ]
             files_restored = 0
             total_files = len(archivos_en_zip)
 
             for idx, name in enumerate(archivos_en_zip, 1):
                 if progress_cb and idx % 20 == 0:
-                    progress_cb(f"Restaurando archivos: {idx}/{total_files}", idx, total_files)
+                    progress_cb(
+                        f"Restaurando archivos: {idx}/{total_files}", idx, total_files
+                    )
 
-                rel = name[len("storage/"):]
+                rel = name[len("storage/") :]
                 if not rel:
                     continue
 

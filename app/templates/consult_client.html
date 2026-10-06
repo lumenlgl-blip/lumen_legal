@@ -1433,6 +1433,177 @@
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+        /* ============================================================ */
+        /* DOCUMENTOS LEGALES FIRMADOS (PLEGABLE)                       */
+        /* ============================================================ */
+        .docs-firmados-box {
+            margin-top: 16px;
+            background: linear-gradient(135deg, rgba(111,66,193,0.04), rgba(111,66,193,0.10));
+            border-left: 4px solid #6f42c1;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: box-shadow var(--transition-normal);
+        }
+        [data-theme="dark"] .docs-firmados-box {
+            background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(167,139,250,0.15));
+        }
+        .docs-firmados-box.expanded {
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Header clickeable */
+        .docs-firmados-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 14px 18px;
+            cursor: pointer;
+            user-select: none;
+            transition: background var(--transition-fast);
+        }
+        .docs-firmados-header:hover {
+            background: rgba(111,66,193,0.08);
+        }
+        .docs-firmados-title {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #6f42c1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        [data-theme="dark"] .docs-firmados-title { color: var(--purple); }
+        .docs-firmados-title .toggle-chevron {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85rem;
+        }
+        .docs-firmados-box.expanded .docs-firmados-title .toggle-chevron {
+            transform: rotate(180deg);
+        }
+        .docs-firmados-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .docs-firmados-counter {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Body colapsable */
+        .docs-firmados-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .docs-firmados-box.expanded .docs-firmados-body {
+            max-height: 800px;
+        }
+        .docs-firmados-inner {
+            padding: 0 18px 14px 18px;
+            border-top: 1px dashed rgba(111,66,193,0.25);
+        }
+
+        /* Filas */
+        .doc-firmado-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(111,66,193,0.15);
+            flex-wrap: wrap;
+        }
+        .doc-firmado-row:last-child { border-bottom: none; }
+        .doc-firmado-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+        .doc-firmado-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            border: 1px solid var(--border-soft);
+        }
+        .doc-firmado-icon.ok {
+            background: var(--success-soft);
+            color: var(--success);
+            border-color: var(--success);
+        }
+        [data-theme="dark"] .doc-firmado-icon.ok { background: rgba(52,211,153,0.15); }
+        .doc-firmado-name {
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--text-primary);
+        }
+        .doc-firmado-status {
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .doc-firmado-status.ok { color: var(--success); }
+        .doc-firmado-status.pending { color: var(--text-muted); }
+        .doc-firmado-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .doc-firmado-actions .btn {
+            border-radius: 40px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            min-height: 34px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Loader superpuesto en preview-before-upload */
+        .pdf-preview-wrap {
+            position: relative;
+            min-height: 60vh;
+            background: var(--bg-tertiary);
+        }
+        .pdf-preview-loader {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            z-index: 10;
+            gap: 14px;
+        }
+        .pdf-preview-loader.hidden { display: none; }
+        .pdf-preview-loader .spinner-border {
+            width: 2.4rem;
+            height: 2.4rem;
+            color: var(--accent-primary);
+            border-width: 3px;
+        }
+        .pdf-preview-loader .preview-text {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -1797,6 +1968,38 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-success" id="regenerateQRBtn">
                     <i class="bi bi-arrow-repeat"></i> Regenerar QR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PREVIEW PDF (antes de subir) -->
+<div class="modal fade modal-modern" id="pdfPreviewModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:var(--accent-dark);">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-earmark-check"></i> Confirmar Comprobante
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-0" style="background:var(--bg-tertiary);">
+                <div class="pdf-preview-wrap">
+                    <div id="pdfPreviewLoader" class="pdf-preview-loader">
+                        <div class="spinner-border" role="status"></div>
+                        <p class="preview-text">Cargando vista previa...</p>
+                        <p class="text-muted small mb-0">Preparando el documento, por favor espera.</p>
+                    </div>
+                    <iframe id="pdfPreviewFrame" class="modal-pdf" title="Vista previa del comprobante" style="display:none;"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" id="rejectFileBtn">
+                    <i class="bi bi-x-circle"></i> Rechazar
+                </button>
+                <button type="button" class="btn btn-success btn-lg" id="acceptFileBtn">
+                    <i class="bi bi-check-circle"></i> Sí, usar este archivo
                 </button>
             </div>
         </div>
@@ -2201,6 +2404,41 @@ async function loadClientDetail(clientId) {
             });
         });
 
+        // Bind reimprimir constancia de actualización de datos procesales
+        document.querySelectorAll('.reimprimir-actualizacion').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const caseId = safeNumber(this.dataset.caseId);
+                const label = this.dataset.label || 'juicio';
+                reimprimirConstanciaActualizacion(caseId, label);
+            });
+        });
+
+        // Bind toggle de tarjeta plegable "Documentos legales firmados"
+        document.querySelectorAll('.docs-firmados-header').forEach(header => {
+            header.addEventListener('click', function () {
+                const box = this.closest('.docs-firmados-box');
+                if (!box) return;
+                const isOpen = box.classList.toggle('expanded');
+                this.setAttribute('aria-expanded', String(isOpen));
+            });
+            header.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+
+                // Bind documentos legales
+        document.querySelectorAll('.documentos-legales').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const contractId = this.dataset.contractId;
+                const label = this.dataset.contractLabel || 'contrato';
+                generarDocumentosLegales(contractId, label);
+            });
+        });
+
         document.getElementById('clientDetailContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     } catch (error) {
@@ -2297,6 +2535,91 @@ function abrirPdfConLoader(url, filename, tipo) {
     }
 }
 
+
+/* ============================================================
+   PREVIEW ANTES DE SUBIR (con loader)
+   ============================================================ */
+let currentPreviewURL = null;
+
+function mostrarPreviewFile(url, filename) {
+    if (currentPreviewURL && currentPreviewURL !== url) {
+        try { URL.revokeObjectURL(currentPreviewURL); } catch (e) {}
+    }
+    currentPreviewURL = url;
+
+    const frame = document.getElementById('pdfPreviewFrame');
+    const loader = document.getElementById('pdfPreviewLoader');
+
+    // Reset
+    if (frame) {
+        frame.style.display = 'none';
+        frame.src = 'about:blank';
+    }
+    if (loader) loader.classList.remove('hidden');
+
+    const modalEl = document.getElementById('pdfPreviewModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    modal.show();
+
+    // onload del iframe
+    if (frame) {
+        frame.onload = function () {
+            setTimeout(() => {
+                if (loader) loader.classList.add('hidden');
+                frame.style.display = 'block';
+            }, 250);
+        };
+    }
+
+    modalEl.addEventListener('shown.bs.modal', function once() {
+        modalEl.removeEventListener('shown.bs.modal', once);
+        setTimeout(() => { if (frame) frame.src = url; }, 120);
+    });
+
+    // Botones aceptar/rechazar (clonar para limpiar listeners)
+    const acceptBtn = document.getElementById('acceptFileBtn');
+    if (acceptBtn) {
+        const newAccept = acceptBtn.cloneNode(true);
+        acceptBtn.parentNode.replaceChild(newAccept, acceptBtn);
+        newAccept.addEventListener('click', function () {
+            modal.hide();
+            // Aquí el patrón `patchPreviewAccept` ya captura el click en fase capture,
+            // así que no es necesario hacer nada más aquí.
+        });
+    }
+
+    const rejectBtn = document.getElementById('rejectFileBtn');
+    if (rejectBtn) {
+        const newReject = rejectBtn.cloneNode(true);
+        rejectBtn.parentNode.replaceChild(newReject, rejectBtn);
+        newReject.addEventListener('click', function () {
+            modal.hide();
+            // Resetear el input de archivo de signed upload
+            if (typeof signedFileInput !== 'undefined' && signedFileInput) {
+                signedFileInput.value = '';
+            }
+            if (typeof signedFileAccepted !== 'undefined') {
+                signedFileAccepted = false;
+            }
+        });
+    }
+}
+
+// Reset del modal de preview al cerrar
+document.getElementById('pdfPreviewModal')?.addEventListener('hidden.bs.modal', function () {
+    const frame = document.getElementById('pdfPreviewFrame');
+    const loader = document.getElementById('pdfPreviewLoader');
+    if (frame) {
+        frame.src = 'about:blank';
+        frame.style.display = 'none';
+    }
+    if (loader) loader.classList.remove('hidden');
+
+    // Si NO se aceptó, limpiar el input y el contexto de signed upload
+    if (!signedFileAccepted && signedFileInput) {
+        signedFileInput.value = '';
+    }
+});
 
 function renderClientDetail(data) {
     const contratos = Array.isArray(data.contratos) ? data.contratos : [];
@@ -2474,12 +2797,26 @@ function renderContract(contract, idx) {
                             ` : ''}
                         </div>
                     ` : ''}
+
+                    ${(contract.service_type === 'juicio') ? `
+                        <div style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(42,109,244,0.3); display:flex; justify-content:flex-end;">
+                            <button type="button"
+                                    class="btn-reprint-constancia reimprimir-actualizacion"
+                                    data-case-id="${safeNumber(cc.id)}"
+                                    data-label="${escapeHTML(servicio)}">
+                                <i class="bi bi-printer-fill"></i> Reimprimir constancia de actualización
+                            </button>
+                        </div>
+                    ` : ''}
                 </div>
             </div>
         `;
     }
 
     const contractId = safeNumber(contract.id);
+
+    // ── Documentos legales firmados (Contrato / Reconocimiento / Pagaré) ──
+    const docsFirmadosHTML = renderDocsFirmados(contract);
 
     return `
         <div class="contract-card-modern" style="animation-delay:${idx * 0.05}s;">
@@ -2515,13 +2852,132 @@ function renderContract(contract, idx) {
                         data-contract-label="${escapeHTML(servicio)}">
                     <i class="bi bi-printer-fill"></i> Reimprimir constancia
                 </button>
+                ${(contract.service_type === 'juicio' || contract.service_type === 'contestacion') ? `
+                <button type="button"
+                        class="btn-reprint-constancia documentos-legales"
+                        data-contract-id="${contractId}"
+                        data-contract-label="${escapeHTML(servicio)}"
+                        style="background:linear-gradient(135deg,#6f42c1,#8b5cf6);">
+                    <i class="bi bi-file-earmark-text-fill"></i> Documentos legales
+                </button>
+                ` : ''}
             </div>
 
             ${courtCaseHTML}
+
+            ${(contract.service_type === 'juicio' || contract.service_type === 'contestacion') ? docsFirmadosHTML : ''}
         </div>
     `;
 }
 
+/* ============================================================
+   DOCUMENTOS LEGALES FIRMADOS (PLEGABLE)
+   ============================================================ */
+function renderDocsFirmados(contract) {
+    const contractId = safeNumber(contract.id);
+    const estado = (contract.estado_documental || 'sin_contrato').toLowerCase();
+    const firmados = contract.documentos_firmados || {};
+
+    // Mapa de estados → badge visual
+    const estadosInfo = {
+        'sin_contrato':              { label: 'Sin contrato generado',   class: 'status-pendiente' },
+        'contrato_generado':         { label: 'Contrato generado',       class: 'status-iniciado' },
+        'contrato_firmado':          { label: 'Contrato firmado',        class: 'status-iniciado' },
+        'reconocimiento_generado':   { label: 'Reconocimiento generado', class: 'status-iniciado' },
+        'reconocimiento_firmado':    { label: 'Reconocimiento firmado',  class: 'status-iniciado' },
+        'pagare_generado':           { label: 'Pagaré generado',         class: 'status-iniciado' },
+        'pagare_firmado':            { label: 'Pagaré firmado',          class: 'status-iniciado' },
+        'liquidado':                 { label: 'Expediente completo',     class: 'status-liquidado' },
+    };
+    const badge = estadosInfo[estado] || estadosInfo['sin_contrato'];
+
+    const docs = [
+        { key: 'contrato',        label: 'Contrato',       icon: 'bi-file-earmark-text',  firmado: !!firmados.contrato },
+        { key: 'reconocimiento',  label: 'Reconocimiento', icon: 'bi-file-earmark-check', firmado: !!firmados.reconocimiento },
+        { key: 'pagare',          label: 'Pagaré',         icon: 'bi-file-earmark-ruled', firmado: !!firmados.pagare },
+    ];
+
+    // ── 4° documento: Constancia de Actualización (solo inicio de juicio con expediente) ──
+    const esInicioJuicio = (contract.service_type === 'juicio');
+    const tieneExpediente = !!contract.court_case;
+    if (esInicioJuicio && tieneExpediente) {
+        docs.push({
+            key: 'constancia_actualizacion',
+            label: 'Constancia de Actualización',
+            icon: 'bi-file-earmark-medical',
+            firmado: !!firmados.constancia_actualizacion,
+        });
+    }
+
+    const firmadosCount = docs.filter(d => d.firmado).length;
+
+    const docRows = docs.map(d => {
+        const tieneFirmado = d.firmado;
+        const fileUrl = firmados[d.key]?.url || '';
+
+        return `
+            <div class="doc-firmado-row">
+                <div class="doc-firmado-info">
+                    <i class="bi ${d.icon} doc-firmado-icon ${tieneFirmado ? 'ok' : ''}"></i>
+                    <div>
+                        <div class="doc-firmado-name">${d.label}</div>
+                        <div class="doc-firmado-status ${tieneFirmado ? 'ok' : 'pending'}">
+                            ${tieneFirmado ? '✓ Firmado y digitalizado' : 'Pendiente de firmar y subir'}
+                        </div>
+                    </div>
+                </div>
+                <div class="doc-firmado-actions">
+                    ${tieneFirmado ? `
+                        <button class="btn btn-sm btn-outline-primary preview-pdf"
+                                data-url="${escapeHTML(fileUrl)}"
+                                data-filename="${d.key}_firmado_${contractId}.pdf"
+                                data-tipo="${d.label} firmado"
+                                type="button">
+                            <i class="bi bi-eye"></i> Vista previa
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning upload-signed-btn"
+                                data-contract-id="${contractId}"
+                                data-doc-type="${d.key}"
+                                data-doc-label="${d.label}"
+                                data-mode="replace"
+                                type="button">
+                            <i class="bi bi-arrow-repeat"></i> Reemplazar
+                        </button>
+                    ` : `
+                        <button class="btn btn-sm btn-success upload-signed-btn"
+                                data-contract-id="${contractId}"
+                                data-doc-type="${d.key}"
+                                data-doc-label="${d.label}"
+                                data-mode="upload"
+                                type="button">
+                            <i class="bi bi-cloud-arrow-up"></i> Subir firmado
+                        </button>
+                    `}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    return `
+        <div class="docs-firmados-box" data-contract-id="${contractId}">
+            <div class="docs-firmados-header" role="button" tabindex="0" aria-expanded="false">
+                <div class="docs-firmados-title">
+                    <i class="bi bi-chevron-down toggle-chevron"></i>
+                    <i class="bi bi-shield-check"></i> Documentos legales firmados
+                </div>
+                <div class="docs-firmados-meta">
+                    <span class="docs-firmados-counter">${firmadosCount}/${docs.length}</span>
+                    <span class="status-badge-modern ${badge.class}">${badge.label}</span>
+                </div>
+            </div>
+            <div class="docs-firmados-body">
+                <div class="docs-firmados-inner">
+                    ${docRows}
+                </div>
+            </div>
+        </div>
+    `;
+}
 function newSearch() {
     document.getElementById('resultsContainer').innerHTML = '';
     document.getElementById('clientDetailContainer').style.display = 'none';
@@ -3009,6 +3465,29 @@ function reimprimirConstanciaContrato(contractId, label) {
 }
 
 /* ============================================================
+   REIMPRIMIR CONSTANCIA DE ACTUALIZACIÓN DE DATOS PROCESALES
+   ============================================================ */
+function reimprimirConstanciaActualizacion(caseId, label) {
+    if (!caseId) {
+        showNotification('Error', '<p>Expediente no válido.</p>', 'error');
+        return;
+    }
+
+    showConfirm('Reimprimir Constancia de Actualización',
+        `<p>¿Generar e imprimir la <strong>Constancia de Actualización de Datos Procesales</strong> del juicio <strong>${escapeHTML(label)}</strong>?</p>
+         <div class="alert alert-info mt-2 mb-0 small">
+            <i class="bi bi-info-circle me-1"></i>
+            Se abrirá el PDF en una pestaña nueva. Este documento corresponde a la cláusula vigésima segunda del contrato (solo aplica a Inicio de Juicio).
+         </div>`,
+        function () {
+            const url = `/api/cases/constancia-actualizacion/${caseId}`;
+            const filename = `actualizacion_datos_${caseId}.pdf`;
+            generarConstanciaConProgreso(url, filename, 'de actualización');
+        }
+    );
+}
+
+/* ============================================================
    GENERAR CONSTANCIA CON PROGRESO
    ============================================================ */
 let constanciaTimer = null;
@@ -3119,6 +3598,31 @@ async function generarConstanciaConProgreso(url, filename, tipo) {
     }
 }
 
+/* ============================================================
+   DOCUMENTOS LEGALES DEL CONTRATO (Contrato + Reconocimiento + Pagaré)
+   ============================================================ */
+function generarDocumentosLegales(contractId, label) {
+    if (!contractId) {
+        showNotification('Error', '<p>Contrato no válido.</p>', 'error');
+        return;
+    }
+
+    showConfirm('Documentos Legales',
+        `<p>¿Generar los <strong>documentos legales</strong> del contrato <strong>${escapeHTML(label)}</strong>?</p>
+         <div class="alert alert-info mt-2 mb-0 small">
+            <i class="bi bi-info-circle me-1"></i>
+            Se generará un PDF con <strong>3 documentos</strong> listos para firma:<br>
+            <strong>1)</strong> Contrato de prestación de servicios<br>
+            <strong>2)</strong> Reconocimiento de saldo<br>
+            <strong>3)</strong> Pagaré
+         </div>`,
+        function () {
+            const url = `/api/contracts/legal-docs/${contractId}`;
+            const filename = `documentos_legales_contrato_${contractId}.pdf`;
+            generarConstanciaConProgreso(url, filename, 'documentos legales');
+        }
+    );
+}
 
 /* ============================================================
    DESCARGAR CONSTANCIA
@@ -3235,7 +3739,12 @@ async function executeDeleteClient() {
 
         hideLoading();
 
-        const result = await response.json();
+        let result;
+        try {
+            result = await response.json();
+        } catch (_) {
+            result = { success: false, message: `Error del servidor (${response.status})` };
+        }
 
         if (response.ok && result.success) {
             showNotification('Cliente Eliminado',
@@ -3286,6 +3795,206 @@ window.addEventListener('beforeunload', (e) => {
         e.returnValue = '';
     }
 });
+
+/* ============================================================
+   SUBIR DOCUMENTO LEGAL FIRMADO (Contrato / Reconocimiento / Pagaré)
+   ============================================================ */
+let signedUploadCtx = { contractId: null, docType: null, docLabel: null };
+let signedFileAccepted = false;
+let signedFileInput = null;
+
+function initSignedUpload() {
+    // Crear input hidden reutilizable
+    if (!signedFileInput) {
+        signedFileInput = document.createElement('input');
+        signedFileInput.type = 'file';
+        signedFileInput.accept = '.pdf';
+        signedFileInput.style.display = 'none';
+        signedFileInput.id = 'signedFileInput';
+        document.body.appendChild(signedFileInput);
+
+        signedFileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+            if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) {
+                showNotification('Formato no válido', '<p>Solo se aceptan PDFs.</p>', 'error');
+                this.value = '';
+                return;
+            }
+            if (file.size > 25 * 1024 * 1024) {
+                showNotification('Archivo muy grande', '<p>Máx 25 MB.</p>', 'error');
+                this.value = '';
+                return;
+            }
+            signedFileAccepted = true;
+            mostrarPreviewFile(URL.createObjectURL(file), file.name);
+        });
+    }
+
+    // Delegación de eventos (los contratos se renderizan dinámicamente)
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.upload-signed-btn');
+        if (!btn) return;
+
+        e.preventDefault();
+        signedUploadCtx = {
+            contractId: safeNumber(btn.dataset.contractId),
+            docType: btn.dataset.docType,
+            docLabel: btn.dataset.docLabel || 'documento',
+        };
+        signedFileAccepted = false;
+
+        // En móvil: abrir directo
+        if (isMobileDevice) {
+            signedFileInput.value = '';
+            signedFileInput.click();
+            return;
+        }
+
+        // En desktop: modal de opciones (reutilizamos el de QR)
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('uploadOptionsModal')).show();
+    });
+
+    // Reemplazar comportamiento de los botones del modal de opciones SOLO cuando estamos en modo "signed"
+    // Para no romper el flujo existente de replace-doc, usamos un flag:
+    document.getElementById('uploadOptionsModal').addEventListener('show.bs.modal', function () {
+        // Si es signed upload, modificar handlers después de que se muestre
+        setTimeout(() => {
+            if (!signedUploadCtx.contractId) return;
+            // Reconfigurar temporalmente los botones
+            const chooseFileBtn = document.getElementById('chooseFileBtn');
+            const chooseQRBtn = document.getElementById('chooseQRBtn');
+            // cloneNode para quitar listeners previos
+            const newFile = chooseFileBtn.cloneNode(true);
+            const newQR = chooseQRBtn.cloneNode(true);
+            chooseFileBtn.parentNode.replaceChild(newFile, chooseFileBtn);
+            chooseQRBtn.parentNode.replaceChild(newQR, chooseQRBtn);
+
+            newFile.addEventListener('click', () => {
+                bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+                setTimeout(() => { signedFileInput.value = ''; signedFileInput.click(); }, 300);
+            });
+            newQR.addEventListener('click', () => {
+                bootstrap.Modal.getInstance(document.getElementById('uploadOptionsModal'))?.hide();
+                setTimeout(() => abrirQR(), 300);
+            });
+        }, 50);
+    }, { once: false });
+}
+
+// Hook: cuando se acepta el archivo en el preview modal, subimos
+function uploadSignedDocument(file) {
+    console.log('🚀 uploadSignedDocument INICIADO');
+    console.log('   file:', file?.name, file?.size, 'bytes');
+    console.log('   ctx:', JSON.stringify(signedUploadCtx));
+
+    if (!signedUploadCtx.contractId || !signedUploadCtx.docType) {
+        console.error('❌ Contexto inválido:', signedUploadCtx);
+        showNotification('Error', '<p>Contexto de subida no válido.</p>', 'error');
+        return;
+    }
+
+    if (!file || !file.size) {
+        console.error('❌ Archivo vacío o inválido');
+        showNotification('Error', '<p>El archivo está vacío.</p>', 'error');
+        return;
+    }
+
+    showConfirm('Confirmar Subida',
+        `<p>¿Subir <strong>${escapeHTML(file.name)}</strong> como <strong>${escapeHTML(signedUploadCtx.docLabel)} firmado</strong>?</p>
+         <div class="alert alert-info mt-2 mb-0 small">
+            <i class="bi bi-shield-check me-1"></i>
+            Se guardará en el servidor. El estado documental del contrato se actualizará automáticamente.
+         </div>`,
+        async function () {
+            showLoading('Subiendo documento firmado...', 'Guardando en el servidor.');
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('doc_type', signedUploadCtx.docType);
+
+            try {
+                console.log('📤 Enviando a /api/contracts/upload-signed/' + signedUploadCtx.contractId);
+                const res = await fetch(`/api/contracts/upload-signed/${signedUploadCtx.contractId}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                hideLoading();
+
+                console.log('📥 Respuesta HTTP:', res.status, res.statusText);
+
+                if (!res.ok) {
+                    let errMsg = 'Error al subir';
+                    try {
+                        const j = await res.json();
+                        if (j.detail) errMsg = j.detail;
+                        console.error('❌ Error del servidor:', j);
+                    } catch(err) {
+                        console.error('❌ No se pudo parsear el error:', err);
+                    }
+                    showNotification('Error', `<p>${escapeHTML(errMsg)}</p>`, 'error');
+                    return;
+                }
+
+                const result = await res.json();
+                console.log('✅ Respuesta OK:', result);
+
+                showNotification('¡Documento Subido!',
+                    `<p>El <strong>${escapeHTML(signedUploadCtx.docLabel)}</strong> firmado se guardó correctamente.</p>
+                     <p class="text-muted small mb-0">Estado: ${escapeHTML(result.estado_documental || '—')}</p>`,
+                    'success');
+
+                // Recargar el detalle del cliente
+                await loadClientDetail(currentClientId);
+                signedUploadCtx = { contractId: null, docType: null, docLabel: null };
+                signedFileAccepted = false;
+
+            } catch (err) {
+                hideLoading();
+                showNotification('Error', `<p>${escapeHTML(err.message)}</p>`, 'error');
+            }
+        }
+    );
+}
+
+/* ============================================================
+   DELEGACIÓN DE EVENTOS PARA EL PREVIEW MODAL
+   (sobrevive a los clones que hace mostrarPreviewFile)
+   ============================================================ */
+
+// Aceptar: sube el archivo si estamos en modo signed upload
+document.addEventListener('click', function (e) {
+    const acceptBtn = e.target.closest('#acceptFileBtn');
+    if (!acceptBtn) return;
+
+    if (!signedUploadCtx.contractId || !signedUploadCtx.docType) return;
+
+    if (!signedFileInput || !signedFileInput.files || !signedFileInput.files[0]) {
+        console.warn('⚠️ No hay archivo para subir en signedFileInput');
+        showNotification('Error', '<p>No se encontró el archivo seleccionado.</p>', 'error');
+        return;
+    }
+
+    const file = signedFileInput.files[0];
+    console.log('✅ Preview aceptado — subiendo:', file.name, 'tipo:', signedUploadCtx.docType);
+
+    // Dar tiempo a que el modal se cierre antes de mostrar confirmación
+    setTimeout(() => uploadSignedDocument(file), 400);
+}, true);
+
+// Rechazar: limpia input y contexto
+document.addEventListener('click', function (e) {
+    const rejectBtn = e.target.closest('#rejectFileBtn');
+    if (!rejectBtn) return;
+
+    signedFileAccepted = false;
+    if (signedFileInput) signedFileInput.value = '';
+    signedUploadCtx = { contractId: null, docType: null, docLabel: null };
+}, true);
+
+// Inicializar el módulo de signed upload
+initSignedUpload();
 </script>
 </body>
 </html>

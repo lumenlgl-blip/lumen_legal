@@ -153,6 +153,25 @@
         </table>
     </div>
 
+    {% if abogado_nombre %}
+    <div class="pdf-section">
+        <div class="pdf-section-title">ABOGADO ASIGNADO</div>
+        <table class="pdf-table">
+            <tr><td>Nombre:</td><td><strong>{{ abogado_nombre }}</strong></td></tr>
+            <tr><td>Cédula Profesional:</td><td><span class="highlight">{{ abogado_cedula }}</span></td></tr>
+            {% if abogado_especialidad %}
+            <tr><td>Especialidad:</td><td>{{ abogado_especialidad }}</td></tr>
+            {% endif %}
+            {% if abogado_telefono %}
+            <tr><td>Teléfono:</td><td>{{ abogado_telefono }}</td></tr>
+            {% endif %}
+            {% if abogado_domicilio %}
+            <tr><td>Domicilio:</td><td>{{ abogado_domicilio }}</td></tr>
+            {% endif %}
+        </table>
+    </div>
+    {% endif %}
+
     <!-- RESUMEN FINANCIERO -->
     <div class="pdf-section">
         <div class="pdf-section-title">RESUMEN FINANCIERO</div>
@@ -192,10 +211,17 @@
     <!-- FIRMAS -->
     <div class="pdf-firmas">
         <div class="pdf-firma">
-            <div class="pdf-firma-line">Firma del Cliente</div>
+            <div class="pdf-firma-line"></div>
+            <div class="pdf-firma-nombre" style="font-weight:bold;font-size:10px;color:#1a2b4a;margin-top:2px;">{{ nombre_completo }}</div>
+            <div class="pdf-firma-rol" style="font-size:9px;color:#6b7b8f;margin-top:1px;">FIRMA DEL CLIENTE</div>
         </div>
         <div class="pdf-firma">
-            <div class="pdf-firma-line">Firma del Abogado</div>
+            <div class="pdf-firma-line"></div>
+            <div class="pdf-firma-nombre" style="font-weight:bold;font-size:10px;color:#1a2b4a;margin-top:2px;">{{ abogado_nombre or 'EL PROFESIONISTA' }}</div>
+            <div class="pdf-firma-rol" style="font-size:9px;color:#6b7b8f;margin-top:1px;">
+                {% if abogado_cedula %}Céd. {{ abogado_cedula }}<br>{% endif %}
+                FIRMA DEL ABOGADO
+            </div>
         </div>
     </div>
 

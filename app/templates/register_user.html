@@ -484,6 +484,8 @@
                 <div class="invalid-feedback">Selecciona un rol</div>
             </div>
 
+
+
             <!-- Permisos -->
             <div class="permissions-section">
                 <span class="perm-label"><i class="bi bi-key me-2"></i>Permisos de Acceso</span>
@@ -527,6 +529,10 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="formatos" id="perm_formatos">
                         <label class="form-check-label" for="perm_formatos"><i class="bi bi-file-earmark-word me-1"></i>Formatos</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="abogados" id="perm_abogados">
+                        <label class="form-check-label" for="perm_abogados"><i class="bi bi-award me-1"></i>Abogados</label>
                     </div>
                 </div>
             </div>
@@ -687,6 +693,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         }
     );
 });
+
 </script>
 </body>
 </html>

@@ -1433,6 +1433,7 @@ const isMobileDevice = (() => {
    ============================================================ */
 let fileAccepted = false;
 let selectedContractId = null;
+let selectedContractServiceType = null;   // ← NUEVO
 let isSubmitting = false;
 let currentPreviewURL = null;
 let qrPollingInterval = null;
@@ -1632,6 +1633,7 @@ function resetearRelacionSilencioso() {
 
     fileAccepted = false;
     selectedContractId = null;
+    selectedContractServiceType = null;   // ← NUEVO
     window.__wizardClientLoaded = false;
 
     document.getElementById('relateFormContainer').style.display = 'none';
@@ -1844,6 +1846,7 @@ async function loadClientContracts(clientId) {
                 this.classList.add('selected');
 
                 selectedContractId = safeNumber(contract.id);
+                selectedContractServiceType = (contract.service_type || '').toLowerCase();   // ← NUEVO
                 document.getElementById('contractId').value = selectedContractId;
 
                 // === BANNER DESTACADO DEL CONTRATO SELECCIONADO ===
@@ -2168,6 +2171,7 @@ function limpiarFormulario() {
 
             fileAccepted = false;
             selectedContractId = null;
+            selectedContractServiceType = null;   // ← NUEVO
 
             document.getElementById('relateFormContainer').style.display = 'none';
             document.getElementById('contractsContainer').style.display = 'none';
@@ -2293,7 +2297,17 @@ document.getElementById('relateForm').addEventListener('submit', async (e) => {
                         </p>
                     </div>`, 'success');
 
-                setTimeout(() => window.location.reload(), 2500);
+                // ── Constancia de actualización SOLO si el contrato es "juicio" ──
+                // (en contestación NO aplica porque el expediente ya existía al firmar)
+                const caseId = result.case_id;
+                const esInicioJuicio = selectedContractServiceType === 'juicio';
+
+                if (caseId && esInicioJuicio) {
+                    setTimeout(() => {
+                        window.open(`/api/cases/constancia-actualizacion/${caseId}`, '_blank');
+                    }, 800);
+                }
+                setTimeout(() => window.location.reload(), 3500);
 
             } catch (error) {
                 hideLoading();

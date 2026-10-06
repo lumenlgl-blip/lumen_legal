@@ -1160,6 +1160,38 @@
                         <label class="form-label">Costo Total <i class="bi bi-lock-fill" style="font-size:0.7rem;"></i></label>
                         <input type="number" id="editTotalCost" step="0.01" class="form-control" readonly style="background:#eef2f6; cursor:not-allowed;">
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="bi bi-award"></i> Abogado Asignado</label>
+                        <select id="editAssignedLawyer" class="form-select">
+                            <option value="">Cargando abogados...</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><i class="bi bi-geo-alt-fill"></i> Ciudad de Suscripción</label>
+                        <select id="editCiudadSuscripcion" class="form-select">
+                            <option value="">Selecciona el municipio...</option>
+                            <optgroup label="Municipios de Sinaloa">
+                                <option value="Ahome (Los Mochis)">Ahome — Los Mochis</option>
+                                <option value="Angostura">Angostura</option>
+                                <option value="Badiraguato">Badiraguato</option>
+                                <option value="Choix">Choix</option>
+                                <option value="Concordia">Concordia</option>
+                                <option value="Cosalá">Cosalá</option>
+                                <option value="Culiacán">Culiacán</option>
+                                <option value="El Fuerte">El Fuerte</option>
+                                <option value="Elota (La Cruz)">Elota — La Cruz</option>
+                                <option value="Escuinapa">Escuinapa</option>
+                                <option value="Guasave">Guasave</option>
+                                <option value="Mazatlán">Mazatlán</option>
+                                <option value="Mocorito">Mocorito</option>
+                                <option value="Navolato">Navolato</option>
+                                <option value="Rosario (El Rosario)">Rosario — El Rosario</option>
+                                <option value="Salvador Alvarado (Guamúchil)">Salvador Alvarado — Guamúchil</option>
+                                <option value="San Ignacio">San Ignacio</option>
+                                <option value="Sinaloa (Sinaloa de Leyva)">Sinaloa — Sinaloa de Leyva</option>
+                            </optgroup>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="editCaseSection" style="display:none;">
@@ -1578,9 +1610,60 @@ function verDetalleContrato(id) {
 }
 
 /* ============================================================
+   CARGAR ABOGADOS EN EL SELECT DEL MODAL EDITAR
+   ============================================================ */
+let abogadosEditCache = null;
+
+async function cargarAbogadosEnEdit() {
+    const select = document.getElementById('editAssignedLawyer');
+    if (!select) return;
+
+    // Si ya cargamos la lista antes, no volver a pedirla
+    if (abogadosEditCache) {
+        poblarSelectAbogados(select, abogadosEditCache);
+        return;
+    }
+
+    select.innerHTML = '<option value="">Cargando abogados...</option>';
+    try {
+        const res = await fetch('/api/users/lawyers', { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Error al cargar abogados');
+        const data = await res.json();
+        abogadosEditCache = data;
+        poblarSelectAbogados(select, data);
+    } catch (e) {
+        select.innerHTML = '<option value="">❌ Error al cargar abogados</option>';
+        console.error(e);
+    }
+}
+
+function poblarSelectAbogados(select, abogados) {
+    select.innerHTML = '<option value="">Selecciona un abogado...</option>';
+    if (!abogados.length) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.disabled = true;
+        opt.textContent = '⚠️ No hay abogados registrados';
+        select.appendChild(opt);
+        return;
+    }
+    abogados.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a.id;
+        opt.textContent = `Lic. ${a.nombre} — Céd. ${a.cedula}${a.especialidad ? ' (' + a.especialidad + ')' : ''}`;
+        select.appendChild(opt);
+    });
+}
+
+
+
+/* ============================================================
    EDITAR CONTRATO
    ============================================================ */
 let currentEditContractId = null;
+
+
+
 
 async function openEditContract(contractId) {
     try {
@@ -1633,6 +1716,16 @@ async function openEditContract(contractId) {
         }
 
         document.getElementById('editAdminPassword').value = '';
+
+        // ── Cargar abogados si aún no están cargados ──
+        await cargarAbogadosEnEdit();
+
+        // ── Setear abogado asignado actual ──
+        const selAbogado = document.getElementById('editAssignedLawyer');
+        selAbogado.value = data.contract.assigned_lawyer_id || '';
+
+        // ── Setear ciudad de suscripción actual ──
+        document.getElementById('editCiudadSuscripcion').value = data.contract.ciudad_suscripcion || '';
 
         document.getElementById('editTipoJuicio').onchange = function() {
             const val = this.value || '';
@@ -1708,6 +1801,10 @@ document.getElementById('saveContractBtn').addEventListener('click', async (e) =
     // Enviar siempre el valor original en minúsculas
     const statusEl = document.getElementById('editStatus');
     fd.append('status', statusEl.dataset.rawValue || statusEl.value.toLowerCase());
+
+    // ── Abogado y ciudad de suscripción ──
+    fd.append('assigned_lawyer_id', document.getElementById('editAssignedLawyer').value || '');
+    fd.append('ciudad_suscripcion', document.getElementById('editCiudadSuscripcion').value || '');
 
     if (document.getElementById('editCaseSection').style.display !== 'none') {
         fd.append('tribunal', document.getElementById('editTribunal').value);

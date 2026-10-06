@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
+﻿from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from app.routers.auth import get_current_user
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.database import get_db
+from app.utils.search import safe_int
 from app.models.core import Client, Contract, CourtCase, Actuacion
 from app.storage import upload_fileobj, delete_file, get_file_url
 import uuid
@@ -81,7 +82,7 @@ async def search_client_with_cases(
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
                 Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                == (safe_int(search_term) or -1),
             )
         )
         .all()

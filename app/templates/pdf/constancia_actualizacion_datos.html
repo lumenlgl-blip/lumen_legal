@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    @page {
+        size: letter;
+        margin: 2.2cm 1.8cm 2.4cm 1.8cm;
+        @bottom-left {
+            content: "LUMEN LEGAL — Aviso de Actualización de Datos Procesales";
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+        @bottom-right {
+            content: "Página " counter(page) " de " counter(pages);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1a2b4a;
+        font-size: 10.5pt;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+    }
+
+    p {
+        text-align: justify;
+        margin: 10px 0;
+    }
+
+    /* ============ HEADER ============ */
+    .pdf-header {
+        background: #1a3b6b;
+        padding: 16px 22px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 4px solid #c9a227;
+    }
+    .pdf-logo-wrap {
+        background: #ffffff;
+        padding: 6px 10px;
+        border-radius: 4px;
+        line-height: 0;
+    }
+    .pdf-logo {
+        width: 90px;
+        height: auto;
+        display: block;
+    }
+    .pdf-header-info {
+        text-align: right;
+        color: #ffffff;
+    }
+    .pdf-title {
+        font-size: 17pt;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+    }
+    .pdf-subtitle {
+        font-size: 9.5pt;
+        color: #c9d4e6;
+        margin-top: 3px;
+        letter-spacing: 0.5px;
+    }
+
+    /* ============ DOC TITLE ============ */
+    h1.doc-title {
+        text-align: center;
+        font-size: 14pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        margin: 28px 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.35;
+    }
+    .title-rule {
+        width: 90px;
+        height: 3px;
+        background: #c9a227;
+        margin: 0 auto 16px;
+        border-radius: 2px;
+    }
+    .contract-number {
+        text-align: center;
+        background: #f1f5fa;
+        border: 1px solid #d8e0eb;
+        border-radius: 24px;
+        padding: 7px 24px;
+        margin: 0 auto 22px;
+        display: table;
+        font-size: 10.5pt;
+        color: #1a3b6b;
+        letter-spacing: 0.5px;
+    }
+    .contract-number strong { color: #1a3b6b; }
+
+    /* ============ INTRO ============ */
+    .intro {
+        background: #fbfcfe;
+        border-left: 3px solid #c9a227;
+        padding: 12px 18px;
+        margin: 16px 0 22px;
+        border-radius: 0 4px 4px 0;
+    }
+
+    /* ============ SECTION TITLE ============ */
+    .section-title {
+        text-align: center;
+        font-size: 11.5pt;
+        font-weight: bold;
+        color: #ffffff;
+        background: #1a3b6b;
+        padding: 8px 0;
+        margin: 26px 0 16px;
+        border-radius: 4px;
+        letter-spacing: 3px;
+        border-bottom: 3px solid #c9a227;
+    }
+
+    /* ============ INFO BOX (datos procesales) ============ */
+    .info-box {
+        background: #f7f9fc;
+        border: 1px solid #d8e0eb;
+        border-left: 4px solid #c9a227;
+        border-radius: 4px;
+        padding: 14px 20px;
+        margin: 14px 0 18px;
+    }
+    .info-box p {
+        margin: 8px 0;
+        text-align: left;
+        font-size: 10.5pt;
+    }
+    .info-box p strong {
+        color: #1a3b6b;
+        display: inline-block;
+        min-width: 180px;
+    }
+    .info-box .indent {
+        margin-left: 22px;
+        color: #4a5b6e;
+    }
+
+    /* ============ CLAUSE-LIKE TITLE ============ */
+    .clause-title {
+        display: block;
+        background: #f7f9fc;
+        border-left: 4px solid #c9a227;
+        color: #1a3b6b;
+        padding: 8px 0 8px 14px;
+        font-weight: bold;
+        font-size: 10.5pt;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin: 20px 0 8px;
+        page-break-after: avoid;
+    }
+
+    /* ============ AMOUNT / HIGHLIGHT ============ */
+    .highlight {
+        background: #f0f7ff;
+        border: 1px solid #cce0ff;
+        border-left: 4px solid #1a3b6b;
+        border-radius: 4px;
+        padding: 12px 18px;
+        margin: 14px 0;
+    }
+    .highlight p {
+        margin: 4px 0;
+        color: #1a3b6b;
+    }
+
+    .bold { font-weight: bold; }
+    .indent { margin-left: 22px; text-align: justify; }
+
+    /* ============ SIGNATURES ============ */
+    .firma-block {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        margin-top: 60px;
+        page-break-inside: avoid;
+    }
+    .firma-item {
+        flex: 1;
+        text-align: center;
+        padding: 12px 10px;
+        background: #fbfcfe;
+        border: 1px solid #e3e9f2;
+        border-radius: 4px;
+    }
+    .firma-line {
+        border-top: 1.5px solid #1a2b4a;
+        margin-top: 60px;
+        padding-top: 6px;
+        font-size: 10pt;
+        color: #6b7b8f;
+    }
+    .firma-name {
+        font-weight: bold;
+        font-size: 10pt;
+        margin-top: 6px;
+        color: #1a3b6b;
+    }
+    .firma-rol {
+        font-size: 9pt;
+        color: #6b7b8f;
+        margin-top: 2px;
+    }
+    .firma-rol-strong {
+        font-weight: bold;
+        color: #1a3b6b;
+        letter-spacing: 0.6px;
+        font-size: 9pt;
+        margin-top: 4px;
+    }
+    .huella-box {
+        border: 1.5px dashed #8a9bb0;
+        border-radius: 6px;
+        padding: 6px;
+        width: 110px;
+        text-align: center;
+        margin: 14px auto 0;
+        background: #ffffff;
+    }
+    .huella-label {
+        font-size: 7pt;
+        font-weight: bold;
+        color: #6b7b8f;
+        letter-spacing: 0.08em;
+    }
+    .huella-espacio {
+        height: 60px;
+        border-top: 1px solid #dbe4ef;
+        margin-top: 4px;
+    }
+
+    /* ============ FOOTER ============ */
+    .pdf-footer {
+        margin-top: 46px;
+        text-align: center;
+        font-size: 8.5pt;
+        color: #8a9bb0;
+        border-top: 2px solid #1a3b6b;
+        padding-top: 12px;
+        line-height: 1.5;
+    }
+    .pdf-footer::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 2px;
+        background: #c9a227;
+        margin: 0 auto 10px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ============ ENCABEZADO ============ -->
+<div class="pdf-header">
+    <div class="pdf-logo-wrap">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+    </div>
+    <div class="pdf-header-info">
+        <div class="pdf-title">LUMEN LEGAL</div>
+        <div class="pdf-subtitle">Aviso de Actualización de Datos Procesales</div>
+    </div>
+</div>
+
+<!-- ============ TÍTULO ============ -->
+<h1 class="doc-title">AVISO DE ACTUALIZACIÓN DE DATOS PROCESALES</h1>
+<div class="title-rule"></div>
+
+<p class="contract-number"><strong>CONTRATO NÚMERO: {{ contrato_id }}</strong></p>
+
+<!-- ============ PÁRRAFO INTRODUCTORIO ============ -->
+<p class="intro">
+    En <strong>{{ ciudad }}</strong>, <strong>{{ estado }}</strong>, a los <strong>{{ fecha_letra }}</strong> (<strong>{{ fecha_corta }}</strong>), comparecen por una parte el <strong>Lic. {{ profesionista_nombre }}</strong>, a quien en lo sucesivo se le denominará <strong>"EL PROFESIONISTA"</strong>, y por la otra <strong>{{ cliente_nombre }}</strong>, a quien en lo sucesivo se le denominará <strong>"EL CLIENTE"</strong>, quienes manifiestan que, en cumplimiento a lo dispuesto por la <strong>Cláusula Vigésima Primera</strong> del Contrato de Prestación de Servicios Profesionales de fecha <strong>{{ fecha_contrato_original }}</strong>, se hace constar la siguiente:
+</p>
+
+<!-- ============ SECTION TITLE ============ -->
+<div class="section-title">INFORMACIÓN PROCESAL ACTUALIZADA</div>
+
+<!-- ============ INFO BOX ============ -->
+<div class="info-box">
+    <p><strong>a) Número de expediente asignado:</strong> {{ num_expediente }}</p>
+    <p><strong>b) Autoridad jurisdiccional:</strong> {{ tribunal }}</p>
+    {% if secretaria %}
+    <p><strong>c) Secretaría:</strong> {{ secretaria }}</p>
+    {% endif %}
+    {% if folio %}
+    <p><strong>d) Folio del tribunal:</strong> {{ folio }}</p>
+    {% endif %}
+    <p><strong>e) Fecha de presentación:</strong> {{ fecha_presentacion }}</p>
+    <p><strong>f) Nombre de las partes:</strong></p>
+    <p class="indent"><strong>Actor(es):</strong> {{ actor_nombre }}{% if actor2_nombre %} / {{ actor2_nombre }}{% endif %}</p>
+    {% if demandado_nombre %}
+    <p class="indent"><strong>Demandado(a):</strong> {{ demandado_nombre }}</p>
+    {% endif %}
+</div>
+
+<!-- ============ RECONOCIMIENTO DEL CLIENTE ============ -->
+<p class="clause-title">RECONOCIMIENTO DEL CLIENTE</p>
+
+<p>EL CLIENTE reconoce haber sido enterado de la información procesal anterior, misma que corresponde al procedimiento contratado y que se hace constar en cumplimiento de la cláusula correspondiente del contrato base. Dicha información se incorpora al expediente contractual y no implica novación de las obligaciones originales.</p>
+
+<p>Asimismo, EL CLIENTE manifiesta su conformidad con los datos asentados y firma el presente aviso para todos los efectos legales a que haya lugar.</p>
+
+<div class="highlight">
+    <p><strong>Nota:</strong> El presente aviso se anexa al Contrato de Prestación de Servicios Profesionales número <strong>{{ contrato_id }}</strong> y forma parte integrante del mismo, conforme a lo previsto en su Cláusula Décima Quinta.</p>
+</div>
+
+<!-- ============ FIRMAS ============ -->
+<div class="firma-block">
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">Lic. {{ profesionista_nombre }}</div>
+        <div class="firma-rol">Cédula: {{ profesionista_cedula }}</div>
+        <div class="firma-rol-strong">EL PROFESIONISTA</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">{{ cliente_nombre }}</div>
+        <div class="firma-rol-strong">EL CLIENTE (RECIBIDO Y ENTERADO)</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ PIE DE DOCUMENTO ============ -->
+<div class="pdf-footer">
+    Documento generado electrónicamente por Lumen Legal.<br>
+    Lumen Legal &copy; {{ anio }} — Documento generado electrónicamente.
+</div>
+
+</body>
+</html>

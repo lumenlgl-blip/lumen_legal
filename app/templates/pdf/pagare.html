@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    @page {
+        size: letter;
+        margin: 2.2cm 1.8cm 2.4cm 1.8cm;
+        @bottom-left {
+            content: "LUMEN LEGAL — Pagaré";
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+        @bottom-right {
+            content: "Página " counter(page) " de " counter(pages);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1a2b4a;
+        font-size: 10.5pt;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+    }
+
+    p {
+        text-align: justify;
+        margin: 10px 0;
+    }
+
+    /* ============ HEADER ============ */
+    .pdf-header {
+        background: #1a3b6b;
+        padding: 16px 22px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 4px solid #c9a227;
+    }
+    .pdf-logo-wrap {
+        background: #ffffff;
+        padding: 6px 10px;
+        border-radius: 4px;
+        line-height: 0;
+    }
+    .pdf-logo {
+        width: 90px;
+        height: auto;
+        display: block;
+    }
+    .pdf-header-info {
+        text-align: right;
+        color: #ffffff;
+    }
+    .pdf-title {
+        font-size: 17pt;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+    }
+    .pdf-subtitle {
+        font-size: 9.5pt;
+        color: #c9d4e6;
+        margin-top: 3px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* ============ TITLE ============ */
+    h1.doc-title {
+        text-align: center;
+        font-size: 22pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        margin: 30px 0 8px;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+    }
+    .title-rule {
+        width: 90px;
+        height: 3px;
+        background: #c9a227;
+        margin: 0 auto 22px;
+        border-radius: 2px;
+    }
+
+    /* ============ BUENO POR BOX ============ */
+    .bueno-por {
+        text-align: center;
+        font-size: 15pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        margin: 20px auto 26px;
+        padding: 16px 22px;
+        background: linear-gradient(180deg, #f4f8fd 0%, #eaf1fa 100%);
+        border: 1px solid #c9d9ee;
+        border-top: 4px solid #1a3b6b;
+        border-bottom: 4px solid #c9a227;
+        border-radius: 6px;
+        letter-spacing: 0.05em;
+    }
+    .bueno-por .bueno-por-label {
+        display: block;
+        font-size: 9pt;
+        font-weight: bold;
+        color: #6b7b8f;
+        letter-spacing: 0.25em;
+        margin-bottom: 6px;
+    }
+    .bueno-por .bueno-por-letra {
+        display: block;
+        font-size: 10.5pt;
+        font-weight: normal;
+        color: #4a5c78;
+        margin-top: 6px;
+        letter-spacing: 0;
+    }
+
+    /* ============ KEY INFO BLOCKS ============ */
+    .info-row {
+        display: flex;
+        gap: 14px;
+        margin: 16px 0;
+        page-break-inside: avoid;
+    }
+    .info-card {
+        flex: 1;
+        background: #fbfcfe;
+        border: 1px solid #e3e9f2;
+        border-left: 4px solid #1a3b6b;
+        border-radius: 4px;
+        padding: 10px 14px;
+    }
+    .info-card .label {
+        display: block;
+        font-size: 8.5pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+    .info-card .value {
+        font-size: 10.5pt;
+        color: #1a2b4a;
+    }
+
+    /* ============ AMOUNT BOX ============ */
+    .amount-box {
+        text-align: center;
+        background: #f7f9fc;
+        border: 1px solid #d8e0eb;
+        border-left: 4px solid #1a3b6b;
+        border-right: 4px solid #1a3b6b;
+        padding: 12px 16px;
+        margin: 18px auto;
+        border-radius: 4px;
+        font-size: 13pt;
+        color: #1a3b6b;
+        font-weight: bold;
+        letter-spacing: 0.3px;
+    }
+
+    /* ============ SECTION SEPARATOR ============ */
+    .section-rule {
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, #c9d9ee 20%, #c9d9ee 80%, transparent 100%);
+        margin: 22px 0;
+        border: none;
+    }
+
+    .bold { font-weight: bold; }
+
+    .note {
+        background: #fbf7ec;
+        border-left: 4px solid #c9a227;
+        padding: 12px 18px;
+        border-radius: 0 4px 4px 0;
+        margin: 20px 0;
+        font-size: 10pt;
+        text-align: justify;
+    }
+
+    /* ============ DATOS SUSCRIPTOR ============ */
+    .datos-suscriptor {
+        margin-top: 28px;
+        padding: 14px 20px;
+        background: #f7f9fc;
+        border: 1px solid #e0e5ec;
+        border-top: 3px solid #1a3b6b;
+        border-radius: 4px;
+        page-break-inside: avoid;
+    }
+    .datos-suscriptor .datos-title {
+        font-size: 10pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e0e5ec;
+    }
+    .datos-suscriptor p {
+        margin: 4px 0;
+        font-size: 10.5pt;
+        text-align: left;
+    }
+    .datos-suscriptor p .label {
+        display: inline-block;
+        min-width: 110px;
+        font-weight: bold;
+        color: #1a3b6b;
+    }
+
+    /* ============ FIRMAS ============ */
+    .firma-block {
+        margin-top: 70px;
+        text-align: center;
+        page-break-inside: avoid;
+    }
+    .firma-line {
+        border-top: 1.5px solid #1a2b4a;
+        width: 300px;
+        margin: 60px auto 6px;
+        padding-top: 6px;
+    }
+    .firma-name {
+        font-weight: bold;
+        font-size: 11pt;
+        color: #1a3b6b;
+        margin-top: 4px;
+    }
+    .firma-rol {
+        font-size: 9.5pt;
+        color: #6b7b8f;
+        letter-spacing: 0.15em;
+        margin-top: 3px;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .huella-box {
+        border: 1.5px dashed #8a9bb0;
+        border-radius: 6px;
+        padding: 6px;
+        width: 130px;
+        text-align: center;
+        margin: 16px auto 0;
+        background: #ffffff;
+    }
+    .huella-label {
+        font-size: 7pt;
+        font-weight: bold;
+        color: #6b7b8f;
+        letter-spacing: 0.08em;
+    }
+    .huella-espacio {
+        height: 60px;
+        border-top: 1px solid #dbe4ef;
+        margin-top: 4px;
+    }
+
+    /* ============ FOOTER ============ */
+    .pdf-footer {
+        margin-top: 46px;
+        text-align: center;
+        font-size: 8.5pt;
+        color: #8a9bb0;
+        border-top: 2px solid #1a3b6b;
+        padding-top: 12px;
+        line-height: 1.5;
+    }
+    .pdf-footer::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 2px;
+        background: #c9a227;
+        margin: 0 auto 10px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ============ ENCABEZADO ============ -->
+<div class="pdf-header">
+    <div class="pdf-logo-wrap">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+    </div>
+    <div class="pdf-header-info">
+        <div class="pdf-title">LUMEN LEGAL</div>
+        <div class="pdf-subtitle">Pagaré</div>
+    </div>
+</div>
+
+<!-- ============ TÍTULO ============ -->
+<h1 class="doc-title">P A G A R É</h1>
+<div class="title-rule"></div>
+
+<!-- ============ BUENO POR ============ -->
+<div class="bueno-por">
+    <span class="bueno-por-label">BUENO POR</span>
+    ${{ saldo_numero }}
+    <span class="bueno-por-letra">({{ saldo_letra }})</span>
+</div>
+
+<!-- ============ FECHAS ============ -->
+<div class="info-row">
+    <div class="info-card">
+        <span class="label">Lugar y fecha de suscripción</span>
+        <span class="value"><strong>{{ ciudad }}</strong>, <strong>{{ estado }}</strong>, a los <strong>{{ fecha_letra }}</strong>.</span>
+    </div>
+</div>
+
+<p><strong>FECHA DE VENCIMIENTO:</strong> A la vista, en la fecha en que se actualice cualquiera de los supuestos de exigibilidad previstos en la cláusula sexta del contrato de prestación de servicios profesionales relacionado con el presente documento. En su defecto, y para todos los efectos legales, se tendrá como pagadero a la vista en el domicilio señalado en este instrumento.</p>
+
+<hr class="section-rule">
+
+<p>Por este <strong>PAGARÉ</strong>, <strong>{{ cliente_nombre }}</strong>, por mi propio derecho, prometo incondicionalmente pagar a la orden del <strong>Lic. {{ profesionista_nombre }}</strong>, la cantidad de:</p>
+
+{% if es_bilateral %}
+<p>En este acto comparece también <strong>{{ aval_nombre }}</strong>, quien suscribe el presente título de crédito en su carácter de <strong>AVAL</strong>, obligándose solidariamente al pago del importe total del presente pagaré, así como de los intereses moratorios y accesorios que se causen, renunciando expresamente a los beneficios de orden y excusión, en términos de los artículos 139, 140, 171 y demás relativos de la Ley General de Títulos y Operaciones de Crédito.</p>
+{% endif %}
+
+<div class="amount-box">${{ saldo_numero }} ({{ saldo_letra }})</div>
+
+<p>La cantidad señalada deberá ser pagada en: <strong>{{ domicilio_pago or 'el domicilio señalado por el beneficiario' }}</strong>.</p>
+
+<p>El pago deberá efectuarse en el domicilio señalado por el beneficiario o en el lugar expresamente indicado en el presente documento.</p>
+
+<hr class="section-rule">
+
+<p>En caso de falta de pago oportuno, la cantidad insoluta causará los intereses moratorios pactados en el contrato de prestación de servicios profesionales relacionado con este documento, equivalentes a la tasa que resulte de multiplicar por 1.5 la tasa de interés interbancaria de equilibrio (TIIE) a plazo de 28 días, vigente en la fecha de vencimiento del presente pagaré, sin que dicha tasa exceda el límite legal aplicable conforme a la legislación vigente en materia de usura, sin perjuicio de los demás derechos y acciones que legalmente correspondan al beneficiario.</p>
+
+<p>El presente pagaré deriva de una obligación de pago de honorarios profesionales previamente convenida entre las partes y se suscribe como instrumento de pago, sin que su emisión implique por sí misma novación de la obligación causal, salvo pacto expreso en contrario.</p>
+
+<!-- ============ NOTA LEGAL ============ -->
+<div class="note">
+    Para la eficacia del presente pagaré, EL SUSCRIPTOR deberá estampar su firma autógrafa en el espacio destinado para tal efecto, o en su caso, plasmar su huella digital debidamente ratificada ante fedatario público o corredor público, conforme a los artículos 86 y 170 de la Ley General de Títulos y Operaciones de Crédito.
+</div>
+
+<!-- ============ DATOS DEL SUSCRIPTOR ============ -->
+<div class="datos-suscriptor">
+    <p class="datos-title">Datos del Suscriptor</p>
+    <p><span class="label">Nombre:</span> <strong>{{ cliente_nombre }}</strong></p>
+    <p><span class="label">Domicilio:</span> {{ cliente_domicilio or '____________________' }}</p>
+    <p><span class="label">Teléfono:</span> {{ cliente_telefono or '____________________' }}</p>
+    <p><span class="label">Correo electrónico:</span> {{ cliente_email or '____________________' }}</p>
+</div>
+
+<!-- ============ FIRMAS: SUSCRIPTOR + AVAL ============ -->
+<div class="firma-block">
+    <div class="firma-line"></div>
+    <div class="firma-name">{{ cliente_nombre }}</div>
+    <div class="firma-rol">Suscriptor</div>
+    <div class="huella-box">
+        <div class="huella-label">HUELLA DIGITAL</div>
+        <div class="huella-espacio"></div>
+    </div>
+</div>
+
+{% if es_bilateral %}
+<div class="firma-block">
+    <div class="firma-line"></div>
+    <div class="firma-name">{{ aval_nombre }}</div>
+    <div class="firma-rol">Aval</div>
+    <div class="huella-box">
+        <div class="huella-label">HUELLA DIGITAL</div>
+        <div class="huella-espacio"></div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ============ PIE DE DOCUMENTO ============ -->
+<div class="pdf-footer">
+    Documento generado electrónicamente por Lumen Legal.<br>
+    Lumen Legal &copy; {{ anio }} — Documento generado electrónicamente.
+</div>
+
+</body>
+</html>

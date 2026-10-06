@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
+﻿from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
 from app.database import get_db
+from app.utils.search import safe_int
 from app.models.core import Client, ClientDocument, Contract, Payment, CourtCase
 from app.routers.auth import get_current_user
 from app.storage import (
@@ -299,8 +300,7 @@ async def search_client_for_consult(
                 Client.curp.ilike(f"%{search_term}%"),
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
-                Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                Client.expediente_interno == (safe_int(search_term) or -1),
             )
         )
         .all()
@@ -398,6 +398,21 @@ async def get_client_full_detail(client_id: int, db: Session = Depends(get_db)):
                 "fecha": payments[-1].payment_date.strftime("%d/%m/%Y"),
             }
 
+        # ── Documentos legales firmados (URLs prefirmadas de R2) ──
+        docs_firmados = {}
+        for dt, field in (
+            ("contrato", "contrato_firmado_key"),
+            ("reconocimiento", "reconocimiento_firmado_key"),
+            ("pagare", "pagare_firmado_key"),
+            ("constancia_actualizacion", "constancia_actualizacion_firmado_key"),
+        ):
+            k = getattr(contract, field, None)
+            if k:
+                try:
+                    docs_firmados[dt] = {"url": get_file_url(k, expires_in=3600)}
+                except Exception:
+                    docs_firmados[dt] = {"url": ""}
+
         contracts_data.append(
             {
                 "id": contract.id,
@@ -413,6 +428,9 @@ async def get_client_full_detail(client_id: int, db: Session = Depends(get_db)):
                 "court_case": case_data,
                 "last_payment": last_payment,
                 "total_payments": len(payments),
+                # ── NUEVO: documentos legales firmados ──
+                "documentos_firmados": docs_firmados,
+                "estado_documental": contract.estado_documental or "sin_contrato",
             }
         )
 
@@ -544,6 +562,7 @@ async def delete_client(
         "pagos": 0,
         "agenda_events": 0,
         "archivos_r2": 0,
+        "docs_legales_firmados": 0,  # ← NUEVO
     }
 
     # ============================================================
@@ -562,7 +581,7 @@ async def delete_client(
     # ============================================================
     contracts = db.query(Contract).filter(Contract.client_id == client_id).all()
     for contract in contracts:
-        # 4.1 Pagos (R2 + BD) — ⚠️ incluye receipt_pdf_url de R2
+        # 4.1 Pagos (R2 + BD) — âš ï¸ incluye receipt_pdf_url de R2
         for payment in (
             db.query(Payment).filter(Payment.contract_id == contract.id).all()
         ):
@@ -604,7 +623,22 @@ async def delete_client(
             db.delete(court_case)
             stats["expedientes"] += 1
 
-        # 4.3 Contrato (BD)
+        # 4.3 Documentos legales firmados en R2 (contrato, reconocimiento, pagaré, constancia)
+        for field_name in (
+            "contrato_pdf_key",
+            "contrato_firmado_key",
+            "reconocimiento_pdf_key",
+            "reconocimiento_firmado_key",
+            "pagare_pdf_key",
+            "pagare_firmado_key",
+            "constancia_actualizacion_firmado_key",
+        ):
+            key_val = getattr(contract, field_name, None)
+            if key_val and delete_file(key_val):
+                stats["archivos_r2"] += 1
+                stats["docs_legales_firmados"] += 1  # ← NUEVO
+
+        # 4.4 Contrato (BD)
         db.delete(contract)
         stats["contratos"] += 1
 
@@ -631,6 +665,7 @@ async def delete_client(
                 f"{stats['pagos']} pagos, "
                 f"{stats['documentos']} documentos, "
                 f"{stats['agenda_events']} eventos de agenda, "
+                f"{stats['docs_legales_firmados']} documentos legales firmados, "
                 f"{stats['archivos_r2']} archivos de R2."
             ),
         )
@@ -736,6 +771,19 @@ async def constancia_contrato(
         else datetime.now().strftime("%Y")
     )
 
+    # ── Datos del abogado asignado ──
+    abogado_nombre = ""
+    abogado_cedula = ""
+    abogado_telefono = ""
+    abogado_domicilio = ""
+    abogado_especialidad = ""
+    if contract.assigned_lawyer:
+        abogado_nombre = contract.assigned_lawyer.nombre_completo or ""
+        abogado_cedula = contract.assigned_lawyer.cedula_profesional or ""
+        abogado_telefono = contract.assigned_lawyer.telefono or ""
+        abogado_domicilio = contract.assigned_lawyer.domicilio_profesional or ""
+        abogado_especialidad = contract.assigned_lawyer.especialidad or ""
+
     html_content = template.render(
         # Cliente
         nombre_completo=f"{client.name} {client.paterno} {client.materno or ''}",
@@ -756,6 +804,12 @@ async def constancia_contrato(
         fecha_contratacion=(
             contract.created_at.strftime("%d/%m/%Y") if contract.created_at else ""
         ),
+        # Abogado asignado
+        abogado_nombre=abogado_nombre,
+        abogado_cedula=abogado_cedula,
+        abogado_telefono=abogado_telefono,
+        abogado_domicilio=abogado_domicilio,
+        abogado_especialidad=abogado_especialidad,
         # Pago
         monto_pagado=f"{total_pagado:,.2f}" if total_pagado > 0 else "",
         forma_pago=(

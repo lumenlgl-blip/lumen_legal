@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abogados · Lumen Legal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f2f5fb;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f8fafc;
+            --surface-glass: rgba(255,255,255,0.82);
+            --surface-glass-strong: rgba(255,255,255,0.96);
+            --border-subtle: rgba(255,255,255,0.5);
+            --border-soft: #e9edf4;
+            --border-strong: #d0d8e3;
+            --text-primary: #0b1e33;
+            --text-secondary: #4a5b6e;
+            --text-muted: #6b7b8f;
+            --text-light: #8a9bb0;
+            --accent-primary: #2a6df4;
+            --accent-primary-hover: #1a5ad4;
+            --accent-dark: #0b1e33;
+            --accent-dark-hover: #1a3b6b;
+            --success: #1a8b5c;
+            --success-hover: #0e6b46;
+            --success-soft: #d1fae5;
+            --warning: #f5b342;
+            --warning-hover: #e6a030;
+            --warning-soft: #fdf3e0;
+            --warning-text: #7a5a1a;
+            --danger: #dc3545;
+            --danger-hover: #b02a37;
+            --danger-soft: #fee9e7;
+            --info: #1f6f9e;
+            --info-soft: #e3effa;
+            --purple: #6f42c1;
+            --purple-soft: #ede7fe;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 48px -12px rgba(0,20,40,0.12);
+            --shadow-xl: 0 40px 80px -20px rgba(0,0,0,0.2);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 28px;
+            --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        [data-theme="dark"] {
+            --bg-primary: #0a1523;
+            --bg-secondary: #111d2e;
+            --bg-tertiary: #16243a;
+            --surface-glass: rgba(22,36,58,0.75);
+            --surface-glass-strong: rgba(22,36,58,0.92);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-soft: #223147;
+            --border-strong: #2d3f5a;
+            --text-primary: #e8eef7;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8a9bb0;
+            --text-light: #6b7b8f;
+            --accent-primary: #5b93ff;
+            --accent-primary-hover: #7aa9ff;
+            --accent-dark: #5b93ff;
+            --accent-dark-hover: #7aa9ff;
+            --success: #34d399;
+            --success-soft: rgba(52,211,153,0.15);
+            --warning: #fbbf24;
+            --warning-soft: rgba(251,191,36,0.15);
+            --warning-text: #fbbf24;
+            --danger: #f87171;
+            --danger-soft: rgba(248,113,113,0.15);
+            --info: #60a5fa;
+            --info-soft: rgba(96,165,250,0.15);
+            --purple: #a78bfa;
+            --purple-soft: rgba(167,139,250,0.15);
+        }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body {
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(42,109,244,0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26,139,92,0.06) 0px, transparent 50%);
+            padding: 20px 0 40px;
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: background-color var(--transition-normal), color var(--transition-normal);
+        }
+        .btn-menu {
+            position: fixed; top: 24px; left: 24px; z-index: 1050;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 60px; padding: 12px 24px;
+            font-weight: 600; color: var(--text-primary); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+        }
+        .btn-menu:hover {
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            color: var(--accent-primary);
+        }
+        .theme-toggle {
+            position: fixed; top: 24px; right: 24px; z-index: 1050;
+            width: 48px; height: 48px; border-radius: 50%;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary); cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+        }
+        .theme-toggle:hover { transform: translateY(-2px) rotate(15deg); color: var(--accent-primary); }
+        .container { max-width: 1200px; }
+        .page-header {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px; margin-bottom: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .page-header h1 {
+            font-weight: 800; font-size: 1.85rem; color: var(--text-primary);
+            letter-spacing: -0.025em; margin: 0;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .page-header h1 i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .btn-primary-dark {
+            background: var(--accent-dark); border: none;
+            border-radius: 60px; padding: 12px 24px;
+            font-weight: 700; font-size: 0.9rem; color: white;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+        }
+        .btn-primary-dark:hover { background: var(--accent-dark-hover); color: white; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        .card-modern {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+        }
+        .search-row {
+            display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .search-row input {
+            flex: 1; min-width: 240px;
+            height: 48px; border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
+            padding: 0 18px; font-size: 0.95rem;
+            background: var(--bg-secondary); color: var(--text-primary);
+        }
+        .search-row input:focus {
+            outline: none; border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+        }
+        .search-row button {
+            background: var(--accent-dark); border: none;
+            border-radius: var(--radius-md); padding: 0 22px;
+            color: white; font-weight: 700; font-size: 0.88rem;
+            display: inline-flex; align-items: center; gap: 6px;
+            cursor: pointer; transition: all var(--transition-normal);
+            min-height: 48px;
+        }
+        .search-row button:hover { background: var(--accent-dark-hover); transform: translateY(-2px); }
+
+        .table-modern { font-size: 0.85rem; margin: 0; width: 100%; }
+        .table-modern thead {
+            background: var(--bg-tertiary);
+            border-bottom: 2px solid var(--border-soft);
+        }
+        .table-modern thead th {
+            font-weight: 800; font-size: 0.7rem;
+            text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--text-muted); padding: 12px 14px;
+            text-align: left; white-space: nowrap;
+        }
+        .table-modern tbody td {
+            padding: 12px 14px; vertical-align: middle;
+            border-bottom: 1px solid var(--border-soft);
+            color: var(--text-primary);
+        }
+        .table-modern tbody tr:hover { background: var(--bg-tertiary); }
+
+        .badge-status {
+            padding: 5px 12px; border-radius: 40px;
+            font-size: 0.65rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.04em;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .badge-status.active { background: var(--success-soft); color: var(--success); }
+        .badge-status.inactive { background: var(--danger-soft); color: var(--danger); }
+        .badge-cedula {
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-weight: 700; font-size: 0.8rem;
+            color: var(--accent-primary);
+            background: rgba(42,109,244,0.08);
+            padding: 4px 10px; border-radius: 8px;
+        }
+        .badge-access {
+            font-size: 0.65rem; font-weight: 700;
+            padding: 4px 10px; border-radius: 40px;
+            background: var(--info-soft); color: var(--info);
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .badge-no-access {
+            font-size: 0.65rem; font-weight: 700;
+            padding: 4px 10px; border-radius: 40px;
+            background: var(--bg-tertiary); color: var(--text-muted);
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+
+        .btn-action {
+            border-radius: 40px; padding: 6px 14px;
+            font-size: 0.72rem; font-weight: 700;
+            border: 1px solid transparent;
+            display: inline-flex; align-items: center; gap: 4px;
+            cursor: pointer; transition: all var(--transition-normal);
+            min-height: 32px; white-space: nowrap;
+            margin: 3px 2px;
+        }
+        .btn-action:hover { transform: translateY(-2px); }
+        .btn-action.edit { background: var(--info-soft); color: var(--accent-primary); }
+        .btn-action.edit:hover { background: var(--accent-primary); color: white; }
+        .btn-action.link { background: var(--purple-soft); color: var(--purple); }
+        .btn-action.link:hover { background: var(--purple); color: white; }
+        .btn-action.toggle { background: var(--warning-soft); color: var(--warning-text); }
+        .btn-action.toggle:hover { background: var(--warning); color: #0b1e33; }
+        .btn-action.toggle.unblock { background: var(--success-soft); color: var(--success); }
+        .btn-action.toggle.unblock:hover { background: var(--success); color: white; }
+        .btn-action.delete { background: var(--danger-soft); color: var(--danger); }
+        .btn-action.delete:hover { background: var(--danger); color: white; }
+
+        /* ── MODALES MODERNOS ── */
+        .modal-modern .modal-content {
+            border-radius: var(--radius-xl); border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-xl); overflow: hidden;
+            background: var(--surface-glass-strong);
+            backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+        .modal-modern .modal-header {
+            border-bottom: none; padding: 22px 28px 12px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .modal-modern .modal-title { font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .modal-modern .modal-body { padding: 18px 28px 24px; }
+        .modal-modern .modal-footer {
+            border-top: 1px solid var(--border-soft);
+            padding: 16px 28px 22px;
+            gap: 10px; flex-wrap: wrap;
+        }
+        .modal-modern .modal-footer .btn {
+            border-radius: 60px; font-weight: 700;
+            padding: 10px 24px; min-height: 44px;
+        }
+        .modal.fade .modal-dialog {
+            transform: scale(0.92) translateY(20px); opacity: 0;
+            transition: transform 0.35s var(--transition-bounce), opacity 0.3s ease;
+        }
+        .modal.show .modal-dialog { transform: scale(1) translateY(0); opacity: 1; }
+
+        .header-dark { background: linear-gradient(135deg, var(--accent-dark), var(--accent-dark-hover)); }
+        .header-dark .modal-title { color: white; }
+        .header-warning { background: linear-gradient(135deg, var(--warning), var(--warning-hover)); }
+        .header-warning .modal-title { color: #0b1e33; }
+        .header-danger { background: linear-gradient(135deg, var(--danger), var(--danger-hover)); }
+        .header-danger .modal-title { color: white; }
+        .header-info { background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover)); }
+        .header-info .modal-title { color: white; }
+        .header-success { background: linear-gradient(135deg, var(--success), var(--success-hover)); }
+        .header-success .modal-title { color: white; }
+
+        [data-theme="dark"] .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+        .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+        [data-theme="dark"] .btn-close-white { filter: none; }
+
+        .notification-icon {
+            font-size: 3.5rem; text-align: center;
+            display: block; margin: 8px 0 16px;
+            animation: popIn 0.5s var(--transition-bounce);
+        }
+        .notification-icon.success { color: var(--success); }
+        .notification-icon.error   { color: var(--danger); }
+        .notification-icon.warning { color: var(--warning); }
+        .notification-icon.info    { color: var(--accent-primary); }
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+
+        .form-field { margin-bottom: 18px; }
+        .form-field label {
+            display: block; font-weight: 700; font-size: 0.82rem;
+            color: var(--text-secondary); margin-bottom: 6px;
+        }
+        .form-field .form-control {
+            width: 100%; height: 50px; border-radius: var(--radius-md);
+            border: 1.5px solid var(--border-soft);
+            padding: 0 16px; font-size: 0.95rem;
+            background: var(--bg-secondary); color: var(--text-primary);
+            transition: all var(--transition-normal);
+        }
+        .form-field .form-control:focus {
+            outline: none; border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.12);
+        }
+        .form-field .required { color: var(--danger); }
+        .form-field .hint {
+            font-size: 0.72rem; color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .empty-state {
+            text-align: center; padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 4rem; opacity: 0.4; display: block; margin-bottom: 16px; }
+        .empty-state h5 { font-weight: 800; color: var(--text-primary); }
+
+        /* ── LOADING ── */
+        .spinner-overlay {
+            position: fixed; inset: 0; background: rgba(11,30,51,0.5);
+            backdrop-filter: blur(12px);
+            z-index: 9999; display: none;
+            align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .spinner-overlay.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .spinner-box {
+            background: var(--bg-secondary); padding: 40px 52px;
+            border-radius: var(--radius-xl); text-align: center;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid var(--border-subtle);
+            animation: popIn 0.4s var(--transition-bounce);
+            max-width: 90vw;
+        }
+        .spinner-box .spinner-border { width: 3rem; height: 3rem; color: var(--accent-primary); border-width: 3px; }
+        .spinner-box h5 { font-weight: 800; margin-top: 16px; }
+        .spinner-box p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 0; }
+
+        .btn-spinner {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .btn-menu { position: relative; top: auto; left: auto; margin: 0 16px 16px; }
+            .page-header { padding: 18px 20px; border-radius: 20px; }
+            .page-header h1 { font-size: 1.4rem; }
+            .card-modern { padding: 16px; border-radius: 18px; }
+            .table-modern thead { display: none; }
+            .table-modern, .table-modern tbody, .table-modern tr, .table-modern td { display: block; width: 100%; }
+            .table-modern tbody tr {
+                background: var(--bg-secondary); border: 1px solid var(--border-soft);
+                border-radius: var(--radius-md); padding: 14px; margin-bottom: 12px;
+            }
+            .table-modern tbody td {
+                border: none; padding: 6px 0;
+                display: flex; justify-content: space-between; text-align: right;
+            }
+            .table-modern tbody td::before {
+                content: attr(data-label); font-weight: 800; font-size: 0.68rem;
+                text-transform: uppercase; color: var(--text-muted);
+                text-align: left;
+            }
+            .table-modern tbody td:last-child {
+                display: block; text-align: left; padding-top: 12px;
+                border-top: 1px solid var(--border-soft); margin-top: 8px;
+            }
+            .table-modern tbody td:last-child::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+    <i class="bi bi-moon-stars" id="themeIcon"></i>
+</button>
+
+<a href="/" class="btn-menu"><i class="bi bi-arrow-left"></i> Menú Principal</a>
+
+<div class="container mt-4">
+    <div class="page-header">
+        <h1><i class="bi bi-award"></i> Abogados</h1>
+        <a href="/api/abogados/register" class="btn-primary-dark">
+            <i class="bi bi-person-plus"></i> Nuevo Abogado
+        </a>
+    </div>
+
+    <div class="card-modern">
+        <div class="search-row">
+            <input type="text" id="searchInput" placeholder="Buscar por nombre, cédula, especialidad o email..." autocomplete="off">
+            <button id="searchBtn"><i class="bi bi-search"></i> Buscar</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre completo</th>
+                        <th>Cédula</th>
+                        <th>Especialidad</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Acceso</th>
+                        <th>Estado</th>
+                        <th style="min-width:280px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="abogadosBody"></tbody>
+            </table>
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display:none;">
+            <i class="bi bi-award"></i>
+            <h5>No hay abogados registrados</h5>
+            <p>Registra al primer abogado para comenzar a asignarlo a contratos.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================== -->
+<!-- MODAL NOTIFICACIÓN (éxito / error / warning / info) -->
+<!-- ================================================== -->
+<div class="modal fade modal-modern" id="notificationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" id="notificationHeader">
+                <h5 class="modal-title" id="notificationTitle">Notificación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="notificationBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMACIÓN -->
+<div class="modal fade modal-modern" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-warning">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirmación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="confirmBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="confirmBtn">
+                    <i class="bi bi-check2"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: EDITAR ABOGADO -->
+<div class="modal fade modal-modern" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-info">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Abogado</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+                <div class="form-field">
+                    <label>Nombre completo <span class="required">*</span></label>
+                    <input type="text" id="editNombre" class="form-control" maxlength="200">
+                </div>
+                <div class="form-field">
+                    <label>Cédula profesional <span class="required">*</span></label>
+                    <input type="text" id="editCedula" class="form-control" maxlength="50">
+                </div>
+                <div class="form-field">
+                    <label>Domicilio profesional <span class="required">*</span></label>
+                    <input type="text" id="editDomicilio" class="form-control" maxlength="300">
+                </div>
+                <div class="form-field">
+                    <label>Especialidad</label>
+                    <input type="text" id="editEspecialidad" class="form-control" maxlength="150">
+                </div>
+                <div class="form-field">
+                    <label>Teléfono</label>
+                    <input type="tel" id="editTelefono" class="form-control" maxlength="20">
+                </div>
+                <div class="form-field" style="margin-bottom:0;">
+                    <label>Email</label>
+                    <input type="email" id="editEmail" class="form-control" maxlength="120">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveEditBtn">
+                    <i class="bi bi-check2"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: VINCULAR USUARIO -->
+<div class="modal fade modal-modern" id="linkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header header-dark">
+                <h5 class="modal-title"><i class="bi bi-link-45deg"></i> Vincular con Usuario</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong>Abogado:</strong> <span id="linkAbogadoNombre"></span></p>
+                <p class="text-muted small mb-3">
+                    Vincula este abogado con un usuario del sistema para que pueda iniciar sesión.
+                    Déjalo en "Sin acceso" si solo se usará para contratos.
+                </p>
+                <input type="hidden" id="linkAbogadoId">
+                <div class="form-field" style="margin-bottom:0;">
+                    <label>Usuario del sistema</label>
+                    <select id="linkUserId" class="form-control" style="padding: 0 16px;">
+                        <option value="">— Sin acceso al sistema —</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="saveLinkBtn">
+                    <i class="bi bi-check2"></i> Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="spinner-overlay" role="status" aria-live="polite">
+    <div class="spinner-box">
+        <div class="spinner-border" role="status"></div>
+        <h5 id="loadingTitle">Procesando...</h5>
+        <p id="loadingText">Por favor espera.</p>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+'use strict';
+
+/* ============================================================
+   TEMA
+   ============================================================ */
+(function initTheme() {
+    const saved = localStorage.getItem('lumen-theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    updateThemeIcon(theme);
+})();
+function updateThemeIcon(theme) {
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars';
+}
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('lumen-theme', next);
+    updateThemeIcon(next);
+});
+
+// Atajo "T" y ESC
+document.addEventListener('keydown', (e) => {
+    if (!e || typeof e.key !== 'string') return;
+    if (e.key.toLowerCase() === 't' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
+            document.getElementById('themeToggle')?.click();
+        }
+    }
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.show').forEach(m => {
+            const inst = bootstrap.Modal.getInstance(m);
+            if (inst) inst.hide();
+        });
+    }
+});
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+function showLoading(title = 'Procesando...', text = 'Por favor espera.') {
+    document.getElementById('loadingTitle').textContent = title;
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+/* ============================================================
+   MODAL NOTIFICACIÓN
+   ============================================================ */
+function notify(title, bodyHTML, type = 'info') {
+    const modalEl = document.getElementById('notificationModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    const header = document.getElementById('notificationHeader');
+    const titleEl = document.getElementById('notificationTitle');
+    const bodyEl = document.getElementById('notificationBody');
+
+    header.className = 'modal-header';
+    let iconHTML = '';
+
+    if (type === 'success') {
+        header.classList.add('header-success');
+        iconHTML = '<i class="bi bi-check-circle-fill notification-icon success"></i>';
+    } else if (type === 'error') {
+        header.classList.add('header-error');
+        iconHTML = '<i class="bi bi-x-circle-fill notification-icon error"></i>';
+    } else if (type === 'warning') {
+        header.classList.add('header-warning');
+        iconHTML = '<i class="bi bi-exclamation-triangle-fill notification-icon warning"></i>';
+    } else {
+        header.classList.add('header-info');
+        iconHTML = '<i class="bi bi-info-circle-fill notification-icon info"></i>';
+    }
+
+    // Permitir llamar con texto plano o HTML
+    const bodyFinal = /<[a-z][\s\S]*>/i.test(bodyHTML) ? bodyHTML : `<p>${escapeHTML(bodyHTML)}</p>`;
+
+    titleEl.textContent = title;
+    bodyEl.innerHTML = iconHTML + bodyFinal;
+    modal.show();
+}
+
+/* ============================================================
+   MODAL CONFIRMACIÓN
+   ============================================================ */
+function confirmAction(title, bodyHTML, onConfirm, confirmLabel = 'Confirmar', confirmClass = 'btn-success') {
+    const modalEl = document.getElementById('confirmModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+    document.getElementById('confirmBody').innerHTML =
+        `<h6 class="fw-bold mb-2" style="color:var(--text-primary);">${escapeHTML(title)}</h6>${bodyHTML}`;
+
+    const confirmBtn = document.getElementById('confirmBtn');
+    const newBtn = confirmBtn.cloneNode(true);
+    newBtn.className = `btn ${confirmClass}`;
+    newBtn.innerHTML = `<i class="bi bi-check2"></i> ${confirmLabel}`;
+    confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+    newBtn.addEventListener('click', function () {
+        modal.hide();
+        setTimeout(() => onConfirm(), 200);
+    });
+    modal.show();
+}
+
+/* ============================================================
+   CARGAR ABOGADOS
+   ============================================================ */
+let currentAbogados = [];
+
+async function cargarAbogados(q = '') {
+    showLoading('Cargando abogados...', 'Consultando el servidor.');
+    try {
+        const url = q ? `/api/abogados/list?q=${encodeURIComponent(q)}` : '/api/abogados/list';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Error al cargar la lista');
+        currentAbogados = await res.json();
+        hideLoading();
+        renderAbogados(currentAbogados);
+    } catch (err) {
+        hideLoading();
+        notify('Error', err.message, 'error');
+    }
+}
+
+function renderAbogados(lista) {
+    const tbody = document.getElementById('abogadosBody');
+    const empty = document.getElementById('emptyState');
+
+    if (!Array.isArray(lista) || lista.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = lista.map(a => {
+        const status = a.is_active ? 'active' : 'inactive';
+        const statusText = a.is_active ? 'Activo' : 'Inactivo';
+        const accessBadge = a.tiene_acceso
+            ? `<span class="badge-access"><i class="bi bi-key-fill"></i> Con acceso</span>`
+            : `<span class="badge-no-access"><i class="bi bi-dash-circle"></i> Sin acceso</span>`;
+
+        return `
+            <tr>
+                <td data-label="ID">${a.id}</td>
+                <td data-label="Nombre"><strong>${escapeHTML(a.nombre_completo)}</strong></td>
+                <td data-label="Cédula"><span class="badge-cedula">${escapeHTML(a.cedula_profesional)}</span></td>
+                <td data-label="Especialidad">${escapeHTML(a.especialidad || '—')}</td>
+                <td data-label="Teléfono">${escapeHTML(a.telefono || '—')}</td>
+                <td data-label="Email">${escapeHTML(a.email || '—')}</td>
+                <td data-label="Acceso">${accessBadge}</td>
+                <td data-label="Estado"><span class="badge-status ${status}">${statusText}</span></td>
+                <td data-label="Acciones">
+                    <button class="btn-action edit" data-id="${a.id}" title="Editar">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button class="btn-action link" data-id="${a.id}" title="Vincular usuario">
+                        <i class="bi bi-link-45deg"></i> Vincular
+                    </button>
+                    <button class="btn-action toggle ${a.is_active ? '' : 'unblock'}" data-id="${a.id}" data-active="${a.is_active}">
+                        ${a.is_active ? '<i class="bi bi-lock"></i> Desactivar' : '<i class="bi bi-unlock"></i> Activar'}
+                    </button>
+                    <button class="btn-action delete" data-id="${a.id}" title="Eliminar">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    tbody.querySelectorAll('.btn-action.edit').forEach(b => {
+        b.addEventListener('click', () => abrirEdit(b.dataset.id));
+    });
+    tbody.querySelectorAll('.btn-action.link').forEach(b => {
+        b.addEventListener('click', () => abrirLink(b.dataset.id));
+    });
+    tbody.querySelectorAll('.btn-action.toggle').forEach(b => {
+        b.addEventListener('click', () => toggleStatus(b.dataset.id, b.dataset.active === 'true'));
+    });
+    tbody.querySelectorAll('.btn-action.delete').forEach(b => {
+        b.addEventListener('click', () => eliminar(b.dataset.id));
+    });
+}
+
+/* ============================================================
+   BUSCADOR
+   ============================================================ */
+document.getElementById('searchBtn').addEventListener('click', () => {
+    const q = document.getElementById('searchInput').value.trim();
+    cargarAbogados(q);
+});
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        cargarAbogados(e.target.value.trim());
+    }
+});
+
+/* ============================================================
+   EDITAR
+   ============================================================ */
+function abrirEdit(id) {
+    const a = currentAbogados.find(x => x.id == id);
+    if (!a) return;
+    document.getElementById('editId').value = a.id;
+    document.getElementById('editNombre').value = a.nombre_completo;
+    document.getElementById('editCedula').value = a.cedula_profesional;
+    document.getElementById('editDomicilio').value = a.domicilio_profesional || '';
+    document.getElementById('editEspecialidad').value = a.especialidad || '';
+    document.getElementById('editTelefono').value = a.telefono || '';
+    document.getElementById('editEmail').value = a.email || '';
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('editModal')).show();
+}
+
+document.getElementById('saveEditBtn').addEventListener('click', async () => {
+    const id = document.getElementById('editId').value;
+    const nombre = document.getElementById('editNombre').value.trim();
+    const cedula = document.getElementById('editCedula').value.trim();
+    const domicilio = document.getElementById('editDomicilio').value.trim();
+
+    if (!nombre || !cedula || !domicilio) {
+        notify('Faltan datos',
+            '<p>Nombre, cédula y domicilio son <strong>obligatorios</strong>.</p>',
+            'warning');
+        return;
+    }
+
+    // Confirmar antes de guardar
+    confirmAction('Guardar cambios',
+        `<p>¿Guardar los cambios del abogado <strong>${escapeHTML(nombre)}</strong>?</p>`,
+        async () => {
+            const fd = new FormData();
+            fd.append('nombre_completo', nombre);
+            fd.append('cedula_profesional', cedula);
+            fd.append('domicilio_profesional', domicilio);
+            fd.append('especialidad', document.getElementById('editEspecialidad').value.trim());
+            fd.append('telefono', document.getElementById('editTelefono').value.trim());
+            fd.append('email', document.getElementById('editEmail').value.trim());
+
+            showLoading('Guardando cambios...', 'Actualizando datos del abogado.');
+
+            try {
+                const res = await fetch(`/api/abogados/update/${id}`, { method: 'PUT', body: fd });
+                hideLoading();
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    notify('Error', err.detail || 'No se pudo actualizar', 'error');
+                    return;
+                }
+
+                bootstrap.Modal.getInstance(document.getElementById('editModal'))?.hide();
+                notify('¡Actualizado!', 'Abogado actualizado correctamente.', 'success');
+                cargarAbogados(document.getElementById('searchInput').value.trim());
+            } catch (err) {
+                hideLoading();
+                notify('Error', err.message, 'error');
+            }
+        },
+        'Guardar',
+        'btn-success'
+    );
+});
+
+/* ============================================================
+   VINCULAR USUARIO
+   ============================================================ */
+async function abrirLink(id) {
+    const a = currentAbogados.find(x => x.id == id);
+    if (!a) return;
+    document.getElementById('linkAbogadoId').value = a.id;
+    document.getElementById('linkAbogadoNombre').textContent = a.nombre_completo;
+
+    const select = document.getElementById('linkUserId');
+    select.innerHTML = '<option value="">— Sin acceso al sistema —</option>';
+
+    showLoading('Cargando usuarios...', 'Consultando usuarios disponibles.');
+
+    try {
+        const res = await fetch('/api/abogados/available-users');
+        const users = await res.json();
+        hideLoading();
+
+        // Usuario actual vinculado
+        if (a.user_id) {
+            const opt = document.createElement('option');
+            opt.value = a.user_id;
+            opt.textContent = `(Vinculado actualmente: ID ${a.user_id})`;
+            select.appendChild(opt);
+        }
+
+        users.forEach(u => {
+            if (u.ya_vinculado && u.id != a.user_id) return;
+            const opt = document.createElement('option');
+            opt.value = u.id;
+            opt.textContent = `${u.full_name} — ${u.email} (${u.role})`;
+            if (u.id == a.user_id) opt.selected = true;
+            select.appendChild(opt);
+        });
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('linkModal')).show();
+    } catch (err) {
+        hideLoading();
+        notify('Error', err.message, 'error');
+    }
+}
+
+document.getElementById('saveLinkBtn').addEventListener('click', async () => {
+    const abogadoId = document.getElementById('linkAbogadoId').value;
+    const userId = document.getElementById('linkUserId').value;
+    const select = document.getElementById('linkUserId');
+    const opcionTexto = userId ? select.options[select.selectedIndex].textContent : 'Sin acceso al sistema';
+
+    confirmAction('Vincular usuario',
+        `<p>Se asignará:</p>
+         <div class="alert alert-info mt-2 mb-0 small" style="border-radius:12px;">
+            <strong>${escapeHTML(opcionTexto)}</strong>
+         </div>`,
+        async () => {
+            const fd = new FormData();
+            fd.append('user_id', userId || '');
+
+            showLoading('Vinculando usuario...', 'Actualizando vinculación.');
+
+            try {
+                const res = await fetch(`/api/abogados/link-user/${abogadoId}`, { method: 'POST', body: fd });
+                hideLoading();
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    notify('Error', err.detail || 'No se pudo vincular', 'error');
+                    return;
+                }
+
+                bootstrap.Modal.getInstance(document.getElementById('linkModal'))?.hide();
+                notify('Vinculación actualizada', 'La vinculación se guardó correctamente.', 'success');
+                cargarAbogados(document.getElementById('searchInput').value.trim());
+            } catch (err) {
+                hideLoading();
+                notify('Error', err.message, 'error');
+            }
+        },
+        'Vincular',
+        'btn-primary'
+    );
+});
+
+/* ============================================================
+   ACTIVAR / DESACTIVAR
+   ============================================================ */
+async function toggleStatus(id, isActive) {
+    const a = currentAbogados.find(x => x.id == id);
+    if (!a) return;
+
+    const accion = isActive ? 'desactivar' : 'activar';
+    const accionLabel = accion.charAt(0).toUpperCase() + accion.slice(1);
+    const bodyIcon = isActive
+        ? '<i class="bi bi-lock-fill" style="color:var(--warning); font-size:2rem; display:block; text-align:center; margin-bottom:8px;"></i>'
+        : '<i class="bi bi-unlock-fill" style="color:var(--success); font-size:2rem; display:block; text-align:center; margin-bottom:8px;"></i>';
+
+    confirmAction(`¿${accionLabel} abogado?`,
+        `${bodyIcon}
+         <p class="text-center mb-2">¿${accionLabel} a <strong>${escapeHTML(a.nombre_completo)}</strong>?</p>
+         <p class="text-muted small text-center mb-0">
+            ${isActive
+                ? 'No podrá asignarse a nuevos contratos.'
+                : 'Volverá a estar disponible para asignarse.'}
+         </p>`,
+        async () => {
+            showLoading(`${accionLabel}ndo...`, 'Actualizando estado.');
+
+            try {
+                const res = await fetch(`/api/abogados/toggle-status/${id}`, { method: 'POST' });
+                hideLoading();
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    notify('Error', err.detail || 'No se pudo cambiar el estado', 'error');
+                    return;
+                }
+
+                notify('Estado actualizado', `El abogado ha sido <strong>${accion}do</strong>.`, 'success');
+                cargarAbogados(document.getElementById('searchInput').value.trim());
+            } catch (err) {
+                hideLoading();
+                notify('Error', err.message, 'error');
+            }
+        },
+        accionLabel,
+        isActive ? 'btn-warning' : 'btn-success'
+    );
+}
+
+/* ============================================================
+   ELIMINAR
+   ============================================================ */
+async function eliminar(id) {
+    const a = currentAbogados.find(x => x.id == id);
+    if (!a) return;
+
+    confirmAction('Eliminar abogado',
+        `<div class="alert alert-danger" style="border-radius:12px;">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            <strong>Atención:</strong> Esta acción es <strong>permanente</strong>.
+         </div>
+         <p>¿Eliminar definitivamente a <strong>${escapeHTML(a.nombre_completo)}</strong>?</p>
+         <p class="text-muted small mb-0">
+            Si el abogado tiene contratos asignados, no se podrá eliminar. Desactívalo en su lugar.
+         </p>`,
+        async () => {
+            showLoading('Eliminando abogado...', 'Esto puede tomar unos segundos.');
+
+            try {
+                const res = await fetch(`/api/abogados/delete/${id}`, { method: 'DELETE' });
+                hideLoading();
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    notify('No se puede eliminar',
+                        `<p>${escapeHTML(err.detail || 'Error al eliminar')}</p>
+                         <p class="text-muted small mb-0">Puedes desactivarlo en su lugar.</p>`,
+                        'error');
+                    return;
+                }
+
+                notify('Eliminado', 'El abogado se eliminó correctamente.', 'success');
+                cargarAbogados(document.getElementById('searchInput').value.trim());
+            } catch (err) {
+                hideLoading();
+                notify('Error', err.message, 'error');
+            }
+        },
+        'Eliminar',
+        'btn-danger'
+    );
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    cargarAbogados();
+});
+</script>
+</body>
+</html>

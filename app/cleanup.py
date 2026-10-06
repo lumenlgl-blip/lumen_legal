@@ -163,7 +163,8 @@ def cleanup_r2_temp() -> int:
 def cleanup_r2_orphans() -> dict:
     """
     Busca archivos en R2 cuyas keys ya no están referenciadas en la BD
-    y los borra. Revisa los prefijos: clientes/, expedientes/, formatos_demanda/.
+    y los borra. Revisa los prefijos:
+        clientes/, expedientes/, formatos_demanda/, contratos/, pagos/.
 
     SOLO borra archivos con más de 24h de antigüedad para evitar race conditions
     (un archivo recién subido podría no estar aún en la BD).
@@ -177,6 +178,7 @@ def cleanup_r2_orphans() -> dict:
             FormatoDemanda,
             CourtCase,
             Payment,
+            Contract,
         )
     except Exception as e:
         logger.error(f"No se pudo importar modelos/storage: {e}")
@@ -214,8 +216,28 @@ def cleanup_r2_orphans() -> dict:
             if key:
                 keys_en_db.add(key)
 
+        # ── Documentos legales del contrato (generados y firmados) ──
+        for col in (
+            Contract.contrato_pdf_key,
+            Contract.contrato_firmado_key,
+            Contract.reconocimiento_pdf_key,
+            Contract.reconocimiento_firmado_key,
+            Contract.pagare_pdf_key,
+            Contract.pagare_firmado_key,
+            Contract.constancia_actualizacion_firmado_key,
+        ):
+            for (key,) in db.query(col).all():
+                if key:
+                    keys_en_db.add(key)
+
         # ── Escanear R2 y encontrar huérfanos ──
-        prefijos = ["clientes/", "expedientes/", "formatos_demanda/"]
+        prefijos = [
+            "clientes/",
+            "expedientes/",
+            "formatos_demanda/",
+            "contratos/",  # ← docs legales + firmados
+            "pagos/",  # ← comprobantes de abono
+        ]
         paginator = s3_client.get_paginator("list_objects_v2")
 
         total_revisados = 0

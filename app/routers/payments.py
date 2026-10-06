@@ -1,15 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+﻿from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
 from app.database import get_db
+from app.utils.search import safe_int
 from app.models.core import Client, Contract, Payment, CourtCase
 from app.storage import upload_fileobj, get_file_url
 import uuid
 from datetime import datetime
 from fastapi import Request
 from app.routers.auth import get_current_user
-
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
 # ❌ Ya NO usamos UPLOAD_DIR ni save_upload_file: todo va a R2
@@ -115,7 +115,7 @@ async def search_client_with_debt(
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
                 Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                == (safe_int(search_term) or -1),
             )
         )
         .all()
@@ -353,7 +353,7 @@ async def search_client_all(
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
                 Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                == (safe_int(search_term) or -1),
             )
         )
         .all()

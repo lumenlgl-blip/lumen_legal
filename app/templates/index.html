@@ -971,6 +971,17 @@
             </div>
             {% endif %}
 
+            {% if "abogados" in permissions or user.role == "admin" %}
+            <div class="col-md-4 col-lg-3">
+                <a href="/api/abogados/" class="feature-card-modern">
+                    <div class="icon-wrap text-warning"><i class="bi bi-award"></i></div>
+                    <div class="card-title">Abogados</div>
+                    <div class="card-desc">Registrar y asignar abogados a contratos</div>
+                    <span class="badge-status admin-only">Admin</span>
+                </a>
+            </div>
+            {% endif %}
+
             {% if "audit" in permissions or user.role == "admin" %}
             <div class="col-md-4 col-lg-3">
                 <a href="/api/backup/" class="feature-card-modern">

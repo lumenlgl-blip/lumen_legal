@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    @page {
+        size: letter;
+        margin: 2.2cm 1.8cm 2.4cm 1.8cm;
+        @bottom-left {
+            content: "LUMEN LEGAL — Reconocimiento de Saldo";
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+        @bottom-right {
+            content: "Página " counter(page) " de " counter(pages);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1a2b4a;
+        font-size: 10.5pt;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+    }
+
+    p {
+        text-align: justify;
+        margin: 10px 0;
+    }
+
+    p.center { text-align: center; margin: 4px 0; }
+
+    /* ============ HEADER ============ */
+    .pdf-header {
+        background: #1a3b6b;
+        padding: 16px 22px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 4px solid #c9a227;
+    }
+    .pdf-logo-wrap {
+        background: #ffffff;
+        padding: 6px 10px;
+        border-radius: 4px;
+        line-height: 0;
+    }
+    .pdf-logo {
+        width: 90px;
+        height: auto;
+        display: block;
+    }
+    .pdf-header-info {
+        text-align: right;
+        color: #ffffff;
+    }
+    .pdf-title {
+        font-size: 17pt;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+    }
+    .pdf-subtitle {
+        font-size: 9.5pt;
+        color: #c9d4e6;
+        margin-top: 3px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    /* ============ TITLE ============ */
+    h1.doc-title {
+        text-align: center;
+        font-size: 14pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        margin: 28px 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        line-height: 1.35;
+    }
+    .title-rule {
+        width: 90px;
+        height: 3px;
+        background: #c9a227;
+        margin: 0 auto 16px;
+        border-radius: 2px;
+    }
+    .contract-number {
+        text-align: center;
+        background: #f1f5fa;
+        border: 1px solid #d8e0eb;
+        border-radius: 24px;
+        padding: 7px 24px;
+        margin: 0 auto 22px;
+        display: table;
+        font-size: 10.5pt;
+        color: #1a3b6b;
+        letter-spacing: 0.5px;
+    }
+    .contract-number strong { color: #1a3b6b; }
+
+    /* ============ INTRO ============ */
+    .intro {
+        background: #fbfcfe;
+        border-left: 3px solid #c9a227;
+        padding: 12px 18px;
+        margin: 16px 0 22px;
+        border-radius: 0 4px 4px 0;
+    }
+
+    /* ============ SECTION TITLE ============ */
+    .section-title {
+        text-align: center;
+        font-size: 11.5pt;
+        font-weight: bold;
+        color: #ffffff;
+        background: #1a3b6b;
+        padding: 8px 0;
+        margin: 26px 0 16px;
+        border-radius: 4px;
+        letter-spacing: 3px;
+        border-bottom: 3px solid #c9a227;
+    }
+
+    /* ============ CLAUSE ============ */
+    .clause {
+        margin-top: 20px;
+        margin-bottom: 8px;
+        padding: 8px 0 8px 14px;
+        border-left: 4px solid #c9a227;
+        color: #1a3b6b;
+        font-weight: bold;
+        font-size: 10.5pt;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        page-break-after: avoid;
+        background: #f7f9fc;
+    }
+
+    .bold { font-weight: bold; }
+    .indent { margin-left: 22px; text-align: justify; }
+
+    /* ============ AMOUNT BOX ============ */
+    .amount-box {
+        text-align: center;
+        background: #f7f9fc;
+        border: 1px solid #d8e0eb;
+        border-left: 4px solid #1a3b6b;
+        border-right: 4px solid #1a3b6b;
+        padding: 10px 14px;
+        margin: 14px auto;
+        border-radius: 4px;
+        font-size: 12pt;
+        color: #1a3b6b;
+        font-weight: bold;
+        letter-spacing: 0.3px;
+        max-width: 420px;
+    }
+    .amount-box strong { font-weight: bold; }
+
+    /* ============ MODALIDAD BOX (solo contestación) ============ */
+    .modalidad-box {
+        background: #f7f9fc;
+        border: 1px solid #d8e0eb;
+        border-left: 4px solid #c9a227;
+        border-radius: 4px;
+        padding: 10px 16px;
+        margin: 12px 0 14px 0;
+    }
+    .modalidad-box .titulo-modalidad {
+        font-weight: bold;
+        color: #1a3b6b;
+        font-size: 10pt;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+        border-bottom: 1px solid #d8e0eb;
+        padding-bottom: 6px;
+    }
+
+    /* ============ NOTE ============ */
+    .note {
+        background: #fbf7ec;
+        border-left: 4px solid #c9a227;
+        padding: 12px 18px;
+        border-radius: 0 4px 4px 0;
+        margin: 18px 0;
+        font-size: 10pt;
+        text-align: justify;
+    }
+
+    /* ============ SIGNATURES ============ */
+    .firma-block {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        margin-top: 60px;
+        page-break-inside: avoid;
+    }
+    .firma-item {
+        flex: 1;
+        text-align: center;
+        padding: 12px 10px;
+        background: #fbfcfe;
+        border: 1px solid #e3e9f2;
+        border-radius: 4px;
+    }
+    .firma-line {
+        border-top: 1.5px solid #1a2b4a;
+        margin-top: 60px;
+        padding-top: 6px;
+        font-size: 10pt;
+        color: #6b7b8f;
+    }
+    .firma-name {
+        font-weight: bold;
+        font-size: 10pt;
+        margin-top: 6px;
+        color: #1a3b6b;
+    }
+    .firma-rol {
+        font-size: 9pt;
+        color: #6b7b8f;
+        margin-top: 2px;
+    }
+    .firma-rol-strong {
+        font-weight: bold;
+        color: #1a3b6b;
+        letter-spacing: 0.6px;
+        font-size: 9pt;
+        margin-top: 4px;
+    }
+    .huella-box {
+        border: 1.5px dashed #8a9bb0;
+        border-radius: 6px;
+        padding: 6px;
+        width: 110px;
+        text-align: center;
+        margin: 14px auto 0;
+        background: #ffffff;
+    }
+    .huella-label {
+        font-size: 7pt;
+        font-weight: bold;
+        color: #6b7b8f;
+        letter-spacing: 0.08em;
+    }
+    .huella-espacio {
+        height: 60px;
+        border-top: 1px solid #dbe4ef;
+        margin-top: 4px;
+    }
+
+    /* ============ FOOTER ============ */
+    .pdf-footer {
+        margin-top: 46px;
+        text-align: center;
+        font-size: 8.5pt;
+        color: #8a9bb0;
+        border-top: 2px solid #1a3b6b;
+        padding-top: 12px;
+        line-height: 1.5;
+    }
+    .pdf-footer::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 2px;
+        background: #c9a227;
+        margin: 0 auto 10px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ============ ENCABEZADO ============ -->
+<div class="pdf-header">
+    <div class="pdf-logo-wrap">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+    </div>
+    <div class="pdf-header-info">
+        <div class="pdf-title">LUMEN LEGAL</div>
+        <div class="pdf-subtitle">Reconocimiento de Saldo</div>
+    </div>
+</div>
+
+<!-- ============ TÍTULO ============ -->
+<h1 class="doc-title">RECONOCIMIENTO DE SALDO Y OBLIGACIÓN DE PAGO</h1>
+<div class="title-rule"></div>
+
+<p class="contract-number"><strong>CONTRATO RELACIONADO: NÚMERO {{ contrato_id }}</strong></p>
+
+<!-- ============ INTRO ============ -->
+<p class="intro">
+    En <strong>{{ ciudad }}</strong>, <strong>{{ estado }}</strong>, a los <strong>{{ fecha_letra }}</strong>, comparece <strong>{{ cliente_nombre }}</strong>, por su propio derecho, a quien en lo sucesivo se le denominará <strong>"EL DEUDOR"</strong>{% if es_bilateral %}, y <strong>{{ aval_nombre }}</strong>, a quien en lo sucesivo se le denominará <strong>"EL AVAL"</strong>{% endif %}, quienes manifiestan y reconocen expresamente lo siguiente:
+</p>
+
+<!-- ============ CLÁUSULAS ============ -->
+<div class="section-title">CLÁUSULAS</div>
+
+<p class="clause"><span class="bold">PRIMERA. ORIGEN DE LA OBLIGACIÓN.</span></p>
+<p>EL DEUDOR reconoce haber celebrado con el <strong>Lic. {{ profesionista_nombre }}</strong>, en su carácter de profesionista, un Contrato de Prestación de Servicios Profesionales, identificado con el número <strong>{{ contrato_id }}</strong>, cuyo objeto consiste en la prestación de servicios profesionales relacionados con el procedimiento de <strong>{{ tipo_juicio }}</strong>.</p>
+
+<p class="clause"><span class="bold">SEGUNDA. MONTO ORIGINAL.</span></p>
+<p>EL DEUDOR reconoce que el monto total de los honorarios pactados en el contrato asciende a:</p>
+<p class="amount-box"><strong>${{ honorarios_numero }} ({{ honorarios_letra }})</strong></p>
+
+<p class="clause"><span class="bold">TERCERA. PAGOS REALIZADOS.</span></p>
+<p>EL DEUDOR reconoce haber cubierto previamente, con fecha <strong>{{ fecha_pago_corta }}</strong>, la cantidad de:</p>
+<p class="amount-box"><strong>${{ anticipo_numero }} ({{ anticipo_letra }})</strong></p>
+<p>Dicha cantidad fue entregada a EL ACREEDOR como primera parcialidad de los honorarios pactados en el contrato de prestación de servicios profesionales relacionado con el presente documento.</p>
+
+<p class="clause"><span class="bold">CUARTA. SALDO.</span></p>
+<p>Después de descontar la cantidad anteriormente señalada, EL DEUDOR reconoce que existe a su cargo un saldo de:</p>
+<p class="amount-box"><strong>${{ saldo_numero }} ({{ saldo_letra }})</strong></p>
+
+<p class="clause"><span class="bold">QUINTA. RECONOCIMIENTO EXPRESO.</span></p>
+<p>EL DEUDOR reconoce de manera expresa, voluntaria e inequívoca la existencia del saldo señalado en la cláusula anterior y manifiesta que dicha cantidad constituye una obligación cierta, determinada y derivada del contrato de prestación de servicios profesionales celebrado entre las partes.</p>
+
+<!-- ═══════════════════════ SEXTA. EXIGIBILIDAD ═══════════════════════ -->
+<p class="clause"><span class="bold">SEXTA. EXIGIBILIDAD.</span></p>
+
+{% if es_contestacion %}
+{# ═══ CONTESTACIÓN: referenciar cláusula séptima + modalidad elegida ═══ #}
+<p>EL DEUDOR reconoce que el saldo referido será exigible conforme a lo dispuesto por la Cláusula <strong>Séptima</strong> del Contrato de Prestación de Servicios Profesionales relacionado con el presente documento, en el momento en que se actualice cualquiera de los supuestos previstos en dicha cláusula, y conforme a la modalidad de pago del saldo seleccionada por EL DEUDOR al momento de la firma del contrato.</p>
+
+{% if es_pago_audiencia %}
+<p>En específico, EL DEUDOR reconoce que, habiendo elegido la <strong>Modalidad A (liquidación única en primera audiencia)</strong>, el saldo será exigible en su totalidad al celebrarse la <strong>primera audiencia</strong> del procedimiento contratado, cualquiera que sea su naturaleza o denominación procesal, debiendo cubrirse dentro de los <strong>tres días hábiles siguientes</strong> a dicha audiencia.</p>
+{% endif %}
+
+{% if es_pago_abonos %}
+<p>En específico, EL DEUDOR reconoce que, habiendo elegido la <strong>Modalidad B (dos abonos hasta sentencia)</strong>, el saldo será exigible conforme a lo siguiente:</p>
+<p class="indent"><strong>PRIMER ABONO:</strong> ${{ monto_abono_uno }} ({{ monto_abono_uno_letra }}), pagadero dentro de los <strong>tres días hábiles siguientes</strong> a la celebración de la primera audiencia del procedimiento.</p>
+<p class="indent"><strong>SEGUNDO ABONO:</strong> ${{ monto_abono_dos }} ({{ monto_abono_dos_letra }}), pagadero <strong>al momento en que se notifique la sentencia definitiva</strong> que ponga fin al procedimiento.</p>
+{% endif %}
+
+<p>Sin perjuicio de lo anterior, el saldo también podrá ser exigible por cualquiera de los demás supuestos previstos en la cláusula <strong>séptima</strong> del contrato relacionado, en el momento en que se actualice el primero de ellos.</p>
+
+{% else %}
+{# ═══ NO CONTESTACIÓN: solo referencia a la cláusula sexta ═══ #}
+<p>EL DEUDOR reconoce que el saldo referido será exigible conforme a lo dispuesto por la Cláusula <strong>Sexta</strong> del Contrato de Prestación de Servicios Profesionales relacionado con el presente documento, en el momento en que se actualice cualquiera de los supuestos previstos en dicha cláusula.</p>
+<p>Sin perjuicio de lo anterior, el saldo también podrá ser exigible por cualquiera de los demás supuestos previstos en la cláusula <strong>sexta</strong> del contrato relacionado, en el momento en que se actualice el primero de ellos.</p>
+{% endif %}
+
+<p>Una vez actualizado el supuesto correspondiente, EL DEUDOR se obliga a cubrir la totalidad del saldo{% if es_contestacion %} (o el abono correspondiente, según la modalidad elegida){% endif %} dentro del plazo pactado en el contrato y, en su defecto, inmediatamente después de la suscripción del presente reconocimiento.</p>
+
+<p class="clause"><span class="bold">SÉPTIMA. AUSENCIA DE CONDICIÓN RESOLUTORIA.</span></p>
+<p>EL DEUDOR reconoce que la obligación de pago no se encuentra condicionada a que el procedimiento produzca un resultado favorable, pues los honorarios corresponden a la prestación de los servicios profesionales contratados.</p>
+
+<p class="clause"><span class="bold">OCTAVA. DESISTIMIENTO O TERMINACIÓN ANTICIPADA.</span></p>
+<p>EL DEUDOR reconoce que el desistimiento de la acción o de la instancia, la revocación de la representación, la sustitución del profesionista, la celebración de convenio o cualquier otra decisión unilateral que produzca la terminación anticipada del procedimiento no extingue el saldo reconocido, siempre que dicha terminación no sea consecuencia de incumplimiento imputable al profesionista.</p>
+
+<p class="clause"><span class="bold">NOVENA. MEDIO DE PAGO.</span></p>
+<p>El saldo podrá ser cubierto mediante cualquier forma de pago permitida por el despacho (efectivo, transferencia electrónica, depósito bancario, cheque o tarjeta). El pago deberá quedar documentado mediante recibo, comprobante de transferencia, depósito o documento equivalente.</p>
+
+<p class="clause"><span class="bold">DÉCIMA. INCUMPLIMIENTO.</span></p>
+<p>En caso de incumplimiento, el acreedor podrá ejercer las acciones legales que correspondan para obtener el pago del saldo, así como los accesorios que legalmente procedan.</p>
+
+<p class="clause"><span class="bold">DÉCIMA PRIMERA. NO NOVACIÓN.</span></p>
+<p>El presente reconocimiento no implica novación de la obligación original, sino únicamente la individualización y reconocimiento del saldo derivado del contrato de prestación de servicios profesionales.</p>
+
+<p class="clause"><span class="bold">DÉCIMA SEGUNDA. RATIFICACIÓN.</span></p>
+<p>Las partes podrán ratificar el presente documento ante fedatario público o ante la autoridad jurisdiccional competente, para los efectos legales que correspondan.</p>
+{% if ratificado %}
+<div class="note">
+    En fecha <strong>{{ fecha_ratificacion }}</strong>, el presente documento fue ratificado ante la fe del Notario Público número <strong>{{ numero_notario }}</strong> de <strong>{{ ciudad }}</strong>, Lic. <strong>{{ nombre_notario }}</strong>, según consta en el instrumento número <strong>{{ numero_instrumento }}</strong>.
+</div>
+{% endif %}
+
+{% if es_bilateral %}
+<p class="clause"><span class="bold">DÉCIMA CUARTA. AVAL Y OBLIGACIÓN SOLIDARIA.</span></p>
+<p>En términos del artículo 1976 y demás relativos del Código Civil para el Estado de Sinaloa, <strong>{{ aval_nombre }}</strong>, en su carácter de <strong>AVAL Y OBLIGADO SOLIDARIO</strong>, reconoce expresamente el saldo señalado en el presente documento y se obliga solidariamente con EL DEUDOR a su pago íntegro y puntual, incluyendo intereses moratorios, gastos, costas y accesorios que legalmente procedan.</p>
+<p>EL AVAL renuncia expresamente a los beneficios de orden y excusión, y manifiesta que su consentimiento para obligarse consta de manera libre e informada. Su obligación permanecerá vigente hasta la total extinción del saldo reconocido.</p>
+{% endif %}
+
+<p class="clause"><span class="bold">{% if es_bilateral %}DÉCIMA QUINTA{% else %}DÉCIMA TERCERA{% endif %}. LECTURA Y ACEPTACIÓN.</span></p>
+<p>EL DEUDOR{% if es_bilateral %} y EL AVAL{% endif %} manifiestan que leyeron íntegramente el presente documento, que conocen su contenido y consecuencias jurídicas y que lo suscriben libremente, sin error, dolo, mala fe, violencia o cualquier otro vicio del consentimiento.</p>
+
+<!-- ============ FIRMAS ============ -->
+<div class="firma-block">
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">{{ cliente_nombre }}</div>
+        <div class="firma-rol-strong">EL DEUDOR</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">Lic. {{ profesionista_nombre }}</div>
+        <div class="firma-rol">Cédula: {{ profesionista_cedula }}</div>
+        <div class="firma-rol-strong">EL ACREEDOR / PROFESIONISTA</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+</div>
+
+{% if es_bilateral %}
+<div class="firma-block">
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">{{ aval_nombre }}</div>
+        <div class="firma-rol-strong">EL AVAL / OBLIGADO SOLIDARIO</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="firma-block">
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">TESTIGO 1</div>
+        <div class="firma-rol">Nombre: _______________________________</div>
+    </div>
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">TESTIGO 2</div>
+        <div class="firma-rol">Nombre: _______________________________</div>
+    </div>
+</div>
+
+<!-- ============ PIE DE DOCUMENTO ============ -->
+<div class="pdf-footer">
+    Documento generado electrónicamente por Lumen Legal.<br>
+    Lumen Legal &copy; {{ anio }} — Documento generado electrónicamente.
+</div>
+
+</body>
+</html>

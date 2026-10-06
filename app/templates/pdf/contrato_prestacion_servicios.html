@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    @page {
+        size: letter;
+        margin: 2.2cm 1.8cm 2.4cm 1.8cm;
+        @bottom-left {
+            content: "LUMEN LEGAL — Contrato de Prestación de Servicios Profesionales";
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+        @bottom-right {
+            content: "Página " counter(page) " de " counter(pages);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8pt;
+            color: #8a9bb0;
+        }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1a2b4a;
+        font-size: 10.5pt;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+    }
+
+    p {
+        text-align: justify;
+        margin: 10px 0;
+    }
+
+    /* ============ HEADER ============ */
+    .pdf-header {
+        background: #1a3b6b;
+        padding: 16px 22px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 4px solid #c9a227;
+    }
+    .pdf-logo-wrap {
+        background: #ffffff;
+        padding: 6px 10px;
+        border-radius: 4px;
+        line-height: 0;
+    }
+    .pdf-logo {
+        width: 90px;
+        height: auto;
+        display: block;
+    }
+    .pdf-header-info {
+        text-align: right;
+        color: #ffffff;
+    }
+    .pdf-title {
+        font-size: 17pt;
+        font-weight: bold;
+        letter-spacing: 1.5px;
+    }
+    .pdf-subtitle {
+        font-size: 9.5pt;
+        color: #c9d4e6;
+        margin-top: 3px;
+        letter-spacing: 0.5px;
+    }
+
+    /* ============ DOC TITLE ============ */
+    h1.doc-title {
+        text-align: center;
+        font-size: 13.5pt;
+        font-weight: bold;
+        color: #1a3b6b;
+        margin: 28px 0 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .title-rule {
+        width: 80px;
+        height: 3px;
+        background: #c9a227;
+        margin: 0 auto 16px;
+        border-radius: 2px;
+    }
+    .contract-number {
+        text-align: center;
+        background: #f1f5fa;
+        border: 1px solid #d8e0eb;
+        border-radius: 24px;
+        padding: 7px 24px;
+        margin: 0 auto 22px;
+        display: table;
+        font-size: 10.5pt;
+        color: #1a3b6b;
+        letter-spacing: 0.5px;
+    }
+    .contract-number strong { color: #1a3b6b; }
+
+    /* ============ INTRO ============ */
+    .intro {
+        background: #fbfcfe;
+        border-left: 3px solid #c9a227;
+        padding: 12px 18px;
+        margin: 16px 0 22px;
+        border-radius: 0 4px 4px 0;
+    }
+
+    /* ============ SECTION TITLE ============ */
+    .section-title {
+        text-align: center;
+        font-size: 12pt;
+        font-weight: bold;
+        color: #ffffff;
+        background: #1a3b6b;
+        padding: 9px 0;
+        margin: 28px 0 18px;
+        border-radius: 4px;
+        letter-spacing: 3px;
+        border-bottom: 3px solid #c9a227;
+    }
+
+    /* ============ DECLARATION TITLES ============ */
+    .decl-title {
+        display: block;
+        background: #eef2f7;
+        border-left: 4px solid #1a3b6b;
+        color: #1a3b6b;
+        padding: 7px 14px;
+        font-weight: bold;
+        font-size: 10.5pt;
+        margin: 16px 0 8px;
+        border-radius: 0 4px 4px 0;
+        text-align: left;
+    }
+
+    /* ============ DECLARATION BLOCK ============ */
+    .declaration-block {
+        background: #fafbfd;
+        border: 1px solid #e3e9f2;
+        border-left: 3px solid #c9a227;
+        border-radius: 4px;
+        padding: 10px 18px;
+        margin: 8px 0 16px 14px;
+    }
+    .declaration-block p {
+        margin: 7px 0;
+        text-align: justify;
+        font-size: 10.5pt;
+    }
+
+    /* ============ CLAUSE ============ */
+    .clause {
+        margin-top: 22px;
+        margin-bottom: 10px;
+        padding: 8px 0 8px 14px;
+        border-left: 4px solid #c9a227;
+        color: #1a3b6b;
+        font-weight: bold;
+        font-size: 11pt;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        page-break-after: avoid;
+        background: #f7f9fc;
+    }
+
+    .indent {
+        margin-left: 22px;
+        text-align: justify;
+    }
+
+    .bold { font-weight: bold; }
+
+    /* ============ AMOUNT BOX ============ */
+    .amount-box {
+        text-align: center;
+        background: #f7f9fc;
+        border: 1px solid #d8e0eb;
+        border-left: 4px solid #1a3b6b;
+        border-right: 4px solid #1a3b6b;
+        padding: 10px 14px;
+        margin: 14px auto;
+        border-radius: 4px;
+        font-size: 11.5pt;
+        color: #1a3b6b;
+        font-weight: bold;
+        letter-spacing: 0.3px;
+    }
+    .amount-box strong { font-weight: bold; }
+
+    /* ============ INFO BLOCK (contestación) ============ */
+    .info-block {
+        background: #f0f7ff;
+        border: 1px solid #cce0ff;
+        border-left: 4px solid #1a3b6b;
+        border-radius: 4px;
+        padding: 10px 16px;
+        margin: 10px 0;
+    }
+    .info-block p { margin: 4px 0; }
+    .info-block .label {
+        font-weight: bold;
+        color: #1a3b6b;
+        min-width: 160px;
+        display: inline-block;
+    }
+
+    /* ============ ALERTA (contestación) ============ */
+    .alerta {
+        background: #fdf3f2;
+        border: 1px solid #f5c6c2;
+        border-left: 4px solid #b12a2a;
+        border-radius: 4px;
+        padding: 12px 18px;
+        margin: 14px 0;
+    }
+    .alerta p { margin: 6px 0; color: #7a1f1f; }
+
+    /* ============ MODALIDAD DE PAGO BOX ============ */
+    .modalidad-box {
+        background: #f7f9fc;
+        border: 1px solid #d8e0eb;
+        border-left: 4px solid #c9a227;
+        border-radius: 4px;
+        padding: 10px 16px;
+        margin: 10px 0 14px 0;
+    }
+    .modalidad-box .titulo-modalidad {
+        font-weight: bold;
+        color: #1a3b6b;
+        font-size: 10.5pt;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+        border-bottom: 1px solid #d8e0eb;
+        padding-bottom: 6px;
+    }
+
+    /* ============ SIGNATURES ============ */
+    .firma-block {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        margin-top: 60px;
+        page-break-inside: avoid;
+    }
+    .firma-item {
+        flex: 1;
+        text-align: center;
+        padding: 12px 10px;
+        background: #fbfcfe;
+        border: 1px solid #e3e9f2;
+        border-radius: 4px;
+    }
+    .firma-line {
+        border-top: 1.5px solid #1a2b4a;
+        margin-top: 60px;
+        padding-top: 6px;
+        font-size: 10pt;
+        color: #6b7b8f;
+    }
+    .firma-name {
+        font-weight: bold;
+        font-size: 10pt;
+        margin-top: 6px;
+        color: #1a3b6b;
+    }
+    .firma-rol {
+        font-size: 9pt;
+        color: #6b7b8f;
+        margin-top: 2px;
+    }
+    .firma-rol-strong {
+        font-weight: bold;
+        color: #1a3b6b;
+        letter-spacing: 0.6px;
+        font-size: 9pt;
+        margin-top: 4px;
+    }
+    .huella-box {
+        border: 1.5px dashed #8a9bb0;
+        border-radius: 6px;
+        padding: 6px;
+        width: 110px;
+        text-align: center;
+        margin: 14px auto 0;
+        background: #ffffff;
+    }
+    .huella-label {
+        font-size: 7pt;
+        font-weight: bold;
+        color: #6b7b8f;
+        letter-spacing: 0.08em;
+    }
+    .huella-espacio {
+        height: 60px;
+        border-top: 1px solid #dbe4ef;
+        margin-top: 4px;
+    }
+
+    /* ============ FOOTER NOTE ============ */
+    .pdf-footer {
+        margin-top: 46px;
+        text-align: center;
+        font-size: 8.5pt;
+        color: #8a9bb0;
+        border-top: 2px solid #1a3b6b;
+        padding-top: 12px;
+        line-height: 1.5;
+    }
+    .pdf-footer::before {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 2px;
+        background: #c9a227;
+        margin: 0 auto 10px;
+    }
+</style>
+</head>
+<body>
+
+<!-- ============ ENCABEZADO ============ -->
+<div class="pdf-header">
+    <div class="pdf-logo-wrap">
+        <img src="data:image/jpeg;base64,{{ logo_base64 }}" class="pdf-logo" alt="Logo">
+    </div>
+    <div class="pdf-header-info">
+        <div class="pdf-title">LUMEN LEGAL</div>
+        <div class="pdf-subtitle">Contrato de Prestación de Servicios</div>
+    </div>
+</div>
+
+<!-- ============ TÍTULO ============ -->
+<h1 class="doc-title">CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES</h1>
+<div class="title-rule"></div>
+
+<p class="contract-number"><strong>CONTRATO NÚMERO: {{ contrato_id }}</strong></p>
+
+<!-- ============ PÁRRAFO INTRODUCTORIO ============ -->
+<p class="intro">
+    En la ciudad de <strong>{{ ciudad }}</strong>, <strong>{{ estado }}</strong>, a los <strong>{{ fecha_letra }}</strong>, comparecen, por una parte, el <strong>Lic. {{ profesionista_nombre }}</strong>, a quien en lo sucesivo se le denominará <strong>"EL PROFESIONISTA"</strong>, y por la otra, <strong>{{ cliente_nombre }}</strong>, a quien en lo sucesivo se le denominará <strong>"EL CLIENTE"</strong>{% if es_bilateral %}, y <strong>{{ aval_nombre }}</strong>, a quien en lo sucesivo se le denominará <strong>"EL AVAL"</strong>{% endif %}, quienes manifiestan su voluntad de celebrar el presente <strong>CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES</strong>, al tenor de las siguientes declaraciones y cláusulas.
+</p>
+
+<!-- ============ DECLARACIONES ============ -->
+<div class="section-title">DECLARACIONES</div>
+
+<p class="decl-title">I. Declara EL PROFESIONISTA:</p>
+<div class="declaration-block">
+    <p>a) Que es persona con capacidad legal para celebrar el presente contrato.</p>
+    <p>b) Que cuenta con título y cédula profesional legalmente expedidos para ejercer la profesión de Licenciado en Derecho, con cédula profesional número <strong>{{ profesionista_cedula }}</strong>.</p>
+    <p>c) Que presta servicios profesionales de asesoría, representación, gestión y litigación jurídica de manera independiente.</p>
+    <p>d) Que para efectos del presente contrato señala como nombre comercial o despacho de servicios profesionales <strong>LUMEN LEGAL</strong>.</p>
+    <p>e) Que cuenta con los conocimientos técnicos y jurídicos necesarios para prestar los servicios objeto del presente contrato.</p>
+</div>
+
+<p class="decl-title">II. Declara EL CLIENTE{% if es_bilateral %} Y EL AVAL{% endif %}:</p>
+<div class="declaration-block">
+    <p>a) Que es <strong>{{ cliente_nombre }}</strong>, con capacidad legal suficiente para obligarse en los términos del presente instrumento.</p>
+    {% if es_bilateral %}
+    <p>a bis) Que <strong>{{ aval_nombre }}</strong>, con capacidad legal suficiente para obligarse en los términos del presente instrumento, comparece de manera voluntaria en su carácter de <strong>AVAL Y OBLIGADO SOLIDARIO</strong> de las obligaciones que EL CLIENTE contrae en este acto, en su calidad de segundo promovente del divorcio bilateral, sin que exista entre EL CLIENTE y EL AVAL actor ni demandado.</p>
+    {% endif %}
+
+    {% if es_contestacion %}
+    <p>b) Que solicita voluntariamente la prestación de servicios profesionales para la <strong>contestación de la demanda</strong> y el seguimiento del procedimiento de <strong>{{ tipo_juicio }}</strong>, en su calidad de parte demandada dentro del expediente número <strong>{{ num_expediente_contestar or 'el que corresponda' }}</strong>, radicado ante <strong>{{ tribunal_contestar or 'la autoridad jurisdiccional competente' }}</strong>.</p>
+    {% else %}
+    <p>b) Que solicita voluntariamente la prestación de servicios profesionales para la atención del procedimiento de <strong>{{ tipo_juicio }}</strong>, el cual se tramitará ante la autoridad jurisdiccional que resulte competente por razón de materia, cuantía y territorio, misma que se determinará al momento de la presentación de la demanda o, en su caso, la que corresponda al procedimiento ya iniciado.</p>
+    {% endif %}
+
+    <p>c) Que la información y documentación que ha proporcionado a EL PROFESIONISTA para el análisis del asunto es veraz, completa y oportuna, y que ha informado a EL PROFESIONISTA sobre la totalidad de los hechos y circunstancias relevantes que pudieran afectar el resultado del procedimiento.</p>
+    <p>d) Que ha recibido explicación suficiente respecto del alcance de los servicios contratados, de los honorarios, de la forma de pago y de las obligaciones que asume.</p>
+    <p>e) Que reconoce que el resultado de cualquier procedimiento judicial depende de la autoridad competente, de la legislación aplicable, de las actuaciones de las partes y de circunstancias procesales que no dependen exclusivamente de EL PROFESIONISTA.</p>
+    <p>f) Que reconoce que la prestación de servicios profesionales jurídicos constituye una obligación de medios y no de resultado, conforme a la naturaleza de la relación contractual que se establece.</p>
+
+    {% if es_contestacion %}
+    <p>g) Que reconoce que el expediente y la autoridad jurisdiccional ya se encuentran determinados, y que EL PROFESIONISTA ha sido contratado dentro del plazo legal para dar contestación a la demanda, o en su defecto, con conocimiento expreso de EL CLIENTE sobre el estado procesal del asunto.</p>
+    {% elif es_bilateral %}
+    <p>g) Que ambas partes reconocen que, a la fecha de firma del presente contrato, la demanda de divorcio bilateral aún no ha sido presentada ante la autoridad jurisdiccional, y que dichos datos (número de expediente y autoridad) serán incorporados al contrato una vez que se tenga conocimiento de ellos, mediante el aviso de actualización de datos procesales previsto en la cláusula correspondiente.</p>
+    {% else %}
+    <p>g) Que reconoce que, a la fecha de firma del presente contrato, no se cuenta con número de expediente ni con la identificación definitiva de la autoridad jurisdiccional, en virtud de que la demanda aún no ha sido presentada, y que dichos datos serán incorporados al contrato una vez que se tenga conocimiento de ellos, mediante el aviso de actualización de datos procesales previsto en la cláusula correspondiente.</p>
+    {% endif %}
+</div>
+
+<p class="decl-title">III. Declaran las partes:</p>
+<div class="declaration-block">
+    <p>Que se reconocen mutuamente la personalidad y capacidad con que comparecen y que celebran el presente contrato de manera libre, voluntaria y sin error, dolo, mala fe, violencia o cualquier otro vicio del consentimiento.</p>
+    {% if es_bilateral %}
+    <p>Asimismo, <strong>EL AVAL</strong> manifiesta que comparece de manera voluntaria, que conoce el contenido del presente contrato, y que se obliga solidariamente al cumplimiento de todas las obligaciones de pago que correspondan a EL CLIENTE, en los términos de la Cláusula de AVAL prevista en el presente instrumento.</p>
+    {% endif %}
+    {% if es_contestacion %}
+    <p>Asimismo, ambas partes reconocen que el presente contrato se celebra respecto de un procedimiento ya iniciado, con expediente y autoridad jurisdiccional determinados, y que el plazo legal para dar contestación a la demanda constituye un término perentorio cuyo vencimiento no es imputable a EL PROFESIONISTA.</p>
+    {% else %}
+    <p>Asimismo, ambas partes reconocen y aceptan que la falta de determinación inicial del número de expediente y de la autoridad jurisdiccional no afecta la validez, interpretación ni exigibilidad del presente contrato, por tratarse de datos determinables que se conocerán durante la tramitación del procedimiento.</p>
+    {% endif %}
+</div>
+
+<p>En consecuencia, sujetan su relación contractual a las siguientes:</p>
+
+<!-- ============ CLÁUSULAS ============ -->
+<div class="section-title">CLÁUSULAS</div>
+
+<!-- ═══════════════════════ PRIMERA. OBJETO ═══════════════════════ -->
+<p class="clause"><span class="bold">PRIMERA. OBJETO DEL CONTRATO.</span></p>
+{% if es_contestacion %}
+<p>EL CLIENTE encomienda a EL PROFESIONISTA la prestación de servicios profesionales consistentes en la asesoría, preparación, elaboración, presentación y seguimiento del escrito de <strong>contestación de la demanda</strong> dentro del procedimiento de <strong>{{ tipo_juicio }}</strong>, con número de expediente <strong>{{ num_expediente_contestar or 'el que corresponda' }}</strong>, radicado ante <strong>{{ tribunal_contestar or 'la autoridad jurisdiccional competente' }}</strong>, así como el seguimiento del procedimiento hasta su conclusión, dentro de los límites establecidos en este contrato.</p>
+<p>EL CLIENTE hace constar que conoce el estado procesal del asunto y que entrega a EL PROFESIONISTA, en este acto, copia de la demanda, sus anexos y la notificación respectiva, para el adecuado cumplimiento del objeto del presente contrato.</p>
+{% else %}
+<p>EL CLIENTE encomienda a EL PROFESIONISTA la prestación de servicios profesionales consistentes en la asesoría, preparación, elaboración, presentación, tramitación y seguimiento del procedimiento de <strong>{{ tipo_juicio }}</strong> señalado en las declaraciones del presente instrumento, con número de expediente <strong>{{ numero_expediente or 'el que se le asigne al momento de su presentación' }}</strong>.</p>
+<p>Para el caso de que a la firma del presente contrato no se cuente con número de expediente ni con autoridad jurisdiccional determinada, las partes hacen constar que dichos datos se individualizarán una vez presentada la demanda, mediante el acuse de recibo, auto de radicación o documento equivalente, que se anexará al presente contrato como parte integrante del mismo conforme a la Cláusula Décima Quinta. La falta de individualización inicial no afecta la validez ni la exigibilidad de las obligaciones pactadas, en tanto el objeto del contrato es determinable.</p>
+{% endif %}
+<p>Los servicios comprenderán las actuaciones ordinarias necesarias para la tramitación del procedimiento hasta su conclusión, dentro de los límites establecidos en este contrato.</p>
+
+<!-- ═══════════════════════ SEGUNDA. ALCANCE ═══════════════════════ -->
+<p class="clause"><span class="bold">SEGUNDA. ALCANCE DE LOS SERVICIOS CONTRATADOS.</span></p>
+{% if es_contestacion %}
+<p>Los honorarios pactados comprenden, dentro del procedimiento señalado:</p>
+<p class="indent">a) La entrevista y análisis jurídico inicial del asunto.</p>
+<p class="indent">b) La revisión de la demanda, sus anexos y la notificación respectiva.</p>
+<p class="indent">c) La elaboración y presentación en tiempo y forma del escrito de <strong>contestación de demanda</strong>, con las excepciones y defensas que resulten procedentes conforme al análisis jurídico del caso.</p>
+<p class="indent">d) La preparación y ofrecimiento de las pruebas que correspondan a la parte demandada.</p>
+<p class="indent">e) La formulación de alegatos y la asistencia a las audiencias ordinarias del procedimiento.</p>
+<p class="indent">f) La atención de prevenciones ordinarias que sean consecuencia directa de la tramitación normal del procedimiento.</p>
+<p class="indent">g) El seguimiento de acuerdos y actuaciones procesales ordinarias.</p>
+<p class="indent">h) El seguimiento hasta la emisión de la resolución que concluya el procedimiento contratado.</p>
+<p class="indent">i) Las demás actuaciones ordinarias que sean indispensables para la conclusión del procedimiento específicamente contratado.</p>
+{% if requiere_reconvencion %}
+<p>Las partes pactan expresamente que <strong>la formulación de reconvención forma parte del alcance del presente contrato</strong>, por lo que EL PROFESIONISTA elaborará y presentará, en su caso, el escrito de reconvención correspondiente conforme a la ley aplicable.</p>
+{% else %}
+<p>Las partes hacen constar que <strong>la formulación de reconvención NO forma parte del alcance del presente contrato</strong>. Si EL CLIENTE desea promoverla, deberá celebrarse un convenio adicional o presupuesto independiente conforme a la Cláusula Tercera del presente instrumento.</p>
+{% endif %}
+{% else %}
+<p>Los honorarios pactados comprenden, dentro del procedimiento señalado:</p>
+<p class="indent">a) La entrevista y análisis jurídico inicial del asunto.</p>
+<p class="indent">b) La revisión de la documentación proporcionada por EL CLIENTE.</p>
+<p class="indent">c) La elaboración de los escritos iniciales necesarios.</p>
+<p class="indent">d) La presentación y seguimiento del procedimiento.</p>
+<p class="indent">e) La atención de prevenciones ordinarias que sean consecuencia directa de la tramitación normal del procedimiento.</p>
+<p class="indent">f) La elaboración y presentación de promociones ordinarias relacionadas directamente con el objeto contratado.</p>
+<p class="indent">g) El seguimiento de acuerdos y actuaciones procesales ordinarias.</p>
+<p class="indent">h) La asistencia a las diligencias o audiencias que correspondan al procedimiento contratado, cuando sean necesarias y se encuentren comprendidas dentro de su tramitación ordinaria.</p>
+<p class="indent">i) El seguimiento hasta la emisión de la resolución que concluya el procedimiento contratado.</p>
+<p class="indent">j) Las demás actuaciones ordinarias que sean indispensables para la conclusión del procedimiento específicamente contratado.</p>
+{% endif %}
+
+<!-- ═══════════════════════ TERCERA. NO INCLUIDOS ═══════════════════════ -->
+<p class="clause"><span class="bold">TERCERA. SERVICIOS NO INCLUIDOS.</span></p>
+<p>Salvo convenio escrito posterior, los honorarios establecidos en este contrato no comprenden:</p>
+<p class="indent">a) Recursos de apelación.</p>
+<p class="indent">b) Juicios de amparo.</p>
+<p class="indent">c) Incidentes que deriven de hechos nuevos o controversias no previstas al momento de contratar.</p>
+<p class="indent">d) Ejecución de resoluciones.</p>
+<p class="indent">e) Procedimientos distintos del expresamente contratado.</p>
+<p class="indent">f) Procedimientos relacionados con alimentos, guarda y custodia, convivencia, liquidación de sociedad conyugal, compensación, nulidad, reconocimiento o desconocimiento de filiación o cualquier otra controversia que surja con posterioridad y que no forme parte del objeto original.</p>
+<p class="indent">g) Peritajes, avalúos, certificaciones, traducciones, copias certificadas, derechos, gastos de terceros, viáticos o cualquier otra erogación necesaria que no corresponda propiamente a honorarios profesionales.</p>
+{% if es_contestacion and not requiere_reconvencion %}
+<p class="indent">h) La formulación de reconvención, la cual deberá ser objeto de convenio independiente.</p>
+{% endif %}
+<p>Cualquier servicio adicional deberá ser objeto de convenio independiente o presupuesto adicional.</p>
+
+<!-- ═══════════════════════ CUARTA (solo contestación). PLAZO LEGAL ═══════════════════════ -->
+{% if es_contestacion %}
+<p class="clause"><span class="bold">CUARTA. PLAZO LEGAL Y CONTESTACIÓN DE DEMANDA.</span></p>
+<div class="alerta">
+    <p><strong>ADVERTENCIA IMPORTANTE:</strong> EL CLIENTE reconoce y acepta que el plazo legal para dar contestación a la demanda es un término <strong>perentorio</strong> cuya naturaleza no admite prórroga, y que su vencimiento produce consecuencias procesales graves, incluida la posibilidad de tener por contestada la demanda en sentido negativo o de precluir el derecho a ofrecer pruebas.</p>
+</div>
+<p>EL PROFESIONISTA se obliga a elaborar y presentar el escrito de contestación de demanda <strong>dentro del plazo legal concedido</strong>, siempre que EL CLIENTE cumpla con las obligaciones previstas en la Cláusula Décima Segunda del presente contrato, en particular la entrega oportuna de la documentación, información y, en su caso, los recursos necesarios para el ofrecimiento de pruebas.</p>
+<p>EL CLIENTE reconoce que, si la contratación se realiza cuando el plazo legal se encuentra próximo a vencer o ya ha vencido, EL PROFESIONISTA quedará liberado de responsabilidad respecto de las consecuencias procesales derivadas de dicha circunstancia, sin que ello lo exima de realizar las actuaciones que resulten procedentes conforme a la ley procesal aplicable.</p>
+{% if fecha_notificacion_demanda or fecha_vencimiento_plazo %}
+<div class="info-block">
+    <p><span class="label">Fecha de notificación de la demanda:</span> {{ fecha_notificacion_demanda or 'No precisada' }}</p>
+    <p><span class="label">Fecha de vencimiento del plazo legal:</span> {{ fecha_vencimiento_plazo or 'No precisada' }}</p>
+    {% if actor_nombre %}<p><span class="label">Parte actora:</span> {{ actor_nombre }}</p>{% endif %}
+    {% if demandado_nombre %}<p><span class="label">Parte demandada:</span> {{ demandado_nombre }}</p>{% endif %}
+</div>
+{% endif %}
+{% endif %}
+
+<!-- ═══════════════════════ HONORARIOS ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}QUINTA{% else %}CUARTA{% endif %}. HONORARIOS.</span></p>
+<p>Las partes fijan de común acuerdo como contraprestación total por los servicios profesionales objeto del presente contrato la cantidad de:</p>
+<p class="amount-box"><strong>${{ honorarios_numero }} ({{ honorarios_letra }})</strong></p>
+<p>La cantidad anterior corresponde exclusivamente a honorarios profesionales y no comprende los gastos extraordinarios expresamente señalados en la cláusula anterior.</p>
+<p>La fijación de los honorarios se realiza de común acuerdo entre las partes, de conformidad con el artículo 2488 del Código Civil para el Estado de Sinaloa, y en su caso, con la Ley de Aranceles para los Abogados del Estado de Sinaloa.</p>
+<p>Parámetros de referencia arancelaria: para la determinación del monto, las partes podrán considerar, entre otros factores, la cuantía del asunto, el grado de dificultad, la inversión de tiempo y la reputación profesional, conforme a los criterios orientadores de la legislación arancelaria aplicable.</p>
+
+<!-- ═══════════════════════ FORMA DE PAGO ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}SEXTA{% else %}QUINTA{% endif %}. FORMA DE PAGO.</span></p>
+<p>Las partes acuerdan que los honorarios serán cubiertos conforme a lo siguiente:</p>
+{% if pago_dos_parcialidades %}
+<p><strong>PRIMERA PARCIALIDAD (ANTICIPO — PAGADA A LA FIRMA DEL PRESENTE CONTRATO):</strong> ${{ anticipo_numero }} ({{ anticipo_letra }}), cantidad que EL PROFESIONISTA declara haber recibido de EL CLIENTE el día {{ fecha_pago_corta }}, a su entera satisfacción, mediante {{ medio_pago_anticipo or 'cualquier forma de pago permitida por el despacho (efectivo, transferencia electrónica, depósito bancario, cheque o tarjeta)' }}.</p>
+
+{% if es_contestacion %}
+{# ═══ CONTESTACIÓN: se aplica modalidad A o B según elección del cliente ═══ #}
+<p><strong>SEGUNDA PARCIALIDAD (SALDO PENDIENTE):</strong> ${{ saldo_numero }} ({{ saldo_letra }}), correspondiente al saldo restante de los honorarios totales, cuya exigibilidad se sujetará a lo dispuesto por la Cláusula Séptima del presente contrato, y que podrá ser cubierta mediante cualquier forma de pago permitida por el despacho (efectivo, transferencia electrónica, depósito bancario, cheque o tarjeta), conforme a la modalidad expresamente seleccionada por EL CLIENTE al momento de la firma del presente instrumento:</p>
+
+{% if es_pago_audiencia %}
+<div class="modalidad-box">
+    <span class="titulo-modalidad">Modalidad A — Liquidación única en la primera audiencia</span>
+    <p>EL CLIENTE se obliga a cubrir la <strong>totalidad del saldo pendiente</strong> en una sola exhibición, en la <strong>primera audiencia</strong> que se celebre dentro del procedimiento contratado, cualquiera que sea su naturaleza o denominación procesal (audiencia inicial, de conciliación, de contestación, de juicio, audiencia única, o cualquier otra que la legislación procesal aplicable prevea), sin necesidad de esperar a que se dicte sentencia definitiva.</p>
+</div>
+{% endif %}
+
+{% if es_pago_abonos %}
+<div class="modalidad-box">
+    <span class="titulo-modalidad">Modalidad B — Dos abonos hasta el dictado de sentencia</span>
+    <p>EL CLIENTE se obliga a cubrir el saldo pendiente mediante <strong>dos abonos iguales</strong>, conforme a lo siguiente:</p>
+    <p class="indent"><strong>PRIMER ABONO:</strong> ${{ monto_abono_uno }} ({{ monto_abono_uno_letra }}), equivalente al 50% del saldo, pagadero en la <strong>primera audiencia</strong> del procedimiento contratado, cualquiera que sea su naturaleza o denominación procesal.</p>
+    <p class="indent"><strong>SEGUNDO ABONO:</strong> ${{ monto_abono_dos }} ({{ monto_abono_dos_letra }}), equivalente al 50% restante del saldo, pagadero <strong>al momento en que se notifique la sentencia definitiva</strong> que ponga fin al procedimiento contratado.</p>
+</div>
+{% endif %}
+
+<p>Para el caso de que, por causa imputable a EL CLIENTE (inasistencia injustificada, falta de instrucciones, falta de entrega de documentos o recursos, o cualquier otra conducta atribuible al mismo), la primera audiencia no se celebrare en la fecha originalmente programada por la autoridad jurisdiccional, el saldo o el primer abono, según corresponda, será exigible en esa misma fecha original, sin perjuicio de los demás supuestos de exigibilidad previstos en la cláusula siguiente.</p>
+
+{% else %}
+{# ═══ NO CONTESTACIÓN: forma de pago simple, SIN modalidades ═══ #}
+<p><strong>SEGUNDA PARCIALIDAD (SALDO PENDIENTE):</strong> ${{ saldo_numero }} ({{ saldo_letra }}), correspondiente al saldo restante de los honorarios totales, cuya exigibilidad se sujetará a lo dispuesto por la Cláusula Sexta del presente contrato, y que podrá ser cubierta mediante cualquier forma de pago permitida por el despacho (efectivo, transferencia electrónica, depósito bancario, cheque o tarjeta).</p>
+{% endif %}
+
+<p>Sin perjuicio de lo anterior, el saldo también podrá ser cubierto de forma anticipada en cualquier momento a solicitud de EL CLIENTE, sin penalización alguna, quedando en tal caso liberado de las fechas originalmente pactadas.</p>
+{% endif %}
+<p>EL CLIENTE reconoce expresamente que, a la fecha de la firma del presente instrumento, ha cubierto la cantidad de ${{ monto_pagado }} ({{ monto_pagado_letra }}) y que queda pendiente a su cargo la cantidad de ${{ saldo_numero }} ({{ saldo_letra }}).</p>
+
+<!-- ═══════════════════════ EXIGIBILIDAD ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}SÉPTIMA{% else %}SEXTA{% endif %}. EXIGIBILIDAD DEL PAGO.</span></p>
+<p>Las partes acuerdan expresamente que el pago del saldo pendiente no se encuentra sujeto, al momento de la firma del presente contrato, a una fecha calendario específica distinta a las señaladas en la cláusula anterior, pero tampoco queda al arbitrio de cualquiera de las partes determinar indefinidamente cuándo deberá cumplirse.</p>
+<p>En consecuencia, el saldo pendiente{% if es_contestacion %} (o el abono correspondiente, según la modalidad elegida){% endif %} será exigible cuando ocurra cualquiera de los siguientes acontecimientos, el que se actualice primero:</p>
+<p class="indent">I. Cuando se celebre la <strong>primera audiencia</strong> del procedimiento contratado, cualquiera que sea su naturaleza o denominación procesal (audiencia inicial, de conciliación, de contestación, de juicio, audiencia única, o cualquier otra que la legislación procesal aplicable prevea){% if es_contestacion %}, conforme a la modalidad de pago seleccionada por EL CLIENTE{% endif %}.</p>
+<p class="indent">II. Cuando, tratándose de un procedimiento de divorcio, se celebre la audiencia de divorcio prevista por la legislación aplicable, siempre que dicha audiencia forme parte del alcance de los servicios contratados.</p>
+<p class="indent">III. Cuando se dicte y notifique la resolución que ponga fin al procedimiento contratado, incluyendo la sentencia definitiva.</p>
+<p class="indent">IV. Cuando EL CLIENTE solicite su terminación anticipada.</p>
+<p class="indent">V. Cuando EL CLIENTE manifieste su voluntad de desistirse de la acción o de la instancia.</p>
+<p class="indent">VI. Cuando EL CLIENTE revoque la representación, mandato o autorización otorgada a EL PROFESIONISTA.</p>
+<p class="indent">VII. Cuando EL CLIENTE decida sustituir a EL PROFESIONISTA por otro profesionista.</p>
+<p class="indent">VIII. Cuando EL CLIENTE celebre convenio, transacción o cualquier acto que produzca la terminación anticipada del procedimiento.</p>
+<p class="indent">IX. Cuando EL PROFESIONISTA haya cumplido sustancialmente las actuaciones comprendidas dentro del objeto contratado.</p>
+<p>Actualizado cualquiera de los supuestos anteriores, el saldo{% if es_contestacion %} (o el abono correspondiente){% endif %} deberá cubrirse dentro de los <strong>tres días hábiles siguientes</strong>.</p>
+
+{% if es_contestacion %}
+    {% if es_pago_audiencia %}
+    <p><strong>Regla especial de la Modalidad A (liquidación única en primera audiencia):</strong> en el caso específico de esta modalidad, EL CLIENTE deberá liquidar la totalidad de los honorarios pendientes dentro de los <strong>tres días hábiles siguientes a la celebración de la primera audiencia</strong>, sin necesidad de esperar a que se dicte resolución alguna. Lo anterior sin perjuicio de que el saldo también pueda ser exigible por cualquiera de los demás supuestos previstos en esta cláusula.</p>
+    {% endif %}
+
+    {% if es_pago_abonos %}
+    <p><strong>Regla especial de la Modalidad B (dos abonos hasta sentencia):</strong> en el caso específico de esta modalidad, EL CLIENTE deberá cubrir el primer abono dentro de los <strong>tres días hábiles siguientes a la celebración de la primera audiencia</strong>, y el segundo abono <strong>al momento en que se notifique la sentencia definitiva</strong> que ponga fin al procedimiento, sin perjuicio de que el saldo también pueda ser exigible por cualquiera de los demás supuestos previstos en esta cláusula.</p>
+    {% endif %}
+{% else %}
+    {% if es_divorcio %}
+    <p>En el caso específico de los juicios de divorcio, EL CLIENTE deberá liquidar la totalidad de los honorarios pendientes en la audiencia prevista en la fracción II de la presente cláusula, sin necesidad de esperar a que se dicte resolución alguna. Lo anterior sin perjuicio de que el saldo también pueda ser exigible por cualquiera de los demás supuestos previstos en esta cláusula.</p>
+    {% endif %}
+{% endif %}
+
+<!-- ═══════════════════════ DESISTIMIENTO ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}OCTAVA{% else %}SÉPTIMA{% endif %}. DESISTIMIENTO, TERMINACIÓN ANTICIPADA Y REVOCACIÓN.</span></p>
+<p>EL CLIENTE reconoce y acepta expresamente que los honorarios pactados constituyen la contraprestación por los servicios profesionales contratados y que su pago no se encuentra condicionado a la obtención de una resolución favorable.</p>
+<p>En consecuencia, si EL CLIENTE decide unilateralmente desistirse de la acción o de la instancia, solicitar la terminación anticipada del procedimiento, revocar la representación otorgada, contratar a otro profesionista o realizar cualquier acto que impida la continuación del procedimiento, dicha decisión no extinguirá el derecho de EL PROFESIONISTA a cobrar los honorarios pactados ni liberará a EL CLIENTE del pago del saldo pendiente, siempre que la terminación anticipada no sea consecuencia de un incumplimiento imputable a EL PROFESIONISTA.</p>
+<p>Las partes reconocen que la decisión de desistirse, revocar la representación, sustituir al profesionista o terminar anticipadamente el procedimiento constituye una determinación propia de EL CLIENTE y, por sí misma, no modifica la contraprestación previamente convenida.</p>
+<p>Lo anterior se pacta sin perjuicio del derecho de EL CLIENTE para hacer valer, por la vía legal correspondiente, cualquier incumplimiento, negligencia, impericia o dolo que sea efectivamente imputable a EL PROFESIONISTA.</p>
+
+<!-- ═══════════════════════ AUSENCIA DE GARANTÍA ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}NOVENA{% else %}OCTAVA{% endif %}. AUSENCIA DE GARANTÍA DE RESULTADO.</span></p>
+<p>EL CLIENTE reconoce que la prestación de servicios profesionales jurídicos constituye una obligación de medios y no de resultado.</p>
+<p>Por tanto, EL PROFESIONISTA no garantiza el sentido de las resoluciones que emitan las autoridades jurisdiccionales, administrativas o de cualquier otra naturaleza, ni puede garantizar plazos de resolución que dependan de dichas autoridades.</p>
+<p>Los honorarios se causan por los servicios profesionales contratados y prestados y no exclusivamente por la obtención de una resolución favorable.</p>
+
+<!-- ═══════════════════════ OBLIGACIONES PROFESIONISTA ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA{% else %}NOVENA{% endif %}. OBLIGACIONES DE EL PROFESIONISTA.</span></p>
+<p>EL PROFESIONISTA se obliga a:</p>
+<p class="indent">a) Actuar con diligencia profesional.</p>
+<p class="indent">b) Realizar las actuaciones comprendidas dentro del objeto del contrato.</p>
+<p class="indent">c) Informar a EL CLIENTE, dentro de lo razonablemente necesario, sobre los avances relevantes del procedimiento.</p>
+<p class="indent">d) Guardar confidencialidad respecto de la información proporcionada por EL CLIENTE, salvo las excepciones previstas por la legislación aplicable.</p>
+<p class="indent">e) Entregar o poner a disposición de EL CLIENTE la documentación que corresponda al concluir su intervención, en los términos legalmente procedentes.</p>
+<p class="indent">f) Mantener actualizada su cédula profesional durante la vigencia del presente contrato.</p>
+
+<!-- ═══════════════════════ OBLIGACIONES CLIENTE ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA PRIMERA{% else %}DÉCIMA{% endif %}. OBLIGACIONES DE EL CLIENTE.</span></p>
+<p>EL CLIENTE se obliga a:</p>
+<p class="indent">a) Proporcionar información verdadera, completa y oportuna.</p>
+<p class="indent">b) Entregar los documentos necesarios para la prestación de los servicios.</p>
+<p class="indent">c) Comparecer personalmente cuando su presencia sea necesaria.</p>
+<p class="indent">d) Cumplir oportunamente con los pagos pactados.</p>
+<p class="indent">e) Informar inmediatamente cualquier cambio de domicilio, teléfono, correo electrónico o medio de contacto.</p>
+<p class="indent">f) No ocultar hechos, documentos o circunstancias que puedan afectar el procedimiento.</p>
+<p class="indent">g) Atender oportunamente las instrucciones y requerimientos necesarios para la adecuada prestación del servicio.</p>
+
+<!-- ═══════════════════════ ENTREGA OPORTUNA DOCS (solo contestación) ═══════════════════════ -->
+{% if es_contestacion %}
+<p class="clause"><span class="bold">DÉCIMA SEGUNDA. ENTREGA OPORTUNA DE DOCUMENTOS Y RECURSOS PARA LA CONTESTACIÓN.</span></p>
+<p>Tratándose de la contestación de demanda, EL CLIENTE se obliga a:</p>
+<p class="indent">a) Entregar a EL PROFESIONISTA, dentro de las <strong>cuarenta y ocho horas</strong> siguientes a la firma del presente contrato, la totalidad de los documentos, información y elementos probatorios que obren en su poder y que resulten relevantes para la contestación.</p>
+<p class="indent">b) Proporcionar los recursos económicos necesarios para cubrir los gastos, derechos, depósitos, oficios, copias certificadas, peritajes y demás erogaciones que deban realizarse con motivo de la contestación y del ofrecimiento de pruebas, dentro de los plazos que EL PROFESIONISTA le indique.</p>
+<p class="indent">c) Comparecer personalmente cuando su presencia sea requerida por la autoridad jurisdiccional.</p>
+<p>EL CLIENTE reconoce que el incumplimiento de las obligaciones anteriores podrá generar la preclusión de derechos procesales, sin que ello sea imputable a EL PROFESIONISTA.</p>
+{% endif %}
+
+<!-- ═══════════════════════ INDEPENDENCIA PROFESIONAL ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA TERCERA{% else %}DÉCIMA PRIMERA{% endif %}. INDEPENDENCIA PROFESIONAL.</span></p>
+<p>EL PROFESIONISTA ejercerá sus conocimientos y criterio técnico de manera independiente, sin que EL CLIENTE pueda exigir la realización de actuaciones contrarias a la ley, a la ética profesional o a las determinaciones de las autoridades competentes.</p>
+
+<!-- ═══════════════════════ GASTOS Y EXPENSAS ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA CUARTA{% else %}DÉCIMA SEGUNDA{% endif %}. GASTOS Y EXPENSAS.</span></p>
+<p>Los gastos extraordinarios necesarios para la atención del asunto serán cubiertos por EL CLIENTE, salvo que expresamente se haya pactado que forman parte de los honorarios.</p>
+<p>Cuando EL PROFESIONISTA realice anticipos por cuenta de EL CLIENTE, éste deberá reembolsarlos en los términos acordados.</p>
+
+<!-- ═══════════════════════ INCUMPLIMIENTO ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA QUINTA{% else %}DÉCIMA TERCERA{% endif %}. INCUMPLIMIENTO DEL PAGO.</span></p>
+<p>Una vez actualizado cualquiera de los supuestos previstos en la cláusula {% if es_contestacion %}séptima{% else %}sexta{% endif %} y transcurrido el plazo de <strong>tres días hábiles</strong> sin que EL CLIENTE cubra el saldo o el abono correspondiente, éste se considerará en incumplimiento contractual.</p>
+<p>EL PROFESIONISTA podrá ejercer las acciones legales que correspondan para obtener el pago de los honorarios adeudados, así como, en su caso, los intereses, gastos y costas que legalmente procedan.</p>
+<p>Interés moratorio: en caso de incumplimiento, el saldo insoluto causará un interés moratorio equivalente a la tasa que resulte de multiplicar por 1.5 la tasa de interés interbancaria de equilibrio (TIIE) a plazo de 28 días, vigente en la fecha de exigibilidad del saldo, sin que dicha tasa exceda el límite legal aplicable conforme a la legislación vigente en materia de usura.</p>
+
+<!-- ═══════════════════════ RECONOCIMIENTO DE SALDO ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA SEXTA{% else %}DÉCIMA CUARTA{% endif %}. RECONOCIMIENTO DEL SALDO.</span></p>
+<p>EL CLIENTE reconoce desde este momento que, una vez realizado el primer pago, el saldo contractual asciende a:</p>
+<p class="amount-box"><strong>${{ saldo_numero }} ({{ saldo_letra }})</strong></p>
+<p>Dicho reconocimiento se relaciona directamente con el presente contrato y con el comprobante de pago correspondiente.</p>
+<p>Cuando el saldo sea exigible, EL CLIENTE podrá suscribir el reconocimiento de saldo correspondiente, en el que se hará constar la fecha en que se actualizó el supuesto de exigibilidad y la cantidad efectivamente pendiente.</p>
+
+<!-- ═══════════════════════ DOCUMENTACIÓN CONTRACTUAL ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA SÉPTIMA{% else %}DÉCIMA QUINTA{% endif %}. DOCUMENTACIÓN CONTRACTUAL.</span></p>
+<p>Forman parte integrante del presente contrato:</p>
+<p class="indent">I. La constancia de contratación.</p>
+<p class="indent">II. Los comprobantes de pago.</p>
+<p class="indent">III. Los recibos correspondientes.</p>
+<p class="indent">IV. El reconocimiento de saldo que, en su caso, sea suscrito.</p>
+<p class="indent">V. Los documentos que individualicen el procedimiento contratado.</p>
+<p>En caso de discrepancia, prevalecerá el presente contrato respecto de la determinación de derechos y obligaciones entre las partes.</p>
+
+<!-- ═══════════════════════ MEDIOS DE COMUNICACIÓN ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA OCTAVA{% else %}DÉCIMA SEXTA{% endif %}. MEDIOS DE COMUNICACIÓN.</span></p>
+<p>Las partes podrán comunicarse mediante domicilio, teléfono, correo electrónico o aplicaciones de mensajería que hayan proporcionado voluntariamente.</p>
+<p>Las comunicaciones relacionadas con actuaciones procesales deberán realizarse por los medios legalmente idóneos cuando así lo exija la legislación aplicable.</p>
+
+<!-- ═══════════════════════ MODIFICACIONES ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}DÉCIMA NOVENA{% else %}DÉCIMA SÉPTIMA{% endif %}. MODIFICACIONES.</span></p>
+<p>Cualquier modificación al presente contrato deberá constar por escrito y ser aceptada por ambas partes.</p>
+
+<!-- ═══════════════════════ NO NOVACIÓN ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}VIGÉSIMA{% else %}DÉCIMA OCTAVA{% endif %}. NO NOVACIÓN.</span></p>
+<p>La suscripción de recibos, reconocimientos de saldo o documentos relacionados con el presente contrato no implicará novación de las obligaciones originales, salvo que expresamente se establezca lo contrario.</p>
+
+{% if es_bilateral %}
+<!-- ═══════════════════════ CLÁUSULA DE AVAL (SOLO BILATERAL) ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}VIGÉSIMA PRIMERA{% else %}DÉCIMA NOVENA{% endif %}. AVAL Y OBLIGACIÓN SOLIDARIA.</span></p>
+<p>En términos del artículo 1976 y demás relativos del Código Civil para el Estado de Sinaloa, <strong>{{ aval_nombre }}</strong>, en su carácter de <strong>AVAL Y OBLIGADO SOLIDARIO</strong>, se obliga solidariamente con EL CLIENTE al cumplimiento íntegro y puntual de todas las obligaciones de pago derivadas del presente contrato, incluyendo el anticipo, el saldo pendiente, los intereses moratorios, los gastos, las costas y cualquier accesorio que legalmente proceda.</p>
+<p>EL AVAL renuncia expresamente al beneficio de orden y de excusión, en términos de la legislación aplicable. El consentimiento de EL AVAL para obligarse en los términos anteriores consta de manera expresa e informada, sin que pueda oponer pretexto alguno derivado del desconocimiento del contenido del presente contrato.</p>
+<p>La obligación de EL AVAL permanecerá vigente hasta la total extinción de las obligaciones de pago a cargo de EL CLIENTE, y no se extinguirá por prórrogas, novaciones, plazos adicionales, convenios de pago o modificaciones que EL PROFESIONISTA acuerde con EL CLIENTE respecto del saldo pendiente.</p>
+<p>Para efectos de lo anterior, EL AVAL señala como su domicilio el siguiente: {{ cliente_domicilio or '________________________________________' }}.</p>
+{% endif %}
+
+<!-- ═══════════════════════ DOMICILIOS ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}{% if es_bilateral %}VIGÉSIMA SEGUNDA{% else %}VIGÉSIMA PRIMERA{% endif %}{% else %}{% if es_bilateral %}VIGÉSIMA{% else %}DÉCIMA NOVENA{% endif %}{% endif %}. DOMICILIOS.</span></p>
+<p>Para todos los efectos relacionados con el presente contrato, las partes señalan como domicilios:</p>
+<p class="indent">EL PROFESIONISTA: {{ profesionista_domicilio or '________________________________________' }}</p>
+<p class="indent">EL CLIENTE: {{ cliente_domicilio or '________________________________________' }}</p>
+<p>Cualquier cambio deberá ser comunicado por escrito.</p>
+
+<!-- ═══════════════════════ COMPETENCIA ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}VIGÉSIMA SEGUNDA{% else %}VIGÉSIMA{% endif %}. COMPETENCIA.</span></p>
+<p>Para la interpretación, cumplimiento y, en su caso, exigibilidad de las obligaciones derivadas del presente contrato, las partes se sujetarán a las disposiciones legales que resulten aplicables y a los tribunales que legalmente sean competentes, sin que esta cláusula implique prórroga de jurisdicción cuando ésta se encuentre prohibida por la ley.</p>
+
+<!-- ═══════════════════════ ACTUALIZACIÓN DE DATOS (solo inicio) ═══════════════════════ -->
+{% if not es_contestacion %}
+<p class="clause"><span class="bold">VIGÉSIMA PRIMERA. ACTUALIZACIÓN DE DATOS PROCESALES.</span></p>
+<p>Las partes reconocen que a la fecha de firma del presente contrato pueden no estar determinados el número de expediente y la autoridad jurisdiccional. Una vez que se presente la demanda y se reciba el auto de radicación, EL PROFESIONISTA deberá elaborar y poner a disposición de EL CLIENTE un aviso de actualización de datos procesales, en el que se haga constar:</p>
+<p class="indent">a) El número de expediente asignado.</p>
+<p class="indent">b) La autoridad jurisdiccional competente.</p>
+<p class="indent">c) La fecha de presentación y, en su caso, de radicación.</p>
+<p class="indent">d) Cualquier otro dato relevante para la individualización del procedimiento.</p>
+<p>Dicho aviso se anexará al presente contrato y formará parte integrante del mismo, sin que implique novación de las obligaciones originales. Si el procedimiento ya se encuentra iniciado al momento de la firma, el sistema deberá capturar los datos existentes y omitir este aviso.</p>
+{% endif %}
+
+<!-- ═══════════════════════ ACEPTACIÓN ═══════════════════════ -->
+<p class="clause"><span class="bold">{% if es_contestacion %}VIGÉSIMA TERCERA{% else %}VIGÉSIMA SEGUNDA{% endif %}. ACEPTACIÓN.</span></p>
+<p>Leído que fue el presente contrato por las partes y enteradas de su contenido, alcance y consecuencias jurídicas, lo firman por duplicado en la ciudad y fecha señaladas al inicio.</p>
+
+<!-- ============ FIRMAS ============ -->
+<div class="firma-block">
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">Lic. {{ profesionista_nombre }}</div>
+        <div class="firma-rol">Cédula: {{ profesionista_cedula }}</div>
+        <div class="firma-rol-strong">EL PROFESIONISTA</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">{{ cliente_nombre }}</div>
+        <div class="firma-rol-strong">EL CLIENTE</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+    {% if es_bilateral %}
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">{{ aval_nombre }}</div>
+        <div class="firma-rol-strong">EL AVAL</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="firma-block">
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">TESTIGO 1</div>
+        <div class="firma-rol">Nombre: _______________________________</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+    <div class="firma-item">
+        <div class="firma-line"></div>
+        <div class="firma-name">TESTIGO 2</div>
+        <div class="firma-rol">Nombre: _______________________________</div>
+        <div class="huella-box">
+            <div class="huella-label">HUELLA DIGITAL</div>
+            <div class="huella-espacio"></div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ PIE DE DOCUMENTO ============ -->
+<div class="pdf-footer">
+    Documento generado electrónicamente por Lumen Legal con fundamento en la Ley de Firma Electrónica Avanzada y los artículos 89 a 114 del Código de Comercio.<br>
+    Lumen Legal &copy; {{ anio }} — Documento generado electrónicamente.
+</div>
+
+</body>
+</html>

@@ -254,6 +254,8 @@ from app.routers import (
     activity,
     formatos,
     backup,
+    users,
+    abogados,
 )
 
 app.include_router(health.router, prefix="/api")
@@ -268,8 +270,9 @@ app.include_router(audit.router, prefix="/api")
 app.include_router(activity.router, prefix="/api")
 app.include_router(backup.router, prefix="/api")
 app.include_router(formatos.router, prefix="/api")
+app.include_router(users.router, prefix="/api")
+app.include_router(abogados.router, prefix="/api")
 app.include_router(auth.router)
-
 
 # ============================================================
 # FUNCIÓN PARA OBTENER USUARIO ACTUAL
@@ -318,6 +321,7 @@ async def root(request: Request):
             "audit",
             "admin",
             "formatos",
+            "abogados",
         ]
     else:
         user_permissions = user.permissions.split(",") if user.permissions else []

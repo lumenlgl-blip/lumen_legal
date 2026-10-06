@@ -1170,6 +1170,64 @@
             .wizard-stepper .step-circle { width: 32px; height: 32px; font-size: 0.75rem; }
             .wizard-stepper .step-label { font-size: 0.55rem; }
         }
+
+                /* ============================================================ */
+        /* MODALIDAD DE PAGO DEL SALDO                                  */
+        /* ============================================================ */
+        .modality-option {
+            display: flex;
+            gap: 12px;
+            padding: 16px 18px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-soft);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s var(--transition-bounce);
+            height: 100%;
+        }
+        .modality-option:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .modality-option input[type="radio"] {
+            margin-top: 3px;
+            accent-color: var(--accent-primary);
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+        }
+        .modality-option input[type="radio"]:checked ~ .modality-content .modality-title {
+            color: var(--accent-primary);
+        }
+        .modality-option:has(input[type="radio"]:checked) {
+            border-color: var(--accent-primary);
+            background: rgba(42,109,244,0.06);
+            box-shadow: 0 0 0 4px rgba(42,109,244,0.10);
+        }
+        [data-theme="dark"] .modality-option:has(input[type="radio"]:checked) {
+            background: rgba(91,147,255,0.10);
+        }
+        .modality-content { flex: 1; }
+        .modality-title {
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.15s;
+        }
+        .modality-title i {
+            color: var(--accent-primary);
+            font-size: 1.1rem;
+        }
+        .modality-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -1280,16 +1338,6 @@
                                 </label>
                                 <select name="tipo_juicio" id="tipo_juicio" class="form-select">
                                     <option value="">Selecciona...</option>
-                                    <option value="Divorcio Bilateral">Divorcio Bilateral</option>
-                                    <option value="Divorcio Unilateral">Divorcio Unilateral</option>
-                                    <option value="Sucesorio Testamentario">Sucesorio Testamentario</option>
-                                    <option value="Sucesorio Intestamentario">Sucesorio Intestamentario</option>
-                                    <option value="Convenio">Convenio</option>
-                                    <option value="Alimentos">Alimentos</option>
-                                    <option value="Custodia">Custodia</option>
-                                    <option value="Perdida de la Patria Potestad">Pérdida de la Patria Potestad</option>
-                                    <option value="Convivencia">Convivencia</option>
-                                    <option value="Otro">Otro</option>
                                 </select>
                                 <div class="invalid-feedback">Selecciona el tipo de juicio</div>
                             </div>
@@ -1312,6 +1360,157 @@
                                        class="form-control" autocomplete="off"
                                        placeholder="Ej: Divorcio Unilateral, Convenio de custodia compartida, etc."
                                        maxlength="200">
+                            </div>
+
+                            <div class="col-md-8">
+                                <label class="form-label" for="assigned_lawyer_id">
+                                    <i class="bi bi-award"></i> Abogado asignado <span class="required">*</span>
+                                </label>
+                                <select name="assigned_lawyer_id" id="assigned_lawyer_id" class="form-select" required>
+                                    <option value="">Cargando abogados...</option>
+                                </select>
+                                <div class="invalid-feedback">Selecciona el abogado que llevará el caso</div>
+                                <small class="text-muted" style="font-size:0.72rem;display:block;margin-top:4px;padding-left:2px;">
+                                    <i class="bi bi-info-circle me-1"></i>Aparecerá impreso en el contrato.
+                                </small>
+                            </div>
+
+                            <div class="col-md-4" id="lawyerInfoBox" style="display:none;">
+                                <label class="form-label">&nbsp;</label>
+                                <div style="background:var(--bg-secondary);border:1px solid var(--border-soft);border-radius:var(--radius-md);padding:10px 14px;min-height:56px;">
+                                    <div style="font-size:0.7rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;">Cédula profesional</div>
+                                    <div id="lawyerCedula" style="font-family:'SF Mono','Consolas',monospace;font-weight:700;font-size:0.85rem;color:var(--accent-primary);"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label" for="ciudad_suscripcion">
+                                    <i class="bi bi-geo-alt-fill"></i> Ciudad de suscripción del contrato <span class="required">*</span>
+                                </label>
+                                <select name="ciudad_suscripcion" id="ciudad_suscripcion" class="form-select" required>
+                                    <option value="">Selecciona el municipio...</option>
+                                    <optgroup label="Municipios de Sinaloa">
+                                        <option value="Ahome (Los Mochis)">Ahome — Los Mochis</option>
+                                        <option value="Angostura">Angostura</option>
+                                        <option value="Badiraguato">Badiraguato</option>
+                                        <option value="Choix">Choix</option>
+                                        <option value="Concordia">Concordia</option>
+                                        <option value="Cosalá">Cosalá</option>
+                                        <option value="Culiacán">Culiacán</option>
+                                        <option value="El Fuerte">El Fuerte</option>
+                                        <option value="Elota (La Cruz)">Elota — La Cruz</option>
+                                        <option value="Escuinapa">Escuinapa</option>
+                                        <option value="Guasave">Guasave</option>
+                                        <option value="Mazatlán">Mazatlán</option>
+                                        <option value="Mocorito">Mocorito</option>
+                                        <option value="Navolato">Navolato</option>
+                                        <option value="Rosario (El Rosario)">Rosario — El Rosario</option>
+                                        <option value="Salvador Alvarado (Guamúchil)">Salvador Alvarado — Guamúchil</option>
+                                        <option value="San Ignacio">San Ignacio</option>
+                                        <option value="Sinaloa (Sinaloa de Leyva)">Sinaloa — Sinaloa de Leyva</option>
+                                    </optgroup>
+                                </select>
+                                <div class="invalid-feedback">Selecciona el municipio donde se suscribe el contrato</div>
+                                <small class="text-muted" style="font-size:0.72rem;display:block;margin-top:4px;padding-left:2px;">
+                                    <i class="bi bi-info-circle me-1"></i>Aparecerá en el contrato como "En la ciudad de...".
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- ─────────────────────────────────────────── -->
+                        <!-- DATOS DE CONTESTACIÓN (solo si aplica)     -->
+                        <!-- ─────────────────────────────────────────── -->
+                        <div id="contestacionFields" style="display:none; margin-top:20px;">
+                            <hr style="border-color:var(--border-soft); margin:20px 0;">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                                <i class="bi bi-file-earmark-text text-warning"></i>
+                                Datos del expediente a contestar
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="num_expediente_contestar">
+                                        Número de expediente <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="num_expediente_contestar"
+                                           id="num_expediente_contestar" class="form-control"
+                                           placeholder="Ej: 123/2026" maxlength="80">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="tribunal_contestar">
+                                        Tribunal <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="tribunal_contestar"
+                                           id="tribunal_contestar" class="form-control"
+                                           placeholder="Ej: Juzgado Segundo de lo Familiar" maxlength="200">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="actor_nombre">Parte actora</label>
+                                    <input type="text" name="actor_nombre" id="actor_nombre"
+                                           class="form-control" maxlength="200">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="demandado_nombre">Parte demandada</label>
+                                    <input type="text" name="demandado_nombre" id="demandado_nombre"
+                                           class="form-control" maxlength="200">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="fecha_notificacion_demanda">
+                                        Fecha de notificación de la demanda
+                                    </label>
+                                    <input type="date" name="fecha_notificacion_demanda"
+                                           id="fecha_notificacion_demanda" class="form-control">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="fecha_vencimiento_plazo">
+                                        Fecha de vencimiento del plazo
+                                    </label>
+                                    <input type="date" name="fecha_vencimiento_plazo"
+                                           id="fecha_vencimiento_plazo" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label d-flex align-items-center gap-2" style="cursor:pointer;">
+                                        <input type="checkbox" name="requiere_reconvencion"
+                                               id="requiere_reconvencion" value="true">
+                                        <span>¿Se requiere formular reconvención?</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ─────────────────────────────────────────── -->
+                        <!-- DATOS DE PROMOVENTES (Divorcio Bilateral)   -->
+                        <!-- ─────────────────────────────────────────── -->
+                        <div id="bilateralFields" style="display:none; margin-top:20px;">
+                            <hr style="border-color:var(--border-soft); margin:20px 0;">
+                            <h6 class="fw-bold mb-3 d-flex align-items-center gap-2" style="color:var(--text-primary);">
+                                <i class="bi bi-people-fill text-primary"></i>
+                                Datos de los Promoventes (Divorcio Bilateral)
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label" for="promovente_uno">
+                                        <i class="bi bi-person-check-fill"></i> Promovente 1 (Cliente registrado)
+                                    </label>
+                                    <input type="text" name="actor_nombre" id="promovente_uno"
+                                           class="form-control" autocomplete="off" maxlength="200"
+                                           readonly
+                                           style="background:var(--bg-tertiary); cursor:not-allowed; font-weight:600;"
+                                           placeholder="Se llenará con el cliente registrado">
+                                    <small class="text-muted" style="font-size:0.72rem; display:block; margin-top:4px; padding-left:2px;">
+                                        <i class="bi bi-lock-fill me-1"></i>Este promovente es el cliente registrado en el sistema y firmará el contrato.
+                                    </small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label" for="promovente_dos">
+                                        <i class="bi bi-person-plus-fill"></i> Promovente 2 (Aval) <span class="required">*</span>
+                                    </label>
+                                    <input type="text" name="actor2_nombre" id="promovente_dos"
+                                           class="form-control" autocomplete="off" maxlength="200"
+                                           placeholder="Nombre completo del segundo promovente (aval)">
+                                    <small class="text-muted" style="font-size:0.72rem; display:block; margin-top:4px; padding-left:2px;">
+                                        <i class="bi bi-shield-check me-1"></i>Firmará como AVAL Y OBLIGADO SOLIDARIO.
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1369,6 +1568,49 @@
                         <div class="remaining-alert" id="remainingDisplay" style="display:none;">
                             <span><i class="bi bi-wallet2 me-2"></i><strong>Restante por pagar:</strong></span>
                             <span class="remaining-amount" id="remainingAmount">$0.00</span>
+                        </div>
+
+                        <!-- ─────────────────────────────────────────── -->
+                        <!-- MODALIDAD DE PAGO DEL SALDO                -->
+                        <!-- ─────────────────────────────────────────── -->
+                        <div class="mt-4" id="modalidadPagoBlock" style="display:none;">
+                            <label class="form-label mb-3" style="font-weight:700;">
+                                <i class="bi bi-calendar-check"></i>
+                                ¿Cómo se pagará el saldo restante? <span class="required">*</span>
+                            </label>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="modality-option" for="modalidad_audiencia">
+                                        <input type="radio" name="modalidad_pago_saldo"
+                                               id="modalidad_audiencia" value="audiencia" checked>
+                                        <div class="modality-content">
+                                            <div class="modality-title">
+                                                <i class="bi bi-1-circle-fill"></i>
+                                                Pago único en primera audiencia
+                                            </div>
+                                            <div class="modality-desc">
+                                                El saldo total se cubre en la <strong>primera audiencia</strong> del procedimiento, cualquiera que sea su naturaleza.
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="modality-option" for="modalidad_abonos">
+                                        <input type="radio" name="modalidad_pago_saldo"
+                                               id="modalidad_abonos" value="abonos">
+                                        <div class="modality-content">
+                                            <div class="modality-title">
+                                                <i class="bi bi-2-circle-fill"></i>
+                                                Dos abonos hasta sentencia
+                                            </div>
+                                            <div class="modality-desc">
+                                                <strong>50%</strong> en la primera audiencia y <strong>50%</strong> al dictarse la sentencia definitiva.
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
@@ -1602,6 +1844,42 @@
                 <button type="button" class="btn btn-success btn-lg" id="acceptFileBtn">
                     <i class="bi bi-check-circle"></i> Sí, usar este comprobante
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ELECCIÓN DE DOCUMENTOS LEGALES -->
+<div class="modal fade modal-modern" id="eleccionDocsModal" tabindex="-1" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,var(--accent-primary),var(--accent-primary-hover));">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-file-earmark-pdf"></i> Documentos a generar
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small mb-3">
+                    Elige qué documentos deseas generar para esta contratación:
+                </p>
+                <div class="d-grid gap-3">
+                    <button type="button" class="btn btn-outline-primary btn-lg" id="btnSoloConstancia"
+                            style="border-radius:16px; padding:18px; text-align:left;">
+                        <i class="bi bi-receipt me-2" style="font-size:1.4rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Solo Constancia de Contratación</strong>
+                        <br><small class="text-muted" style="margin-left:2.1rem;">
+                            Comprobante de pago y contratación
+                        </small>
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-lg" id="btnPaqueteCompleto"
+                            style="border-radius:16px; padding:18px; text-align:left;">
+                        <i class="bi bi-file-earmark-zip me-2" style="font-size:1.4rem; vertical-align:middle;"></i>
+                        <strong style="font-size:1rem;">Paquete completo</strong>
+                        <br><small class="text-muted" style="margin-left:2.1rem;">
+                            Constancia + Contrato + Reconocimiento + Pagaré
+                        </small>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1876,6 +2154,88 @@ function updateRemaining() {
 }
 
 /* ============================================================
+   TIPOS DE JUICIO SEGÚN TIPO DE SERVICIO
+   ============================================================ */
+// Juicios completos (Inicio de Juicio — incluye bilateral, sucesorios, etc.)
+const TIPOS_JUICIO_COMPLETOS = [
+    { value: 'Divorcio Bilateral',        label: 'Divorcio Bilateral' },
+    { value: 'Divorcio Unilateral',       label: 'Divorcio Unilateral' },
+    { value: 'Sucesorio Testamentario',   label: 'Sucesorio Testamentario' },
+    { value: 'Sucesorio Intestamentario', label: 'Sucesorio Intestamentario' },
+    { value: 'Convenio',                  label: 'Convenio' },
+    { value: 'Alimentos',                 label: 'Alimentos' },
+    { value: 'Custodia',                  label: 'Custodia' },
+    { value: 'Perdida de la Patria Potestad', label: 'Pérdida de la Patria Potestad' },
+    { value: 'Convivencia',               label: 'Convivencia' },
+    { value: 'Otro',                      label: 'Otro' },
+];
+
+// Contestación de demanda → SOLO procedimientos que admiten contestación
+const TIPOS_JUICIO_CONTESTACION = [
+    { value: 'Divorcio Unilateral',       label: 'Divorcio Unilateral' },
+    { value: 'Alimentos',                 label: 'Alimentos' },
+    { value: 'Custodia',                  label: 'Custodia' },
+    { value: 'Perdida de la Patria Potestad', label: 'Pérdida de la Patria Potestad' },
+    { value: 'Convivencia',               label: 'Convivencia' },
+];
+
+/**
+ * Repuebla el select #tipo_juicio según el tipo de servicio.
+ *  - "contestacion" → solo TIPOS_JUICIO_CONTESTACION
+ *  - "juicio" u otros con juicio → TIPOS_JUICIO_COMPLETOS
+ */
+function repoblarTipoJuicio(serviceType) {
+    const select = document.getElementById('tipo_juicio');
+    if (!select) return;
+
+    const valorPrevio = select.value;
+    const opciones = (serviceType === 'contestacion')
+        ? TIPOS_JUICIO_CONTESTACION
+        : TIPOS_JUICIO_COMPLETOS;
+
+    // Reconstruir
+    select.innerHTML = '<option value="">Selecciona...</option>';
+    opciones.forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op.value;
+        opt.textContent = op.label;
+        select.appendChild(opt);
+    });
+
+    // Restaurar valor si aún es válido
+    if (opciones.some(op => op.value === valorPrevio)) {
+        select.value = valorPrevio;
+    } else {
+        select.value = '';
+    }
+}
+
+/* ============================================================
+   MODALIDAD DE PAGO DEL SALDO — SOLO CONTESTACIÓN DE DEMANDA
+   ============================================================ */
+function toggleModalidadBlock() {
+    const st = (document.getElementById('service_type')?.value || '').toLowerCase();
+    const total = safeNumber(document.getElementById('total_cost').value.replace(/[^0-9.]/g, ''));
+    const payment = safeNumber(document.getElementById('payment_amount').value.replace(/[^0-9.]/g, ''));
+    const saldo = total - payment;
+    const block = document.getElementById('modalidadPagoBlock');
+    const esContestacion = st === 'contestacion';
+    if (block) {
+        block.style.display = (esContestacion && saldo > 0.01) ? 'block' : 'none';
+    }
+    // Si NO es contestación, resetear a la opción por defecto
+    if (!esContestacion) {
+        const radioAudiencia = document.getElementById('modalidad_audiencia');
+        if (radioAudiencia) radioAudiencia.checked = true;
+    }
+}
+
+// Enganchar los eventos globalmente
+document.getElementById('total_cost')?.addEventListener('input', toggleModalidadBlock);
+document.getElementById('payment_amount')?.addEventListener('input', toggleModalidadBlock);
+document.getElementById('service_type')?.addEventListener('change', toggleModalidadBlock);
+
+/* ============================================================
    MOSTRAR/OCULTAR TIPO DE JUICIO
    ============================================================ */
 document.getElementById('service_type').addEventListener('change', function () {
@@ -1892,12 +2252,28 @@ document.getElementById('service_type').addEventListener('change', function () {
     if (serviceType === 'juicio' || serviceType === 'contestacion') {
         juicioContainer.style.display = 'block';
         tipoJuicio.required = true;
+        // Repoblar según el tipo de servicio
+        repoblarTipoJuicio(serviceType);
+    } else {
+        // Ocultar bloque bilateral si no aplica
+        const bf = document.getElementById('bilateralFields');
+        if (bf) bf.style.display = 'none';
+        const p1 = document.getElementById('promovente_uno');
+        const p2 = document.getElementById('promovente_dos');
+        if (p1) p1.required = false;
+        if (p2) p2.required = false;
     }
+
+    // Reevaluar modalidad (ya es global, muestra solo si es contestación)
+    toggleModalidadBlock();
 });
 
 document.getElementById('tipo_juicio').addEventListener('change', function () {
     const juicioOtroContainer = document.getElementById('juicioOtroContainer');
     const tipoJuicioOtro = document.getElementById('tipo_juicio_otro');
+    const bilateralFields = document.getElementById('bilateralFields');
+    const p1 = document.getElementById('promovente_uno');
+    const p2 = document.getElementById('promovente_dos');
 
     juicioOtroContainer.style.display = 'none';
     tipoJuicioOtro.required = false;
@@ -1906,6 +2282,34 @@ document.getElementById('tipo_juicio').addEventListener('change', function () {
         juicioOtroContainer.style.display = 'block';
         tipoJuicioOtro.required = true;
     }
+
+    // ── Divorcio Bilateral: mostrar 2 promoventes ──
+    const esBilateral = (this.value || '').toLowerCase().includes('bilateral');
+    if (esBilateral) {
+        bilateralFields.style.display = 'block';
+        p1.required = true;
+        p2.required = true;
+        // Forzar Promovente 1 = nombre del cliente (solo lectura)
+        const clientName = (document.getElementById('clientNameDisplay')?.textContent || '')
+            .replace(/^[\s\S]*?—\s*/, '')  // por si tiene ícono
+            .trim()
+            .toUpperCase();
+        if (clientName && p1 && !p1.value.trim()) {
+            // El nombre viene del header del cliente (ver loadClientDetails)
+            const raw = document.getElementById('clientNameDisplay')?.dataset?.clientName || clientName;
+            p1.value = raw;
+        }
+        p1.readOnly = true;
+    } else {
+        bilateralFields.style.display = 'none';
+        p1.required = false;
+        p2.required = false;
+        // Al desactivar, limpiar por seguridad
+        if (p2) p2.value = '';
+    }
+
+    // Revalidar wizard
+    document.getElementById('contractForm')?.dispatchEvent(new Event('change', { bubbles: true }));
 });
 
 /* ============================================================
@@ -2238,6 +2642,8 @@ function resetearContratacionSilencioso() {
     document.getElementById('receiptContainer').style.display = 'none';
     document.getElementById('juicioContainer').style.display = 'none';
     document.getElementById('juicioOtroContainer').style.display = 'none';
+    document.getElementById('contestacionFields').style.display = 'none';
+    document.getElementById('modalidadPagoBlock').style.display = 'none';
 
     resetFile();
 
@@ -2377,8 +2783,11 @@ async function loadClientDetails(clientId) {
         document.getElementById('resultsContainer').innerHTML = '';
         document.getElementById('contractFormContainer').style.display = 'block';
 
-        document.getElementById('clientNameDisplay').innerHTML =
+        const clientNameEl = document.getElementById('clientNameDisplay');
+        clientNameEl.innerHTML =
             `<i class="bi bi-person-circle" style="color:var(--accent-primary);"></i> ${escapeHTML(client.nombre_completo)}`;
+        // Guardar nombre limpio (sin ícono) para usarlo en Promovente 1
+        clientNameEl.dataset.clientName = (client.nombre_completo || '').trim().toUpperCase();
         document.getElementById('clientInfoDisplay').innerHTML = `
             <div class="client-meta-item"><i class="bi bi-person-vcard"></i><span class="meta-lbl">CURP</span><span class="meta-val">${escapeHTML(client.curp || '—')}</span></div>
             <div class="client-meta-item"><i class="bi bi-telephone"></i><span class="meta-lbl">Tel</span><span class="meta-val">${escapeHTML(client.telefono || '—')}</span></div>
@@ -2386,6 +2795,17 @@ async function loadClientDetails(clientId) {
             <div class="client-meta-item"><i class="bi bi-tag"></i><span class="meta-lbl">Folio</span><span class="meta-val">${escapeHTML(client.folio_registro || '—')}</span></div>
         `;
         selectedClientId = client.id;
+
+        // ── Precargar Promovente 1 (cliente registrado, solo lectura) ──
+        const p1 = document.getElementById('promovente_uno');
+        if (p1) {
+            p1.value = (client.nombre_completo || '').trim().toUpperCase();
+            p1.readOnly = true;
+        }
+
+        // Repoblar tipo_juicio según el servicio actual
+        const stActual = document.getElementById('service_type')?.value || '';
+        if (stActual) repoblarTipoJuicio(stActual);
 
         document.getElementById('contractFormContainer').scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
@@ -2412,6 +2832,8 @@ function limpiarFormulario() {
             document.getElementById('receiptContainer').style.display = 'none';
             document.getElementById('juicioContainer').style.display = 'none';
             document.getElementById('juicioOtroContainer').style.display = 'none';
+            document.getElementById('contestacionFields').style.display = 'none';
+            document.getElementById('modalidadPagoBlock').style.display = 'none';
 
             resetFile();
             selectedClientId = null;
@@ -2536,31 +2958,80 @@ document.getElementById('contractForm').addEventListener('submit', async (e) => 
                 }
 
                 hideLoading();
-                const contentType = response.headers.get('content-type') || '';
 
-                if (!response.ok || !contentType.includes('application/pdf')) {
+                if (!response.ok) {
                     let errorMsg = 'Error al registrar la contratación.';
                     try {
                         const errJson = await response.json();
                         if (errJson.detail) errorMsg = errJson.detail;
-                    } catch (_) {
-                        errorMsg = `Respuesta inesperada (${response.status}).`;
-                    }
+                    } catch (_) {}
                     showNotification('Error', `<p>${escapeHTML(errorMsg)}</p>`, 'error');
                     return;
                 }
 
-                const blob = await response.blob();
-                if (blob.size === 0) throw new Error('El PDF generado está vacío.');
+                // El backend devuelve el ID del contrato; ahora descargamos
+                // los documentos según elección del usuario.
+                const result = await response.json();
+                const contractId = result.contract_id;
+                const serviceType = document.getElementById('service_type').value;
 
-                const url = URL.createObjectURL(blob);
+                // Servicios que pueden generar paquete completo
+                const FULL_DOCS = ['juicio', 'contestacion'];
+                let mode = 'constancia';
+
+                if (FULL_DOCS.includes(serviceType)) {
+                    mode = await elegirTipoDocumentos();
+                }
+
+                showLoading(
+                    mode === 'constancia'
+                        ? 'Generando constancia...'
+                        : 'Generando documentos legales...',
+                    mode === 'constancia'
+                        ? 'Preparando la constancia de contratación.'
+                        : 'Uniendo Constancia + Contrato + Reconocimiento + Pagaré.'
+                );
+
+                const bundleRes = await fetch(`/api/contracts/legal-docs/${contractId}?mode=${mode}`, {
+                    credentials: 'same-origin'
+                });
+
+                if (!bundleRes.ok) {
+                    hideLoading();
+                    showNotification('Error', '<p>El contrato se guardó pero no se pudieron generar los documentos legales.</p>', 'error');
+                    return;
+                }
+
+                const bundleBlob = await bundleRes.blob();
+                hideLoading();
+
+                if (bundleBlob.size === 0) throw new Error('El PDF generado está vacío.');
+
+                const url = URL.createObjectURL(bundleBlob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `contrato_${Date.now()}.pdf`;
+                a.download = `documentos_legales_contrato_${contractId}.pdf`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+
+                                // Descargar automáticamente los documentos legales
+                try {
+                    const contratoId = blob.size ? null : null;
+                    // Obtener el ID del contrato recién creado desde el header de respuesta
+                    // (Si tu backend lo devuelve; si no, se descarga por separado desde la consulta)
+                } catch (_) {}
+
+                const docsHTML = mode === 'full'
+                    ? `<strong>Documentos legales generados (4 en uno):</strong><br>
+                       1. Constancia de Contratación y Pago<br>
+                       2. Contrato de Prestación de Servicios<br>
+                       3. Reconocimiento de Saldo<br>
+                       4. Pagaré`
+                    : `<strong>Documento generado:</strong><br>
+                       1. Constancia de Contratación y Pago`;
 
                 showNotification('¡Contratación Registrada!',
                     `<div class="d-flex flex-column gap-2">
@@ -2576,9 +3047,10 @@ document.getElementById('contractForm').addEventListener('submit', async (e) => 
                             <span class="text-muted">Saldo pendiente:</span>
                             <strong style="color:var(--warning);">${formatMoney(total - payment)}</strong>
                         </div>
-                        <p class="text-muted small mb-0 mt-2">
-                            <i class="bi bi-download me-1"></i> El PDF se descargó automáticamente.
-                        </p>
+                        <div class="alert alert-info mt-3 mb-0 small" style="border-radius:12px;">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>
+                            ${docsHTML}
+                        </div>
                     </div>`, 'success');
 
                 setTimeout(() => window.location.reload(), 3500);
@@ -2616,11 +3088,70 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ============================================================
+   CARGAR ABOGADOS PARA EL SELECT
+   ============================================================ */
+let abogadosCargados = [];
+
+async function cargarAbogados() {
+    const select = document.getElementById('assigned_lawyer_id');
+    if (!select) return;
+
+    try {
+        const res = await fetch('/api/users/lawyers', { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Error al cargar abogados');
+
+        abogadosCargados = await res.json();
+        select.innerHTML = '<option value="">Selecciona un abogado...</option>';
+
+        if (!abogadosCargados.length) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.disabled = true;
+            opt.textContent = '⚠️ No hay abogados registrados. Registra uno primero.';
+            select.appendChild(opt);
+            select.disabled = true;
+            return;
+        }
+
+        abogadosCargados.forEach(a => {
+            const opt = document.createElement('option');
+            opt.value = a.id;
+            opt.textContent = `Lic. ${a.nombre} — Céd. ${a.cedula}${a.especialidad ? ' (' + a.especialidad + ')' : ''}`;
+            opt.dataset.cedula = a.cedula;
+            opt.dataset.especialidad = a.especialidad || '';
+            select.appendChild(opt);
+        });
+        select.disabled = false;
+    } catch (err) {
+        console.error('Error abogados:', err);
+        select.innerHTML = '<option value="">Error al cargar abogados</option>';
+        select.disabled = true;
+    }
+}
+
+// Mostrar cédula al elegir abogado
+document.getElementById('assigned_lawyer_id')?.addEventListener('change', function () {
+    const opt = this.options[this.selectedIndex];
+    const cedula = opt?.dataset?.cedula || '';
+    const infoBox = document.getElementById('lawyerInfoBox');
+    const cedulaEl = document.getElementById('lawyerCedula');
+
+    if (this.value && cedula) {
+        cedulaEl.textContent = cedula;
+        infoBox.style.display = 'block';
+    } else {
+        infoBox.style.display = 'none';
+    }
+});
+
+/* ============================================================
    INICIALIZACIÓN
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     searchBtn.disabled = false;
     setTimeout(() => searchInput?.focus(), 400);
+    cargarAbogados();
+    toggleModalidadBlock();
 });
 
 window.addEventListener('beforeunload', (e) => {
@@ -2685,7 +3216,29 @@ window.addEventListener('beforeunload', (e) => {
                 if (tj === 'Convenio' || tj === 'Otro') {
                     if (!document.getElementById('tipo_juicio_otro').value.trim()) return false;
                 }
+                // Divorcio bilateral → exigir 2 promoventes
+                if ((tj || '').toLowerCase().includes('bilateral')) {
+                    const p1 = document.getElementById('promovente_uno').value.trim();
+                    const p2 = document.getElementById('promovente_dos').value.trim();
+                    if (!p1) return false;   // lo llena el sistema
+                    if (!p2) return false;   // lo llena el usuario
+                }
             }
+
+            // Si es contestación, exigir expediente y tribunal
+            if (st === 'contestacion') {
+                if (!document.getElementById('num_expediente_contestar').value.trim()) return false;
+                if (!document.getElementById('tribunal_contestar').value.trim()) return false;
+            }
+
+            // Abogado asignado es obligatorio
+            const abogadoSelect = document.getElementById('assigned_lawyer_id');
+            if (!abogadoSelect || !abogadoSelect.value) return false;
+
+            // Ciudad de suscripción es obligatoria
+            const ciudadSelect = document.getElementById('ciudad_suscripcion');
+            if (!ciudadSelect || !ciudadSelect.value) return false;
+
             return true;
         }
 
@@ -2763,6 +3316,16 @@ window.addEventListener('beforeunload', (e) => {
         const rn = document.getElementById('receiver_name').value;
         const rf = document.getElementById('receipt_file').files[0];
 
+        // Abogado asignado
+        const abogadoSelect = document.getElementById('assigned_lawyer_id');
+        const abogadoOpt = abogadoSelect?.options[abogadoSelect.selectedIndex];
+        const abogadoNombre = abogadoOpt?.textContent || '—';
+        const abogadoCedula = abogadoOpt?.dataset?.cedula || '';
+
+        // Ciudad de suscripción
+        const ciudadSelect = document.getElementById('ciudad_suscripcion');
+        const ciudadTexto = ciudadSelect?.value || '—';
+
         const summary = document.getElementById('wizardSummary');
 
         const servicioTipo = stMap[st] || st;
@@ -2774,6 +3337,9 @@ window.addEventListener('beforeunload', (e) => {
                 <div class="ws-row"><span class="ws-lbl">Tipo de servicio</span><span class="ws-val">${escapeHTML(servicioTipo)}</span></div>
                 ${juicioTipo ? `<div class="ws-row"><span class="ws-lbl">Tipo de juicio</span><span class="ws-val">${escapeHTML(juicioTipo)}</span></div>` : ''}
                 ${sd ? `<div class="ws-row"><span class="ws-lbl">Detalle</span><span class="ws-val">${escapeHTML(sd)}</span></div>` : ''}
+                <div class="ws-row"><span class="ws-lbl">Abogado asignado</span><span class="ws-val">${escapeHTML(abogadoNombre)}</span></div>
+                ${abogadoCedula ? `<div class="ws-row"><span class="ws-lbl">Cédula profesional</span><span class="ws-val">${escapeHTML(abogadoCedula)}</span></div>` : ''}
+                <div class="ws-row"><span class="ws-lbl">Ciudad de suscripción</span><span class="ws-val">${escapeHTML(ciudadTexto)}</span></div>
             </div>
 
             <div class="ws-block green">
@@ -2786,6 +3352,12 @@ window.addEventListener('beforeunload', (e) => {
             <div class="ws-block warning">
                 <div class="ws-block-title"><i class="bi bi-credit-card-fill"></i> Forma de Pago</div>
                 <div class="ws-row"><span class="ws-lbl">Método</span><span class="ws-val">${escapeHTML(pmMap[pm] || pm)}</span></div>
+                ${st === 'contestacion' ? `
+                <div class="ws-row"><span class="ws-lbl">Modalidad del saldo</span><span class="ws-val">${
+                    (document.querySelector('input[name="modalidad_pago_saldo"]:checked')?.value === 'abonos')
+                        ? 'Dos abonos hasta sentencia (50% + 50%)'
+                        : 'Pago único en primera audiencia'
+                }</span></div>` : ''}
                 ${rn ? `<div class="ws-row"><span class="ws-lbl">Recibió</span><span class="ws-val">${escapeHTML(rn)}</span></div>` : ''}
                 ${rf ? `<div class="ws-row"><span class="ws-lbl">Comprobante</span><span class="ws-val">${escapeHTML(rf.name)}</span></div>` : ''}
             </div>
@@ -2817,6 +3389,19 @@ window.addEventListener('beforeunload', (e) => {
        ------------------------------------------------------------ */
     form.addEventListener('input', refreshNavButtons);
     form.addEventListener('change', refreshNavButtons);
+
+
+
+        // Mostrar/ocultar campos de contestación según el tipo de servicio
+    function toggleContestacionFields() {
+        const st = document.getElementById('service_type').value;
+        const block = document.getElementById('contestacionFields');
+        if (block) {
+            block.style.display = (st === 'contestacion') ? 'block' : 'none';
+        }
+    }
+    document.getElementById('service_type')?.addEventListener('change', toggleContestacionFields);
+    toggleContestacionFields();
 
     /* ------------------------------------------------------------
        HOOKS EN FUNCIONES EXISTENTES
@@ -2851,6 +3436,51 @@ window.addEventListener('beforeunload', (e) => {
 
     console.log('✅ Wizard de contratación cargado (4 pasos)');
 })();
+
+/* ============================================================
+   MODAL ELECCIÓN: ¿Constancia sola o paquete completo?
+   Devuelve una promesa: 'constancia' | 'full'
+   ============================================================ */
+function elegirTipoDocumentos() {
+    return new Promise((resolve) => {
+        const modalEl = document.getElementById('eleccionDocsModal');
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        const btnC = document.getElementById('btnSoloConstancia');
+        const btnF = document.getElementById('btnPaqueteCompleto');
+
+        // Clonar para limpiar listeners previos
+        const newC = btnC.cloneNode(true);
+        const newF = btnF.cloneNode(true);
+        btnC.parentNode.replaceChild(newC, btnC);
+        btnF.parentNode.replaceChild(newF, btnF);
+
+        let resuelto = false;
+
+        newC.addEventListener('click', () => {
+            if (resuelto) return;
+            resuelto = true;
+            modal.hide();
+            resolve('constancia');
+        });
+        newF.addEventListener('click', () => {
+            if (resuelto) return;
+            resuelto = true;
+            modal.hide();
+            resolve('full');
+        });
+
+        modalEl.addEventListener('hidden.bs.modal', function onHidden() {
+            modalEl.removeEventListener('hidden.bs.modal', onHidden);
+            if (!resuelto) {
+                resuelto = true;
+                resolve('constancia'); // Por defecto si cierran
+            }
+        }, { once: true });
+
+        modal.show();
+    });
+}
 </script>
 </body>
 </html>

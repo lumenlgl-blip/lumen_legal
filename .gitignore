@@ -86,3 +86,13 @@ test_*.html
 !app/static/**/*.jpg
 !app/static/**/*.jpeg
 !app/static/**/*.png
+
+# Backups de encoding (locales, no versionar)
+_backup_encoding/
+_backup_utf8/
+fix_encoding.py
+convert_to_utf8.py
+convert_to_utf8.ps1
+reporte_mojibake.csv
+storage/backups/
+storage/temp/

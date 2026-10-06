@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
+﻿from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Request
 from app.routers.auth import get_current_user
 from fastapi.responses import HTMLResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from app.database import get_db
+from app.utils.search import safe_int
 from app.models.core import Client, Contract, CourtCase, Actuacion, User
 from app.storage import (
     upload_fileobj,
@@ -75,8 +76,7 @@ async def search_client(search_term: str = Form(...), db: Session = Depends(get_
                 Client.curp.ilike(f"%{search_term}%"),
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
-                Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                Client.expediente_interno == (safe_int(search_term) or -1),
             )
         )
         .all()
@@ -162,6 +162,7 @@ async def get_client(client_id: int, db: Session = Depends(get_db)):
             {
                 "id": contract.id,
                 "servicio": service_label,
+                "service_type": contract.service_type,  # ← NUEVO
                 "tipo_juicio": tipo_juicio_display,
                 "detalle": contract.specific_detail or "",
                 "costo_total": float(contract.total_cost),
@@ -307,6 +308,8 @@ async def relate_case(
 
     return {
         "message": "Expediente relacionado exitosamente",
+        "case_id": new_case.id,  # ← NUEVO
+        "service_type": contract.service_type,  # ← NUEVO (por si acaso)
         "cliente": f"{client.name} {client.paterno}",
         "expediente_tribunal": num_exp_tribunal,
         "folio": folio_tribunal,
@@ -345,8 +348,7 @@ async def search_client_for_status(
                 Client.curp.ilike(f"%{search_term}%"),
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
-                Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                Client.expediente_interno == (safe_int(search_term) or -1),
             )
         )
         .all()
@@ -467,8 +469,7 @@ async def search_client_for_consult(
                 Client.curp.ilike(f"%{search_term}%"),
                 Client.phone.ilike(f"%{search_term}%"),
                 Client.folio_registro.ilike(f"%{search_term}%"),
-                Client.expediente_interno
-                == (int(search_term) if search_term.isdigit() else -1),
+                Client.expediente_interno == (safe_int(search_term) or -1),
             )
         )
         .all()
@@ -725,7 +726,9 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
             response = s3_client.get_object(Bucket=R2_BUCKET, Key=act.pdf_url)
             pdf_data = response["Body"].read()
         except Exception as e:
-            print(f"⚠️ No se pudo descargar actuación #{act.id} ({act.pdf_url}): {e}")
+            print(
+                f"âš ï¸ No se pudo descargar actuación #{act.id} ({act.pdf_url}): {e}"
+            )
             omitidas += 1
             continue
 
@@ -735,7 +738,9 @@ async def get_full_case_pdf(court_case_id: int, db: Session = Depends(get_db)):
             pdf_final.pages.extend(pdf_act.pages)
             adjuntadas += 1
         except Exception as e:
-            print(f"⚠️ No se pudo adjuntar actuación #{act.id} ({act.pdf_url}): {e}")
+            print(
+                f"âš ï¸ No se pudo adjuntar actuación #{act.id} ({act.pdf_url}): {e}"
+            )
             omitidas += 1
             continue
 
@@ -868,5 +873,186 @@ async def get_constancia_expediente(court_case_id: int, db: Session = Depends(ge
                 f"inline; filename=constancia_expediente_"
                 f"{court_case.num_exp_tribunal.replace('/', '_')}.pdf"
             )
+        },
+    )
+
+    # ============================================================
+
+
+# CONSTANCIA DE ACTUALIZACIÓN DE DATOS PROCESALES
+# ============================================================
+@router.get("/constancia-actualizacion/{court_case_id}")
+async def constancia_actualizacion(
+    court_case_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    """
+    Genera el aviso de actualización de datos procesales (Cláusula Vigésima Segunda).
+    Se emite al relacionar un expediente cuando la demanda no estaba presentada al firmar el contrato.
+    """
+    from jinja2 import Environment, FileSystemLoader
+    from weasyprint import HTML
+    from app.services.numero_a_letra import fecha_a_letra  # ← NUEVO
+    import base64
+    import os
+    from datetime import datetime, timezone, timedelta
+    from app.models.core import ActivityLog
+
+    user = get_current_user(request, db)
+    if not user:
+        raise HTTPException(401, "No autenticado")
+
+    court_case = db.query(CourtCase).filter(CourtCase.id == court_case_id).first()
+    if not court_case:
+        raise HTTPException(404, "Expediente no encontrado")
+
+    contract = db.query(Contract).filter(Contract.id == court_case.contract_id).first()
+    if not contract:
+        raise HTTPException(404, "Contrato no encontrado")
+
+    client = db.query(Client).filter(Client.id == contract.client_id).first()
+    if not client:
+        raise HTTPException(404, "Cliente no encontrado")
+
+    abogado = contract.assigned_lawyer
+    if not abogado:
+        from app.models.core import Abogado
+
+        abogado = db.query(Abogado).filter(Abogado.user_id == user.id).first()
+        if not abogado:
+
+            class _Temp:
+                pass
+
+            abogado = _Temp()
+            abogado.nombre_completo = user.full_name
+            abogado.cedula_profesional = "____________________"
+            abogado.telefono = ""
+            abogado.especialidad = ""
+            abogado.domicilio_profesional = ""
+
+    logo_path = os.path.join(os.getcwd(), "app", "static", "img", "logo.jpeg")
+    logo_base64 = ""
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            logo_base64 = base64.b64encode(f.read()).decode("utf-8")
+
+    tz_sinaloa = timezone(timedelta(hours=-7))
+    ahora = datetime.now(tz_sinaloa)
+
+    MESES = [
+        "",
+        "enero",
+        "febrero",
+        "marzo",
+        "abril",
+        "mayo",
+        "junio",
+        "julio",
+        "agosto",
+        "septiembre",
+        "octubre",
+        "noviembre",
+        "diciembre",
+    ]
+
+    def _dia_a_letra(dia):
+        unidades = [
+            "",
+            "un",
+            "dos",
+            "tres",
+            "cuatro",
+            "cinco",
+            "seis",
+            "siete",
+            "ocho",
+            "nueve",
+            "diez",
+            "once",
+            "doce",
+            "trece",
+            "catorce",
+            "quince",
+            "dieciséis",
+            "diecisiete",
+            "dieciocho",
+            "diecinueve",
+            "veinte",
+            "veintiún",
+            "veintidós",
+            "veintitrés",
+            "veinticuatro",
+            "veinticinco",
+            "veintiséis",
+            "veintisiete",
+            "veintiocho",
+            "veintinueve",
+            "treinta",
+            "treinta y un",
+        ]
+        return unidades[dia]
+
+    fecha_letra = f"{_dia_a_letra(ahora.day)} días del mes de {MESES[ahora.month]} de {ahora.year}"
+
+    fecha_presentacion_str = ""
+    if court_case.fecha_presentacion:
+        fecha_presentacion_str = court_case.fecha_presentacion.strftime("%d/%m/%Y")
+
+    # ── Fechas del contrato original (formato corto Y largo) ──
+    fecha_contrato_original = ""
+    fecha_contrato_letra = ""
+    if contract.created_at:
+        fc = contract.created_at.replace(tzinfo=timezone.utc).astimezone(tz_sinaloa)
+        fecha_contrato_original = fc.strftime("%d/%m/%Y")
+        fecha_contrato_letra = (
+            f"{_dia_a_letra(fc.day)} días del mes de {MESES[fc.month]} de {fc.year}"
+        )
+
+    env = Environment(loader=FileSystemLoader("app/templates"))
+    template = env.get_template("pdf/constancia_actualizacion_datos.html")
+
+    html_content = template.render(
+        logo_base64=logo_base64,
+        contrato_id=contract.id,
+        ciudad=(contract.ciudad_suscripcion or "").strip() or "Mazatlán",
+        estado="Sinaloa",
+        fecha_letra=fecha_letra,
+        fecha_corta=ahora.strftime("%d/%m/%Y"),
+        fecha_contrato_original=fecha_contrato_original,
+        fecha_contrato_letra=fecha_contrato_letra,
+        anio=ahora.year,
+        profesionista_nombre=abogado.nombre_completo,
+        profesionista_cedula=abogado.cedula_profesional,
+        cliente_nombre=f"{client.name} {client.paterno} {client.materno or ''}".strip(),
+        num_expediente=court_case.num_exp_tribunal or "",
+        tribunal=court_case.tribunal or "",
+        secretaria=court_case.secretaria or "",
+        folio=court_case.folio_tribunal or "",
+        fecha_presentacion=fecha_presentacion_str or "",
+        actor_nombre=court_case.actor_nombre or "",
+        actor2_nombre="",
+        demandado_nombre=court_case.demandado_nombre or "",
+    )
+
+    pdf_bytes = HTML(string=html_content).write_pdf()
+
+    db.add(
+        ActivityLog(
+            firm_id=user.firm_id,
+            user_id=user.id,
+            action="create",
+            entity="CourtCase",
+            entity_id=court_case.id,
+            description=f"Generó constancia de actualización de datos procesales del expediente {court_case.num_exp_tribunal}",
+        )
+    )
+    db.commit()
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"inline; filename=actualizacion_datos_{court_case.id}.pdf"
         },
     )
